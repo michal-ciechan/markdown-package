@@ -1,0 +1,32 @@
+[
+  {
+    "file": "js/node_modules/brotli-dec-wasm/pkg/brotli_dec_wasm.js",
+    "bytes": 9355,
+    "gzip9_bytes": 2765,
+    "sha256": "19cf5d13fa62df4ebdf3fcefddeefa54b41fd7cca83be2b553dd5a1e9c81b2d0"
+  },
+  {
+    "file": "js/node_modules/brotli-dec-wasm/pkg/brotli_dec_wasm_bg.wasm",
+    "bytes": 208439,
+    "gzip9_bytes": 97471,
+    "sha256": "79b29cb1790560f0a0f32b4a31d935e2782875e4a367fde23c81d986b327ec3f"
+  },
+  {
+    "file": "zstd-bundle.js",
+    "bytes": 6725,
+    "gzip9_bytes": 2612,
+    "sha256": "6802a9d1058aa531cd176226258ff478b8e95755d8a48a2af145d80957602931"
+  },
+  {
+    "file": "js/node_modules/@bokuweb/zstd-wasm/dist/esm/zstd.wasm",
+    "bytes": 251806,
+    "gzip9_bytes": 79798,
+    "sha256": "80260eee5795ee8072bb5821e203730c74dca3909938f5ac1128da67f96223df"
+  },
+  {
+    "file": "fflate-bundle.js",
+    "bytes": 4117,
+    "gzip9_bytes": 2112,
+    "sha256": "cf9add9245bca2ae409d9fcd92c90ec3fde54e4018245ebf57a4c44471543461"
+  }
+]

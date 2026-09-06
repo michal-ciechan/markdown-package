@@ -1,0 +1,591 @@
+{
+  "versions": {
+    "python": "3.10.2",
+    "brotli": "1.2.0",
+    "zstandard": "0.25.0",
+    "libzstd": [
+      1,
+      5,
+      7
+    ],
+    "zlib": "1.2.11"
+  },
+  "rows": [
+    {
+      "corpus": "npm",
+      "codec": "gzip-6",
+      "whole_bytes": 95662,
+      "entry_bytes": 142863,
+      "stored_or_entry_bytes": 142863,
+      "whole_encode_ms": 20.7438999786973,
+      "entry_encode_ms": 38.00889989361167,
+      "base_entry_bytes": 116977,
+      "diff_entry_bytes": 25886,
+      "block64k_bytes": 101084,
+      "block64k_count": 6
+    },
+    {
+      "corpus": "npm",
+      "codec": "gzip-9",
+      "whole_bytes": 95343,
+      "entry_bytes": 142839,
+      "stored_or_entry_bytes": 142839,
+      "whole_encode_ms": 29.28669983521104,
+      "entry_encode_ms": 26.056600036099553,
+      "base_entry_bytes": 116952,
+      "diff_entry_bytes": 25887,
+      "block64k_bytes": 100877,
+      "block64k_count": 6
+    },
+    {
+      "corpus": "npm",
+      "codec": "deflate-6",
+      "whole_bytes": 95650,
+      "entry_bytes": 141291,
+      "stored_or_entry_bytes": 141291,
+      "whole_encode_ms": 19.54779983498156,
+      "entry_encode_ms": 22.232400020584464,
+      "base_entry_bytes": 115981,
+      "diff_entry_bytes": 25310,
+      "block64k_bytes": 101012,
+      "block64k_count": 6
+    },
+    {
+      "corpus": "npm",
+      "codec": "raw-6",
+      "whole_bytes": 95644,
+      "entry_bytes": 140505,
+      "stored_or_entry_bytes": 140505,
+      "whole_encode_ms": 22.917099995538592,
+      "entry_encode_ms": 47.75569983758032,
+      "base_entry_bytes": 115483,
+      "diff_entry_bytes": 25022,
+      "block64k_bytes": 100976,
+      "block64k_count": 6
+    },
+    {
+      "corpus": "npm",
+      "codec": "brotli-5",
+      "whole_bytes": 85997,
+      "entry_bytes": 131543,
+      "stored_or_entry_bytes": 131543,
+      "whole_encode_ms": 18.637500004842877,
+      "entry_encode_ms": 221.4808000717312,
+      "base_entry_bytes": 107995,
+      "diff_entry_bytes": 23548,
+      "block64k_bytes": 96614,
+      "block64k_count": 6
+    },
+    {
+      "corpus": "npm",
+      "codec": "brotli-9",
+      "whole_bytes": 82104,
+      "entry_bytes": 131297,
+      "stored_or_entry_bytes": 131297,
+      "whole_encode_ms": 107.36420005559921,
+      "entry_encode_ms": 684.9803999066353,
+      "base_entry_bytes": 107760,
+      "diff_entry_bytes": 23537,
+      "block64k_bytes": 95312,
+      "block64k_count": 6
+    },
+    {
+      "corpus": "npm",
+      "codec": "brotli-11",
+      "whole_bytes": 74379,
+      "entry_bytes": 113861,
+      "stored_or_entry_bytes": 113861,
+      "whole_encode_ms": 1530.7337997946888,
+      "entry_encode_ms": 1515.8576001413167,
+      "base_entry_bytes": 93084,
+      "diff_entry_bytes": 20777,
+      "block64k_bytes": 84941,
+      "block64k_count": 6
+    },
+    {
+      "corpus": "npm",
+      "codec": "zstd-3",
+      "whole_bytes": 93789,
+      "entry_bytes": 147883,
+      "stored_or_entry_bytes": 147883,
+      "whole_encode_ms": 3.954700194299221,
+      "entry_encode_ms": 13.53910006582737,
+      "base_entry_bytes": 121278,
+      "diff_entry_bytes": 26605,
+      "block64k_bytes": 106312,
+      "block64k_count": 6
+    },
+    {
+      "corpus": "npm",
+      "codec": "zstd-9",
+      "whole_bytes": 85347,
+      "entry_bytes": 143315,
+      "stored_or_entry_bytes": 143315,
+      "whole_encode_ms": 21.566699957475066,
+      "entry_encode_ms": 24.362900061532855,
+      "base_entry_bytes": 117169,
+      "diff_entry_bytes": 26146,
+      "block64k_bytes": 98712,
+      "block64k_count": 6
+    },
+    {
+      "corpus": "npm",
+      "codec": "zstd-19",
+      "whole_bytes": 79804,
+      "entry_bytes": 141397,
+      "stored_or_entry_bytes": 141397,
+      "whole_encode_ms": 483.8566000107676,
+      "entry_encode_ms": 292.4236999824643,
+      "base_entry_bytes": 115501,
+      "diff_entry_bytes": 25896,
+      "block64k_bytes": 95396,
+      "block64k_count": 6
+    },
+    {
+      "corpus": "npm",
+      "codec": "xz-6",
+      "whole_bytes": 78372,
+      "entry_bytes": 151436,
+      "stored_or_entry_bytes": 151436,
+      "whole_encode_ms": 288.88899995945394,
+      "entry_encode_ms": 1778.4568001516163,
+      "base_entry_bytes": 122140,
+      "diff_entry_bytes": 29296,
+      "block64k_bytes": 94512,
+      "block64k_count": 6
+    },
+    {
+      "corpus": "npm",
+      "codec": "gzip-6",
+      "order": "path",
+      "whole_bytes": 95662,
+      "block64k_bytes": 101084,
+      "block256k_bytes": 96739
+    },
+    {
+      "corpus": "npm",
+      "codec": "brotli-5",
+      "order": "path",
+      "whole_bytes": 85997,
+      "block64k_bytes": 96614,
+      "block256k_bytes": 88649
+    },
+    {
+      "corpus": "npm",
+      "codec": "zstd-9",
+      "order": "path",
+      "whole_bytes": 85347,
+      "block64k_bytes": 98712,
+      "block256k_bytes": 88534
+    },
+    {
+      "corpus": "npm",
+      "codec": "xz-6",
+      "order": "path",
+      "whole_bytes": 78372,
+      "block64k_bytes": 94512,
+      "block256k_bytes": 82836
+    },
+    {
+      "corpus": "npm",
+      "codec": "gzip-6",
+      "order": "random42",
+      "whole_bytes": 101088,
+      "block64k_bytes": 107730,
+      "block256k_bytes": 102250
+    },
+    {
+      "corpus": "npm",
+      "codec": "brotli-5",
+      "order": "random42",
+      "whole_bytes": 87456,
+      "block64k_bytes": 103297,
+      "block256k_bytes": 93457
+    },
+    {
+      "corpus": "npm",
+      "codec": "zstd-9",
+      "order": "random42",
+      "whole_bytes": 86210,
+      "block64k_bytes": 105482,
+      "block256k_bytes": 92840
+    },
+    {
+      "corpus": "npm",
+      "codec": "xz-6",
+      "order": "random42",
+      "whole_bytes": 78952,
+      "block64k_bytes": 101012,
+      "block256k_bytes": 86748
+    },
+    {
+      "corpus": "npm",
+      "codec": "gzip-6",
+      "order": "similarity",
+      "whole_bytes": 94678,
+      "block64k_bytes": 99573,
+      "block256k_bytes": 95670
+    },
+    {
+      "corpus": "npm",
+      "codec": "brotli-5",
+      "order": "similarity",
+      "whole_bytes": 86002,
+      "block64k_bytes": 95360,
+      "block256k_bytes": 89378
+    },
+    {
+      "corpus": "npm",
+      "codec": "zstd-9",
+      "order": "similarity",
+      "whole_bytes": 85115,
+      "block64k_bytes": 97493,
+      "block256k_bytes": 89296
+    },
+    {
+      "corpus": "npm",
+      "codec": "xz-6",
+      "order": "similarity",
+      "whole_bytes": 78208,
+      "block64k_bytes": 93364,
+      "block256k_bytes": 83464
+    },
+    {
+      "corpus": "rust",
+      "codec": "gzip-6",
+      "whole_bytes": 2914070,
+      "entry_bytes": 3332597,
+      "stored_or_entry_bytes": 3332597,
+      "whole_encode_ms": 772.3966999910772,
+      "entry_encode_ms": 459.58270016126335,
+      "base_entry_bytes": 3108012,
+      "diff_entry_bytes": 224585,
+      "block64k_bytes": 3072367,
+      "block64k_count": 171
+    },
+    {
+      "corpus": "rust",
+      "codec": "gzip-9",
+      "whole_bytes": 2907048,
+      "entry_bytes": 3328716,
+      "stored_or_entry_bytes": 3328716,
+      "whole_encode_ms": 1027.1296999417245,
+      "entry_encode_ms": 612.5556000042707,
+      "base_entry_bytes": 3104777,
+      "diff_entry_bytes": 223939,
+      "block64k_bytes": 3067090,
+      "block64k_count": 171
+    },
+    {
+      "corpus": "rust",
+      "codec": "deflate-6",
+      "whole_bytes": 2914058,
+      "entry_bytes": 3324581,
+      "stored_or_entry_bytes": 3324581,
+      "whole_encode_ms": 445.3386999666691,
+      "entry_encode_ms": 300.25479989126325,
+      "base_entry_bytes": 3100416,
+      "diff_entry_bytes": 224165,
+      "block64k_bytes": 3070315,
+      "block64k_count": 171
+    },
+    {
+      "corpus": "rust",
+      "codec": "raw-6",
+      "whole_bytes": 2914052,
+      "entry_bytes": 3320573,
+      "stored_or_entry_bytes": 3320573,
+      "whole_encode_ms": 599.6737000532448,
+      "entry_encode_ms": 488.02499985322356,
+      "base_entry_bytes": 3096618,
+      "diff_entry_bytes": 223955,
+      "block64k_bytes": 3069289,
+      "block64k_count": 171
+    },
+    {
+      "corpus": "rust",
+      "codec": "brotli-5",
+      "whole_bytes": 2562516,
+      "entry_bytes": 3148241,
+      "stored_or_entry_bytes": 3148241,
+      "whole_encode_ms": 622.0776999834925,
+      "entry_encode_ms": 1059.1108999215066,
+      "base_entry_bytes": 2937047,
+      "diff_entry_bytes": 211194,
+      "block64k_bytes": 2947620,
+      "block64k_count": 171
+    },
+    {
+      "corpus": "rust",
+      "codec": "brotli-9",
+      "whole_bytes": 2383334,
+      "entry_bytes": 3126945,
+      "stored_or_entry_bytes": 3126945,
+      "whole_encode_ms": 2336.945400107652,
+      "entry_encode_ms": 7536.263999994844,
+      "base_entry_bytes": 2918473,
+      "diff_entry_bytes": 208472,
+      "block64k_bytes": 2918454,
+      "block64k_count": 171
+    },
+    {
+      "corpus": "rust",
+      "codec": "brotli-11",
+      "whole_bytes": 2174769,
+      "entry_bytes": 2718698,
+      "stored_or_entry_bytes": 2718698,
+      "whole_encode_ms": 23972.75050007738,
+      "entry_encode_ms": 16873.76580014825,
+      "base_entry_bytes": 2536994,
+      "diff_entry_bytes": 181704,
+      "block64k_bytes": 2572000,
+      "block64k_count": 171
+    },
+    {
+      "corpus": "rust",
+      "codec": "zstd-3",
+      "whole_bytes": 2829248,
+      "entry_bytes": 3468196,
+      "stored_or_entry_bytes": 3468196,
+      "whole_encode_ms": 362.13439982384443,
+      "entry_encode_ms": 112.37949994392693,
+      "base_entry_bytes": 3235308,
+      "diff_entry_bytes": 232888,
+      "block64k_bytes": 3212815,
+      "block64k_count": 171
+    },
+    {
+      "corpus": "rust",
+      "codec": "zstd-9",
+      "whole_bytes": 2504244,
+      "entry_bytes": 3287724,
+      "stored_or_entry_bytes": 3287724,
+      "whole_encode_ms": 605.8016999159008,
+      "entry_encode_ms": 385.2965000551194,
+      "base_entry_bytes": 3069882,
+      "diff_entry_bytes": 217842,
+      "block64k_bytes": 3007769,
+      "block64k_count": 171
+    },
+    {
+      "corpus": "rust",
+      "codec": "zstd-19",
+      "whole_bytes": 2197874,
+      "entry_bytes": 3209175,
+      "stored_or_entry_bytes": 3209175,
+      "whole_encode_ms": 8996.581600047648,
+      "entry_encode_ms": 4903.006199980155,
+      "base_entry_bytes": 2998670,
+      "diff_entry_bytes": 210505,
+      "block64k_bytes": 2910037,
+      "block64k_count": 171
+    },
+    {
+      "corpus": "rust",
+      "codec": "xz-6",
+      "whole_bytes": 2168300,
+      "entry_bytes": 3242212,
+      "stored_or_entry_bytes": 3242179,
+      "whole_encode_ms": 10841.431900160387,
+      "entry_encode_ms": 10062.135000014678,
+      "base_entry_bytes": 3031840,
+      "diff_entry_bytes": 210372,
+      "block64k_bytes": 2881708,
+      "block64k_count": 171
+    },
+    {
+      "corpus": "rust",
+      "codec": "gzip-6",
+      "order": "path",
+      "whole_bytes": 2914070,
+      "block64k_bytes": 3072367,
+      "block256k_bytes": 2951419
+    },
+    {
+      "corpus": "rust",
+      "codec": "brotli-5",
+      "order": "path",
+      "whole_bytes": 2562516,
+      "block64k_bytes": 2947620,
+      "block256k_bytes": 2784029
+    },
+    {
+      "corpus": "rust",
+      "codec": "zstd-9",
+      "order": "path",
+      "whole_bytes": 2504244,
+      "block64k_bytes": 3007769,
+      "block256k_bytes": 2769352
+    },
+    {
+      "corpus": "rust",
+      "codec": "xz-6",
+      "order": "path",
+      "whole_bytes": 2168300,
+      "block64k_bytes": 2881708,
+      "block256k_bytes": 2586152
+    },
+    {
+      "corpus": "rust",
+      "codec": "gzip-6",
+      "order": "random42",
+      "whole_bytes": 2958819,
+      "block64k_bytes": 3107400,
+      "block256k_bytes": 2994187
+    },
+    {
+      "corpus": "rust",
+      "codec": "brotli-5",
+      "order": "random42",
+      "whole_bytes": 2592986,
+      "block64k_bytes": 2981313,
+      "block256k_bytes": 2833334
+    },
+    {
+      "corpus": "rust",
+      "codec": "zstd-9",
+      "order": "random42",
+      "whole_bytes": 2526984,
+      "block64k_bytes": 3043588,
+      "block256k_bytes": 2820601
+    },
+    {
+      "corpus": "rust",
+      "codec": "xz-6",
+      "order": "random42",
+      "whole_bytes": 2169248,
+      "block64k_bytes": 2915836,
+      "block256k_bytes": 2634348
+    },
+    {
+      "corpus": "rust",
+      "codec": "gzip-6",
+      "order": "similarity",
+      "whole_bytes": 2875257,
+      "block64k_bytes": 3042044,
+      "block256k_bytes": 2913504
+    },
+    {
+      "corpus": "rust",
+      "codec": "brotli-5",
+      "order": "similarity",
+      "whole_bytes": 2547252,
+      "block64k_bytes": 2922100,
+      "block256k_bytes": 2726214
+    },
+    {
+      "corpus": "rust",
+      "codec": "zstd-9",
+      "order": "similarity",
+      "whole_bytes": 2493302,
+      "block64k_bytes": 2978971,
+      "block256k_bytes": 2711988
+    },
+    {
+      "corpus": "rust",
+      "codec": "xz-6",
+      "order": "similarity",
+      "whole_bytes": 2152728,
+      "block64k_bytes": 2851036,
+      "block256k_bytes": 2534072
+    }
+  ],
+  "dictionaries": [
+    {
+      "corpus": "npm",
+      "split": "package",
+      "dictionary_bytes": 16384,
+      "dictionary_sha256": "5ae700e407dd8e012291c2e9ff30fc0202b9ac76a3878f2385a8a2d0489aff65",
+      "train_entries": 131,
+      "test_entries": 131,
+      "raw_test_bytes": 345157,
+      "frames_bytes": 100403,
+      "total_bytes": 116787,
+      "without_dictionary_bytes": 143315
+    },
+    {
+      "corpus": "npm",
+      "split": "heldout",
+      "dictionary_bytes": 16384,
+      "dictionary_sha256": "e30c484e9b4f58aa002aeed885e5b888553c036431d2879f8bbf5282f1e284b2",
+      "train_entries": 108,
+      "test_entries": 23,
+      "raw_test_bytes": 61284,
+      "frames_bytes": 19069,
+      "total_bytes": 35453,
+      "without_dictionary_bytes": 25762
+    },
+    {
+      "corpus": "npm",
+      "split": "package",
+      "dictionary_bytes": 65536,
+      "dictionary_sha256": "a7235727c921abade68f0c9e5a9d68d6c6de651c71d7ab37ee83c8809480e1f4",
+      "train_entries": 131,
+      "test_entries": 131,
+      "raw_test_bytes": 345157,
+      "frames_bytes": 74341,
+      "total_bytes": 139877,
+      "without_dictionary_bytes": 143315
+    },
+    {
+      "corpus": "npm",
+      "split": "heldout",
+      "dictionary_bytes": 65536,
+      "dictionary_sha256": "4ee01fe9e663a8207c35679fead8473e3a3fa3968b7966df0c9369b99642783c",
+      "train_entries": 108,
+      "test_entries": 23,
+      "raw_test_bytes": 61284,
+      "frames_bytes": 17382,
+      "total_bytes": 82918,
+      "without_dictionary_bytes": 25762
+    },
+    {
+      "corpus": "rust",
+      "split": "package",
+      "dictionary_bytes": 16384,
+      "dictionary_sha256": "c7406d8b018301d17afdcde6cfc5e31438e6aea25e6c981a37b8fb12782bf6ad",
+      "train_entries": 668,
+      "test_entries": 668,
+      "raw_test_bytes": 9431582,
+      "frames_bytes": 2919776,
+      "total_bytes": 2936160,
+      "without_dictionary_bytes": 3287724
+    },
+    {
+      "corpus": "rust",
+      "split": "heldout",
+      "dictionary_bytes": 16384,
+      "dictionary_sha256": "f6b9d47a0c1da531c3e97ff9ba0d0b2f4a227d5d434c8ad4be5f67b3424d1f00",
+      "train_entries": 522,
+      "test_entries": 146,
+      "raw_test_bytes": 2196609,
+      "frames_bytes": 628953,
+      "total_bytes": 645337,
+      "without_dictionary_bytes": 707469
+    },
+    {
+      "corpus": "rust",
+      "split": "package",
+      "dictionary_bytes": 65536,
+      "dictionary_sha256": "e2eeefb2e426844fe97ac4a59db2c0e8f6978a486f5133cfecb826844cd027c0",
+      "train_entries": 668,
+      "test_entries": 668,
+      "raw_test_bytes": 9431582,
+      "frames_bytes": 2748217,
+      "total_bytes": 2813753,
+      "without_dictionary_bytes": 3287724
+    },
+    {
+      "corpus": "rust",
+      "split": "heldout",
+      "dictionary_bytes": 65536,
+      "dictionary_sha256": "00584bf2174f8de44cedc8e497e6642786580faeeb722b4170f6f4f454146f50",
+      "train_entries": 522,
+      "test_entries": 146,
+      "raw_test_bytes": 2196609,
+      "frames_bytes": 598700,
+      "total_bytes": 664236,
+      "without_dictionary_bytes": 707469
+    }
+  ]
+}

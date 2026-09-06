@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@bokuweb/zstd-wasm": "^0.0.27",
+    "brotli-dec-wasm": "^2.3.2",
+    "esbuild": "^0.25.9",
+    "fflate": "^0.8.2"
+  }
+}

@@ -1,0 +1,658 @@
+{
+  "retrieved": "2026-09-06",
+  "revision": "8f78ef6691bea90b55a975344ad7323130f20f36",
+  "sources": {
+    "api/DecompressionStream.json": {
+      "api": {
+        "DecompressionStream": {
+          "__compat": {
+            "mdn_url": "https://developer.mozilla.org/docs/Web/API/DecompressionStream",
+            "spec_url": "https://compression.spec.whatwg.org/#decompression-stream",
+            "tags": [
+              "web-features:compression-streams"
+            ],
+            "support": {
+              "bun": {
+                "version_added": "1.3.3"
+              },
+              "chrome": {
+                "version_added": "80"
+              },
+              "chrome_android": "mirror",
+              "deno": {
+                "version_added": "1.19"
+              },
+              "edge": "mirror",
+              "firefox": {
+                "version_added": "113"
+              },
+              "firefox_android": "mirror",
+              "nodejs": [
+                {
+                  "version_added": "18.0.0"
+                },
+                {
+                  "version_added": "17.0.0",
+                  "version_removed": "18.0.0",
+                  "partial_implementation": true,
+                  "notes": "Available as a part of the `stream/web` module."
+                }
+              ],
+              "oculus": "mirror",
+              "opera": "mirror",
+              "opera_android": "mirror",
+              "safari": {
+                "version_added": "16.4"
+              },
+              "safari_ios": "mirror",
+              "samsunginternet_android": "mirror",
+              "webview_android": "mirror",
+              "webview_ios": "mirror"
+            },
+            "status": {
+              "experimental": false,
+              "standard_track": true,
+              "deprecated": false
+            }
+          },
+          "DecompressionStream": {
+            "__compat": {
+              "description": "`DecompressionStream()` constructor",
+              "mdn_url": "https://developer.mozilla.org/docs/Web/API/DecompressionStream/DecompressionStream",
+              "spec_url": "https://compression.spec.whatwg.org/#dom-decompressionstream-decompressionstream",
+              "tags": [
+                "web-features:compression-streams"
+              ],
+              "support": {
+                "bun": {
+                  "version_added": "1.3.3"
+                },
+                "chrome": {
+                  "version_added": "80"
+                },
+                "chrome_android": "mirror",
+                "deno": {
+                  "version_added": "1.19"
+                },
+                "edge": "mirror",
+                "firefox": {
+                  "version_added": "113"
+                },
+                "firefox_android": "mirror",
+                "nodejs": {
+                  "version_added": "17.0.0"
+                },
+                "oculus": "mirror",
+                "opera": "mirror",
+                "opera_android": "mirror",
+                "safari": {
+                  "version_added": "16.4"
+                },
+                "safari_ios": "mirror",
+                "samsunginternet_android": "mirror",
+                "webview_android": "mirror",
+                "webview_ios": "mirror"
+              },
+              "status": {
+                "experimental": false,
+                "standard_track": true,
+                "deprecated": false
+              }
+            },
+            "brotli": {
+              "__compat": {
+                "description": "\"brotli\" compression",
+                "spec_url": "https://compression.spec.whatwg.org/#dom-compressionformat-brotli",
+                "tags": [
+                  "web-features:compression-streams"
+                ],
+                "support": {
+                  "bun": {
+                    "version_added": "1.3.3"
+                  },
+                  "chrome": {
+                    "version_added": false,
+                    "impl_url": "https://crbug.com/463397980"
+                  },
+                  "chrome_android": "mirror",
+                  "deno": {
+                    "version_added": "2.7"
+                  },
+                  "edge": "mirror",
+                  "firefox": {
+                    "version_added": "147"
+                  },
+                  "firefox_android": "mirror",
+                  "nodejs": [
+                    {
+                      "version_added": "24.7.0"
+                    },
+                    {
+                      "version_added": "22.2.0",
+                      "version_removed": "23.0.0"
+                    }
+                  ],
+                  "opera": "mirror",
+                  "opera_android": "mirror",
+                  "safari": {
+                    "version_added": "18.4"
+                  },
+                  "safari_ios": "mirror",
+                  "samsunginternet_android": "mirror",
+                  "webview_android": "mirror",
+                  "webview_ios": "mirror"
+                },
+                "status": {
+                  "experimental": false,
+                  "standard_track": true,
+                  "deprecated": false
+                }
+              }
+            },
+            "deflate": {
+              "__compat": {
+                "description": "\"deflate\" compression",
+                "spec_url": "https://compression.spec.whatwg.org/#dom-compressionformat-deflate",
+                "tags": [
+                  "web-features:compression-streams"
+                ],
+                "support": {
+                  "bun": {
+                    "version_added": "1.3.3"
+                  },
+                  "chrome": {
+                    "version_added": "80"
+                  },
+                  "chrome_android": "mirror",
+                  "deno": {
+                    "version_added": "1.19"
+                  },
+                  "edge": "mirror",
+                  "firefox": {
+                    "version_added": "113"
+                  },
+                  "firefox_android": "mirror",
+                  "nodejs": {
+                    "version_added": "17.0.0"
+                  },
+                  "opera": "mirror",
+                  "opera_android": "mirror",
+                  "safari": {
+                    "version_added": "16.4"
+                  },
+                  "safari_ios": "mirror",
+                  "samsunginternet_android": "mirror",
+                  "webview_android": "mirror",
+                  "webview_ios": "mirror"
+                },
+                "status": {
+                  "experimental": false,
+                  "standard_track": true,
+                  "deprecated": false
+                }
+              }
+            },
+            "deflate-raw": {
+              "__compat": {
+                "description": "\"deflate-raw\" compression",
+                "spec_url": "https://compression.spec.whatwg.org/#dom-compressionformat-deflate-raw",
+                "tags": [
+                  "web-features:compression-streams"
+                ],
+                "support": {
+                  "bun": {
+                    "version_added": "1.3.3"
+                  },
+                  "chrome": {
+                    "version_added": "103"
+                  },
+                  "chrome_android": "mirror",
+                  "deno": {
+                    "version_added": "1.23"
+                  },
+                  "edge": "mirror",
+                  "firefox": {
+                    "version_added": "113"
+                  },
+                  "firefox_android": "mirror",
+                  "nodejs": [
+                    {
+                      "version_added": "21.2.0"
+                    },
+                    {
+                      "version_added": "20.12.0",
+                      "version_removed": "21.0.0"
+                    }
+                  ],
+                  "opera": "mirror",
+                  "opera_android": "mirror",
+                  "safari": {
+                    "version_added": "16.4"
+                  },
+                  "safari_ios": "mirror",
+                  "samsunginternet_android": "mirror",
+                  "webview_android": "mirror",
+                  "webview_ios": "mirror"
+                },
+                "status": {
+                  "experimental": false,
+                  "standard_track": true,
+                  "deprecated": false
+                }
+              }
+            },
+            "gzip": {
+              "__compat": {
+                "description": "\"gzip\" compression",
+                "spec_url": "https://compression.spec.whatwg.org/#dom-compressionformat-gzip",
+                "tags": [
+                  "web-features:compression-streams"
+                ],
+                "support": {
+                  "bun": {
+                    "version_added": "1.3.3"
+                  },
+                  "chrome": {
+                    "version_added": "80"
+                  },
+                  "chrome_android": "mirror",
+                  "deno": {
+                    "version_added": "1.19"
+                  },
+                  "edge": "mirror",
+                  "firefox": {
+                    "version_added": "113"
+                  },
+                  "firefox_android": "mirror",
+                  "nodejs": {
+                    "version_added": "17.0.0"
+                  },
+                  "opera": "mirror",
+                  "opera_android": "mirror",
+                  "safari": {
+                    "version_added": "16.4"
+                  },
+                  "safari_ios": "mirror",
+                  "samsunginternet_android": "mirror",
+                  "webview_android": "mirror",
+                  "webview_ios": "mirror"
+                },
+                "status": {
+                  "experimental": false,
+                  "standard_track": true,
+                  "deprecated": false
+                }
+              }
+            },
+            "zstd": {
+              "__compat": {
+                "description": "\"zstd\" compression",
+                "support": {
+                  "bun": {
+                    "version_added": "1.3.3"
+                  },
+                  "chrome": {
+                    "version_added": false
+                  },
+                  "chrome_android": "mirror",
+                  "deno": {
+                    "version_added": false
+                  },
+                  "edge": "mirror",
+                  "firefox": {
+                    "version_added": "138",
+                    "flags": [
+                      {
+                        "type": "preference",
+                        "name": "dom.compression_streams.zstd.enabled",
+                        "value_to_set": "true"
+                      }
+                    ],
+                    "impl_url": "https://bugzil.la/1947431"
+                  },
+                  "firefox_android": "mirror",
+                  "nodejs": {
+                    "version_added": false
+                  },
+                  "opera": "mirror",
+                  "opera_android": "mirror",
+                  "safari": {
+                    "version_added": false
+                  },
+                  "safari_ios": "mirror",
+                  "samsunginternet_android": "mirror",
+                  "webview_android": "mirror",
+                  "webview_ios": "mirror"
+                },
+                "status": {
+                  "experimental": true,
+                  "standard_track": false,
+                  "deprecated": false
+                }
+              }
+            }
+          },
+          "readable": {
+            "__compat": {
+              "mdn_url": "https://developer.mozilla.org/docs/Web/API/DecompressionStream/readable",
+              "spec_url": "https://streams.spec.whatwg.org/#dom-generictransformstream-readable",
+              "tags": [
+                "web-features:compression-streams"
+              ],
+              "support": {
+                "bun": {
+                  "version_added": "1.3.3"
+                },
+                "chrome": {
+                  "version_added": "80"
+                },
+                "chrome_android": "mirror",
+                "deno": {
+                  "version_added": "1.19"
+                },
+                "edge": "mirror",
+                "firefox": {
+                  "version_added": "113"
+                },
+                "firefox_android": "mirror",
+                "nodejs": {
+                  "version_added": "17.0.0"
+                },
+                "oculus": "mirror",
+                "opera": "mirror",
+                "opera_android": "mirror",
+                "safari": {
+                  "version_added": "16.4"
+                },
+                "safari_ios": "mirror",
+                "samsunginternet_android": "mirror",
+                "webview_android": "mirror",
+                "webview_ios": "mirror"
+              },
+              "status": {
+                "experimental": false,
+                "standard_track": true,
+                "deprecated": false
+              }
+            }
+          },
+          "writable": {
+            "__compat": {
+              "mdn_url": "https://developer.mozilla.org/docs/Web/API/DecompressionStream/writable",
+              "spec_url": "https://streams.spec.whatwg.org/#dom-generictransformstream-writable",
+              "tags": [
+                "web-features:compression-streams"
+              ],
+              "support": {
+                "bun": {
+                  "version_added": "1.3.3"
+                },
+                "chrome": {
+                  "version_added": "80"
+                },
+                "chrome_android": "mirror",
+                "deno": {
+                  "version_added": "1.19"
+                },
+                "edge": "mirror",
+                "firefox": {
+                  "version_added": "113"
+                },
+                "firefox_android": "mirror",
+                "nodejs": {
+                  "version_added": "17.0.0"
+                },
+                "oculus": "mirror",
+                "opera": "mirror",
+                "opera_android": "mirror",
+                "safari": {
+                  "version_added": "16.4"
+                },
+                "safari_ios": "mirror",
+                "samsunginternet_android": "mirror",
+                "webview_android": "mirror",
+                "webview_ios": "mirror"
+              },
+              "status": {
+                "experimental": false,
+                "standard_track": true,
+                "deprecated": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "http/headers/Content-Encoding.json": {
+      "http": {
+        "headers": {
+          "Content-Encoding": {
+            "__compat": {
+              "mdn_url": "https://developer.mozilla.org/docs/Web/HTTP/Reference/Headers/Content-Encoding",
+              "spec_url": "https://httpwg.org/specs/rfc9110.html#field.content-encoding",
+              "tags": [
+                "web-features:http11"
+              ],
+              "support": {
+                "chrome": {
+                  "version_added": "1"
+                },
+                "chrome_android": "mirror",
+                "edge": {
+                  "version_added": "12"
+                },
+                "firefox": {
+                  "version_added": "1"
+                },
+                "firefox_android": "mirror",
+                "ie": {
+                  "version_added": "\u226411"
+                },
+                "oculus": "mirror",
+                "opera": "mirror",
+                "opera_android": "mirror",
+                "safari": {
+                  "version_added": "1"
+                },
+                "safari_ios": "mirror",
+                "samsunginternet_android": "mirror",
+                "webview_android": "mirror",
+                "webview_ios": "mirror"
+              },
+              "status": {
+                "experimental": false,
+                "standard_track": true,
+                "deprecated": false
+              }
+            },
+            "br": {
+              "__compat": {
+                "mdn_url": "https://developer.mozilla.org/docs/Web/HTTP/Reference/Headers/Content-Encoding#br",
+                "spec_url": "https://www.rfc-editor.org/info/rfc7932/#section-13",
+                "tags": [
+                  "web-features:brotli"
+                ],
+                "support": {
+                  "chrome": {
+                    "version_added": "50"
+                  },
+                  "chrome_android": {
+                    "version_added": "51"
+                  },
+                  "edge": {
+                    "version_added": "15"
+                  },
+                  "firefox": {
+                    "version_added": "44"
+                  },
+                  "firefox_android": "mirror",
+                  "oculus": "mirror",
+                  "opera": {
+                    "version_added": "36"
+                  },
+                  "opera_android": "mirror",
+                  "safari": {
+                    "version_added": "11",
+                    "notes": "Unsupported before macOS 10.13 High Sierra."
+                  },
+                  "safari_ios": {
+                    "version_added": "11"
+                  },
+                  "samsunginternet_android": "mirror",
+                  "webview_android": "mirror",
+                  "webview_ios": "mirror"
+                },
+                "status": {
+                  "experimental": false,
+                  "standard_track": true,
+                  "deprecated": false
+                }
+              }
+            },
+            "dcb": {
+              "__compat": {
+                "mdn_url": "https://developer.mozilla.org/docs/Web/HTTP/Reference/Headers/Content-Encoding#dcb",
+                "spec_url": "https://httpwg.org/specs/rfc9842.html#dictionary-compressed-brotli",
+                "tags": [
+                  "web-features:compression-dictionary-transport"
+                ],
+                "support": {
+                  "chrome": {
+                    "version_added": "130"
+                  },
+                  "chrome_android": "mirror",
+                  "edge": "mirror",
+                  "firefox": [
+                    {
+                      "version_added": "preview",
+                      "impl_url": "https://bugzil.la/1882979"
+                    },
+                    {
+                      "version_added": "145",
+                      "flags": [
+                        {
+                          "type": "preference",
+                          "name": "network.http.dictionaries.enable",
+                          "value_to_set": "true"
+                        }
+                      ],
+                      "impl_url": "https://bugzil.la/1917965"
+                    }
+                  ],
+                  "firefox_android": "mirror",
+                  "oculus": "mirror",
+                  "opera": "mirror",
+                  "opera_android": "mirror",
+                  "safari": {
+                    "version_added": false
+                  },
+                  "safari_ios": "mirror",
+                  "samsunginternet_android": "mirror",
+                  "webview_android": "mirror",
+                  "webview_ios": "mirror"
+                },
+                "status": {
+                  "experimental": true,
+                  "standard_track": true,
+                  "deprecated": false
+                }
+              }
+            },
+            "dcz": {
+              "__compat": {
+                "mdn_url": "https://developer.mozilla.org/docs/Web/HTTP/Reference/Headers/Content-Encoding#dcz",
+                "spec_url": "https://httpwg.org/specs/rfc9842.html#dictionary-compressed-zstandard",
+                "tags": [
+                  "web-features:compression-dictionary-transport"
+                ],
+                "support": {
+                  "chrome": {
+                    "version_added": "130"
+                  },
+                  "chrome_android": "mirror",
+                  "edge": "mirror",
+                  "firefox": [
+                    {
+                      "version_added": "preview",
+                      "impl_url": "https://bugzil.la/1882979"
+                    },
+                    {
+                      "version_added": "145",
+                      "flags": [
+                        {
+                          "type": "preference",
+                          "name": "network.http.dictionaries.enable",
+                          "value_to_set": "true"
+                        }
+                      ],
+                      "impl_url": "https://bugzil.la/1917965"
+                    }
+                  ],
+                  "firefox_android": "mirror",
+                  "oculus": "mirror",
+                  "opera": "mirror",
+                  "opera_android": "mirror",
+                  "safari": {
+                    "version_added": false
+                  },
+                  "safari_ios": "mirror",
+                  "samsunginternet_android": "mirror",
+                  "webview_android": "mirror",
+                  "webview_ios": "mirror"
+                },
+                "status": {
+                  "experimental": true,
+                  "standard_track": true,
+                  "deprecated": false
+                }
+              }
+            },
+            "zstd": {
+              "__compat": {
+                "mdn_url": "https://developer.mozilla.org/docs/Web/HTTP/Reference/Headers/Content-Encoding#zstd",
+                "spec_url": [
+                  "https://www.rfc-editor.org/info/rfc8878/#name-content-encoding",
+                  "https://www.rfc-editor.org/info/rfc9659/#name-content-encoding"
+                ],
+                "tags": [
+                  "web-features:zstd"
+                ],
+                "support": {
+                  "chrome": {
+                    "version_added": "123"
+                  },
+                  "chrome_android": "mirror",
+                  "edge": "mirror",
+                  "firefox": {
+                    "version_added": "126"
+                  },
+                  "firefox_android": "mirror",
+                  "oculus": "mirror",
+                  "opera": "mirror",
+                  "opera_android": {
+                    "version_added": false
+                  },
+                  "safari": {
+                    "version_added": "26.3",
+                    "notes": "Before macOS 26.3 Tahoe, Safari cannot decode Zstandard responses."
+                  },
+                  "safari_ios": {
+                    "version_added": "26.3"
+                  },
+                  "samsunginternet_android": "mirror",
+                  "webview_android": "mirror",
+                  "webview_ios": "mirror"
+                },
+                "status": {
+                  "experimental": false,
+                  "standard_track": true,
+                  "deprecated": false
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

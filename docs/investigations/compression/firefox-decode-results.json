@@ -1,0 +1,4785 @@
+[
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "gzip-6",
+        "mode": "whole",
+        "file": "rust/gzip-6-whole.bin",
+        "offset": 8786499,
+        "raw_bytes": 9431582,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2914070,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 69,
+      "medianMs": 72,
+      "p95Ms": 87,
+      "timings": [
+        81,
+        91,
+        72,
+        71,
+        72,
+        71,
+        71,
+        70,
+        84,
+        69,
+        72,
+        79,
+        73,
+        87,
+        68,
+        69,
+        72,
+        77,
+        77,
+        71,
+        67,
+        71,
+        69,
+        76,
+        84,
+        61,
+        70,
+        73,
+        76,
+        70,
+        80
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 12656,
+    "identity_deltas": [
+      [
+        0.296875,
+        12656
+      ],
+      [
+        0.0,
+        61284
+      ],
+      [
+        0.0,
+        40724
+      ],
+      [
+        0.0,
+        14176
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 14308,
+        "rss": 5836800,
+        "peak": 5844992,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 18368,
+        "rss": 411832320,
+        "peak": 412856320,
+        "content": false,
+        "cpu": 3.546875
+      },
+      {
+        "pid": 38480,
+        "rss": 8491008,
+        "peak": 8495104,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 40724,
+        "rss": 16322560,
+        "peak": 16326656,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 61284,
+        "rss": 21647360,
+        "peak": 22867968,
+        "content": true,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 14176,
+        "rss": 75137024,
+        "peak": 75685888,
+        "content": true,
+        "cpu": 0.390625
+      },
+      {
+        "pid": 12656,
+        "rss": 54116352,
+        "peak": 54120448,
+        "content": true,
+        "cpu": 0.46875
+      },
+      {
+        "pid": 14164,
+        "rss": 9211904,
+        "peak": 9216000,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 24884,
+        "rss": 15441920,
+        "peak": 15446016,
+        "content": true,
+        "cpu": 0.046875
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 14308,
+        "rss": 5836800,
+        "peak": 5844992,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 18368,
+        "rss": 415436800,
+        "peak": 415440896,
+        "content": false,
+        "cpu": 3.84375
+      },
+      {
+        "pid": 38480,
+        "rss": 8491008,
+        "peak": 8495104,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 40724,
+        "rss": 16322560,
+        "peak": 16326656,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 61284,
+        "rss": 21647360,
+        "peak": 22867968,
+        "content": true,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 14176,
+        "rss": 75137024,
+        "peak": 75685888,
+        "content": true,
+        "cpu": 0.390625
+      },
+      {
+        "pid": 12656,
+        "rss": 78639104,
+        "peak": 84250624,
+        "content": true,
+        "cpu": 0.546875
+      },
+      {
+        "pid": 14164,
+        "rss": 9211904,
+        "peak": 9216000,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 24884,
+        "rss": 15441920,
+        "peak": 15446016,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 20396,
+        "rss": 6410240,
+        "peak": 6414336,
+        "content": true,
+        "cpu": 0.015625
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "gzip-6",
+        "mode": "whole",
+        "file": "rust/gzip-6-whole.bin",
+        "offset": 8786499,
+        "raw_bytes": 9431582,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2914070,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 75,
+      "medianMs": 71,
+      "p95Ms": 94,
+      "timings": [
+        72,
+        69,
+        70,
+        68,
+        69,
+        66,
+        77,
+        79,
+        95,
+        68,
+        74,
+        75,
+        81,
+        94,
+        75,
+        71,
+        70,
+        74,
+        70,
+        79,
+        56,
+        74,
+        69,
+        62,
+        77,
+        56,
+        64,
+        67,
+        71,
+        94,
+        90
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 55336,
+    "identity_deltas": [
+      [
+        0.296875,
+        55336
+      ],
+      [
+        0.015625,
+        10884
+      ],
+      [
+        0.0,
+        31764
+      ],
+      [
+        0.0,
+        31028
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 54620,
+        "rss": 5959680,
+        "peak": 5967872,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 58176,
+        "rss": 404705280,
+        "peak": 404709376,
+        "content": false,
+        "cpu": 3.796875
+      },
+      {
+        "pid": 24244,
+        "rss": 8441856,
+        "peak": 8445952,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 31764,
+        "rss": 16400384,
+        "peak": 16404480,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 31028,
+        "rss": 21692416,
+        "peak": 22945792,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 10884,
+        "rss": 76222464,
+        "peak": 76296192,
+        "content": true,
+        "cpu": 0.421875
+      },
+      {
+        "pid": 55336,
+        "rss": 54673408,
+        "peak": 54677504,
+        "content": true,
+        "cpu": 0.421875
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 54620,
+        "rss": 5959680,
+        "peak": 5967872,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 58176,
+        "rss": 416026624,
+        "peak": 416030720,
+        "content": false,
+        "cpu": 4.046875
+      },
+      {
+        "pid": 24244,
+        "rss": 8441856,
+        "peak": 8445952,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 31764,
+        "rss": 16400384,
+        "peak": 16404480,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 31028,
+        "rss": 21692416,
+        "peak": 22945792,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 10884,
+        "rss": 76222464,
+        "peak": 76296192,
+        "content": true,
+        "cpu": 0.421875
+      },
+      {
+        "pid": 55336,
+        "rss": 79126528,
+        "peak": 84721664,
+        "content": true,
+        "cpu": 0.515625
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "gzip-6",
+        "mode": "whole",
+        "file": "rust/gzip-6-whole.bin",
+        "offset": 8786499,
+        "raw_bytes": 9431582,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2914070,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 77,
+      "medianMs": 70,
+      "p95Ms": 93,
+      "timings": [
+        91,
+        88,
+        82,
+        73,
+        82,
+        83,
+        69,
+        71,
+        93,
+        71,
+        68,
+        70,
+        73,
+        65,
+        63,
+        60,
+        64,
+        61,
+        91,
+        67,
+        65,
+        74,
+        91,
+        99,
+        66,
+        58,
+        54,
+        60,
+        67,
+        59,
+        84
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 1740,
+    "identity_deltas": [
+      [
+        0.296875,
+        1740
+      ],
+      [
+        0.0,
+        55064
+      ],
+      [
+        0.0,
+        48380
+      ],
+      [
+        0.0,
+        3060
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 22632,
+        "rss": 5787648,
+        "peak": 5795840,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 26552,
+        "rss": 415887360,
+        "peak": 418209792,
+        "content": false,
+        "cpu": 3.734375
+      },
+      {
+        "pid": 23696,
+        "rss": 8495104,
+        "peak": 8499200,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 55064,
+        "rss": 16355328,
+        "peak": 16359424,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 3060,
+        "rss": 21663744,
+        "peak": 22921216,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 48380,
+        "rss": 75497472,
+        "peak": 76709888,
+        "content": true,
+        "cpu": 0.40625
+      },
+      {
+        "pid": 1740,
+        "rss": 53702656,
+        "peak": 53706752,
+        "content": true,
+        "cpu": 0.453125
+      },
+      {
+        "pid": 45196,
+        "rss": 15392768,
+        "peak": 15396864,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 40848,
+        "rss": 5971968,
+        "peak": 5976064,
+        "content": true,
+        "cpu": 0.015625
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 22632,
+        "rss": 5787648,
+        "peak": 5795840,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 26552,
+        "rss": 418672640,
+        "peak": 418676736,
+        "content": false,
+        "cpu": 4.15625
+      },
+      {
+        "pid": 23696,
+        "rss": 8507392,
+        "peak": 8511488,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 55064,
+        "rss": 16355328,
+        "peak": 16359424,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 3060,
+        "rss": 21663744,
+        "peak": 22921216,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 48380,
+        "rss": 75497472,
+        "peak": 76709888,
+        "content": true,
+        "cpu": 0.40625
+      },
+      {
+        "pid": 1740,
+        "rss": 78274560,
+        "peak": 83890176,
+        "content": true,
+        "cpu": 0.53125
+      },
+      {
+        "pid": 45196,
+        "rss": 15392768,
+        "peak": 15396864,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 40848,
+        "rss": 35909632,
+        "peak": 35913728,
+        "content": true,
+        "cpu": 0.109375
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "gzip-6",
+        "mode": "whole",
+        "file": "rust/gzip-6-whole.bin",
+        "offset": 8786499,
+        "raw_bytes": 9431582,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2914070,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": true
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 61,
+      "medianMs": 61,
+      "p95Ms": 85,
+      "timings": [
+        60,
+        61,
+        64,
+        74,
+        63,
+        85,
+        65,
+        58,
+        53,
+        54,
+        54,
+        54,
+        51,
+        50,
+        50,
+        52,
+        54,
+        63,
+        106,
+        74,
+        72,
+        80,
+        71,
+        65,
+        70,
+        66,
+        71,
+        50,
+        58,
+        59,
+        59
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 30240,
+    "identity_deltas": [
+      [
+        0.328125,
+        30240
+      ],
+      [
+        0.0,
+        28648
+      ],
+      [
+        0.0,
+        15472
+      ],
+      [
+        0.0,
+        2704
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 17752,
+        "rss": 5980160,
+        "peak": 5988352,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 40968,
+        "rss": 405065728,
+        "peak": 405405696,
+        "content": false,
+        "cpu": 3.734375
+      },
+      {
+        "pid": 52156,
+        "rss": 8478720,
+        "peak": 8482816,
+        "content": false,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 2704,
+        "rss": 16375808,
+        "peak": 16379904,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 28648,
+        "rss": 21671936,
+        "peak": 22913024,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 15472,
+        "rss": 76525568,
+        "peak": 77762560,
+        "content": true,
+        "cpu": 0.421875
+      },
+      {
+        "pid": 30240,
+        "rss": 54321152,
+        "peak": 54325248,
+        "content": true,
+        "cpu": 0.453125
+      },
+      {
+        "pid": 21620,
+        "rss": 13402112,
+        "peak": 13406208,
+        "content": true,
+        "cpu": 0.03125
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 17752,
+        "rss": 5980160,
+        "peak": 5988352,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 40968,
+        "rss": 411127808,
+        "peak": 411144192,
+        "content": false,
+        "cpu": 4.078125
+      },
+      {
+        "pid": 52156,
+        "rss": 8478720,
+        "peak": 8482816,
+        "content": false,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 2704,
+        "rss": 16375808,
+        "peak": 16379904,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 28648,
+        "rss": 21676032,
+        "peak": 22913024,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 15472,
+        "rss": 76541952,
+        "peak": 77762560,
+        "content": true,
+        "cpu": 0.421875
+      },
+      {
+        "pid": 30240,
+        "rss": 70328320,
+        "peak": 70332416,
+        "content": true,
+        "cpu": 0.53125
+      },
+      {
+        "pid": 21620,
+        "rss": 15454208,
+        "peak": 15458304,
+        "content": true,
+        "cpu": 0.046875
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "gzip-6",
+        "mode": "whole",
+        "file": "rust/gzip-6-whole.bin",
+        "offset": 8786499,
+        "raw_bytes": 9431582,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2914070,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": true
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 74,
+      "medianMs": 62,
+      "p95Ms": 75,
+      "timings": [
+        59,
+        62,
+        63,
+        63,
+        65,
+        73,
+        61,
+        65,
+        61,
+        68,
+        73,
+        62,
+        60,
+        62,
+        62,
+        54,
+        61,
+        56,
+        75,
+        50,
+        48,
+        52,
+        80,
+        73,
+        60,
+        62,
+        64,
+        53,
+        59,
+        53,
+        67
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 12432,
+    "identity_deltas": [
+      [
+        0.3125,
+        12432
+      ],
+      [
+        0.015625,
+        43452
+      ],
+      [
+        0.015625,
+        19280
+      ],
+      [
+        0.0,
+        52016
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 16664,
+        "rss": 6012928,
+        "peak": 6021120,
+        "content": false,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 696,
+        "rss": 404176896,
+        "peak": 405053440,
+        "content": false,
+        "cpu": 3.703125
+      },
+      {
+        "pid": 19640,
+        "rss": 8486912,
+        "peak": 8491008,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 52016,
+        "rss": 16404480,
+        "peak": 16408576,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 43452,
+        "rss": 21659648,
+        "peak": 22900736,
+        "content": true,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 19280,
+        "rss": 75669504,
+        "peak": 76222464,
+        "content": true,
+        "cpu": 0.40625
+      },
+      {
+        "pid": 12432,
+        "rss": 53444608,
+        "peak": 53448704,
+        "content": true,
+        "cpu": 0.453125
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 16664,
+        "rss": 6012928,
+        "peak": 6021120,
+        "content": false,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 696,
+        "rss": 409997312,
+        "peak": 410001408,
+        "content": false,
+        "cpu": 4.0
+      },
+      {
+        "pid": 19640,
+        "rss": 8486912,
+        "peak": 8491008,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 52016,
+        "rss": 16404480,
+        "peak": 16408576,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 43452,
+        "rss": 21667840,
+        "peak": 22900736,
+        "content": true,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 19280,
+        "rss": 75046912,
+        "peak": 76222464,
+        "content": true,
+        "cpu": 0.40625
+      },
+      {
+        "pid": 12432,
+        "rss": 69668864,
+        "peak": 69672960,
+        "content": true,
+        "cpu": 0.5
+      },
+      {
+        "pid": 1144,
+        "rss": 15400960,
+        "peak": 15405056,
+        "content": true,
+        "cpu": 0.015625
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "gzip-6",
+        "mode": "whole",
+        "file": "rust/gzip-6-whole.bin",
+        "offset": 8786499,
+        "raw_bytes": 9431582,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2914070,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": true
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 57,
+      "medianMs": 57,
+      "p95Ms": 71,
+      "timings": [
+        55,
+        55,
+        67,
+        68,
+        63,
+        71,
+        54,
+        52,
+        57,
+        59,
+        56,
+        48,
+        46,
+        44,
+        45,
+        57,
+        56,
+        66,
+        90,
+        62,
+        56,
+        63,
+        61,
+        59,
+        46,
+        55,
+        52,
+        61,
+        59,
+        60,
+        55
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 35116,
+    "identity_deltas": [
+      [
+        0.296875,
+        35116
+      ],
+      [
+        0.0,
+        43068
+      ],
+      [
+        0.0,
+        35204
+      ],
+      [
+        0.0,
+        13360
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 12216,
+        "rss": 5967872,
+        "peak": 5976064,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 25316,
+        "rss": 404979712,
+        "peak": 404983808,
+        "content": false,
+        "cpu": 3.6875
+      },
+      {
+        "pid": 10044,
+        "rss": 8486912,
+        "peak": 8491008,
+        "content": false,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 43068,
+        "rss": 16392192,
+        "peak": 16396288,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 13360,
+        "rss": 21803008,
+        "peak": 23048192,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 35204,
+        "rss": 75915264,
+        "peak": 75993088,
+        "content": true,
+        "cpu": 0.4375
+      },
+      {
+        "pid": 35116,
+        "rss": 54013952,
+        "peak": 54018048,
+        "content": true,
+        "cpu": 0.375
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 12216,
+        "rss": 5967872,
+        "peak": 5976064,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 25316,
+        "rss": 409899008,
+        "peak": 410947584,
+        "content": false,
+        "cpu": 3.875
+      },
+      {
+        "pid": 10044,
+        "rss": 8486912,
+        "peak": 8491008,
+        "content": false,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 43068,
+        "rss": 16404480,
+        "peak": 16408576,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 13360,
+        "rss": 21807104,
+        "peak": 23048192,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 35204,
+        "rss": 75419648,
+        "peak": 75993088,
+        "content": true,
+        "cpu": 0.4375
+      },
+      {
+        "pid": 35116,
+        "rss": 69959680,
+        "peak": 69963776,
+        "content": true,
+        "cpu": 0.4375
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "gzip-6",
+        "mode": "entry",
+        "file": "rust/gzip-6-entry.bin",
+        "offset": 0,
+        "raw_bytes": 8057,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 3227,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 0,
+      "medianMs": 0,
+      "p95Ms": 1,
+      "timings": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 14000,
+    "identity_deltas": [
+      [
+        0.28125,
+        14000
+      ],
+      [
+        0.0,
+        52928
+      ],
+      [
+        0.0,
+        36260
+      ],
+      [
+        0.0,
+        8668
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 26692,
+        "rss": 5967872,
+        "peak": 5976064,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 31028,
+        "rss": 408977408,
+        "peak": 408981504,
+        "content": false,
+        "cpu": 3.578125
+      },
+      {
+        "pid": 14300,
+        "rss": 8478720,
+        "peak": 8482816,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 8668,
+        "rss": 16375808,
+        "peak": 16379904,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 52928,
+        "rss": 21676032,
+        "peak": 22970368,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 36260,
+        "rss": 76140544,
+        "peak": 76693504,
+        "content": true,
+        "cpu": 0.421875
+      },
+      {
+        "pid": 14000,
+        "rss": 50147328,
+        "peak": 50155520,
+        "content": true,
+        "cpu": 0.375
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 26692,
+        "rss": 5967872,
+        "peak": 5976064,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 31028,
+        "rss": 410079232,
+        "peak": 410087424,
+        "content": false,
+        "cpu": 3.609375
+      },
+      {
+        "pid": 14300,
+        "rss": 8478720,
+        "peak": 8482816,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 8668,
+        "rss": 16375808,
+        "peak": 16379904,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 52928,
+        "rss": 21676032,
+        "peak": 22970368,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 36260,
+        "rss": 76140544,
+        "peak": 76693504,
+        "content": true,
+        "cpu": 0.421875
+      },
+      {
+        "pid": 14000,
+        "rss": 50589696,
+        "peak": 50593792,
+        "content": true,
+        "cpu": 0.375
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "gzip-6",
+        "mode": "entry",
+        "file": "rust/gzip-6-entry.bin",
+        "offset": 0,
+        "raw_bytes": 8057,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 3227,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 1,
+      "medianMs": 0,
+      "p95Ms": 1,
+      "timings": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 39252,
+    "identity_deltas": [
+      [
+        0.28125,
+        39252
+      ],
+      [
+        0.0,
+        36892
+      ],
+      [
+        0.0,
+        14548
+      ],
+      [
+        0.0,
+        6872
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 57868,
+        "rss": 5951488,
+        "peak": 5959680,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 20012,
+        "rss": 408104960,
+        "peak": 408109056,
+        "content": false,
+        "cpu": 3.640625
+      },
+      {
+        "pid": 20124,
+        "rss": 8503296,
+        "peak": 8507392,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 36892,
+        "rss": 16367616,
+        "peak": 16371712,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 6872,
+        "rss": 21676032,
+        "peak": 22949888,
+        "content": true,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 14548,
+        "rss": 76468224,
+        "peak": 76537856,
+        "content": true,
+        "cpu": 0.375
+      },
+      {
+        "pid": 39252,
+        "rss": 50331648,
+        "peak": 50335744,
+        "content": true,
+        "cpu": 0.375
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 57868,
+        "rss": 5951488,
+        "peak": 5959680,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 20012,
+        "rss": 412647424,
+        "peak": 412651520,
+        "content": false,
+        "cpu": 3.84375
+      },
+      {
+        "pid": 20124,
+        "rss": 8503296,
+        "peak": 8507392,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 36892,
+        "rss": 16379904,
+        "peak": 16384000,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 6872,
+        "rss": 21680128,
+        "peak": 22949888,
+        "content": true,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 14548,
+        "rss": 75685888,
+        "peak": 76537856,
+        "content": true,
+        "cpu": 0.375
+      },
+      {
+        "pid": 39252,
+        "rss": 50753536,
+        "peak": 50757632,
+        "content": true,
+        "cpu": 0.375
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "gzip-6",
+        "mode": "entry",
+        "file": "rust/gzip-6-entry.bin",
+        "offset": 0,
+        "raw_bytes": 8057,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 3227,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 1,
+      "medianMs": 0,
+      "p95Ms": 1,
+      "timings": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        1
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 56736,
+    "identity_deltas": [
+      [
+        0.28125,
+        56736
+      ],
+      [
+        0.0,
+        60860
+      ],
+      [
+        0.0,
+        28328
+      ],
+      [
+        0.0,
+        17492
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 43112,
+        "rss": 5959680,
+        "peak": 5967872,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 20684,
+        "rss": 401686528,
+        "peak": 401690624,
+        "content": false,
+        "cpu": 3.453125
+      },
+      {
+        "pid": 8712,
+        "rss": 8474624,
+        "peak": 8478720,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 17492,
+        "rss": 16441344,
+        "peak": 16445440,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 28328,
+        "rss": 21676032,
+        "peak": 22913024,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 60860,
+        "rss": 76722176,
+        "peak": 77283328,
+        "content": true,
+        "cpu": 0.546875
+      },
+      {
+        "pid": 56736,
+        "rss": 50343936,
+        "peak": 50348032,
+        "content": true,
+        "cpu": 0.4375
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 43112,
+        "rss": 5959680,
+        "peak": 5967872,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 20684,
+        "rss": 403386368,
+        "peak": 403390464,
+        "content": false,
+        "cpu": 3.671875
+      },
+      {
+        "pid": 8712,
+        "rss": 8474624,
+        "peak": 8478720,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 17492,
+        "rss": 16453632,
+        "peak": 16457728,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 28328,
+        "rss": 21684224,
+        "peak": 22913024,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 60860,
+        "rss": 76156928,
+        "peak": 77283328,
+        "content": true,
+        "cpu": 0.546875
+      },
+      {
+        "pid": 56736,
+        "rss": 50778112,
+        "peak": 50782208,
+        "content": true,
+        "cpu": 0.4375
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "gzip-6",
+        "mode": "block64k",
+        "file": "rust/gzip-6-block64k.bin",
+        "offset": 43670,
+        "raw_bytes": 51727,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 14894,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 1,
+      "medianMs": 1,
+      "p95Ms": 1,
+      "timings": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 46680,
+    "identity_deltas": [
+      [
+        0.25,
+        46680
+      ],
+      [
+        0.0,
+        51764
+      ],
+      [
+        0.0,
+        45748
+      ],
+      [
+        0.0,
+        43004
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 29864,
+        "rss": 6025216,
+        "peak": 6033408,
+        "content": false,
+        "cpu": 0.0
+      },
+      {
+        "pid": 50320,
+        "rss": 402214912,
+        "peak": 402219008,
+        "content": false,
+        "cpu": 3.640625
+      },
+      {
+        "pid": 59604,
+        "rss": 8478720,
+        "peak": 8482816,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 43004,
+        "rss": 16392192,
+        "peak": 16396288,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 45748,
+        "rss": 21716992,
+        "peak": 22958080,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 51764,
+        "rss": 76283904,
+        "peak": 76349440,
+        "content": true,
+        "cpu": 0.390625
+      },
+      {
+        "pid": 46680,
+        "rss": 50069504,
+        "peak": 50073600,
+        "content": true,
+        "cpu": 0.328125
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 29864,
+        "rss": 6025216,
+        "peak": 6033408,
+        "content": false,
+        "cpu": 0.0
+      },
+      {
+        "pid": 50320,
+        "rss": 405045248,
+        "peak": 405049344,
+        "content": false,
+        "cpu": 3.875
+      },
+      {
+        "pid": 59604,
+        "rss": 8478720,
+        "peak": 8482816,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 43004,
+        "rss": 16392192,
+        "peak": 16396288,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 45748,
+        "rss": 21716992,
+        "peak": 22958080,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 51764,
+        "rss": 76283904,
+        "peak": 76349440,
+        "content": true,
+        "cpu": 0.390625
+      },
+      {
+        "pid": 46680,
+        "rss": 50692096,
+        "peak": 50700288,
+        "content": true,
+        "cpu": 0.34375
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "gzip-6",
+        "mode": "block64k",
+        "file": "rust/gzip-6-block64k.bin",
+        "offset": 43670,
+        "raw_bytes": 51727,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 14894,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 2,
+      "medianMs": 1,
+      "p95Ms": 1,
+      "timings": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 14112,
+    "identity_deltas": [
+      [
+        0.296875,
+        14112
+      ],
+      [
+        0.0,
+        45176
+      ],
+      [
+        0.0,
+        44916
+      ],
+      [
+        0.0,
+        8308
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 14712,
+        "rss": 5976064,
+        "peak": 5984256,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 12260,
+        "rss": 395259904,
+        "peak": 395264000,
+        "content": false,
+        "cpu": 3.8125
+      },
+      {
+        "pid": 38276,
+        "rss": 8482816,
+        "peak": 8486912,
+        "content": false,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 8308,
+        "rss": 16392192,
+        "peak": 16396288,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 45176,
+        "rss": 21663744,
+        "peak": 22876160,
+        "content": true,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 44916,
+        "rss": 76148736,
+        "peak": 76214272,
+        "content": true,
+        "cpu": 0.390625
+      },
+      {
+        "pid": 14112,
+        "rss": 49885184,
+        "peak": 49889280,
+        "content": true,
+        "cpu": 0.453125
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 14712,
+        "rss": 5976064,
+        "peak": 5984256,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 12260,
+        "rss": 400920576,
+        "peak": 400924672,
+        "content": false,
+        "cpu": 4.09375
+      },
+      {
+        "pid": 38276,
+        "rss": 8482816,
+        "peak": 8486912,
+        "content": false,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 8308,
+        "rss": 16404480,
+        "peak": 16408576,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 45176,
+        "rss": 21671936,
+        "peak": 22876160,
+        "content": true,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 44916,
+        "rss": 75427840,
+        "peak": 76214272,
+        "content": true,
+        "cpu": 0.390625
+      },
+      {
+        "pid": 14112,
+        "rss": 50450432,
+        "peak": 50454528,
+        "content": true,
+        "cpu": 0.453125
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "gzip-6",
+        "mode": "block64k",
+        "file": "rust/gzip-6-block64k.bin",
+        "offset": 43670,
+        "raw_bytes": 51727,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 14894,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 1,
+      "medianMs": 1,
+      "p95Ms": 2,
+      "timings": [
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        2,
+        0,
+        2,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        2,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 9332,
+    "identity_deltas": [
+      [
+        0.265625,
+        9332
+      ],
+      [
+        0.0,
+        41344
+      ],
+      [
+        0.0,
+        38576
+      ],
+      [
+        0.0,
+        26548
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 57480,
+        "rss": 5988352,
+        "peak": 5996544,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 54892,
+        "rss": 400359424,
+        "peak": 400363520,
+        "content": false,
+        "cpu": 3.34375
+      },
+      {
+        "pid": 32704,
+        "rss": 8486912,
+        "peak": 8491008,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 38576,
+        "rss": 16375808,
+        "peak": 16379904,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 26548,
+        "rss": 21688320,
+        "peak": 22929408,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 41344,
+        "rss": 76034048,
+        "peak": 76099584,
+        "content": true,
+        "cpu": 0.40625
+      },
+      {
+        "pid": 9332,
+        "rss": 50200576,
+        "peak": 50204672,
+        "content": true,
+        "cpu": 0.34375
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 57480,
+        "rss": 5988352,
+        "peak": 5996544,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 54892,
+        "rss": 401870848,
+        "peak": 401874944,
+        "content": false,
+        "cpu": 3.515625
+      },
+      {
+        "pid": 32704,
+        "rss": 8486912,
+        "peak": 8491008,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 38576,
+        "rss": 16375808,
+        "peak": 16379904,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 26548,
+        "rss": 21688320,
+        "peak": 22929408,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 41344,
+        "rss": 76034048,
+        "peak": 76099584,
+        "content": true,
+        "cpu": 0.40625
+      },
+      {
+        "pid": 9332,
+        "rss": 50679808,
+        "peak": 50683904,
+        "content": true,
+        "cpu": 0.34375
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "brotli-5",
+        "mode": "whole",
+        "file": "rust/brotli-5-whole.bin",
+        "offset": 8786499,
+        "raw_bytes": 9431582,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2562516,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 88,
+      "medianMs": 93,
+      "p95Ms": 110,
+      "timings": [
+        111,
+        110,
+        108,
+        86,
+        83,
+        82,
+        75,
+        87,
+        93,
+        78,
+        83,
+        72,
+        101,
+        92,
+        93,
+        93,
+        93,
+        100,
+        93,
+        84,
+        108,
+        101,
+        104,
+        104,
+        105,
+        93,
+        90,
+        102,
+        106,
+        104,
+        108
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 13476,
+    "identity_deltas": [
+      [
+        0.28125,
+        13476
+      ],
+      [
+        0.0,
+        53888
+      ],
+      [
+        0.0,
+        21568
+      ],
+      [
+        0.0,
+        13324
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 26868,
+        "rss": 5935104,
+        "peak": 5943296,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 59704,
+        "rss": 401027072,
+        "peak": 401035264,
+        "content": false,
+        "cpu": 3.5625
+      },
+      {
+        "pid": 32976,
+        "rss": 8458240,
+        "peak": 8462336,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 13324,
+        "rss": 16359424,
+        "peak": 16363520,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 21568,
+        "rss": 21704704,
+        "peak": 22929408,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 53888,
+        "rss": 76685312,
+        "peak": 77242368,
+        "content": true,
+        "cpu": 0.390625
+      },
+      {
+        "pid": 13476,
+        "rss": 53714944,
+        "peak": 53719040,
+        "content": true,
+        "cpu": 0.375
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 26868,
+        "rss": 5935104,
+        "peak": 5943296,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 59704,
+        "rss": 409174016,
+        "peak": 409477120,
+        "content": false,
+        "cpu": 4.03125
+      },
+      {
+        "pid": 32976,
+        "rss": 8458240,
+        "peak": 8462336,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 13324,
+        "rss": 16371712,
+        "peak": 16375808,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 21568,
+        "rss": 21708800,
+        "peak": 22929408,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 53888,
+        "rss": 75833344,
+        "peak": 77242368,
+        "content": true,
+        "cpu": 0.390625
+      },
+      {
+        "pid": 13476,
+        "rss": 82030592,
+        "peak": 87924736,
+        "content": true,
+        "cpu": 0.484375
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "brotli-5",
+        "mode": "whole",
+        "file": "rust/brotli-5-whole.bin",
+        "offset": 8786499,
+        "raw_bytes": 9431582,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2562516,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 93,
+      "medianMs": 93,
+      "p95Ms": 108,
+      "timings": [
+        107,
+        108,
+        102,
+        105,
+        93,
+        89,
+        99,
+        92,
+        104,
+        85,
+        93,
+        91,
+        83,
+        78,
+        76,
+        88,
+        79,
+        81,
+        96,
+        95,
+        111,
+        88,
+        103,
+        91,
+        80,
+        89,
+        75,
+        100,
+        94,
+        99,
+        104
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 6640,
+    "identity_deltas": [
+      [
+        0.265625,
+        6640
+      ],
+      [
+        0.0,
+        13376
+      ],
+      [
+        0.0,
+        11988
+      ],
+      [
+        0.0,
+        4920
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 43604,
+        "rss": 5959680,
+        "peak": 5967872,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 55112,
+        "rss": 410664960,
+        "peak": 411680768,
+        "content": false,
+        "cpu": 3.296875
+      },
+      {
+        "pid": 16260,
+        "rss": 8478720,
+        "peak": 8482816,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 11988,
+        "rss": 16412672,
+        "peak": 16416768,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 4920,
+        "rss": 21676032,
+        "peak": 22908928,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 13376,
+        "rss": 75669504,
+        "peak": 76771328,
+        "content": true,
+        "cpu": 0.3125
+      },
+      {
+        "pid": 6640,
+        "rss": 54104064,
+        "peak": 54108160,
+        "content": true,
+        "cpu": 0.328125
+      },
+      {
+        "pid": 35664,
+        "rss": 9498624,
+        "peak": 9502720,
+        "content": true,
+        "cpu": 0.015625
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 43604,
+        "rss": 5959680,
+        "peak": 5967872,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 55112,
+        "rss": 416698368,
+        "peak": 419131392,
+        "content": false,
+        "cpu": 3.5
+      },
+      {
+        "pid": 16260,
+        "rss": 8491008,
+        "peak": 8495104,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 11988,
+        "rss": 16412672,
+        "peak": 16416768,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 4920,
+        "rss": 21680128,
+        "peak": 22908928,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 13376,
+        "rss": 75669504,
+        "peak": 76771328,
+        "content": true,
+        "cpu": 0.3125
+      },
+      {
+        "pid": 6640,
+        "rss": 82042880,
+        "peak": 87990272,
+        "content": true,
+        "cpu": 0.421875
+      },
+      {
+        "pid": 35664,
+        "rss": 15355904,
+        "peak": 15360000,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 43880,
+        "rss": 10809344,
+        "peak": 10813440,
+        "content": true,
+        "cpu": 0.015625
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "brotli-5",
+        "mode": "whole",
+        "file": "rust/brotli-5-whole.bin",
+        "offset": 8786499,
+        "raw_bytes": 9431582,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2562516,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 91,
+      "medianMs": 91,
+      "p95Ms": 111,
+      "timings": [
+        96,
+        109,
+        105,
+        111,
+        102,
+        85,
+        83,
+        86,
+        66,
+        72,
+        82,
+        78,
+        76,
+        63,
+        77,
+        61,
+        76,
+        109,
+        97,
+        111,
+        107,
+        99,
+        82,
+        94,
+        91,
+        103,
+        75,
+        85,
+        111,
+        120,
+        104
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 44672,
+    "identity_deltas": [
+      [
+        0.328125,
+        44672
+      ],
+      [
+        0.0,
+        56632
+      ],
+      [
+        0.0,
+        30944
+      ],
+      [
+        0.0,
+        11040
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 41612,
+        "rss": 5939200,
+        "peak": 5947392,
+        "content": false,
+        "cpu": 0.0
+      },
+      {
+        "pid": 50624,
+        "rss": 409546752,
+        "peak": 409550848,
+        "content": false,
+        "cpu": 3.6875
+      },
+      {
+        "pid": 38716,
+        "rss": 8466432,
+        "peak": 8470528,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 56632,
+        "rss": 16400384,
+        "peak": 16404480,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 30944,
+        "rss": 21606400,
+        "peak": 22880256,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 11040,
+        "rss": 75755520,
+        "peak": 75821056,
+        "content": true,
+        "cpu": 0.375
+      },
+      {
+        "pid": 44672,
+        "rss": 53350400,
+        "peak": 53354496,
+        "content": true,
+        "cpu": 0.4375
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 41612,
+        "rss": 5939200,
+        "peak": 5947392,
+        "content": false,
+        "cpu": 0.0
+      },
+      {
+        "pid": 50624,
+        "rss": 414556160,
+        "peak": 415379456,
+        "content": false,
+        "cpu": 4.03125
+      },
+      {
+        "pid": 38716,
+        "rss": 8466432,
+        "peak": 8470528,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 56632,
+        "rss": 16412672,
+        "peak": 16416768,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 30944,
+        "rss": 21614592,
+        "peak": 22880256,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 11040,
+        "rss": 75759616,
+        "peak": 75821056,
+        "content": true,
+        "cpu": 0.375
+      },
+      {
+        "pid": 44672,
+        "rss": 81936384,
+        "peak": 87871488,
+        "content": true,
+        "cpu": 0.5625
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "brotli-5",
+        "mode": "whole",
+        "file": "rust/brotli-5-whole.bin",
+        "offset": 8786499,
+        "raw_bytes": 9431582,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2562516,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": true
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 78,
+      "medianMs": 88,
+      "p95Ms": 110,
+      "timings": [
+        88,
+        87,
+        62,
+        56,
+        79,
+        91,
+        85,
+        88,
+        97,
+        80,
+        93,
+        105,
+        110,
+        96,
+        92,
+        86,
+        89,
+        97,
+        123,
+        88,
+        95,
+        96,
+        73,
+        77,
+        90,
+        78,
+        82,
+        70,
+        71,
+        81,
+        73
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 32704,
+    "identity_deltas": [
+      [
+        0.296875,
+        32704
+      ],
+      [
+        0.0,
+        58876
+      ],
+      [
+        0.0,
+        48780
+      ],
+      [
+        0.0,
+        23660
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 26184,
+        "rss": 5935104,
+        "peak": 5943296,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 40412,
+        "rss": 408317952,
+        "peak": 408322048,
+        "content": false,
+        "cpu": 4.0625
+      },
+      {
+        "pid": 48720,
+        "rss": 8474624,
+        "peak": 8478720,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 23660,
+        "rss": 16388096,
+        "peak": 16392192,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 48780,
+        "rss": 21643264,
+        "peak": 22896640,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 58876,
+        "rss": 75968512,
+        "peak": 76800000,
+        "content": true,
+        "cpu": 0.34375
+      },
+      {
+        "pid": 32704,
+        "rss": 53608448,
+        "peak": 53612544,
+        "content": true,
+        "cpu": 0.453125
+      },
+      {
+        "pid": 9192,
+        "rss": 15392768,
+        "peak": 15396864,
+        "content": true,
+        "cpu": 0.046875
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 26184,
+        "rss": 5935104,
+        "peak": 5943296,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 40412,
+        "rss": 413421568,
+        "peak": 413704192,
+        "content": false,
+        "cpu": 4.21875
+      },
+      {
+        "pid": 48720,
+        "rss": 8482816,
+        "peak": 8486912,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 23660,
+        "rss": 16388096,
+        "peak": 16392192,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 48780,
+        "rss": 21643264,
+        "peak": 22896640,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 58876,
+        "rss": 75968512,
+        "peak": 76800000,
+        "content": true,
+        "cpu": 0.34375
+      },
+      {
+        "pid": 32704,
+        "rss": 69455872,
+        "peak": 73613312,
+        "content": true,
+        "cpu": 0.546875
+      },
+      {
+        "pid": 9192,
+        "rss": 15392768,
+        "peak": 15396864,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 6852,
+        "rss": 11161600,
+        "peak": 11165696,
+        "content": true,
+        "cpu": 0.046875
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "brotli-5",
+        "mode": "whole",
+        "file": "rust/brotli-5-whole.bin",
+        "offset": 8786499,
+        "raw_bytes": 9431582,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2562516,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": true
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 103,
+      "medianMs": 77,
+      "p95Ms": 100,
+      "timings": [
+        87,
+        97,
+        100,
+        102,
+        89,
+        93,
+        85,
+        77,
+        79,
+        72,
+        75,
+        73,
+        79,
+        77,
+        80,
+        75,
+        73,
+        72,
+        99,
+        77,
+        73,
+        80,
+        76,
+        78,
+        78,
+        72,
+        68,
+        68,
+        54,
+        56,
+        65
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 45512,
+    "identity_deltas": [
+      [
+        0.296875,
+        45512
+      ],
+      [
+        0.0,
+        58860
+      ],
+      [
+        0.0,
+        45160
+      ],
+      [
+        0.0,
+        17484
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 52128,
+        "rss": 5980160,
+        "peak": 5988352,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 36704,
+        "rss": 409047040,
+        "peak": 409051136,
+        "content": false,
+        "cpu": 3.8125
+      },
+      {
+        "pid": 26692,
+        "rss": 8486912,
+        "peak": 8491008,
+        "content": false,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 17484,
+        "rss": 16437248,
+        "peak": 16441344,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 58860,
+        "rss": 21688320,
+        "peak": 22982656,
+        "content": true,
+        "cpu": 0.109375
+      },
+      {
+        "pid": 45160,
+        "rss": 74764288,
+        "peak": 75866112,
+        "content": true,
+        "cpu": 0.359375
+      },
+      {
+        "pid": 45512,
+        "rss": 54280192,
+        "peak": 54284288,
+        "content": true,
+        "cpu": 0.40625
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 52128,
+        "rss": 5980160,
+        "peak": 5988352,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 36704,
+        "rss": 423714816,
+        "peak": 424448000,
+        "content": false,
+        "cpu": 4.171875
+      },
+      {
+        "pid": 26692,
+        "rss": 8486912,
+        "peak": 8491008,
+        "content": false,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 17484,
+        "rss": 16437248,
+        "peak": 16441344,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 58860,
+        "rss": 21692416,
+        "peak": 22982656,
+        "content": true,
+        "cpu": 0.109375
+      },
+      {
+        "pid": 45160,
+        "rss": 74780672,
+        "peak": 75866112,
+        "content": true,
+        "cpu": 0.359375
+      },
+      {
+        "pid": 45512,
+        "rss": 69701632,
+        "peak": 73846784,
+        "content": true,
+        "cpu": 0.515625
+      },
+      {
+        "pid": 60844,
+        "rss": 15540224,
+        "peak": 15544320,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 38148,
+        "rss": 6258688,
+        "peak": 6262784,
+        "content": true,
+        "cpu": 0.03125
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "brotli-5",
+        "mode": "whole",
+        "file": "rust/brotli-5-whole.bin",
+        "offset": 8786499,
+        "raw_bytes": 9431582,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2562516,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": true
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 96,
+      "medianMs": 81,
+      "p95Ms": 96,
+      "timings": [
+        78,
+        86,
+        89,
+        93,
+        96,
+        89,
+        66,
+        70,
+        67,
+        59,
+        69,
+        65,
+        65,
+        63,
+        84,
+        87,
+        81,
+        83,
+        113,
+        80,
+        80,
+        80,
+        81,
+        84,
+        81,
+        83,
+        86,
+        86,
+        82,
+        76,
+        87
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 38500,
+    "identity_deltas": [
+      [
+        0.328125,
+        38500
+      ],
+      [
+        0.0,
+        53720
+      ],
+      [
+        0.0,
+        18664
+      ],
+      [
+        0.0,
+        12752
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 30912,
+        "rss": 5939200,
+        "peak": 5947392,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 13188,
+        "rss": 401371136,
+        "peak": 401375232,
+        "content": false,
+        "cpu": 3.515625
+      },
+      {
+        "pid": 40028,
+        "rss": 8503296,
+        "peak": 8507392,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 53720,
+        "rss": 16408576,
+        "peak": 16412672,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 12752,
+        "rss": 21684224,
+        "peak": 22867968,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 18664,
+        "rss": 75661312,
+        "peak": 76378112,
+        "content": true,
+        "cpu": 0.4375
+      },
+      {
+        "pid": 38500,
+        "rss": 53530624,
+        "peak": 53534720,
+        "content": true,
+        "cpu": 0.46875
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 30912,
+        "rss": 5939200,
+        "peak": 5947392,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 13188,
+        "rss": 412061696,
+        "peak": 412065792,
+        "content": false,
+        "cpu": 3.828125
+      },
+      {
+        "pid": 40028,
+        "rss": 8503296,
+        "peak": 8507392,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 53720,
+        "rss": 16408576,
+        "peak": 16412672,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 12752,
+        "rss": 21688320,
+        "peak": 22867968,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 18664,
+        "rss": 75677696,
+        "peak": 76378112,
+        "content": true,
+        "cpu": 0.4375
+      },
+      {
+        "pid": 38500,
+        "rss": 69685248,
+        "peak": 73846784,
+        "content": true,
+        "cpu": 0.5625
+      },
+      {
+        "pid": 1736,
+        "rss": 15400960,
+        "peak": 15405056,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 32204,
+        "rss": 9977856,
+        "peak": 9981952,
+        "content": true,
+        "cpu": 0.046875
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "brotli-5",
+        "mode": "entry",
+        "file": "rust/brotli-5-entry.bin",
+        "offset": 0,
+        "raw_bytes": 8057,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2957,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 2,
+      "medianMs": 0,
+      "p95Ms": 1,
+      "timings": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 58280,
+    "identity_deltas": [
+      [
+        0.265625,
+        58280
+      ],
+      [
+        0.0,
+        60712
+      ],
+      [
+        0.0,
+        18608
+      ],
+      [
+        0.0,
+        16144
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 60456,
+        "rss": 5971968,
+        "peak": 5980160,
+        "content": false,
+        "cpu": 0.0
+      },
+      {
+        "pid": 4780,
+        "rss": 410574848,
+        "peak": 410578944,
+        "content": false,
+        "cpu": 4.09375
+      },
+      {
+        "pid": 39292,
+        "rss": 8482816,
+        "peak": 8486912,
+        "content": false,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 18608,
+        "rss": 16416768,
+        "peak": 16420864,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 60712,
+        "rss": 21651456,
+        "peak": 22953984,
+        "content": true,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 16144,
+        "rss": 76029952,
+        "peak": 76570624,
+        "content": true,
+        "cpu": 0.421875
+      },
+      {
+        "pid": 58280,
+        "rss": 50143232,
+        "peak": 50147328,
+        "content": true,
+        "cpu": 0.390625
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 60456,
+        "rss": 5971968,
+        "peak": 5980160,
+        "content": false,
+        "cpu": 0.0
+      },
+      {
+        "pid": 4780,
+        "rss": 413167616,
+        "peak": 414154752,
+        "content": false,
+        "cpu": 4.109375
+      },
+      {
+        "pid": 39292,
+        "rss": 8482816,
+        "peak": 8486912,
+        "content": false,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 18608,
+        "rss": 16416768,
+        "peak": 16420864,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 60712,
+        "rss": 21651456,
+        "peak": 22953984,
+        "content": true,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 16144,
+        "rss": 75366400,
+        "peak": 76570624,
+        "content": true,
+        "cpu": 0.421875
+      },
+      {
+        "pid": 58280,
+        "rss": 50696192,
+        "peak": 50700288,
+        "content": true,
+        "cpu": 0.390625
+      },
+      {
+        "pid": 53500,
+        "rss": 15376384,
+        "peak": 15380480,
+        "content": true,
+        "cpu": 0.03125
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "brotli-5",
+        "mode": "entry",
+        "file": "rust/brotli-5-entry.bin",
+        "offset": 0,
+        "raw_bytes": 8057,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2957,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 2,
+      "medianMs": 0,
+      "p95Ms": 1,
+      "timings": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 56692,
+    "identity_deltas": [
+      [
+        0.265625,
+        56692
+      ],
+      [
+        0.0,
+        51168
+      ],
+      [
+        0.0,
+        46220
+      ],
+      [
+        0.0,
+        38372
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 59076,
+        "rss": 5971968,
+        "peak": 5980160,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 10948,
+        "rss": 413376512,
+        "peak": 413380608,
+        "content": false,
+        "cpu": 3.46875
+      },
+      {
+        "pid": 35880,
+        "rss": 8478720,
+        "peak": 8482816,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 46220,
+        "rss": 16363520,
+        "peak": 16367616,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 51168,
+        "rss": 21655552,
+        "peak": 22933504,
+        "content": true,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 38372,
+        "rss": 75808768,
+        "peak": 75882496,
+        "content": true,
+        "cpu": 0.4375
+      },
+      {
+        "pid": 56692,
+        "rss": 50192384,
+        "peak": 50196480,
+        "content": true,
+        "cpu": 0.375
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 59076,
+        "rss": 5971968,
+        "peak": 5980160,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 10948,
+        "rss": 418693120,
+        "peak": 418697216,
+        "content": false,
+        "cpu": 3.59375
+      },
+      {
+        "pid": 35880,
+        "rss": 8478720,
+        "peak": 8482816,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 46220,
+        "rss": 16363520,
+        "peak": 16367616,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 51168,
+        "rss": 21655552,
+        "peak": 22933504,
+        "content": true,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 38372,
+        "rss": 75808768,
+        "peak": 75882496,
+        "content": true,
+        "cpu": 0.4375
+      },
+      {
+        "pid": 56692,
+        "rss": 50720768,
+        "peak": 50724864,
+        "content": true,
+        "cpu": 0.390625
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "brotli-5",
+        "mode": "entry",
+        "file": "rust/brotli-5-entry.bin",
+        "offset": 0,
+        "raw_bytes": 8057,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 2957,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 1,
+      "medianMs": 0,
+      "p95Ms": 1,
+      "timings": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 53792,
+    "identity_deltas": [
+      [
+        0.28125,
+        53792
+      ],
+      [
+        0.0,
+        45356
+      ],
+      [
+        0.0,
+        34300
+      ],
+      [
+        0.0,
+        27876
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 30452,
+        "rss": 5980160,
+        "peak": 5988352,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 36128,
+        "rss": 397824000,
+        "peak": 397828096,
+        "content": false,
+        "cpu": 3.703125
+      },
+      {
+        "pid": 16272,
+        "rss": 8486912,
+        "peak": 8491008,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 27876,
+        "rss": 16359424,
+        "peak": 16363520,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 45356,
+        "rss": 21643264,
+        "peak": 22851584,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 34300,
+        "rss": 76185600,
+        "peak": 76251136,
+        "content": true,
+        "cpu": 0.34375
+      },
+      {
+        "pid": 53792,
+        "rss": 49922048,
+        "peak": 49926144,
+        "content": true,
+        "cpu": 0.453125
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 30452,
+        "rss": 5980160,
+        "peak": 5988352,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 36128,
+        "rss": 398909440,
+        "peak": 398913536,
+        "content": false,
+        "cpu": 3.78125
+      },
+      {
+        "pid": 16272,
+        "rss": 8486912,
+        "peak": 8491008,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 27876,
+        "rss": 16359424,
+        "peak": 16363520,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 45356,
+        "rss": 21643264,
+        "peak": 22851584,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 34300,
+        "rss": 76185600,
+        "peak": 76251136,
+        "content": true,
+        "cpu": 0.34375
+      },
+      {
+        "pid": 53792,
+        "rss": 50446336,
+        "peak": 50450432,
+        "content": true,
+        "cpu": 0.46875
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "brotli-5",
+        "mode": "block64k",
+        "file": "rust/brotli-5-block64k.bin",
+        "offset": 43670,
+        "raw_bytes": 51727,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 14138,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 2,
+      "medianMs": 1,
+      "p95Ms": 2,
+      "timings": [
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 2120,
+    "identity_deltas": [
+      [
+        0.28125,
+        2120
+      ],
+      [
+        0.0,
+        51676
+      ],
+      [
+        0.0,
+        46836
+      ],
+      [
+        0.0,
+        15504
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 14220,
+        "rss": 5984256,
+        "peak": 5992448,
+        "content": false,
+        "cpu": 0.0
+      },
+      {
+        "pid": 58304,
+        "rss": 407785472,
+        "peak": 407793664,
+        "content": false,
+        "cpu": 3.5
+      },
+      {
+        "pid": 26484,
+        "rss": 8486912,
+        "peak": 8491008,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 51676,
+        "rss": 16392192,
+        "peak": 16396288,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 15504,
+        "rss": 21639168,
+        "peak": 22863872,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 46836,
+        "rss": 75243520,
+        "peak": 76480512,
+        "content": true,
+        "cpu": 0.484375
+      },
+      {
+        "pid": 2120,
+        "rss": 50020352,
+        "peak": 50024448,
+        "content": true,
+        "cpu": 0.40625
+      },
+      {
+        "pid": 60460,
+        "rss": 8671232,
+        "peak": 8675328,
+        "content": true,
+        "cpu": 0.03125
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 14220,
+        "rss": 5984256,
+        "peak": 5992448,
+        "content": false,
+        "cpu": 0.0
+      },
+      {
+        "pid": 58304,
+        "rss": 413810688,
+        "peak": 413814784,
+        "content": false,
+        "cpu": 3.75
+      },
+      {
+        "pid": 26484,
+        "rss": 8486912,
+        "peak": 8491008,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 51676,
+        "rss": 16392192,
+        "peak": 16396288,
+        "content": true,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 15504,
+        "rss": 21643264,
+        "peak": 22863872,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 46836,
+        "rss": 75243520,
+        "peak": 76480512,
+        "content": true,
+        "cpu": 0.484375
+      },
+      {
+        "pid": 2120,
+        "rss": 50769920,
+        "peak": 50774016,
+        "content": true,
+        "cpu": 0.40625
+      },
+      {
+        "pid": 60460,
+        "rss": 15409152,
+        "peak": 15413248,
+        "content": true,
+        "cpu": 0.046875
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "brotli-5",
+        "mode": "block64k",
+        "file": "rust/brotli-5-block64k.bin",
+        "offset": 43670,
+        "raw_bytes": 51727,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 14138,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 1,
+      "medianMs": 1,
+      "p95Ms": 1,
+      "timings": [
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 21544,
+    "identity_deltas": [
+      [
+        0.328125,
+        21544
+      ],
+      [
+        0.0,
+        57168
+      ],
+      [
+        0.0,
+        53384
+      ],
+      [
+        0.0,
+        36888
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 44176,
+        "rss": 5926912,
+        "peak": 5931008,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 39188,
+        "rss": 403283968,
+        "peak": 403288064,
+        "content": false,
+        "cpu": 3.53125
+      },
+      {
+        "pid": 36252,
+        "rss": 8474624,
+        "peak": 8478720,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 36888,
+        "rss": 16416768,
+        "peak": 16420864,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 57168,
+        "rss": 21671936,
+        "peak": 22896640,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 53384,
+        "rss": 76349440,
+        "peak": 76906496,
+        "content": true,
+        "cpu": 0.359375
+      },
+      {
+        "pid": 21544,
+        "rss": 50307072,
+        "peak": 50311168,
+        "content": true,
+        "cpu": 0.46875
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 44176,
+        "rss": 5926912,
+        "peak": 5931008,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 39188,
+        "rss": 407773184,
+        "peak": 408801280,
+        "content": false,
+        "cpu": 3.78125
+      },
+      {
+        "pid": 36252,
+        "rss": 8474624,
+        "peak": 8478720,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 36888,
+        "rss": 16429056,
+        "peak": 16433152,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 57168,
+        "rss": 21676032,
+        "peak": 22896640,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 53384,
+        "rss": 76353536,
+        "peak": 76906496,
+        "content": true,
+        "cpu": 0.359375
+      },
+      {
+        "pid": 21544,
+        "rss": 50933760,
+        "peak": 50937856,
+        "content": true,
+        "cpu": 0.46875
+      }
+    ]
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "fixture": {
+        "corpus": "rust",
+        "codec": "brotli-5",
+        "mode": "block64k",
+        "file": "rust/brotli-5-block64k.bin",
+        "offset": 43670,
+        "raw_bytes": 51727,
+        "target_bytes": 8057,
+        "target_key": "text/3872-crates-io-security.md@base",
+        "compressed_bytes": 14138,
+        "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+      },
+      "engine": "native",
+      "stream": false
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "startupMs": 0,
+      "firstMs": 2,
+      "medianMs": 1,
+      "p95Ms": 1,
+      "timings": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        2,
+        0,
+        1
+      ],
+      "wasmMemoryBefore": null,
+      "wasmMemoryAfterFirst": null,
+      "resources": []
+    },
+    "content_pid": 23152,
+    "identity_deltas": [
+      [
+        0.28125,
+        23152
+      ],
+      [
+        0.0,
+        58984
+      ],
+      [
+        0.0,
+        20832
+      ],
+      [
+        0.0,
+        3100
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 26852,
+        "rss": 6017024,
+        "peak": 6025216,
+        "content": false,
+        "cpu": 0.0
+      },
+      {
+        "pid": 2036,
+        "rss": 395730944,
+        "peak": 395735040,
+        "content": false,
+        "cpu": 3.421875
+      },
+      {
+        "pid": 8756,
+        "rss": 8482816,
+        "peak": 8486912,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 20832,
+        "rss": 16359424,
+        "peak": 16363520,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 58984,
+        "rss": 21635072,
+        "peak": 22908928,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 3100,
+        "rss": 75763712,
+        "peak": 76328960,
+        "content": true,
+        "cpu": 0.34375
+      },
+      {
+        "pid": 23152,
+        "rss": 49967104,
+        "peak": 49971200,
+        "content": true,
+        "cpu": 0.375
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 26852,
+        "rss": 6017024,
+        "peak": 6025216,
+        "content": false,
+        "cpu": 0.0
+      },
+      {
+        "pid": 2036,
+        "rss": 398000128,
+        "peak": 398004224,
+        "content": false,
+        "cpu": 3.609375
+      },
+      {
+        "pid": 8756,
+        "rss": 8482816,
+        "peak": 8486912,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 20832,
+        "rss": 16359424,
+        "peak": 16363520,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 58984,
+        "rss": 21635072,
+        "peak": 22908928,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 3100,
+        "rss": 75177984,
+        "peak": 76328960,
+        "content": true,
+        "cpu": 0.34375
+      },
+      {
+        "pid": 23152,
+        "rss": 50761728,
+        "peak": 50769920,
+        "content": true,
+        "cpu": 0.375
+      }
+    ]
+  }
+]

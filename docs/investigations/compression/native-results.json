@@ -1,0 +1,1303 @@
+[
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "gzip-6",
+      "mode": "whole",
+      "file": "rust/gzip-6-whole.bin",
+      "offset": 8786499,
+      "raw_bytes": 9431582,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2914070,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "gzip-6",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 90.14720004051924,
+        "median_ms": 71.28149992786348,
+        "p95_ms": 92.50909998081625,
+        "rss_before": 21991424,
+        "peak_rss": 41058304,
+        "peak_increase": 19062784,
+        "rss_after": 22069248
+      },
+      {
+        "codec": "gzip-6",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 75.99369995296001,
+        "median_ms": 82.78349996544421,
+        "p95_ms": 119.77729992941022,
+        "rss_before": 21753856,
+        "peak_rss": 40861696,
+        "peak_increase": 19103744,
+        "rss_after": 21975040
+      },
+      {
+        "codec": "gzip-6",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 63.15800012089312,
+        "median_ms": 71.49460003711283,
+        "p95_ms": 140.8965999726206,
+        "rss_before": 21950464,
+        "peak_rss": 41021440,
+        "peak_increase": 19066880,
+        "rss_after": 22048768
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "gzip-6",
+      "mode": "whole",
+      "file": "rust/gzip-6-whole.bin",
+      "offset": 8786499,
+      "raw_bytes": 9431582,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2914070,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "gzip-6",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 92.27379993535578,
+        "median_ms": 74.9913000036031,
+        "p95_ms": 98.2858999632299,
+        "rss_before": 21872640,
+        "peak_rss": 22179840,
+        "peak_increase": 303104,
+        "rss_after": 22175744
+      },
+      {
+        "codec": "gzip-6",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 50.08789990097284,
+        "median_ms": 68.71620006859303,
+        "p95_ms": 90.19159991294146,
+        "rss_before": 21921792,
+        "peak_rss": 22233088,
+        "peak_increase": 307200,
+        "rss_after": 22228992
+      },
+      {
+        "codec": "gzip-6",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 63.173400005325675,
+        "median_ms": 58.4718999452889,
+        "p95_ms": 96.41870018094778,
+        "rss_before": 21807104,
+        "peak_rss": 22134784,
+        "peak_increase": 323584,
+        "rss_after": 22130688
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "gzip-6",
+      "mode": "entry",
+      "file": "rust/gzip-6-entry.bin",
+      "offset": 0,
+      "raw_bytes": 8057,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 3227,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "gzip-6",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.3033000975847244,
+        "median_ms": 0.10339985601603985,
+        "p95_ms": 0.16070017591118813,
+        "rss_before": 18993152,
+        "peak_rss": 19095552,
+        "peak_increase": 98304,
+        "rss_after": 19091456
+      },
+      {
+        "codec": "gzip-6",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.3573999274522066,
+        "median_ms": 0.12179999612271786,
+        "p95_ms": 0.32579991966485977,
+        "rss_before": 18853888,
+        "peak_rss": 18960384,
+        "peak_increase": 102400,
+        "rss_after": 18956288
+      },
+      {
+        "codec": "gzip-6",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.27830014005303383,
+        "median_ms": 0.12090010568499565,
+        "p95_ms": 0.18770014867186546,
+        "rss_before": 18927616,
+        "peak_rss": 19030016,
+        "peak_increase": 98304,
+        "rss_after": 19025920
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "gzip-6",
+      "mode": "block64k",
+      "file": "rust/gzip-6-block64k.bin",
+      "offset": 43670,
+      "raw_bytes": 51727,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 14894,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "gzip-6",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.6603999063372612,
+        "median_ms": 0.362900085747242,
+        "p95_ms": 0.6068998482078314,
+        "rss_before": 18919424,
+        "peak_rss": 19128320,
+        "peak_increase": 204800,
+        "rss_after": 19124224
+      },
+      {
+        "codec": "gzip-6",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.5480998661369085,
+        "median_ms": 0.3565999213606119,
+        "p95_ms": 0.5128998309373856,
+        "rss_before": 19038208,
+        "peak_rss": 19230720,
+        "peak_increase": 188416,
+        "rss_after": 19226624
+      },
+      {
+        "codec": "gzip-6",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.5794998724013567,
+        "median_ms": 0.3356998786330223,
+        "p95_ms": 0.4868998657912016,
+        "rss_before": 18972672,
+        "peak_rss": 19218432,
+        "peak_increase": 241664,
+        "rss_after": 19214336
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "deflate-6",
+      "mode": "whole",
+      "file": "rust/deflate-6-whole.bin",
+      "offset": 8786499,
+      "raw_bytes": 9431582,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2914058,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "deflate-6",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 51.454100059345365,
+        "median_ms": 52.00239992700517,
+        "p95_ms": 63.16270004026592,
+        "rss_before": 21868544,
+        "peak_rss": 40820736,
+        "peak_increase": 18948096,
+        "rss_after": 21962752
+      },
+      {
+        "codec": "deflate-6",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 42.393699986860156,
+        "median_ms": 47.17689985409379,
+        "p95_ms": 71.34889997541904,
+        "rss_before": 22003712,
+        "peak_rss": 40943616,
+        "peak_increase": 18935808,
+        "rss_after": 21925888
+      },
+      {
+        "codec": "deflate-6",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 45.43170006945729,
+        "median_ms": 47.331899870187044,
+        "p95_ms": 65.31019997783005,
+        "rss_before": 21876736,
+        "peak_rss": 40837120,
+        "peak_increase": 18956288,
+        "rss_after": 21893120
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "deflate-6",
+      "mode": "whole",
+      "file": "rust/deflate-6-whole.bin",
+      "offset": 8786499,
+      "raw_bytes": 9431582,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2914058,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "deflate-6",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 38.55019994080067,
+        "median_ms": 42.18899994157255,
+        "p95_ms": 48.15379995852709,
+        "rss_before": 21938176,
+        "peak_rss": 22208512,
+        "peak_increase": 266240,
+        "rss_after": 22204416
+      },
+      {
+        "codec": "deflate-6",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 50.2099001314491,
+        "median_ms": 58.735999977216125,
+        "p95_ms": 87.39540004171431,
+        "rss_before": 21942272,
+        "peak_rss": 22241280,
+        "peak_increase": 294912,
+        "rss_after": 22237184
+      },
+      {
+        "codec": "deflate-6",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 80.71870007552207,
+        "median_ms": 51.8503999337554,
+        "p95_ms": 69.12890006788075,
+        "rss_before": 21929984,
+        "peak_rss": 22257664,
+        "peak_increase": 323584,
+        "rss_after": 22253568
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "deflate-6",
+      "mode": "entry",
+      "file": "rust/deflate-6-entry.bin",
+      "offset": 0,
+      "raw_bytes": 8057,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 3215,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "deflate-6",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.06220000796020031,
+        "median_ms": 0.023399945348501205,
+        "p95_ms": 0.03800005652010441,
+        "rss_before": 18952192,
+        "peak_rss": 18980864,
+        "peak_increase": 24576,
+        "rss_after": 18976768
+      },
+      {
+        "codec": "deflate-6",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.09879982098937035,
+        "median_ms": 0.03490014933049679,
+        "p95_ms": 0.0467000063508749,
+        "rss_before": 18923520,
+        "peak_rss": 18968576,
+        "peak_increase": 40960,
+        "rss_after": 18964480
+      },
+      {
+        "codec": "deflate-6",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.06620003841817379,
+        "median_ms": 0.02519995905458927,
+        "p95_ms": 0.04259985871613026,
+        "rss_before": 18993152,
+        "peak_rss": 19025920,
+        "peak_increase": 28672,
+        "rss_after": 19021824
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "deflate-6",
+      "mode": "block64k",
+      "file": "rust/deflate-6-block64k.bin",
+      "offset": 43670,
+      "raw_bytes": 51727,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 14882,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "deflate-6",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.30860002152621746,
+        "median_ms": 0.16220007091760635,
+        "p95_ms": 0.21950015798211098,
+        "rss_before": 18903040,
+        "peak_rss": 19079168,
+        "peak_increase": 172032,
+        "rss_after": 19075072
+      },
+      {
+        "codec": "deflate-6",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.2720998600125313,
+        "median_ms": 0.15940004959702492,
+        "p95_ms": 0.22039981558918953,
+        "rss_before": 18948096,
+        "peak_rss": 19091456,
+        "peak_increase": 139264,
+        "rss_after": 19087360
+      },
+      {
+        "codec": "deflate-6",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.36990013904869556,
+        "median_ms": 0.19409996457397938,
+        "p95_ms": 0.2882999833673239,
+        "rss_before": 18960384,
+        "peak_rss": 19132416,
+        "peak_increase": 167936,
+        "rss_after": 19128320
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "raw-6",
+      "mode": "whole",
+      "file": "rust/raw-6-whole.bin",
+      "offset": 8786499,
+      "raw_bytes": 9431582,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2914052,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "raw-6",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 48.299199901521206,
+        "median_ms": 49.42759987898171,
+        "p95_ms": 71.35880016721785,
+        "rss_before": 21893120,
+        "peak_rss": 40886272,
+        "peak_increase": 18989056,
+        "rss_after": 21938176
+      },
+      {
+        "codec": "raw-6",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 45.595800038427114,
+        "median_ms": 50.24649994447827,
+        "p95_ms": 70.58669999241829,
+        "rss_before": 21946368,
+        "peak_rss": 40943616,
+        "peak_increase": 18993152,
+        "rss_after": 22028288
+      },
+      {
+        "codec": "raw-6",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 66.43450004048645,
+        "median_ms": 42.05100005492568,
+        "p95_ms": 77.4163999594748,
+        "rss_before": 21901312,
+        "peak_rss": 40902656,
+        "peak_increase": 18997248,
+        "rss_after": 21938176
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "raw-6",
+      "mode": "whole",
+      "file": "rust/raw-6-whole.bin",
+      "offset": 8786499,
+      "raw_bytes": 9431582,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2914052,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "raw-6",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 49.73739990964532,
+        "median_ms": 52.67550004646182,
+        "p95_ms": 83.98259989917278,
+        "rss_before": 21872640,
+        "peak_rss": 22151168,
+        "peak_increase": 274432,
+        "rss_after": 22147072
+      },
+      {
+        "codec": "raw-6",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 37.008600076660514,
+        "median_ms": 39.81189988553524,
+        "p95_ms": 73.6364999320358,
+        "rss_before": 21872640,
+        "peak_rss": 22147072,
+        "peak_increase": 270336,
+        "rss_after": 22142976
+      },
+      {
+        "codec": "raw-6",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 42.60369995608926,
+        "median_ms": 42.85989981144667,
+        "p95_ms": 54.16940012946725,
+        "rss_before": 21815296,
+        "peak_rss": 22106112,
+        "peak_increase": 286720,
+        "rss_after": 22102016
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "raw-6",
+      "mode": "entry",
+      "file": "rust/raw-6-entry.bin",
+      "offset": 0,
+      "raw_bytes": 8057,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 3209,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "raw-6",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.07400009781122208,
+        "median_ms": 0.02259993925690651,
+        "p95_ms": 0.05059991963207722,
+        "rss_before": 18886656,
+        "peak_rss": 18931712,
+        "peak_increase": 40960,
+        "rss_after": 18927616
+      },
+      {
+        "codec": "raw-6",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.11780019849538803,
+        "median_ms": 0.026999972760677338,
+        "p95_ms": 0.050900038331747055,
+        "rss_before": 18804736,
+        "peak_rss": 18853888,
+        "peak_increase": 45056,
+        "rss_after": 18849792
+      },
+      {
+        "codec": "raw-6",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.09900005534291267,
+        "median_ms": 0.03800005652010441,
+        "p95_ms": 0.050999922677874565,
+        "rss_before": 18890752,
+        "peak_rss": 18931712,
+        "peak_increase": 36864,
+        "rss_after": 18927616
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "raw-6",
+      "mode": "block64k",
+      "file": "rust/raw-6-block64k.bin",
+      "offset": 43670,
+      "raw_bytes": 51727,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 14876,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "raw-6",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.295999925583601,
+        "median_ms": 0.1463999506086111,
+        "p95_ms": 0.19080005586147308,
+        "rss_before": 18948096,
+        "peak_rss": 19132416,
+        "peak_increase": 180224,
+        "rss_after": 19128320
+      },
+      {
+        "codec": "raw-6",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.3403997980058193,
+        "median_ms": 0.18259999342262745,
+        "p95_ms": 0.22050016559660435,
+        "rss_before": 18923520,
+        "peak_rss": 19116032,
+        "peak_increase": 188416,
+        "rss_after": 19111936
+      },
+      {
+        "codec": "raw-6",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.26480015367269516,
+        "median_ms": 0.15929993242025375,
+        "p95_ms": 0.2731999848037958,
+        "rss_before": 19050496,
+        "peak_rss": 19243008,
+        "peak_increase": 188416,
+        "rss_after": 19238912
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "brotli-5",
+      "mode": "whole",
+      "file": "rust/brotli-5-whole.bin",
+      "offset": 8786499,
+      "raw_bytes": 9431582,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2562516,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "brotli-5",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 35.640700021758676,
+        "median_ms": 44.32190000079572,
+        "p95_ms": 69.88020008429885,
+        "rss_before": 21544960,
+        "peak_rss": 44920832,
+        "peak_increase": 23371776,
+        "rss_after": 21741568
+      },
+      {
+        "codec": "brotli-5",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 60.00260007567704,
+        "median_ms": 60.63740001991391,
+        "p95_ms": 86.83090005069971,
+        "rss_before": 21540864,
+        "peak_rss": 44855296,
+        "peak_increase": 23310336,
+        "rss_after": 21700608
+      },
+      {
+        "codec": "brotli-5",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 92.93429995886981,
+        "median_ms": 47.32440016232431,
+        "p95_ms": 77.87450007162988,
+        "rss_before": 21491712,
+        "peak_rss": 44826624,
+        "peak_increase": 23330816,
+        "rss_after": 21655552
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "brotli-5",
+      "mode": "whole",
+      "file": "rust/brotli-5-whole.bin",
+      "offset": 8786499,
+      "raw_bytes": 9431582,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2562516,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "brotli-5",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 42.44660004042089,
+        "median_ms": 34.69330002553761,
+        "p95_ms": 52.01059998944402,
+        "rss_before": 21655552,
+        "peak_rss": 26521600,
+        "peak_increase": 4861952,
+        "rss_after": 21889024
+      },
+      {
+        "codec": "brotli-5",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 67.77029996737838,
+        "median_ms": 60.536600183695555,
+        "p95_ms": 84.23379994928837,
+        "rss_before": 21454848,
+        "peak_rss": 26378240,
+        "peak_increase": 4919296,
+        "rss_after": 21745664
+      },
+      {
+        "codec": "brotli-5",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 41.03199997916818,
+        "median_ms": 49.87750016152859,
+        "p95_ms": 67.26300017908216,
+        "rss_before": 21475328,
+        "peak_rss": 26382336,
+        "peak_increase": 4902912,
+        "rss_after": 21782528
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "brotli-5",
+      "mode": "entry",
+      "file": "rust/brotli-5-entry.bin",
+      "offset": 0,
+      "raw_bytes": 8057,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2957,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "brotli-5",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.23870007134974003,
+        "median_ms": 0.06500002928078175,
+        "p95_ms": 0.2791001461446285,
+        "rss_before": 18870272,
+        "peak_rss": 19058688,
+        "peak_increase": 184320,
+        "rss_after": 19054592
+      },
+      {
+        "codec": "brotli-5",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.18960004672408104,
+        "median_ms": 0.06720004603266716,
+        "p95_ms": 0.23690005764365196,
+        "rss_before": 18972672,
+        "peak_rss": 19120128,
+        "peak_increase": 143360,
+        "rss_after": 19116032
+      },
+      {
+        "codec": "brotli-5",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.23760017938911915,
+        "median_ms": 0.06469991058111191,
+        "p95_ms": 0.3961001057177782,
+        "rss_before": 18939904,
+        "peak_rss": 19116032,
+        "peak_increase": 172032,
+        "rss_after": 19111936
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "brotli-5",
+      "mode": "block64k",
+      "file": "rust/brotli-5-block64k.bin",
+      "offset": 43670,
+      "raw_bytes": 51727,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 14138,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "brotli-5",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.498299952596426,
+        "median_ms": 0.25889999233186245,
+        "p95_ms": 0.32950006425380707,
+        "rss_before": 18944000,
+        "peak_rss": 19292160,
+        "peak_increase": 344064,
+        "rss_after": 19288064
+      },
+      {
+        "codec": "brotli-5",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.4406999796628952,
+        "median_ms": 0.2687000669538975,
+        "p95_ms": 0.6188999395817518,
+        "rss_before": 18984960,
+        "peak_rss": 19296256,
+        "peak_increase": 307200,
+        "rss_after": 19292160
+      },
+      {
+        "codec": "brotli-5",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.5421999376267195,
+        "median_ms": 0.25759986601769924,
+        "p95_ms": 0.727199949324131,
+        "rss_before": 19001344,
+        "peak_rss": 19345408,
+        "peak_increase": 339968,
+        "rss_after": 19341312
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "zstd-9",
+      "mode": "whole",
+      "file": "rust/zstd-9-whole.bin",
+      "offset": 8786499,
+      "raw_bytes": 9431582,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2504244,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "zstd-9",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 38.20109996013343,
+        "median_ms": 37.5834999140352,
+        "p95_ms": 55.46850012615323,
+        "rss_before": 21454848,
+        "peak_rss": 31014912,
+        "peak_increase": 9555968,
+        "rss_after": 21577728
+      },
+      {
+        "codec": "zstd-9",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 37.97870012931526,
+        "median_ms": 36.5981999784708,
+        "p95_ms": 59.88630000501871,
+        "rss_before": 21434368,
+        "peak_rss": 30982144,
+        "peak_increase": 9543680,
+        "rss_after": 21544960
+      },
+      {
+        "codec": "zstd-9",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 27.75179990567267,
+        "median_ms": 29.589200159534812,
+        "p95_ms": 43.2154000736773,
+        "rss_before": 21491712,
+        "peak_rss": 31055872,
+        "peak_increase": 9560064,
+        "rss_after": 21618688
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "zstd-9",
+      "mode": "whole",
+      "file": "rust/zstd-9-whole.bin",
+      "offset": 8786499,
+      "raw_bytes": 9431582,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2504244,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "zstd-9",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 38.665000116452575,
+        "median_ms": 33.39249989949167,
+        "p95_ms": 68.07659985497594,
+        "rss_before": 21471232,
+        "peak_rss": 26341376,
+        "peak_increase": 4866048,
+        "rss_after": 21647360
+      },
+      {
+        "codec": "zstd-9",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 45.63920013606548,
+        "median_ms": 36.070600152015686,
+        "p95_ms": 92.68820006400347,
+        "rss_before": 21561344,
+        "peak_rss": 26472448,
+        "peak_increase": 4907008,
+        "rss_after": 21733376
+      },
+      {
+        "codec": "zstd-9",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 31.99240006506443,
+        "median_ms": 31.268700025975704,
+        "p95_ms": 45.78289994969964,
+        "rss_before": 21467136,
+        "peak_rss": 26390528,
+        "peak_increase": 4919296,
+        "rss_after": 21626880
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "zstd-9",
+      "mode": "entry",
+      "file": "rust/zstd-9-entry.bin",
+      "offset": 0,
+      "raw_bytes": 8057,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 3208,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "zstd-9",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.09229988791048527,
+        "median_ms": 0.016200123354792595,
+        "p95_ms": 0.029199989512562752,
+        "rss_before": 18997248,
+        "peak_rss": 19107840,
+        "peak_increase": 106496,
+        "rss_after": 19103744
+      },
+      {
+        "codec": "zstd-9",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.09210011921823025,
+        "median_ms": 0.016200123354792595,
+        "p95_ms": 0.03909994848072529,
+        "rss_before": 18993152,
+        "peak_rss": 19107840,
+        "peak_increase": 110592,
+        "rss_after": 19103744
+      },
+      {
+        "codec": "zstd-9",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.1067998819053173,
+        "median_ms": 0.019399914890527725,
+        "p95_ms": 0.03490014933049679,
+        "rss_before": 19013632,
+        "peak_rss": 19124224,
+        "peak_increase": 106496,
+        "rss_after": 19120128
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "zstd-9",
+      "mode": "block64k",
+      "file": "rust/zstd-9-block64k.bin",
+      "offset": 43670,
+      "raw_bytes": 51727,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 14502,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "zstd-9",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.2978001721203327,
+        "median_ms": 0.12969993986189365,
+        "p95_ms": 0.14849985018372536,
+        "rss_before": 19030016,
+        "peak_rss": 19197952,
+        "peak_increase": 163840,
+        "rss_after": 19193856
+      },
+      {
+        "codec": "zstd-9",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.19589997828006744,
+        "median_ms": 0.10770000517368317,
+        "p95_ms": 0.18650013953447342,
+        "rss_before": 19050496,
+        "peak_rss": 19210240,
+        "peak_increase": 155648,
+        "rss_after": 19206144
+      },
+      {
+        "codec": "zstd-9",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 0.20020012743771076,
+        "median_ms": 0.06930017843842506,
+        "p95_ms": 0.09530014358460903,
+        "rss_before": 18898944,
+        "peak_rss": 19066880,
+        "peak_increase": 163840,
+        "rss_after": 19062784
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "xz-6",
+      "mode": "whole",
+      "file": "rust/xz-6-whole.bin",
+      "offset": 8786499,
+      "raw_bytes": 9431582,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2168300,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "xz-6",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 163.4439998306334,
+        "median_ms": 217.5149000249803,
+        "p95_ms": 307.72889987565577,
+        "rss_before": 21200896,
+        "peak_rss": 48562176,
+        "peak_increase": 27357184,
+        "rss_after": 21282816
+      },
+      {
+        "codec": "xz-6",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 262.30580010451376,
+        "median_ms": 163.78080006688833,
+        "p95_ms": 228.12819993123412,
+        "rss_before": 21118976,
+        "peak_rss": 48447488,
+        "peak_increase": 27324416,
+        "rss_after": 21204992
+      },
+      {
+        "codec": "xz-6",
+        "mode": "whole",
+        "streamed": false,
+        "first_ms": 379.5771999284625,
+        "median_ms": 251.27959996461868,
+        "p95_ms": 380.749800009653,
+        "rss_before": 21200896,
+        "peak_rss": 48615424,
+        "peak_increase": 27410432,
+        "rss_after": 21340160
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "xz-6",
+      "mode": "whole",
+      "file": "rust/xz-6-whole.bin",
+      "offset": 8786499,
+      "raw_bytes": 9431582,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2168300,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "xz-6",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 155.88250011205673,
+        "median_ms": 156.44769999198616,
+        "p95_ms": 252.3488998413086,
+        "rss_before": 21037056,
+        "peak_rss": 29847552,
+        "peak_increase": 8806400,
+        "rss_after": 21450752
+      },
+      {
+        "codec": "xz-6",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 204.47680004872382,
+        "median_ms": 164.0377000439912,
+        "p95_ms": 214.41899985074997,
+        "rss_before": 21000192,
+        "peak_rss": 29777920,
+        "peak_increase": 8773632,
+        "rss_after": 21381120
+      },
+      {
+        "codec": "xz-6",
+        "mode": "whole",
+        "streamed": true,
+        "first_ms": 146.1018999107182,
+        "median_ms": 161.74549981951714,
+        "p95_ms": 201.9346000161022,
+        "rss_before": 21282816,
+        "peak_rss": 30031872,
+        "peak_increase": 8744960,
+        "rss_after": 21635072
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "xz-6",
+      "mode": "entry",
+      "file": "rust/xz-6-entry.bin",
+      "offset": 0,
+      "raw_bytes": 8057,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 3272,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "xz-6",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.29959995299577713,
+        "median_ms": 0.21650013513863087,
+        "p95_ms": 0.2978998236358166,
+        "rss_before": 18952192,
+        "peak_rss": 19062784,
+        "peak_increase": 106496,
+        "rss_after": 19046400
+      },
+      {
+        "codec": "xz-6",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.31700008548796177,
+        "median_ms": 0.21469988860189915,
+        "p95_ms": 0.24830014444887638,
+        "rss_before": 18968576,
+        "peak_rss": 19103744,
+        "peak_increase": 131072,
+        "rss_after": 19087360
+      },
+      {
+        "codec": "xz-6",
+        "mode": "entry",
+        "streamed": false,
+        "first_ms": 0.5574000533670187,
+        "median_ms": 0.2164999023079872,
+        "p95_ms": 0.30250009149312973,
+        "rss_before": 18948096,
+        "peak_rss": 19079168,
+        "peak_increase": 126976,
+        "rss_after": 19062784
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "xz-6",
+      "mode": "block64k",
+      "file": "rust/xz-6-block64k.bin",
+      "offset": 43670,
+      "raw_bytes": 51727,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 13844,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "xz-6",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 1.5104999765753746,
+        "median_ms": 1.3341999147087336,
+        "p95_ms": 2.115699928253889,
+        "rss_before": 19079168,
+        "peak_rss": 19292160,
+        "peak_increase": 208896,
+        "rss_after": 19234816
+      },
+      {
+        "codec": "xz-6",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 1.0637000668793917,
+        "median_ms": 1.2361998669803143,
+        "p95_ms": 1.621800009161234,
+        "rss_before": 18968576,
+        "peak_rss": 19202048,
+        "peak_increase": 229376,
+        "rss_after": 19140608
+      },
+      {
+        "codec": "xz-6",
+        "mode": "block64k",
+        "streamed": false,
+        "first_ms": 1.1233000550419092,
+        "median_ms": 1.1448001023381948,
+        "p95_ms": 2.1192000713199377,
+        "rss_before": 18968576,
+        "peak_rss": 19238912,
+        "peak_increase": 266240,
+        "rss_after": 19181568
+      }
+    ]
+  },
+  {
+    "fixture": {
+      "corpus": "rust",
+      "codec": "zstd-9",
+      "mode": "dict-entry",
+      "file": "rust/zstd-dict-entry.bin",
+      "dictionary": "rust/dictionary.bin",
+      "offset": 0,
+      "raw_bytes": 8057,
+      "target_bytes": 8057,
+      "target_key": "text/3872-crates-io-security.md@base",
+      "compressed_bytes": 2726,
+      "target_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437"
+    },
+    "samples": [
+      {
+        "codec": "zstd-9",
+        "mode": "dict-entry",
+        "streamed": false,
+        "first_ms": 13.106799917295575,
+        "median_ms": 0.01859990879893303,
+        "p95_ms": 0.04160008393228054,
+        "rss_before": 18862080,
+        "peak_rss": 18980864,
+        "peak_increase": 114688,
+        "rss_after": 18976768
+      },
+      {
+        "codec": "zstd-9",
+        "mode": "dict-entry",
+        "streamed": false,
+        "first_ms": 0.1952000893652439,
+        "median_ms": 0.03720005042850971,
+        "p95_ms": 0.07400009781122208,
+        "rss_before": 19005440,
+        "peak_rss": 19148800,
+        "peak_increase": 139264,
+        "rss_after": 19144704
+      },
+      {
+        "codec": "zstd-9",
+        "mode": "dict-entry",
+        "streamed": false,
+        "first_ms": 0.36720000207424164,
+        "median_ms": 0.03329990431666374,
+        "p95_ms": 0.10750000365078449,
+        "rss_before": 19021824,
+        "peak_rss": 19152896,
+        "peak_increase": 126976,
+        "rss_after": 19148800
+      }
+    ]
+  }
+]

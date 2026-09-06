@@ -1,0 +1,131 @@
+[
+  {
+    "browser": "chrome",
+    "config": {
+      "probe": true,
+      "probes": {
+        "gzip": "npm/gzip-6-entry.bin",
+        "deflate": "npm/deflate-6-entry.bin",
+        "deflate-raw": "npm/raw-6-entry.bin",
+        "brotli": "npm/brotli-5-entry.bin",
+        "zstd": "npm/zstd-9-entry.bin",
+        "xz": "npm/xz-6-entry.bin"
+      },
+      "size": 6115,
+      "sha": "ecea82b761999c0fac8ddcc844b55523039770a80448a9e1f73ba35fc087fa11"
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": false,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "decoded": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": "TypeError: Failed to construct 'DecompressionStream': Unsupported compression format: 'brotli'",
+        "zstd": "TypeError: Failed to construct 'DecompressionStream': Unsupported compression format: 'zstd'",
+        "xz": "TypeError: Failed to construct 'DecompressionStream': Unsupported compression format: 'xz'"
+      },
+      "fdict": "TypeError: Failed to fetch",
+      "malformed": {
+        "badCrc": "rejected: TypeError: Failed to fetch",
+        "truncated": "rejected: TypeError: Failed to fetch",
+        "concatenated": "rejected: TypeError: Failed to fetch"
+      },
+      "constructedResponsePreservesCompressedBytes": true
+    }
+  },
+  {
+    "browser": "edge",
+    "config": {
+      "probe": true,
+      "probes": {
+        "gzip": "npm/gzip-6-entry.bin",
+        "deflate": "npm/deflate-6-entry.bin",
+        "deflate-raw": "npm/raw-6-entry.bin",
+        "brotli": "npm/brotli-5-entry.bin",
+        "zstd": "npm/zstd-9-entry.bin",
+        "xz": "npm/xz-6-entry.bin"
+      },
+      "size": 6115,
+      "sha": "ecea82b761999c0fac8ddcc844b55523039770a80448a9e1f73ba35fc087fa11"
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": false,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "decoded": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": "TypeError: Failed to construct 'DecompressionStream': Unsupported compression format: 'brotli'",
+        "zstd": "TypeError: Failed to construct 'DecompressionStream': Unsupported compression format: 'zstd'",
+        "xz": "TypeError: Failed to construct 'DecompressionStream': Unsupported compression format: 'xz'"
+      },
+      "fdict": "TypeError: Failed to fetch",
+      "malformed": {
+        "badCrc": "rejected: TypeError: Failed to fetch",
+        "truncated": "rejected: TypeError: Failed to fetch",
+        "concatenated": "rejected: TypeError: Failed to fetch"
+      },
+      "constructedResponsePreservesCompressedBytes": true
+    }
+  },
+  {
+    "browser": "firefox",
+    "config": {
+      "probe": true,
+      "probes": {
+        "gzip": "npm/gzip-6-entry.bin",
+        "deflate": "npm/deflate-6-entry.bin",
+        "deflate-raw": "npm/raw-6-entry.bin",
+        "brotli": "npm/brotli-5-entry.bin",
+        "zstd": "npm/zstd-9-entry.bin",
+        "xz": "npm/xz-6-entry.bin"
+      },
+      "size": 6115,
+      "sha": "ecea82b761999c0fac8ddcc844b55523039770a80448a9e1f73ba35fc087fa11"
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0",
+      "support": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "br": false,
+        "zstd": false,
+        "xz": false
+      },
+      "decoded": {
+        "gzip": true,
+        "deflate": true,
+        "deflate-raw": true,
+        "brotli": true,
+        "zstd": "TypeError: DecompressionStream constructor: 'zstd' (value of argument 1) is not a valid value for enumeration CompressionFormat.",
+        "xz": "TypeError: DecompressionStream constructor: 'xz' (value of argument 1) is not a valid value for enumeration CompressionFormat."
+      },
+      "fdict": "AbortError: The operation was aborted. ",
+      "malformed": {
+        "badCrc": "rejected: AbortError: The operation was aborted. ",
+        "truncated": "rejected: AbortError: The operation was aborted. ",
+        "concatenated": "rejected: AbortError: The operation was aborted. "
+      },
+      "constructedResponsePreservesCompressedBytes": true
+    }
+  }
+]

@@ -1,0 +1,965 @@
+{
+  "name": "npm",
+  "repository": "https://github.com/npm/cli",
+  "head": "3b30e0b1f1ee9c7119d352dc4f9a27d53f24b988",
+  "base": "fefd509992a05c2dfddbe7bc46931c42f1da69d7",
+  "commits": [
+    "366c07e2f3cb9d1c6ddbd03e624a4d73fbd2676e",
+    "63d6a732c3c0e9c19fd4d147eaa5cc27c29b168d",
+    "4d57928ea20c1672864dc0c8ebaff5d877e61c9c",
+    "feb54f7e9a39bd52519221bae4fafc8bc70f235e",
+    "62c71e5128a01283f97bd62da30ddc673bddda0b",
+    "1be8e9500826e7aef041976fd908658f473caf23",
+    "2af31dd30f4c226f43ce7295cd0b5fbb3f3cb2a6",
+    "8a911da452b9785bcd051778570beeb2d8b27421",
+    "1764a37f1913b6a0811a85d89e029fc1dc79da54",
+    "866b5ee3ae5ed508ecbe832d01f5ebd6b00f6789",
+    "f1af61f917e58a0a45d2b15d1e5600988b2c824f",
+    "247ee1d95a12983e181c3c3f2f1fdb790dd21794",
+    "4183cba3e13bcfea83fa3ef2b6c5b0c9685f79bc",
+    "14efa57f13b2bbbf10b0b217b981f919556789cd",
+    "26b64543ebb27e421c05643eb996f6765c13444c",
+    "db8f5da886326ae40d44a8cceedb99e2e6a00855",
+    "4990ea0f0c017e4702cf2da2fbd99dad61c77015",
+    "96cc4f9a87a231abf4c9584a277765368ba6663d",
+    "4b08e2ed252a18f85a360b76c7273a7aa7a994ca",
+    "57aa89ff70e0c6186a43888b944b5799b25c7bc8",
+    "4d5c3c1d8d99e352b1b4906c2607752ee3051a75",
+    "d2498df8efa558c3048f71324be0ef189c14bd49",
+    "a0e60fb1893ac77a78380d9a9faaaaa54da1fe85",
+    "2f302516401928239593dd2eebc171729df60537",
+    "3ed764aa08f2087fa1d1bd7391a646ba47565294",
+    "8b55d38cd2815a9503aed664c85eb678203dc4d4",
+    "fb7a498d557abdd0c1a6945522d47878cf930a27",
+    "7233cb3a159872236338b97bcb9d3797864abb33",
+    "4673e9c165b39563e16409f3b1ca06fdc32e7d44",
+    "746ac5d95dc19a74c519a8e3f3e1eed029957921",
+    "b7758d73d6b715a62e6d0c48e11b87017ce2b71c",
+    "bdcc10d9f848940987b3d326ccd4673fab2bcfef"
+  ],
+  "base_count": 83,
+  "diff_count": 48,
+  "raw_bytes": 345157,
+  "base_bytes": 286500,
+  "diff_bytes": 58657,
+  "median_entry_bytes": 1157,
+  "entries": [
+    {
+      "key": "docs/lib/content/commands/npm-access.md@base",
+      "path": "docs/lib/content/commands/npm-access.md",
+      "kind": "base",
+      "bytes": 2629,
+      "sha256": "3e95d77e931a3fbd55ad20f2eff935378e1aefaa29feed6f0df35f7934bd8549"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-adduser.md@base",
+      "path": "docs/lib/content/commands/npm-adduser.md",
+      "kind": "base",
+      "bytes": 786,
+      "sha256": "9e1895a05bf49b99c540f91d7035af107e82f64aecd342d215c03e988fba2151"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-audit.md@base",
+      "path": "docs/lib/content/commands/npm-audit.md",
+      "kind": "base",
+      "bytes": 9202,
+      "sha256": "5b47380ac0e450bec8d87d0ca4e606adee04c8b78f4b89ec68fe811b20b1b9d3"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-bugs.md@base",
+      "path": "docs/lib/content/commands/npm-bugs.md",
+      "kind": "base",
+      "bytes": 840,
+      "sha256": "02e079a1a537790a4dad78ae793b88c4900bc8c6aea6dec6af41a40048369cf6"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-cache.md@base",
+      "path": "docs/lib/content/commands/npm-cache.md",
+      "kind": "base",
+      "bytes": 2754,
+      "sha256": "03b05c5eaef7d3d52bced46b191274881b1ed4ae7944a346d1c0ad52887f6e1d"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-ci.md@base",
+      "path": "docs/lib/content/commands/npm-ci.md",
+      "kind": "base",
+      "bytes": 2122,
+      "sha256": "38dc55a7bb2b278755fcfb87ac49f8a886ba44f88459c1fcaa309ced1e1c6793"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-completion.md@base",
+      "path": "docs/lib/content/commands/npm-completion.md",
+      "kind": "base",
+      "bytes": 878,
+      "sha256": "8c058d94dc2620868d3f3995d630e71b2440abae5b6ad4e8adbc07862b7c73bf"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-config.md@base",
+      "path": "docs/lib/content/commands/npm-config.md",
+      "kind": "base",
+      "bytes": 2257,
+      "sha256": "961808679cdc2e341eb2783154a40ff9a232b78930aac90221d75768d6eab6ed"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-dedupe.md@base",
+      "path": "docs/lib/content/commands/npm-dedupe.md",
+      "kind": "base",
+      "bytes": 2184,
+      "sha256": "1d0b4e0a5d32ab0a573609bc16463e498fcb05642c4f0ac03bdf635bbc31c637"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-deprecate.md@base",
+      "path": "docs/lib/content/commands/npm-deprecate.md",
+      "kind": "base",
+      "bytes": 1297,
+      "sha256": "41d66f81d4c84ee47319689b28999cdaf6c8a9fdc488b84d5e2a07e2c84274d4"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-diff.md@base",
+      "path": "docs/lib/content/commands/npm-diff.md",
+      "kind": "base",
+      "bytes": 5425,
+      "sha256": "704fffe53fe401a6216cd123355cc54b7faf77d86787b141e85b5aee79798073"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-dist-tag.md@base",
+      "path": "docs/lib/content/commands/npm-dist-tag.md",
+      "kind": "base",
+      "bytes": 3354,
+      "sha256": "5e083343ec5288f204f3a1ba8f9ad994ab2aa3112844156e090100a959fa700b"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-docs.md@base",
+      "path": "docs/lib/content/commands/npm-docs.md",
+      "kind": "base",
+      "bytes": 820,
+      "sha256": "fd850042d94b48650f5fa669d8b45e8013b1cae56705b429b33d5a973774105c"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-doctor.md@base",
+      "path": "docs/lib/content/commands/npm-doctor.md",
+      "kind": "base",
+      "bytes": 4895,
+      "sha256": "72f3a1bbf00113522b36d09019c853169bdc467b3fb106908c40ca36869b6d5a"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-edit.md@base",
+      "path": "docs/lib/content/commands/npm-edit.md",
+      "kind": "base",
+      "bytes": 876,
+      "sha256": "40664342955590a6bc4a3c607c901de77e2f0d620b9c5abfaae1efc5041ea00c"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-exec.md@base",
+      "path": "docs/lib/content/commands/npm-exec.md",
+      "kind": "base",
+      "bytes": 9131,
+      "sha256": "d9b4092412c4de1930507f4f0f4403c51dcfaba9bf9860581acc612aad15223c"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-explain.md@base",
+      "path": "docs/lib/content/commands/npm-explain.md",
+      "kind": "base",
+      "bytes": 1850,
+      "sha256": "54d67b7e9594d0703190e984123617538f4eb482f9c1fa89061c58133a5f1892"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-explore.md@base",
+      "path": "docs/lib/content/commands/npm-explore.md",
+      "kind": "base",
+      "bytes": 834,
+      "sha256": "ca3289d9b61feb1542020f0199bb69c5c698437db4161bdc8f263c4100e6746e"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-find-dupes.md@base",
+      "path": "docs/lib/content/commands/npm-find-dupes.md",
+      "kind": "base",
+      "bytes": 511,
+      "sha256": "9ca06995e6b50eeb65b0e606b72375948ef76f5830810c2b5e34e647e9a70372"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-fund.md@base",
+      "path": "docs/lib/content/commands/npm-fund.md",
+      "kind": "base",
+      "bytes": 1979,
+      "sha256": "6b869050c91d1e4a3ab71c313bbbda21eb0140ac0622a9a4e78ae3ac6c6406a7"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-help-search.md@base",
+      "path": "docs/lib/content/commands/npm-help-search.md",
+      "kind": "base",
+      "bytes": 647,
+      "sha256": "db3fa76bc98a27847ccf4428de05551f83579e477b241a6a624b92ac92b3cb9b"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-help.md@base",
+      "path": "docs/lib/content/commands/npm-help.md",
+      "kind": "base",
+      "bytes": 794,
+      "sha256": "82160e2ada4c6c314185982a1a9a8765ea1c8d2827d4e5b4f8bf8d810027c23e"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-hook.md@base",
+      "path": "docs/lib/content/commands/npm-hook.md",
+      "kind": "base",
+      "bytes": 1868,
+      "sha256": "e7b97f401aba9a4a3ae9c11fa2eb89dbcfdf319824aeb6bb137319bdbbfaa897"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-init.md@base",
+      "path": "docs/lib/content/commands/npm-init.md",
+      "kind": "base",
+      "bytes": 4936,
+      "sha256": "4ce7b81f5035a7ee765b927494cdc00fdab80262663b97dcb5af731057bdd2a2"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-install-ci-test.md@base",
+      "path": "docs/lib/content/commands/npm-install-ci-test.md",
+      "kind": "base",
+      "bytes": 437,
+      "sha256": "79140a52c4b396ab1e7f42dc9d7eac9598239efb9f966a1b7bf2b46d90e4ca29"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-install-test.md@base",
+      "path": "docs/lib/content/commands/npm-install-test.md",
+      "kind": "base",
+      "bytes": 497,
+      "sha256": "1c0e93fdafa124ffff40a460c2b90d3f89c4f79b9619ba60a55847c3b2600779"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-install.md@base",
+      "path": "docs/lib/content/commands/npm-install.md",
+      "kind": "base",
+      "bytes": 15804,
+      "sha256": "45f1f993b59d2fd0bc3fdb48349b4afa60e1a379f8eaaf1705d148d25d4f14f8"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-link.md@base",
+      "path": "docs/lib/content/commands/npm-link.md",
+      "kind": "base",
+      "bytes": 4041,
+      "sha256": "dc60ee659dcccce3816e100004bf520910d38d98e7788952d42097e70e77e70c"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-login.md@base",
+      "path": "docs/lib/content/commands/npm-login.md",
+      "kind": "base",
+      "bytes": 1129,
+      "sha256": "ef049ed492032556d9a3cb3706ad8ebc03e64f69a16974f3fd7f9d4aa172e554"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-logout.md@base",
+      "path": "docs/lib/content/commands/npm-logout.md",
+      "kind": "base",
+      "bytes": 903,
+      "sha256": "23e41876b83fe4552b0c9f51fee229a48038dfc17fa457244c840af6c9563617"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-ls.md@base",
+      "path": "docs/lib/content/commands/npm-ls.md",
+      "kind": "base",
+      "bytes": 3161,
+      "sha256": "520ac7de1b3b2dd9cfe5693541b15bc3bf0cb538c9d26200ce4715fc14d9eed2"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-org.md@base",
+      "path": "docs/lib/content/commands/npm-org.md",
+      "kind": "base",
+      "bytes": 991,
+      "sha256": "f31098028657c8f6a9234e1cd34e0226a10df4c7ac396b23a7ef54bc7735b24c"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-outdated.md@base",
+      "path": "docs/lib/content/commands/npm-outdated.md",
+      "kind": "base",
+      "bytes": 3857,
+      "sha256": "9defda0290624e56f1a34b344604629edd9d5ffa73460370183d94efc9a077b0"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-owner.md@base",
+      "path": "docs/lib/content/commands/npm-owner.md",
+      "kind": "base",
+      "bytes": 1274,
+      "sha256": "e69e67a906f26489aee66c40cc5e32df5ff23eb02164f08b4e834c5a190c0b48"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-pack.md@base",
+      "path": "docs/lib/content/commands/npm-pack.md",
+      "kind": "base",
+      "bytes": 948,
+      "sha256": "7fcd7aa630f8fc713403537b6f098b72f67306989c994a1640fc09f640494353"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-ping.md@base",
+      "path": "docs/lib/content/commands/npm-ping.md",
+      "kind": "base",
+      "bytes": 680,
+      "sha256": "129febaa163533942852c57e9d142786210e2c8ff489d989b5db1098e4c5a8fa"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-pkg.md@base",
+      "path": "docs/lib/content/commands/npm-pkg.md",
+      "kind": "base",
+      "bytes": 5233,
+      "sha256": "bed65d58dd15d11ddee9fa78fbaabf340f2312be0d09778aa4c650215f329cd4"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-prefix.md@base",
+      "path": "docs/lib/content/commands/npm-prefix.md",
+      "kind": "base",
+      "bytes": 762,
+      "sha256": "7135cada74aa4435b0554017f2e91c49f6e532ba27b05430bcc2a892e9dcbd6b"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-profile.md@base",
+      "path": "docs/lib/content/commands/npm-profile.md",
+      "kind": "base",
+      "bytes": 2118,
+      "sha256": "26a02649f5b38039ecee48cd93e7cccae9b2e452803e3ec9ac6caf7e7c120827"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-prune.md@base",
+      "path": "docs/lib/content/commands/npm-prune.md",
+      "kind": "base",
+      "bytes": 1271,
+      "sha256": "6d85f052a464e90e3f48878a35af47063453eefcfd260e8b3d2bdaec68011d61"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-publish.md@base",
+      "path": "docs/lib/content/commands/npm-publish.md",
+      "kind": "base",
+      "bytes": 3667,
+      "sha256": "2ba555ae156e6584f659e6c353757e808edc4989f365ec102f61010ebb9b34d5"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-query.md@base",
+      "path": "docs/lib/content/commands/npm-query.md",
+      "kind": "base",
+      "bytes": 3912,
+      "sha256": "0d96680d57a5a63bcd4d7114cc5b2c9fda43520bd972fad0e9880144ad3a94d4"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-rebuild.md@base",
+      "path": "docs/lib/content/commands/npm-rebuild.md",
+      "kind": "base",
+      "bytes": 1452,
+      "sha256": "e8adea74b5d8d57b33ca608371f6a6eb8bf35e7516359cee20f9c0a68c2b4672"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-repo.md@base",
+      "path": "docs/lib/content/commands/npm-repo.md",
+      "kind": "base",
+      "bytes": 613,
+      "sha256": "6f5f3792fc47566fae447aa27d1a2351e7dd478e027c8c076131f5c112df5686"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-restart.md@base",
+      "path": "docs/lib/content/commands/npm-restart.md",
+      "kind": "base",
+      "bytes": 920,
+      "sha256": "4e9ee2b2499448f4470daf57eb9a6c662e7fe3ba236235276c7dec59a5a4a3f0"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-root.md@base",
+      "path": "docs/lib/content/commands/npm-root.md",
+      "kind": "base",
+      "bytes": 655,
+      "sha256": "147bb70baef920c34419497ccd4ad720333899884cda9cc1f4c41d6a11ce1041"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-run-script.md@base",
+      "path": "docs/lib/content/commands/npm-run-script.md",
+      "kind": "base",
+      "bytes": 4250,
+      "sha256": "ccc913d4886f110539d1dcb506e4ba7666946258d69f74edcb67a595ff6b64a4"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-sbom.md@base",
+      "path": "docs/lib/content/commands/npm-sbom.md",
+      "kind": "base",
+      "bytes": 5585,
+      "sha256": "837821a93959810041517655137dfad9a6320f496b0b267e4680481b13748949"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-search.md@base",
+      "path": "docs/lib/content/commands/npm-search.md",
+      "kind": "base",
+      "bytes": 1550,
+      "sha256": "371c57e37823be684cdbfc33b117fb5fde568745bd2056a374eac269210cf0d8"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-shrinkwrap.md@base",
+      "path": "docs/lib/content/commands/npm-shrinkwrap.md",
+      "kind": "base",
+      "bytes": 892,
+      "sha256": "f9388c82a93327352efdba07225a7045e1517188d9b44193463f1d2ec46b30c2"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-star.md@base",
+      "path": "docs/lib/content/commands/npm-star.md",
+      "kind": "base",
+      "bytes": 961,
+      "sha256": "64261d4bf17d6f532a379732af072043931a4d4dc83b44c635fc93a4d800da3b"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-stars.md@base",
+      "path": "docs/lib/content/commands/npm-stars.md",
+      "kind": "base",
+      "bytes": 644,
+      "sha256": "02a548a04c82adc4c2ff8c77caad7e35938e9ebc3b48ce5f72c4a613a902f5dc"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-start.md@base",
+      "path": "docs/lib/content/commands/npm-start.md",
+      "kind": "base",
+      "bytes": 1116,
+      "sha256": "ee930d4138129c432e5273cc2b9ed593dd6f7fb92ebc23e6adecce91ab2b0bc0"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-stop.md@base",
+      "path": "docs/lib/content/commands/npm-stop.md",
+      "kind": "base",
+      "bytes": 791,
+      "sha256": "bd2b509d52027c8e2aa474d2041b0dbd57b9fe45ffe315844ff78616035a536a"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-team.md@base",
+      "path": "docs/lib/content/commands/npm-team.md",
+      "kind": "base",
+      "bytes": 3006,
+      "sha256": "cfe09f0d6e334b9b56072e359f47226f85fbd9997c5bb95accac97ca9b9d6288"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-test.md@base",
+      "path": "docs/lib/content/commands/npm-test.md",
+      "kind": "base",
+      "bytes": 667,
+      "sha256": "eca33f9a3358e194b22d21495cce7ce9d67f34da8510694d289116de984bd8c3"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-token.md@base",
+      "path": "docs/lib/content/commands/npm-token.md",
+      "kind": "base",
+      "bytes": 2017,
+      "sha256": "3d4e28d3465f9ea18bcff46767eeccf43d914751a8cba2b7f6b26a8661c7fe73"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-uninstall.md@base",
+      "path": "docs/lib/content/commands/npm-uninstall.md",
+      "kind": "base",
+      "bytes": 1683,
+      "sha256": "de6f94857c637444b336789ddb740c9880f8efb77b92c170cf5ac60842d53dd2"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-unpublish.md@base",
+      "path": "docs/lib/content/commands/npm-unpublish.md",
+      "kind": "base",
+      "bytes": 1627,
+      "sha256": "5e6fec2d84e2f20f55aede527988496fbfddcaf1ac8cd03945cc32e60b44d5dd"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-unstar.md@base",
+      "path": "docs/lib/content/commands/npm-unstar.md",
+      "kind": "base",
+      "bytes": 820,
+      "sha256": "09259a5aabfaa9d24e8f5376ca134498acc29a73c34e13d3c4a8e22f357bfd18"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-update.md@base",
+      "path": "docs/lib/content/commands/npm-update.md",
+      "kind": "base",
+      "bytes": 3891,
+      "sha256": "4d90e50004f2192995ce4ca8841c7cd8840bad8591d9f0a77a73e5107fef233e"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-version.md@base",
+      "path": "docs/lib/content/commands/npm-version.md",
+      "kind": "base",
+      "bytes": 3728,
+      "sha256": "4e9b442ff8614599a7703113301d8726fa650920df02b29c46ce734458eb8c89"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-view.md@base",
+      "path": "docs/lib/content/commands/npm-view.md",
+      "kind": "base",
+      "bytes": 3588,
+      "sha256": "94d88fe8e11e252a8306bae276288b9f021d5c4e00ed89e7a8b50002e6032fd8"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-whoami.md@base",
+      "path": "docs/lib/content/commands/npm-whoami.md",
+      "kind": "base",
+      "bytes": 709,
+      "sha256": "53427cc7484761606f3ff967e12ad49d8c5c0437725ba45a497a86eff5aca0d7"
+    },
+    {
+      "key": "docs/lib/content/commands/npm.md@base",
+      "path": "docs/lib/content/commands/npm.md",
+      "kind": "base",
+      "bytes": 5653,
+      "sha256": "4079ed10aa59cbbfb8bb7da933b843e4dcff6e34f6ff76fb2c5d1c60ba04fa15"
+    },
+    {
+      "key": "docs/lib/content/commands/npx.md@base",
+      "path": "docs/lib/content/commands/npx.md",
+      "kind": "base",
+      "bytes": 5776,
+      "sha256": "5152636cd5908b25aaac89c7fbb2f7db5e0a2d4574e7db9fae5302736a4b4c76"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/folders.md@base",
+      "path": "docs/lib/content/configuring-npm/folders.md",
+      "kind": "base",
+      "bytes": 8142,
+      "sha256": "c63a0283b16a9b43fb4aa0562a58f31537029237185ee097d2cfaa91d9c7b2e3"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/install.md@base",
+      "path": "docs/lib/content/configuring-npm/install.md",
+      "kind": "base",
+      "bytes": 2810,
+      "sha256": "6ecbee745eff913e326367a80794bacef624590d7fcd0903a5972ed3d672e683"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/npm-shrinkwrap-json.md@base",
+      "path": "docs/lib/content/configuring-npm/npm-shrinkwrap-json.md",
+      "kind": "base",
+      "bytes": 1251,
+      "sha256": "951ba5c3a35c84e986a75ad008b8d3df169de1694e394a8c0ec9524e8d4018d5"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/npmrc.md@base",
+      "path": "docs/lib/content/configuring-npm/npmrc.md",
+      "kind": "base",
+      "bytes": 4081,
+      "sha256": "376d23b77315c6aaba4fa02f0a488de4d3b7094cf5cccdf0f6d5ac620ee8b3ca"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/package-json.md@base",
+      "path": "docs/lib/content/configuring-npm/package-json.md",
+      "kind": "base",
+      "bytes": 32708,
+      "sha256": "dcd54a06aba8330e3575c4784f0f89b5df1b2b6f59710b128ac94677f1fc3239"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/package-lock-json.md@base",
+      "path": "docs/lib/content/configuring-npm/package-lock-json.md",
+      "kind": "base",
+      "bytes": 10215,
+      "sha256": "df60da5a96d86f0b449939730e0f200d09b0d20ac4534f7b60053e4b96de8433"
+    },
+    {
+      "key": "docs/lib/content/using-npm/config.md@base",
+      "path": "docs/lib/content/using-npm/config.md",
+      "kind": "base",
+      "bytes": 3323,
+      "sha256": "7869ef8abe34aec29c22787c333851f7bb7a156671ab5991d0bd1cd40c09a175"
+    },
+    {
+      "key": "docs/lib/content/using-npm/dependency-selectors.md@base",
+      "path": "docs/lib/content/using-npm/dependency-selectors.md",
+      "kind": "base",
+      "bytes": 12144,
+      "sha256": "2bf63caf04eb3161a3c66090028bbeb3b49610d082205c72e8ae12cb17ec8b02"
+    },
+    {
+      "key": "docs/lib/content/using-npm/developers.md@base",
+      "path": "docs/lib/content/using-npm/developers.md",
+      "kind": "base",
+      "bytes": 7826,
+      "sha256": "1c12a06c8dffc55064ddb360d03ba169d82900fb9fa46688d863fad0682c1fb1"
+    },
+    {
+      "key": "docs/lib/content/using-npm/logging.md@base",
+      "path": "docs/lib/content/using-npm/logging.md",
+      "kind": "base",
+      "bytes": 3896,
+      "sha256": "93e1cfaef738d47b0a5d9f7c1ec38be94d5ca65764a35f604048c88597536999"
+    },
+    {
+      "key": "docs/lib/content/using-npm/orgs.md@base",
+      "path": "docs/lib/content/using-npm/orgs.md",
+      "kind": "base",
+      "bytes": 2246,
+      "sha256": "69ef2cdcc7215534d8c0dd9a779889d9253adee797bdc8bda7bf03f66076290a"
+    },
+    {
+      "key": "docs/lib/content/using-npm/package-spec.md@base",
+      "path": "docs/lib/content/using-npm/package-spec.md",
+      "kind": "base",
+      "bytes": 2886,
+      "sha256": "03161e41210654448ad46b505e3cae7aa9815e11c41d1a937309a28d796620d2"
+    },
+    {
+      "key": "docs/lib/content/using-npm/registry.md@base",
+      "path": "docs/lib/content/using-npm/registry.md",
+      "kind": "base",
+      "bytes": 3634,
+      "sha256": "1b0eb0c21f0e14e4840ff560149d213db475be5799ae3aae644208b73bf9c843"
+    },
+    {
+      "key": "docs/lib/content/using-npm/removal.md@base",
+      "path": "docs/lib/content/using-npm/removal.md",
+      "kind": "base",
+      "bytes": 1651,
+      "sha256": "8710a668c9c19d479525a0ee9c79342bace401ec9c33c0f5fcc009ec74ee9c2f"
+    },
+    {
+      "key": "docs/lib/content/using-npm/scope.md@base",
+      "path": "docs/lib/content/using-npm/scope.md",
+      "kind": "base",
+      "bytes": 5159,
+      "sha256": "684bb13d70095cd4ad1050b2dcf6e72366ae209f2ce7c534dbc253c3bbd25e46"
+    },
+    {
+      "key": "docs/lib/content/using-npm/scripts.md@base",
+      "path": "docs/lib/content/using-npm/scripts.md",
+      "kind": "base",
+      "bytes": 12265,
+      "sha256": "9c43b7ebb28bce4e4267092554419c2b1d1cde56cfbe46d74ece728fb64392e2"
+    },
+    {
+      "key": "docs/lib/content/using-npm/workspaces.md@base",
+      "path": "docs/lib/content/using-npm/workspaces.md",
+      "kind": "base",
+      "bytes": 6115,
+      "sha256": "ecea82b761999c0fac8ddcc844b55523039770a80448a9e1f73ba35fc087fa11"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-install.md@diff00",
+      "path": "docs/lib/content/commands/npm-install.md",
+      "kind": "diff",
+      "bytes": 628,
+      "sha256": "a205f52b6600f006179b512d1f5c64b13accd8b2935bee8a6c23f19fecbe694a"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/package-json.md@diff01",
+      "path": "docs/lib/content/configuring-npm/package-json.md",
+      "kind": "diff",
+      "bytes": 915,
+      "sha256": "15f7baae3279e87c256ff7f3342b42d1ee3a1f16bbd7b5222ac9f6a6cd76f046"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/package-json.md@diff02",
+      "path": "docs/lib/content/configuring-npm/package-json.md",
+      "kind": "diff",
+      "bytes": 1843,
+      "sha256": "d00ca50614d4e0bb778b819f5aa68fe4b378661481e8d46c05dcf94a516ebf35"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/package-json.md@diff03",
+      "path": "docs/lib/content/configuring-npm/package-json.md",
+      "kind": "diff",
+      "bytes": 714,
+      "sha256": "789ff129093b9b6f2c5931e0d87aab1fd949c47782f2811802e65af277d75f1a"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-hook.md@diff04",
+      "path": "docs/lib/content/commands/npm-hook.md",
+      "kind": "diff",
+      "bytes": 2167,
+      "sha256": "e62b3e9f134e7492588674929eff5c8d49a6d891c4d0c9a87b7d8165978f3d8d"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-publish.md@diff05",
+      "path": "docs/lib/content/commands/npm-publish.md",
+      "kind": "diff",
+      "bytes": 564,
+      "sha256": "e3d99d31bb17d9db278ac5c5032d4337fcdabfa74518d7d3f8cba7ec00d9df25"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/package-json.md@diff05",
+      "path": "docs/lib/content/configuring-npm/package-json.md",
+      "kind": "diff",
+      "bytes": 689,
+      "sha256": "4a2bc6ef25d8d676f2a1883e73a3e43ca50e24aef4163fc94c04f0d3cf8ec72b"
+    },
+    {
+      "key": "docs/lib/content/using-npm/developers.md@diff05",
+      "path": "docs/lib/content/using-npm/developers.md",
+      "kind": "diff",
+      "bytes": 1157,
+      "sha256": "fea5de4ced1755460a16c343bd5a0819e29f0b674648d2ec51f2fe37d9e41253"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/npmrc.md@diff06",
+      "path": "docs/lib/content/configuring-npm/npmrc.md",
+      "kind": "diff",
+      "bytes": 507,
+      "sha256": "b4103ab8a3375c42562a7bc6437cd06107c8355123a169ded0169f81ae63ef82"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-ls.md@diff07",
+      "path": "docs/lib/content/commands/npm-ls.md",
+      "kind": "diff",
+      "bytes": 1855,
+      "sha256": "74dfce04ec09c1293986d33958292ab2d974e091daeda10dcd0d8b25110e9d25"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-undeprecate.md@diff08",
+      "path": "docs/lib/content/commands/npm-undeprecate.md",
+      "kind": "diff",
+      "bytes": 808,
+      "sha256": "edbb04c55e1b5cb292cbd6f7190cef4695ed0ed957ba4b7e8a84a22612e7946e"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/package-json.md@diff09",
+      "path": "docs/lib/content/configuring-npm/package-json.md",
+      "kind": "diff",
+      "bytes": 8281,
+      "sha256": "efcd4fc31b0498a07a10e8ca34ad9549df40ec1d81df9604ef0e2c08800d50d9"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/package-json.md@diff10",
+      "path": "docs/lib/content/configuring-npm/package-json.md",
+      "kind": "diff",
+      "bytes": 1188,
+      "sha256": "3f1bda8b1b23c83ee64520f09a7c614319e20895eb12d03f580d42e239494415"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-cache.md@diff11",
+      "path": "docs/lib/content/commands/npm-cache.md",
+      "kind": "diff",
+      "bytes": 5125,
+      "sha256": "18a798db010722d6142fee0e76cdb76773798b1fae4e58e2dcb2046371129261"
+    },
+    {
+      "key": "docs/lib/content/using-npm/logging.md@diff12",
+      "path": "docs/lib/content/using-npm/logging.md",
+      "kind": "diff",
+      "bytes": 512,
+      "sha256": "5644726e535ab316bd3138afc42e8cd5ee9eea7b3e4a0adce4550b1b1e32d01d"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/package-json.md@diff13",
+      "path": "docs/lib/content/configuring-npm/package-json.md",
+      "kind": "diff",
+      "bytes": 479,
+      "sha256": "a73a4f85889ddda390c079154158e97148a9a766e6c5505c2fa49bfec23ed233"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/package-json.md@diff14",
+      "path": "docs/lib/content/configuring-npm/package-json.md",
+      "kind": "diff",
+      "bytes": 703,
+      "sha256": "f4fb1a5ac489fd856d657012694570ae465c665eaaec8902f8252bff1554354b"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-outdated.md@diff15",
+      "path": "docs/lib/content/commands/npm-outdated.md",
+      "kind": "diff",
+      "bytes": 725,
+      "sha256": "d3db82ad522154e6b00b1afeeacd251debb451d3cfbf30b645335e1c9af630a8"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-adduser.md@diff16",
+      "path": "docs/lib/content/commands/npm-adduser.md",
+      "kind": "diff",
+      "bytes": 731,
+      "sha256": "ed2c8c57a5a0dc51cb072cd4f515884dcdbcb7ac366bf244f15db11a899cb28d"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-login.md@diff16",
+      "path": "docs/lib/content/commands/npm-login.md",
+      "kind": "diff",
+      "bytes": 706,
+      "sha256": "36bf3857a306d4bb7cc8556e92221b5e7b77c584855c90638344d8a7c281d55a"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-adduser.md@diff17",
+      "path": "docs/lib/content/commands/npm-adduser.md",
+      "kind": "diff",
+      "bytes": 915,
+      "sha256": "ae9e6ed239863e0cd14f2288d4820d5acbdb74c9c75153a9ffe0f63e8bcda684"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-login.md@diff17",
+      "path": "docs/lib/content/commands/npm-login.md",
+      "kind": "diff",
+      "bytes": 888,
+      "sha256": "49e67a8a996b3d83c700fcd0fe9df4459543ca7470a44c96bfe0a4d30825de95"
+    },
+    {
+      "key": "docs/lib/content/using-npm/scripts.md@diff18",
+      "path": "docs/lib/content/using-npm/scripts.md",
+      "kind": "diff",
+      "bytes": 671,
+      "sha256": "ea6c0870c27cfb9775c62af385c9147447fb9f7bbe87db24ac1a89716bdcb8d3"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-exec.md@diff19",
+      "path": "docs/lib/content/commands/npm-exec.md",
+      "kind": "diff",
+      "bytes": 441,
+      "sha256": "ab6d69bbcc56b2e86b5c8502b51724dcc5cf2043d10de5e6b769eebfa6915a05"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-restart.md@diff19",
+      "path": "docs/lib/content/commands/npm-restart.md",
+      "kind": "diff",
+      "bytes": 793,
+      "sha256": "1cd349580bba7cee686bfda06efc8c6386d171eec49a3f72723d4d9f7af15040"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-run-script.md@diff19",
+      "path": "docs/lib/content/commands/npm-run-script.md",
+      "kind": "diff",
+      "bytes": 4629,
+      "sha256": "15aab3c54f9044e605861dcff2088e49e91aa4e9e024c6118dc5b84aab472074"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-run.md@diff19",
+      "path": "docs/lib/content/commands/npm-run.md",
+      "kind": "diff",
+      "bytes": 4597,
+      "sha256": "6fff08c682b27bf0c045d7bb257aeb9e09b1980c6d1060dd37bdd77b100c52dd"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-shrinkwrap.md@diff19",
+      "path": "docs/lib/content/commands/npm-shrinkwrap.md",
+      "kind": "diff",
+      "bytes": 578,
+      "sha256": "7c3e5ddcb99225dbf104db4e8872940963f3b3e4a4d5aad0cba95cd8a2ac4864"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-start.md@diff19",
+      "path": "docs/lib/content/commands/npm-start.md",
+      "kind": "diff",
+      "bytes": 869,
+      "sha256": "12b6a30179112b71b955dd376ff4899624fa755818b778d3b9e5fb929dcbefec"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-stop.md@diff19",
+      "path": "docs/lib/content/commands/npm-stop.md",
+      "kind": "diff",
+      "bytes": 439,
+      "sha256": "3c4f2b26e3dadc17d4227869a95b1d877601820b88f8065e95b0e11f999bdb3a"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-test.md@diff19",
+      "path": "docs/lib/content/commands/npm-test.md",
+      "kind": "diff",
+      "bytes": 445,
+      "sha256": "8509aa0cae681350ee12cff0d641008cab7f21ecdfa026156994db5a804db545"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-version.md@diff19",
+      "path": "docs/lib/content/commands/npm-version.md",
+      "kind": "diff",
+      "bytes": 520,
+      "sha256": "b3bfc99b396c20179ae945705127e097cd61a23079a68fab93af933765655a6d"
+    },
+    {
+      "key": "docs/lib/content/commands/npx.md@diff19",
+      "path": "docs/lib/content/commands/npx.md",
+      "kind": "diff",
+      "bytes": 463,
+      "sha256": "c97e631c3bd7adc2ca3fbe4bbae81939e40a2eb03aaab1240a44c9bccfa86510"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/package-json.md@diff19",
+      "path": "docs/lib/content/configuring-npm/package-json.md",
+      "kind": "diff",
+      "bytes": 667,
+      "sha256": "6f34d2e727f9e8dec65c6cfc72f589cd68d8afe0eea50ae4830891f16c5b5396"
+    },
+    {
+      "key": "docs/lib/content/using-npm/scripts.md@diff19",
+      "path": "docs/lib/content/using-npm/scripts.md",
+      "kind": "diff",
+      "bytes": 1341,
+      "sha256": "c2fac6bfd0f7a94aa87094d3baafd5f3f0090d864c723c3ebd8901d259ee42f7"
+    },
+    {
+      "key": "docs/lib/content/using-npm/workspaces.md@diff19",
+      "path": "docs/lib/content/using-npm/workspaces.md",
+      "kind": "diff",
+      "bytes": 473,
+      "sha256": "93931edb1276729e8e6a832025500e9227819b6631cda5e6dec0a6581ae0de77"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/package-json.md@diff20",
+      "path": "docs/lib/content/configuring-npm/package-json.md",
+      "kind": "diff",
+      "bytes": 661,
+      "sha256": "73fcc3cd909bf30d69921ec96cdca582daae1fca97dab3969bc4382ec11445f9"
+    },
+    {
+      "key": "docs/lib/content/using-npm/developers.md@diff21",
+      "path": "docs/lib/content/using-npm/developers.md",
+      "kind": "diff",
+      "bytes": 492,
+      "sha256": "82800e0f99441f7be333a4f7d03402b3ef8bead11e8b53b6e9119b1f52b3fb12"
+    },
+    {
+      "key": "docs/lib/content/commands/npm-init.md@diff22",
+      "path": "docs/lib/content/commands/npm-init.md",
+      "kind": "diff",
+      "bytes": 494,
+      "sha256": "f5edd19aae5ea4cb4d4fd4a2fb6dbd481b1f494c5946cbda0c024572c3a19768"
+    },
+    {
+      "key": "docs/lib/content/using-npm/registry.md@diff23",
+      "path": "docs/lib/content/using-npm/registry.md",
+      "kind": "diff",
+      "bytes": 748,
+      "sha256": "d6fcb7e4fd59bd068ce4ec5685bb0c987566f4a27d1c243b0a07f882c2bd255e"
+    },
+    {
+      "key": "docs/lib/content/using-npm/scripts.md@diff24",
+      "path": "docs/lib/content/using-npm/scripts.md",
+      "kind": "diff",
+      "bytes": 2138,
+      "sha256": "104b7276a364e4b005f8c372693a9918dfdaab76ee44925abcbda880fa4872ec"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/package-json.md@diff25",
+      "path": "docs/lib/content/configuring-npm/package-json.md",
+      "kind": "diff",
+      "bytes": 486,
+      "sha256": "8d07c24aaba4e62e15744df8e0529598ab5fba90e6d87182ad396626f77d4d62"
+    },
+    {
+      "key": "docs/lib/content/using-npm/scripts.md@diff26",
+      "path": "docs/lib/content/using-npm/scripts.md",
+      "kind": "diff",
+      "bytes": 638,
+      "sha256": "3a85b1bca67e23c7d77268e8ee29fce48c6cdaa54469e2492ca27a1859208032"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/folders.md@diff27",
+      "path": "docs/lib/content/configuring-npm/folders.md",
+      "kind": "diff",
+      "bytes": 876,
+      "sha256": "60025121a2ead1e4f367f10a9859a3b1def3d9f121f2cd2f82ed97fbc5a98d85"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/install.md@diff28",
+      "path": "docs/lib/content/configuring-npm/install.md",
+      "kind": "diff",
+      "bytes": 831,
+      "sha256": "3500b91c5fead5dd61a05ec3921d85f22b51ed8eb7a7ed6b4573a05a6f8b3e55"
+    },
+    {
+      "key": "docs/lib/content/using-npm/scripts.md@diff29",
+      "path": "docs/lib/content/using-npm/scripts.md",
+      "kind": "diff",
+      "bytes": 769,
+      "sha256": "239f494dad62a350a7a02486f4f7dadfc5659f843a475eefff6593727c87692f"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/install.md@diff30",
+      "path": "docs/lib/content/configuring-npm/install.md",
+      "kind": "diff",
+      "bytes": 610,
+      "sha256": "5c2560f725c97cb8704668eaa12da496b4e1c6f8d327d991c45a041bd48d8a55"
+    },
+    {
+      "key": "docs/lib/content/configuring-npm/npmrc.md@diff31",
+      "path": "docs/lib/content/configuring-npm/npmrc.md",
+      "kind": "diff",
+      "bytes": 888,
+      "sha256": "e98cd70659b7dee128bdf54f7f4b28d08c6b0acf36a18d6827b329602229de7a"
+    }
+  ]
+}

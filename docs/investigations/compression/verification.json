@@ -1,0 +1,8 @@
+{
+  "corpus_continuity": 66,
+  "browser_support": 54,
+  "native_decode_hash_checks": 150,
+  "browser_decode_hash_checks": 168,
+  "compression_roundtrips": 10747,
+  "unexpected_failures": 0
+}
