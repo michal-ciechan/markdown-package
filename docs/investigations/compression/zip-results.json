@@ -1,0 +1,598 @@
+{
+  "versions": {
+    "python": "3.10.2",
+    "zlib": "1.2.11"
+  },
+  "corpora": [
+    {
+      "corpus": "npm",
+      "raw_bytes": 345157,
+      "tar_raw_bytes": 450560,
+      "tar_gzip_bytes": 102175,
+      "tar_zstd_bytes": 89001,
+      "tar_format": "PAX, uid/gid/mtime=0, uname/gname empty, mode=0644, 10240-byte records",
+      "best_solid_codec": "brotli-11",
+      "best_solid_bytes": 74379,
+      "rows": [
+        {
+          "variant": "best-solid-brotli-11",
+          "bytes": 74379,
+          "over_best_solid_pct": 0.0
+        },
+        {
+          "variant": "whole-gzip-6",
+          "bytes": 95662,
+          "over_best_solid_pct": 28.614259401175058
+        },
+        {
+          "variant": "per-entry-gzip-6",
+          "bytes": 142863,
+          "over_best_solid_pct": 92.07437583188802
+        },
+        {
+          "variant": "zip-deflate-6",
+          "bytes": 162453,
+          "over_best_solid_pct": 118.41245512846368,
+          "sha256": "14f3c833b0af4abe78e7f1a67d119270b1f1ba9ccbe5532f70230cf3944c6166",
+          "payload_bytes": 140505,
+          "overhead_bytes": 21948,
+          "eocd_offset": 162431,
+          "cd_offset": 150420,
+          "cd_bytes": 12011,
+          "count": 131,
+          "comment_bytes": 0
+        },
+        {
+          "variant": "zip-stored",
+          "bytes": 367105,
+          "over_best_solid_pct": 393.5600102179379,
+          "sha256": "5f123916a2a9ff436b263344924fb01fcb168ab7c491e22905415523c4fecc84",
+          "payload_bytes": 345157,
+          "overhead_bytes": 21948,
+          "eocd_offset": 367083,
+          "cd_offset": 355072,
+          "cd_bytes": 12011,
+          "count": 131,
+          "comment_bytes": 0
+        },
+        {
+          "variant": "zip-solid-tar-gzip-6",
+          "bytes": 102301,
+          "over_best_solid_pct": 37.54016590704366,
+          "sha256": "1186dc6fae443f78a4701753dced01490bd102388ca300c631ca7ba9b774354e",
+          "payload_bytes": 102175,
+          "overhead_bytes": 126,
+          "eocd_offset": 102279,
+          "cd_offset": 102219,
+          "cd_bytes": 60,
+          "count": 1,
+          "comment_bytes": 0
+        },
+        {
+          "variant": "zip-solid-tar-zstd-9",
+          "bytes": 89129,
+          "over_best_solid_pct": 19.830866239126642,
+          "sha256": "9d2b871441cfe7521dc29f689f873fe84b4fdddee255d8605135a4e13b2fb439",
+          "payload_bytes": 89001,
+          "overhead_bytes": 128,
+          "eocd_offset": 89107,
+          "cd_offset": 89046,
+          "cd_bytes": 61,
+          "count": 1,
+          "comment_bytes": 0
+        },
+        {
+          "variant": "zip-block64k-tar-gzip-6",
+          "bytes": 116194,
+          "over_best_solid_pct": 56.218825206039334,
+          "sha256": "f51a4fae1d9bbb0b9bd6b291045a48b3b724c6cfe9262bbcd69c6cdb88dfa286",
+          "payload_bytes": 115388,
+          "overhead_bytes": 806,
+          "eocd_offset": 116172,
+          "cd_offset": 115724,
+          "cd_bytes": 448,
+          "count": 7,
+          "comment_bytes": 0
+        },
+        {
+          "variant": "zip-dual-deflate-and-solid-gzip",
+          "bytes": 264746,
+          "over_best_solid_pct": 255.94186531144544,
+          "sha256": "20c3c97d1f5a1a8fb55cc3a17be26286bf0bec9645f8920d18c71ab0998a1952",
+          "payload_bytes": 242680,
+          "overhead_bytes": 22066,
+          "eocd_offset": 264724,
+          "cd_offset": 252646,
+          "cd_bytes": 12078,
+          "count": 132,
+          "comment_bytes": 0
+        },
+        {
+          "variant": "zip-deflate-versioned",
+          "bytes": 162618,
+          "over_best_solid_pct": 118.63429193724033,
+          "sha256": "c62dd967c2b494e79a2acde66a66ce91e4925204be2eb1e91f9714ed425b5482",
+          "payload_bytes": 140547,
+          "overhead_bytes": 22071,
+          "eocd_offset": 162589,
+          "cd_offset": 150512,
+          "cd_bytes": 12077,
+          "count": 132,
+          "comment_bytes": 7
+        }
+      ],
+      "access": [
+        {
+          "variant": "best-solid-brotli-11",
+          "document_payload_bytes": 74379,
+          "section_payload_bytes": 74379,
+          "document_decode_bytes": 345157,
+          "section_decode_bytes": 345157
+        },
+        {
+          "variant": "whole-gzip-6",
+          "document_payload_bytes": 95662,
+          "section_payload_bytes": 95662,
+          "document_decode_bytes": 345157,
+          "section_decode_bytes": 345157
+        },
+        {
+          "variant": "per-entry-gzip-6",
+          "document_payload_bytes": 2240,
+          "section_payload_bytes": 2240,
+          "document_decode_bytes": 6115,
+          "section_decode_bytes": 6115
+        },
+        {
+          "variant": "zip-deflate-6",
+          "document_payload_bytes": 2222,
+          "section_payload_bytes": 2222,
+          "document_decode_bytes": 6115,
+          "section_decode_bytes": 6115,
+          "member": "docs/lib/content/using-npm/workspaces.md@base",
+          "local_header_offset": 147840,
+          "local_header_bytes": 75,
+          "data_offset": 147915,
+          "metadata": {
+            "eocd_offset": 162431,
+            "cd_offset": 150420,
+            "cd_bytes": 12011,
+            "count": 131,
+            "comment_bytes": 0
+          }
+        },
+        {
+          "variant": "zip-stored",
+          "document_payload_bytes": 6115,
+          "section_payload_bytes": 851,
+          "document_decode_bytes": 0,
+          "section_decode_bytes": 0,
+          "member": "docs/lib/content/using-npm/workspaces.md@base",
+          "local_header_offset": 348332,
+          "local_header_bytes": 75,
+          "data_offset": 348407,
+          "metadata": {
+            "eocd_offset": 367083,
+            "cd_offset": 355072,
+            "cd_bytes": 12011,
+            "count": 131,
+            "comment_bytes": 0
+          }
+        },
+        {
+          "variant": "zip-solid-tar-gzip-6",
+          "document_payload_bytes": 102175,
+          "section_payload_bytes": 102175,
+          "document_decode_bytes": 450560,
+          "section_decode_bytes": 450560,
+          "member": "payload.tar.gz",
+          "local_header_offset": 0,
+          "local_header_bytes": 44,
+          "data_offset": 44,
+          "metadata": {
+            "eocd_offset": 102279,
+            "cd_offset": 102219,
+            "cd_bytes": 60,
+            "count": 1,
+            "comment_bytes": 0
+          }
+        },
+        {
+          "variant": "zip-solid-tar-zstd-9",
+          "document_payload_bytes": 89001,
+          "section_payload_bytes": 89001,
+          "document_decode_bytes": 450560,
+          "section_decode_bytes": 450560,
+          "member": "payload.tar.zst",
+          "local_header_offset": 0,
+          "local_header_bytes": 45,
+          "data_offset": 45,
+          "metadata": {
+            "eocd_offset": 89107,
+            "cd_offset": 89046,
+            "cd_bytes": 61,
+            "count": 1,
+            "comment_bytes": 0
+          }
+        },
+        {
+          "variant": "zip-block64k-tar-gzip-6",
+          "document_payload_bytes": 7828,
+          "section_payload_bytes": 7828,
+          "document_decode_bytes": 40960,
+          "section_decode_bytes": 40960,
+          "member": "blocks/0005.tar.gz",
+          "local_header_offset": 107848,
+          "local_header_bytes": 48,
+          "data_offset": 107896,
+          "metadata": {
+            "eocd_offset": 116172,
+            "cd_offset": 115724,
+            "cd_bytes": 448,
+            "count": 7,
+            "comment_bytes": 0
+          },
+          "mapping_bytes": 8316,
+          "mapping_local_header_bytes": 48
+        },
+        {
+          "variant": "zip-dual-deflate-and-solid-gzip",
+          "document_payload_bytes": 2222,
+          "section_payload_bytes": 2222,
+          "document_decode_bytes": 6115,
+          "section_decode_bytes": 6115,
+          "member": "docs/lib/content/using-npm/workspaces.md@base",
+          "local_header_offset": 147840,
+          "local_header_bytes": 75,
+          "data_offset": 147915,
+          "metadata": {
+            "eocd_offset": 264724,
+            "cd_offset": 252646,
+            "cd_bytes": 12078,
+            "count": 132,
+            "comment_bytes": 0
+          }
+        },
+        {
+          "variant": "zip-deflate-versioned",
+          "document_payload_bytes": 2222,
+          "section_payload_bytes": 2222,
+          "document_decode_bytes": 6115,
+          "section_decode_bytes": 6115,
+          "member": "docs/lib/content/using-npm/workspaces.md@base",
+          "local_header_offset": 147932,
+          "local_header_bytes": 75,
+          "data_offset": 148007,
+          "metadata": {
+            "eocd_offset": 162589,
+            "cd_offset": 150512,
+            "cd_bytes": 12077,
+            "count": 132,
+            "comment_bytes": 7
+          }
+        }
+      ],
+      "block_count": 6,
+      "block_mapping_bytes": 8316,
+      "target": {
+        "key": "docs/lib/content/using-npm/workspaces.md@base",
+        "bytes": 6115,
+        "sha256": "ecea82b761999c0fac8ddcc844b55523039770a80448a9e1f73ba35fc087fa11",
+        "raw_offset": 338569,
+        "section": {
+          "heading": "### Description",
+          "offset": 75,
+          "bytes": 851,
+          "sha256": "62ed0c8e9a09ca73526e571630d0f61315dee796a831309b59aeab96b1f5458e"
+        }
+      }
+    },
+    {
+      "corpus": "rust",
+      "raw_bytes": 9431582,
+      "tar_raw_bytes": 9953280,
+      "tar_gzip_bytes": 2959250,
+      "tar_zstd_bytes": 2530259,
+      "tar_format": "PAX, uid/gid/mtime=0, uname/gname empty, mode=0644, 10240-byte records",
+      "best_solid_codec": "xz-6",
+      "best_solid_bytes": 2168300,
+      "rows": [
+        {
+          "variant": "best-solid-xz-6",
+          "bytes": 2168300,
+          "over_best_solid_pct": 0.0
+        },
+        {
+          "variant": "whole-gzip-6",
+          "bytes": 2914070,
+          "over_best_solid_pct": 34.39422589125121
+        },
+        {
+          "variant": "per-entry-gzip-6",
+          "bytes": 3332597,
+          "over_best_solid_pct": 53.69630586173499
+        },
+        {
+          "variant": "zip-deflate-6",
+          "bytes": 3420017,
+          "over_best_solid_pct": 57.72803578840566,
+          "sha256": "df60d21313a7d5b0a80dd4d459a5760f31c1c2cbf140a132721c1ef15956d425",
+          "payload_bytes": 3320573,
+          "overhead_bytes": 99444,
+          "eocd_offset": 3419995,
+          "cd_offset": 3364940,
+          "cd_bytes": 55055,
+          "count": 668,
+          "comment_bytes": 0
+        },
+        {
+          "variant": "zip-stored",
+          "bytes": 9531026,
+          "over_best_solid_pct": 339.56214545957664,
+          "sha256": "7e1ea0636d4f73c902c383a8f9e0eec13d64b2a88398a025cda45a1c1f13e10c",
+          "payload_bytes": 9431582,
+          "overhead_bytes": 99444,
+          "eocd_offset": 9531004,
+          "cd_offset": 9475949,
+          "cd_bytes": 55055,
+          "count": 668,
+          "comment_bytes": 0
+        },
+        {
+          "variant": "zip-solid-tar-gzip-6",
+          "bytes": 2959376,
+          "over_best_solid_pct": 36.48369690540976,
+          "sha256": "e03995e0ba7272154fb67b44dcdac8713158eac42b99097cc481dfbd50963a03",
+          "payload_bytes": 2959250,
+          "overhead_bytes": 126,
+          "eocd_offset": 2959354,
+          "cd_offset": 2959294,
+          "cd_bytes": 60,
+          "count": 1,
+          "comment_bytes": 0
+        },
+        {
+          "variant": "zip-solid-tar-zstd-9",
+          "bytes": 2530387,
+          "over_best_solid_pct": 16.699119125582264,
+          "sha256": "f264a8e7831792d9c1ff8316043bba693f7c375f5d84c52cca690011100b3d61",
+          "payload_bytes": 2530259,
+          "overhead_bytes": 128,
+          "eocd_offset": 2530365,
+          "cd_offset": 2530304,
+          "cd_bytes": 61,
+          "count": 1,
+          "comment_bytes": 0
+        },
+        {
+          "variant": "zip-block64k-tar-gzip-6",
+          "bytes": 3178708,
+          "over_best_solid_pct": 46.599086842226626,
+          "sha256": "de890a881547b57bb9cbb190925c8a652924f8f9e343f08729b3d30473045fa5",
+          "payload_bytes": 3159422,
+          "overhead_bytes": 19286,
+          "eocd_offset": 3178686,
+          "cd_offset": 3167678,
+          "cd_bytes": 11008,
+          "count": 172,
+          "comment_bytes": 0
+        },
+        {
+          "variant": "zip-dual-deflate-and-solid-gzip",
+          "bytes": 6379385,
+          "over_best_solid_pct": 194.2113637411797,
+          "sha256": "ed5ee14b37fa0216a16140a884e04328e06e8477ec9d4543eeab7f17c78858f2",
+          "payload_bytes": 6279823,
+          "overhead_bytes": 99562,
+          "eocd_offset": 6379363,
+          "cd_offset": 6324241,
+          "cd_bytes": 55122,
+          "count": 669,
+          "comment_bytes": 0
+        },
+        {
+          "variant": "zip-deflate-versioned",
+          "bytes": 3420182,
+          "over_best_solid_pct": 57.73564543651708,
+          "sha256": "9fc84ddc2a87edf8f06ce6f017e640a10a4308c71346937501405aaa5054af79",
+          "payload_bytes": 3320615,
+          "overhead_bytes": 99567,
+          "eocd_offset": 3420153,
+          "cd_offset": 3365032,
+          "cd_bytes": 55121,
+          "count": 669,
+          "comment_bytes": 7
+        }
+      ],
+      "access": [
+        {
+          "variant": "best-solid-xz-6",
+          "document_payload_bytes": 2168300,
+          "section_payload_bytes": 2168300,
+          "document_decode_bytes": 9431582,
+          "section_decode_bytes": 9431582
+        },
+        {
+          "variant": "whole-gzip-6",
+          "document_payload_bytes": 2914070,
+          "section_payload_bytes": 2914070,
+          "document_decode_bytes": 9431582,
+          "section_decode_bytes": 9431582
+        },
+        {
+          "variant": "per-entry-gzip-6",
+          "document_payload_bytes": 3227,
+          "section_payload_bytes": 3227,
+          "document_decode_bytes": 8057,
+          "section_decode_bytes": 8057
+        },
+        {
+          "variant": "zip-deflate-6",
+          "document_payload_bytes": 3209,
+          "section_payload_bytes": 3209,
+          "document_decode_bytes": 8057,
+          "section_decode_bytes": 8057,
+          "member": "text/3872-crates-io-security.md@base",
+          "local_header_offset": 3188409,
+          "local_header_bytes": 66,
+          "data_offset": 3188475,
+          "metadata": {
+            "eocd_offset": 3419995,
+            "cd_offset": 3364940,
+            "cd_bytes": 55055,
+            "count": 668,
+            "comment_bytes": 0
+          }
+        },
+        {
+          "variant": "zip-stored",
+          "document_payload_bytes": 8057,
+          "section_payload_bytes": 175,
+          "document_decode_bytes": 0,
+          "section_decode_bytes": 0,
+          "member": "text/3872-crates-io-security.md@base",
+          "local_header_offset": 8829169,
+          "local_header_bytes": 66,
+          "data_offset": 8829235,
+          "metadata": {
+            "eocd_offset": 9531004,
+            "cd_offset": 9475949,
+            "cd_bytes": 55055,
+            "count": 668,
+            "comment_bytes": 0
+          }
+        },
+        {
+          "variant": "zip-solid-tar-gzip-6",
+          "document_payload_bytes": 2959250,
+          "section_payload_bytes": 2959250,
+          "document_decode_bytes": 9953280,
+          "section_decode_bytes": 9953280,
+          "member": "payload.tar.gz",
+          "local_header_offset": 0,
+          "local_header_bytes": 44,
+          "data_offset": 44,
+          "metadata": {
+            "eocd_offset": 2959354,
+            "cd_offset": 2959294,
+            "cd_bytes": 60,
+            "count": 1,
+            "comment_bytes": 0
+          }
+        },
+        {
+          "variant": "zip-solid-tar-zstd-9",
+          "document_payload_bytes": 2530259,
+          "section_payload_bytes": 2530259,
+          "document_decode_bytes": 9953280,
+          "section_decode_bytes": 9953280,
+          "member": "payload.tar.zst",
+          "local_header_offset": 0,
+          "local_header_bytes": 45,
+          "data_offset": 45,
+          "metadata": {
+            "eocd_offset": 2530365,
+            "cd_offset": 2530304,
+            "cd_bytes": 61,
+            "count": 1,
+            "comment_bytes": 0
+          }
+        },
+        {
+          "variant": "zip-block64k-tar-gzip-6",
+          "document_payload_bytes": 15231,
+          "section_payload_bytes": 15231,
+          "document_decode_bytes": 61440,
+          "section_decode_bytes": 61440,
+          "member": "blocks/0160.tar.gz",
+          "local_header_offset": 2985455,
+          "local_header_bytes": 48,
+          "data_offset": 2985503,
+          "metadata": {
+            "eocd_offset": 3178686,
+            "cd_offset": 3167678,
+            "cd_bytes": 11008,
+            "count": 172,
+            "comment_bytes": 0
+          },
+          "mapping_bytes": 37146,
+          "mapping_local_header_bytes": 48
+        },
+        {
+          "variant": "zip-dual-deflate-and-solid-gzip",
+          "document_payload_bytes": 3209,
+          "section_payload_bytes": 3209,
+          "document_decode_bytes": 8057,
+          "section_decode_bytes": 8057,
+          "member": "text/3872-crates-io-security.md@base",
+          "local_header_offset": 3188409,
+          "local_header_bytes": 66,
+          "data_offset": 3188475,
+          "metadata": {
+            "eocd_offset": 6379363,
+            "cd_offset": 6324241,
+            "cd_bytes": 55122,
+            "count": 669,
+            "comment_bytes": 0
+          }
+        },
+        {
+          "variant": "zip-deflate-versioned",
+          "document_payload_bytes": 3209,
+          "section_payload_bytes": 3209,
+          "document_decode_bytes": 8057,
+          "section_decode_bytes": 8057,
+          "member": "text/3872-crates-io-security.md@base",
+          "local_header_offset": 3188501,
+          "local_header_bytes": 66,
+          "data_offset": 3188567,
+          "metadata": {
+            "eocd_offset": 3420153,
+            "cd_offset": 3365032,
+            "cd_bytes": 55121,
+            "count": 669,
+            "comment_bytes": 7
+          }
+        }
+      ],
+      "block_count": 171,
+      "block_mapping_bytes": 37146,
+      "target": {
+        "key": "text/3872-crates-io-security.md@base",
+        "bytes": 8057,
+        "sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437",
+        "raw_offset": 8786499,
+        "section": {
+          "heading": "## Summary",
+          "offset": 233,
+          "bytes": 175,
+          "sha256": "b5ccc9da2db70793c193f1d2838c84efe4d269f2ac2428d88fc7cf4bd3cd64ac"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "maximum": {
+      "bytes": 262261,
+      "local_extra_bytes": 65535,
+      "custom_payload_bytes": 65531,
+      "entry_comment_bytes": 65535,
+      "eocd_offset": 196704,
+      "cd_offset": 65577,
+      "cd_bytes": 131127,
+      "count": 1,
+      "comment_bytes": 65535
+    },
+    "version_profile": {
+      "manifest_bytes": 42,
+      "eocd_comment_bytes": 7
+    }
+  },
+  "checks": {
+    "corpus_entries": 799,
+    "baseline_sizes": 4,
+    "payload_roundtrips": 5780,
+    "document_section_hashes": 32,
+    "metadata_boundaries": 6
+  }
+}

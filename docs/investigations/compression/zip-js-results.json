@@ -1,0 +1,1952 @@
+{
+  "versions": {
+    "node": "v24.6.0",
+    "fflate": "0.8.2"
+  },
+  "cases": [
+    {
+      "case": "normal",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      }
+    },
+    {
+      "case": "prefix-1-adjusted",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      }
+    },
+    {
+      "case": "prefix-1-unadjusted",
+      "accepted": false,
+      "hashes": {
+        "\u0000manifest.jsonmÐ\u0007\u0000MDPKG/1entry-version=1PK\u0001\u0002\u0014\u0003\u0014\u0000\u0000\u0000\b\u0000\u0000\u0000!\u0000\rl\u0007\u0001\u0000\u0000h6\u0002\u0000\u000b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000¤`\u0000\u0000\u0000document.mdPK\u0005\u0006\u0000\u0000\u0000\u0000\u0002\u0000\u0002\u0000\u0000\u0000\u0000\u001b\u0002\u0000\u0000\u0007\u0000MDPKG/1": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "case": "prefix-3-adjusted",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      }
+    },
+    {
+      "case": "prefix-3-unadjusted",
+      "accepted": false,
+      "hashes": {
+        "": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "range": [
+    {
+      "corpus": "npm",
+      "variant": "zip-deflate-6",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 162453,
+      "metadataWireBytes": 65557,
+      "wireBytes": 65557,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 96896,
+          "bytes": 65557,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-deflate-6",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 162453,
+      "metadataWireBytes": 65557,
+      "wireBytes": 65557,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 96896,
+          "bytes": 65557,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-deflate-6",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 162453,
+      "metadataWireBytes": 12033,
+      "wireBytes": 14285,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 162431,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "150420-162430",
+          "start": 150420,
+          "bytes": 12011,
+          "status": 206
+        },
+        {
+          "range": "147840-147869",
+          "start": 147840,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "147915-150136",
+          "start": 147915,
+          "bytes": 2222,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-deflate-6",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 162453,
+      "metadataWireBytes": 12033,
+      "wireBytes": 14285,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 162431,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "150420-162430",
+          "start": 150420,
+          "bytes": 12011,
+          "status": 206
+        },
+        {
+          "range": "147840-147869",
+          "start": 147840,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "147915-150136",
+          "start": 147915,
+          "bytes": 2222,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-stored",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 367105,
+      "metadataWireBytes": 65557,
+      "wireBytes": 65557,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 301548,
+          "bytes": 65557,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-stored",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 367105,
+      "metadataWireBytes": 65557,
+      "wireBytes": 65557,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 301548,
+          "bytes": 65557,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-stored",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 367105,
+      "metadataWireBytes": 12033,
+      "wireBytes": 18178,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 367083,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "355072-367082",
+          "start": 355072,
+          "bytes": 12011,
+          "status": 206
+        },
+        {
+          "range": "348332-348361",
+          "start": 348332,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "348407-354521",
+          "start": 348407,
+          "bytes": 6115,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-stored",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 367105,
+      "metadataWireBytes": 12033,
+      "wireBytes": 12914,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 367083,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "355072-367082",
+          "start": 355072,
+          "bytes": 12011,
+          "status": 206
+        },
+        {
+          "range": "348332-348361",
+          "start": 348332,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "348482-349332",
+          "start": 348482,
+          "bytes": 851,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-solid-tar-gzip-6",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 102301,
+      "metadataWireBytes": 65557,
+      "wireBytes": 102287,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 36744,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "44-36743",
+          "start": 44,
+          "bytes": 36700,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-solid-tar-gzip-6",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 102301,
+      "metadataWireBytes": 65557,
+      "wireBytes": 102287,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 36744,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "44-36743",
+          "start": 44,
+          "bytes": 36700,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-solid-tar-gzip-6",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 102301,
+      "metadataWireBytes": 82,
+      "wireBytes": 102287,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 102279,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "102219-102278",
+          "start": 102219,
+          "bytes": 60,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "44-102218",
+          "start": 44,
+          "bytes": 102175,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-solid-tar-gzip-6",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 102301,
+      "metadataWireBytes": 82,
+      "wireBytes": 102287,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 102279,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "102219-102278",
+          "start": 102219,
+          "bytes": 60,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "44-102218",
+          "start": 44,
+          "bytes": 102175,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-solid-tar-zstd-9",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 89129,
+      "metadataWireBytes": 65557,
+      "wireBytes": 89114,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 23572,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "45-23571",
+          "start": 45,
+          "bytes": 23527,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-solid-tar-zstd-9",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 89129,
+      "metadataWireBytes": 65557,
+      "wireBytes": 89114,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 23572,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "45-23571",
+          "start": 45,
+          "bytes": 23527,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-solid-tar-zstd-9",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 89129,
+      "metadataWireBytes": 83,
+      "wireBytes": 89114,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 89107,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "89046-89106",
+          "start": 89046,
+          "bytes": 61,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "45-89045",
+          "start": 45,
+          "bytes": 89001,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-solid-tar-zstd-9",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 89129,
+      "metadataWireBytes": 83,
+      "wireBytes": 89114,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 89107,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "89046-89106",
+          "start": 89046,
+          "bytes": 61,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "45-89045",
+          "start": 45,
+          "bytes": 89001,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-block64k-tar-gzip-6",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 116194,
+      "metadataWireBytes": 65557,
+      "wireBytes": 73903,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 50637,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "48-8363",
+          "start": 48,
+          "bytes": 8316,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-block64k-tar-gzip-6",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 116194,
+      "metadataWireBytes": 65557,
+      "wireBytes": 73903,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 50637,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "48-8363",
+          "start": 48,
+          "bytes": 8316,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-block64k-tar-gzip-6",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 116194,
+      "metadataWireBytes": 470,
+      "wireBytes": 16674,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 116172,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "115724-116171",
+          "start": 115724,
+          "bytes": 448,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "48-8363",
+          "start": 48,
+          "bytes": 8316,
+          "status": 206
+        },
+        {
+          "range": "107848-107877",
+          "start": 107848,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "107896-115723",
+          "start": 107896,
+          "bytes": 7828,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-block64k-tar-gzip-6",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 116194,
+      "metadataWireBytes": 470,
+      "wireBytes": 16674,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 116172,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "115724-116171",
+          "start": 115724,
+          "bytes": 448,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "48-8363",
+          "start": 48,
+          "bytes": 8316,
+          "status": 206
+        },
+        {
+          "range": "107848-107877",
+          "start": 107848,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "107896-115723",
+          "start": 107896,
+          "bytes": 7828,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-dual-deflate-and-solid-gzip",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 264746,
+      "metadataWireBytes": 65557,
+      "wireBytes": 67809,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 199189,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "147840-147869",
+          "start": 147840,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "147915-150136",
+          "start": 147915,
+          "bytes": 2222,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-dual-deflate-and-solid-gzip",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 264746,
+      "metadataWireBytes": 65557,
+      "wireBytes": 67809,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 199189,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "147840-147869",
+          "start": 147840,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "147915-150136",
+          "start": 147915,
+          "bytes": 2222,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-dual-deflate-and-solid-gzip",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 264746,
+      "metadataWireBytes": 12100,
+      "wireBytes": 14352,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 264724,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "252646-264723",
+          "start": 252646,
+          "bytes": 12078,
+          "status": 206
+        },
+        {
+          "range": "147840-147869",
+          "start": 147840,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "147915-150136",
+          "start": 147915,
+          "bytes": 2222,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-dual-deflate-and-solid-gzip",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 264746,
+      "metadataWireBytes": 12100,
+      "wireBytes": 14352,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 264724,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "252646-264723",
+          "start": 252646,
+          "bytes": 12078,
+          "status": 206
+        },
+        {
+          "range": "147840-147869",
+          "start": 147840,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "147915-150136",
+          "start": 147915,
+          "bytes": 2222,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-deflate-versioned",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 162618,
+      "metadataWireBytes": 65557,
+      "wireBytes": 65557,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 97061,
+          "bytes": 65557,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-deflate-versioned",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 162618,
+      "metadataWireBytes": 65557,
+      "wireBytes": 65557,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 97061,
+          "bytes": 65557,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-deflate-versioned",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 162618,
+      "metadataWireBytes": 65557,
+      "wireBytes": 65557,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 162596,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "97061-162595",
+          "start": 97061,
+          "bytes": 65535,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "npm",
+      "variant": "zip-deflate-versioned",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 162618,
+      "metadataWireBytes": 65557,
+      "wireBytes": 65557,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 162596,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "97061-162595",
+          "start": 97061,
+          "bytes": 65535,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-deflate-6",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 3420017,
+      "metadataWireBytes": 65557,
+      "wireBytes": 68796,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 3354460,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "3188409-3188438",
+          "start": 3188409,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "3188475-3191683",
+          "start": 3188475,
+          "bytes": 3209,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-deflate-6",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 3420017,
+      "metadataWireBytes": 65557,
+      "wireBytes": 68796,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 3354460,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "3188409-3188438",
+          "start": 3188409,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "3188475-3191683",
+          "start": 3188475,
+          "bytes": 3209,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-deflate-6",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 3420017,
+      "metadataWireBytes": 55077,
+      "wireBytes": 58316,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 3419995,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "3364940-3419994",
+          "start": 3364940,
+          "bytes": 55055,
+          "status": 206
+        },
+        {
+          "range": "3188409-3188438",
+          "start": 3188409,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "3188475-3191683",
+          "start": 3188475,
+          "bytes": 3209,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-deflate-6",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 3420017,
+      "metadataWireBytes": 55077,
+      "wireBytes": 58316,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 3419995,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "3364940-3419994",
+          "start": 3364940,
+          "bytes": 55055,
+          "status": 206
+        },
+        {
+          "range": "3188409-3188438",
+          "start": 3188409,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "3188475-3191683",
+          "start": 3188475,
+          "bytes": 3209,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-stored",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 9531026,
+      "metadataWireBytes": 65557,
+      "wireBytes": 73644,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 9465469,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "8829169-8829198",
+          "start": 8829169,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "8829235-8837291",
+          "start": 8829235,
+          "bytes": 8057,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-stored",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 9531026,
+      "metadataWireBytes": 65557,
+      "wireBytes": 65762,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 9465469,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "8829169-8829198",
+          "start": 8829169,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "8829468-8829642",
+          "start": 8829468,
+          "bytes": 175,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-stored",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 9531026,
+      "metadataWireBytes": 55077,
+      "wireBytes": 63164,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 9531004,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "9475949-9531003",
+          "start": 9475949,
+          "bytes": 55055,
+          "status": 206
+        },
+        {
+          "range": "8829169-8829198",
+          "start": 8829169,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "8829235-8837291",
+          "start": 8829235,
+          "bytes": 8057,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-stored",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 9531026,
+      "metadataWireBytes": 55077,
+      "wireBytes": 55282,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 9531004,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "9475949-9531003",
+          "start": 9475949,
+          "bytes": 55055,
+          "status": 206
+        },
+        {
+          "range": "8829169-8829198",
+          "start": 8829169,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "8829468-8829642",
+          "start": 8829468,
+          "bytes": 175,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-solid-tar-gzip-6",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 2959376,
+      "metadataWireBytes": 65557,
+      "wireBytes": 2959362,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 2893819,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "44-2893818",
+          "start": 44,
+          "bytes": 2893775,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-solid-tar-gzip-6",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 2959376,
+      "metadataWireBytes": 65557,
+      "wireBytes": 2959362,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 2893819,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "44-2893818",
+          "start": 44,
+          "bytes": 2893775,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-solid-tar-gzip-6",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 2959376,
+      "metadataWireBytes": 82,
+      "wireBytes": 2959362,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 2959354,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "2959294-2959353",
+          "start": 2959294,
+          "bytes": 60,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "44-2959293",
+          "start": 44,
+          "bytes": 2959250,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-solid-tar-gzip-6",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 2959376,
+      "metadataWireBytes": 82,
+      "wireBytes": 2959362,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 2959354,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "2959294-2959353",
+          "start": 2959294,
+          "bytes": 60,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "44-2959293",
+          "start": 44,
+          "bytes": 2959250,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-solid-tar-zstd-9",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 2530387,
+      "metadataWireBytes": 65557,
+      "wireBytes": 2530372,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 2464830,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "45-2464829",
+          "start": 45,
+          "bytes": 2464785,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-solid-tar-zstd-9",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 2530387,
+      "metadataWireBytes": 65557,
+      "wireBytes": 2530372,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 2464830,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "45-2464829",
+          "start": 45,
+          "bytes": 2464785,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-solid-tar-zstd-9",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 2530387,
+      "metadataWireBytes": 83,
+      "wireBytes": 2530372,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 2530365,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "2530304-2530364",
+          "start": 2530304,
+          "bytes": 61,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "45-2530303",
+          "start": 45,
+          "bytes": 2530259,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-solid-tar-zstd-9",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 2530387,
+      "metadataWireBytes": 83,
+      "wireBytes": 2530372,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 2530365,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "2530304-2530364",
+          "start": 2530304,
+          "bytes": 61,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "45-2530303",
+          "start": 45,
+          "bytes": 2530259,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-block64k-tar-gzip-6",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 3178708,
+      "metadataWireBytes": 65557,
+      "wireBytes": 117994,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 3113151,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "48-37193",
+          "start": 48,
+          "bytes": 37146,
+          "status": 206
+        },
+        {
+          "range": "2985455-2985484",
+          "start": 2985455,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "2985503-3000733",
+          "start": 2985503,
+          "bytes": 15231,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-block64k-tar-gzip-6",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 3178708,
+      "metadataWireBytes": 65557,
+      "wireBytes": 117994,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 3113151,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "48-37193",
+          "start": 48,
+          "bytes": 37146,
+          "status": 206
+        },
+        {
+          "range": "2985455-2985484",
+          "start": 2985455,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "2985503-3000733",
+          "start": 2985503,
+          "bytes": 15231,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-block64k-tar-gzip-6",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 3178708,
+      "metadataWireBytes": 11030,
+      "wireBytes": 63467,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 3178686,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "3167678-3178685",
+          "start": 3167678,
+          "bytes": 11008,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "48-37193",
+          "start": 48,
+          "bytes": 37146,
+          "status": 206
+        },
+        {
+          "range": "2985455-2985484",
+          "start": 2985455,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "2985503-3000733",
+          "start": 2985503,
+          "bytes": 15231,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-block64k-tar-gzip-6",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 3178708,
+      "metadataWireBytes": 11030,
+      "wireBytes": 63467,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 3178686,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "3167678-3178685",
+          "start": 3167678,
+          "bytes": 11008,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "48-37193",
+          "start": 48,
+          "bytes": 37146,
+          "status": 206
+        },
+        {
+          "range": "2985455-2985484",
+          "start": 2985455,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "2985503-3000733",
+          "start": 2985503,
+          "bytes": 15231,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-dual-deflate-and-solid-gzip",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 6379385,
+      "metadataWireBytes": 65557,
+      "wireBytes": 68796,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 6313828,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "3188409-3188438",
+          "start": 3188409,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "3188475-3191683",
+          "start": 3188475,
+          "bytes": 3209,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-dual-deflate-and-solid-gzip",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 6379385,
+      "metadataWireBytes": 65557,
+      "wireBytes": 68796,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 6313828,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "3188409-3188438",
+          "start": 3188409,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "3188475-3191683",
+          "start": 3188475,
+          "bytes": 3209,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-dual-deflate-and-solid-gzip",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 6379385,
+      "metadataWireBytes": 55144,
+      "wireBytes": 58383,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 6379363,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "6324241-6379362",
+          "start": 6324241,
+          "bytes": 55122,
+          "status": 206
+        },
+        {
+          "range": "3188409-3188438",
+          "start": 3188409,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "3188475-3191683",
+          "start": 3188475,
+          "bytes": 3209,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-dual-deflate-and-solid-gzip",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 6379385,
+      "metadataWireBytes": 55144,
+      "wireBytes": 58383,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 6379363,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "6324241-6379362",
+          "start": 6324241,
+          "bytes": 55122,
+          "status": 206
+        },
+        {
+          "range": "3188409-3188438",
+          "start": 3188409,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "3188475-3191683",
+          "start": 3188475,
+          "bytes": 3209,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-deflate-versioned",
+      "unit": "document",
+      "tailBytes": 65557,
+      "totalBytes": 3420182,
+      "metadataWireBytes": 65557,
+      "wireBytes": 68796,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 3354625,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "3188501-3188530",
+          "start": 3188501,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "3188567-3191775",
+          "start": 3188567,
+          "bytes": 3209,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-deflate-versioned",
+      "unit": "section",
+      "tailBytes": 65557,
+      "totalBytes": 3420182,
+      "metadataWireBytes": 65557,
+      "wireBytes": 68796,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 3354625,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "3188501-3188530",
+          "start": 3188501,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "3188567-3191775",
+          "start": 3188567,
+          "bytes": 3209,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-deflate-versioned",
+      "unit": "document",
+      "tailBytes": 22,
+      "totalBytes": 3420182,
+      "metadataWireBytes": 65557,
+      "wireBytes": 68796,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 3420160,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "3354625-3420159",
+          "start": 3354625,
+          "bytes": 65535,
+          "status": 206
+        },
+        {
+          "range": "3188501-3188530",
+          "start": 3188501,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "3188567-3191775",
+          "start": 3188567,
+          "bytes": 3209,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    },
+    {
+      "corpus": "rust",
+      "variant": "zip-deflate-versioned",
+      "unit": "section",
+      "tailBytes": 22,
+      "totalBytes": 3420182,
+      "metadataWireBytes": 65557,
+      "wireBytes": 68796,
+      "requests": [
+        {
+          "range": "-22",
+          "start": 3420160,
+          "bytes": 22,
+          "status": 206
+        },
+        {
+          "range": "3354625-3420159",
+          "start": 3354625,
+          "bytes": 65535,
+          "status": 206
+        },
+        {
+          "range": "3188501-3188530",
+          "start": 3188501,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "3188567-3191775",
+          "start": 3188567,
+          "bytes": 3209,
+          "status": 206
+        }
+      ],
+      "payloadVerified": true
+    }
+  ],
+  "metadata": [
+    {
+      "file": "normal.zip",
+      "totalBytes": 710,
+      "metadataWireBytes": 710,
+      "withLocalExtraWireBytes": 710,
+      "commentBytes": 7,
+      "centralExtraPayloadBytes": 7,
+      "localExtraPayloadBytes": 7,
+      "cdBytes": 142,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 0,
+          "bytes": 710,
+          "status": 206
+        }
+      ]
+    },
+    {
+      "file": "metadata-maximum.zip",
+      "totalBytes": 262261,
+      "metadataWireBytes": 196684,
+      "withLocalExtraWireBytes": 262249,
+      "commentBytes": 65535,
+      "centralExtraPayloadBytes": 65531,
+      "localExtraPayloadBytes": 65531,
+      "cdBytes": 131127,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 196704,
+          "bytes": 65557,
+          "status": 206
+        },
+        {
+          "range": "65577-196703",
+          "start": 65577,
+          "bytes": 131127,
+          "status": 206
+        },
+        {
+          "range": "0-29",
+          "start": 0,
+          "bytes": 30,
+          "status": 206
+        },
+        {
+          "range": "41-65575",
+          "start": 41,
+          "bytes": 65535,
+          "status": 206
+        }
+      ]
+    },
+    {
+      "file": "comment-false-signature.zip",
+      "totalBytes": 141,
+      "metadataWireBytes": 141,
+      "withLocalExtraWireBytes": 141,
+      "commentBytes": 40,
+      "centralExtraPayloadBytes": 0,
+      "localExtraPayloadBytes": 0,
+      "cdBytes": 47,
+      "requests": [
+        {
+          "range": "-65557",
+          "start": 0,
+          "bytes": 141,
+          "status": 206
+        }
+      ]
+    }
+  ],
+  "rewrite": {
+    "file": "fflate-repacked.zip"
+  },
+  "adsHttpTransportSurvives": false,
+  "serverResponses": 198
+}

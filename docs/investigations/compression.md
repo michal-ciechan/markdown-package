@@ -2,9 +2,202 @@
 
 Status: investigation complete; recommendation for decision and consolidation, not an implemented format. Evidence checked on 2026-09-06.
 
-Recommend **one independent gzip member per entry, producer default level 6, no external dictionary**, with an uncompressed `stored` alternative for entries that would expand. This meets the browser requirement without a WASM dependency on the normal read path. Brotli gives smaller entries, and whole-package xz narrowly wins the large-corpus size comparison, but neither offers the same native browser coverage. Trained zstd dictionaries help, but do not remove the web decoder dependency or reliably recover most of the whole-package advantage after counting the dictionary.
+**ZIP follow-up recommendation:** if opening the package in ordinary ZIP tools is a requirement, use **ZIP method 8 (independent raw DEFLATE), producer level 6, with method 0 (stored) when smaller**. Put the authoritative version in a well-known stored manifest, preferably first, and optionally mirror it in a short EOCD comment. Direct document browsing and selective section access cost real bytes compared with solid compression. One solid tar.gz inside ZIP retains solid compression, but exposes only the nested archive and fails the required section access boundary. These are measured findings below, not an implemented format or an approved change to CARD-0001.
 
-## Proposed compression section
+The original **independent gzip / stored** recommendation remains the non-ZIP alternative. Its native browser argument still applies to DEFLATE, while ZIP supplies its own framing and CRC. The earlier codec, device and timing evidence is retained after the follow-up.
+
+## ZIP follow-up: size, metadata, compatibility and access
+
+### Complete ZIP sizes on the same corpora
+
+The follow-up reuses `benchmark.py`'s pinned git objects, 131 npm / 668 Rust entries, lexicographic `key` ordering and encoder versions. Every one of the **799 manifest entries matches** the prior run, and whole/per-entry gzip sizes match exactly. ZIP member names are the existing keys (`path.md@base` or `path.md@diffNN`); these identify experiment snapshots/diffs, not the final naming scheme. No directory entries, timestamps beyond the fixed ZIP epoch, extra fields, comments or descriptors are added to the plain rows. Every ZIP row includes both local and central headers, paths, CRCs and EOCD. The raw codec baselines still exclude paths/indexes and remain lower-bound comparators, as in the earlier report.
+
+“Over best solid” is `(bytes / best prior solid bytes - 1) × 100`, using **74,379 bytes, Brotli 11 for npm**, and **2,168,300 bytes, xz 6 for Rust**. It does not silently change the denominator to gzip. The requested tar.zst uses the prior **zstd level 9**, checksum and content-size enabled; it is not a search for the smallest possible tar.zst. Both solid tar members use ZIP **stored**, avoiding a second compression layer.
+
+<!-- ZIP_SIZE_START -->
+
+| Variant | npm bytes | Over best solid | Rust bytes | Over best solid |
+| --- | --- | --- | --- | --- |
+| Best prior solid (Brotli 11 npm / xz 6 Rust) | 74,379 | +0.00% | 2,168,300 | +0.00% |
+| Whole gzip 6, payload only | 95,662 | +28.61% | 2,914,070 | +34.39% |
+| Independent gzip 6, payload only | 142,863 | +92.07% | 3,332,597 | +53.70% |
+| ZIP, per-entry DEFLATE 6 | 162,453 | +118.41% | 3,420,017 | +57.73% |
+| ZIP, stored entries | 367,105 | +393.56% | 9,531,026 | +339.56% |
+| ZIP, one stored tar.gz (gzip 6) | 102,301 | +37.54% | 2,959,376 | +36.48% |
+| ZIP, one stored tar.zst (zstd 9) | 89,129 | +19.83% | 2,530,387 | +16.70% |
+| Hybrid: ZIP of 64 KiB tar.gz blocks + stored map | 116,194 | +56.22% | 3,178,708 | +46.60% |
+| Hybrid: DEFLATE files + duplicate solid tar.gz | 264,746 | +255.94% | 6,379,385 | +194.21% |
+| ZIP DEFLATE + stored version manifest + EOCD hint | 162,618 | +118.63% | 3,420,182 | +57.74% |
+
+<!-- ZIP_SIZE_END -->
+
+The tar construction is deterministic Python PAX tar: original payload bytes; uid/gid/mtime zero; empty user/group names; mode 0644; 512-byte member padding and 10,240-byte archive records. Decoded tar sizes are **450,560 / 9,953,280 bytes**. Tar paths, headers and padding therefore add work that the older concatenated-payload baseline did not have. The ZIP wrapper around tar.gz costs **126 bytes**; around tar.zst, **128 bytes**. Plain per-file ZIP metadata costs **21,948 / 99,444 bytes**; the compressed file data alone is the previous raw-DEFLATE row, **140,505 / 3,320,573 bytes**. Compared with independent gzip payloads, the complete browsable ZIP adds **19,590 / 87,420 bytes (13.71% / 2.62%)**.
+
+The versioned ZIP row adds exactly **165 bytes** on either corpus: a 42-byte `.mdpkg/manifest.json`, 116 bytes of local/central headers and path duplication, and the 7-byte comment `MDPKG/1`. This measures only version discovery. History and stable section identity metadata remain outside these plain rows; they must be counted when CARD-0005 has a representation.
+
+### The verdict and measured hybrids
+
+**Solid compression and a ZIP-openable outer file are achievable together. Solid-size storage and direct browsing of the individual Markdown documents by ordinary ZIP readers are a tradeoff for these standard encodings.** A reader sees one `payload.tar.gz`/`payload.tar.zst` member in the solid variants, not the documents inside it. Browsing that inner archive requires another decoder and a scan; Windows 10's ZIP handler can extract the outer member but is not being claimed to browse its tar contents. Renaming `.gz` to `.zip` or placing a gzip stream before a directory does not make its output ordinary independently extractable ZIP members.
+
+At the same DEFLATE level, the directly browsable ZIP is **69.82% / 17.36% larger than whole gzip payloads**, and **58.80% / 15.57% larger than ZIP with one tar.gz**. The solid tar.gz ZIP is only **6.94% / 1.55% above whole gzip**, including the actual tar envelope. Thus much of npm's cost is losing cross-document compression; ZIP's own headers are a smaller, separately measured cost.
+
+Two hybrids were constructed and verified:
+
+- **ZIP of independent 64 KiB-target tar.gz blocks with a stored lookup map:** **116,194 / 3,178,708 bytes**, saving **28.48% / 7.06%** against plain per-file ZIP. It contains **6 / 171** blocks, grouping the same complete entries as the earlier 64 KiB experiment. The map costs **8,316 / 37,146 bytes** and includes each key, block number, tar data offset and raw length. ZIP readers expose blocks; a package-aware reader can fetch one block. This satisfies “do not decode the whole package” on these corpora, but gives up direct file listing in ordinary ZIP tools. The target's tar blocks decode to **40,960 / 61,440 bytes**. The 64 KiB figure remains an input grouping target: oversized documents and tar overhead can exceed it.
+- **ZIP with both per-file DEFLATE entries and a duplicate stored solid tar.gz:** **264,746 / 6,379,385 bytes**. It gives ordinary file browsing plus a solid representation for consumers that choose it, but the file is **176.75% / 118.92% above whole gzip**. Its selective path is the ordinary document entry. This demonstrates that duplication delivers both access modes, at the sum of their storage costs. It is not recommended.
+
+Independent sections, bounded blocks or explicit DEFLATE restart/checkpoint indexes could introduce other tradeoffs. A central-directory entry pointing into the middle of an ordinary solid DEFLATE stream cannot supply its missing decoder history. No unmeasured checkpoint scheme is claimed to recover solid size or work with ordinary ZIP tools.
+
+### What can be read without decompression
+
+The following layout was exercised by `zip_benchmark.py` and the codec-free `zip_tail_reader.mjs`. Lengths are bytes, not Unicode characters. Field-width maxima are different from good interoperability limits.
+
+| Place | Capacity / encoding | Physical location | Readable from a tail request? |
+| --- | --- | --- | --- |
+| Archive comment | 0–65,535 bytes; 16-bit length | Immediately after the fixed 22-byte EOCD, normally ending at EOF | Yes, entire comment and EOCD fit in the final 65,557 bytes |
+| Local extra area | 0–65,535 bytes total; each field has 16-bit ID, 16-bit payload length, payload | After a member's 30-byte local header and filename, before its data | Only if that particular header lies in the fetched tail; otherwise seek to it |
+| Central extra area | A separate 0–65,535-byte area per member, same tagged framing | After the central header's 46-byte fixed part and filename | With the central directory; does not require the local copy |
+| One custom extra payload | At most 65,531 bytes when it alone fills the extra area; other fields reduce this | Local and/or central extra area | Put a copy in the central area for tail-directory lookup; local and central copies are not inherently identical |
+| Per-entry comment | 0–65,535 bytes per member; 16-bit length | After filename and extras in the central record; no local-header copy | With the central directory |
+| Central directory | Sequence of variable records, with names, methods, CRC32, compressed/decoded sizes and local offsets; 32-bit size/offset and 16-bit counts in classic EOCD | Usually immediately before EOCD, or before ZIP64 end records | Tail gives its location; fetch missing directory bytes if it extends earlier |
+| ZIP file attributes | 2 internal bytes and 4 host-dependent external bytes per entry | Fixed central header | Yes with directory; these encode attributes such as permissions, not a portable arbitrary property store |
+
+These are ordinary, single-disk, unencrypted ZIPs. The [PKWARE APPNOTE 6.3.10](https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT), §§4.3–4.6, also permits aggregate central-directory compression/encryption; such archives cannot promise clear directory access. It recommends keeping each complete directory record, including name, extras and comment, within 65,535 bytes. Consequently, the maxima above should not all be filled simultaneously in an interoperable profile. Existing extras, including ZIP64, consume the same budget. The probe ID **0xD06D** is experimental, not an allocated production ID; select/register a nonconflicting ID and include an identifying payload magic before adopting one. Do not repurpose a known ID or append an ad hoc trailer after EOCD.
+
+The boundary fixture deliberately fills all three 16-bit metadata areas to demonstrate their independent widths: **262,261 total bytes**, **131,127 central-directory bytes**, a **65,535-byte archive comment**, a **65,535-byte entry comment**, and **65,531-byte custom payloads** in both local and central extras. Python zipfile reads it; the JS reader gets EOCD/comment in **65,557 bytes**, then the directory in another **131,127 bytes**, without any codec call. Reading the local extra requires another **30 + 65,535 bytes**; neither its filename bytes nor its one-byte stored payload is fetched. This intentionally exceeds the recommended combined record length and is a capacity probe, not a profile to ship or a claim of all-tool compatibility. A second fixture places an EOCD-looking signature inside a comment; the JS reader finds the real terminal record by validating comment length.
+
+ZIP64 does not enlarge the 16-bit comment/extra length fields. When classic size/count/offset sentinel values occur, a reader must inspect the **20-byte ZIP64 locator immediately before EOCD**, follow its 64-bit offset to the ZIP64 EOCD, and obtain the widened directory location/size/count. The variable ZIP64 record might itself require a further range. The small supplied reader explicitly rejects ZIP64, split archives, noncanonical offsets and encryption; production support must be implemented or excluded by the profile. It is an evidence probe, not a general ZIP validator. [ZIP64 structure reference](https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT), §§4.3.14–4.3.16.
+
+### Tail-only JS and real HTTP ranges
+
+`zip_tail_reader.mjs` uses `fetch`, `Uint8Array` and `DataView`; **no decompressor is imported**. It fetches a suffix, scans backward for a valid terminal EOCD, reads the directory's recorded extent, then resolves a selected local header and member data. It checks lengths/bounds and one stable strong ETag, and reuses bytes already fetched. It reads local name/extra lengths separately: the central extra length is not a substitute for the local one. Reading metadata does not validate payload CRCs or authenticate arbitrary metadata.
+
+The Node **24.6.0** driver served the actual files over loopback HTTP and checked **198 `206` responses**, covering **56 document/section range scenarios and 3 metadata fixtures**. Every fetched payload slice matched the corresponding fixture; per-file documents/sections additionally matched SHA-256 in JS, while Python independently checked tar/gzip/zstd extraction. For the plain ZIPs, a conservative **65,557-byte** suffix contains the complete directories (**12,011 / 55,055 bytes**). On these no-comment files, a **22-byte** initial request followed by the directory needs just **12,033 / 55,077 metadata bytes**. The maximum-comment fixture proves the directory does not always fit in the fixed suffix.
+
+**Yes, HTTP ranges can retrieve the directory without downloading the package.** The server must honor ranges and serve the original byte representation; a `200` response to `Range` is a full-download fallback, not selective I/O. Validate `206`, `Content-Range` and total length. Keep one representation across requests with a strong validator/immutable URL; whole-response `Content-Encoding: gzip` changes the offsets. These are protocol conditions, not an assurance about an untested deployment. [HTTP Semantics, range requests and If-Range](https://www.rfc-editor.org/rfc/rfc9110.html#name-range-requests).
+
+Cross-origin browser use additionally requires CORS permission and exposing `Content-Range`, `ETag` and any inspected non-safelisted response headers. A suffix range and this reader's `If-Range` require appropriate preflight permission (`Range`, `If-Range`); the safelisted single-range rule is narrower than “all Range requests”. Node does not enforce browser CORS, so this loopback run is **not** a cross-origin-browser test. Local files can use `Blob.slice`/seek with the same byte arithmetic. [Fetch Standard source, CORS-safelisted request headers and CORS protocol](https://raw.githubusercontent.com/whatwg/fetch/main/fetch.bs).
+
+### One document and one section: CARD-0004
+
+The targets are the same late-in-package base documents used by the original harness:
+
+| Corpus | Document | Raw document | Measured section, including heading | Offset in document | Section bytes |
+| --- | --- | --- | --- | --- | --- |
+| npm | `docs/lib/content/using-npm/workspaces.md@base` | 6,115 | `### Description`, through before the next heading | 75 | 851 |
+| Rust | `text/3872-crates-io-security.md@base` | 8,057 | `## Summary`, through before the next heading | 233 | 175 |
+
+The following is the **payload I/O after physical lookup**, and decoded output processed when completing the selected compression unit and validating available checksums. The raw Brotli baseline has no intrinsic checksum; its output was checked against the corpus. Decode output applies equally to document and section. Zero means stored bytes, with no decompressor. Offsets/digests are test fixtures, not stable section IDs. The section-only stored row assumes an already resolved current section extent and a trusted section digest; without that map, read the whole stored document (**6,115 / 8,057 bytes**) and locate its section. A partial stored read cannot validate the ZIP entry's whole-document CRC.
+
+<!-- ZIP_ACCESS_START -->
+
+| Variant | npm fetch doc / section | npm decode output | Rust fetch doc / section | Rust decode output |
+| --- | --- | --- | --- | --- |
+| Best prior solid (Brotli 11 npm / xz 6 Rust) | 74,379 / 74,379 | 345,157 | 2,168,300 / 2,168,300 | 9,431,582 |
+| Whole gzip 6, payload only | 95,662 / 95,662 | 345,157 | 2,914,070 / 2,914,070 | 9,431,582 |
+| Independent gzip 6, payload only | 2,240 / 2,240 | 6,115 | 3,227 / 3,227 | 8,057 |
+| ZIP, per-entry DEFLATE 6 | 2,222 / 2,222 | 6,115 | 3,209 / 3,209 | 8,057 |
+| ZIP, stored entries | 6,115 / 851 | 0 | 8,057 / 175 | 0 |
+| ZIP, one stored tar.gz (gzip 6) | 102,175 / 102,175 | 450,560 | 2,959,250 / 2,959,250 | 9,953,280 |
+| ZIP, one stored tar.zst (zstd 9) | 89,001 / 89,001 | 450,560 | 2,530,259 / 2,530,259 | 9,953,280 |
+| Hybrid: ZIP of 64 KiB tar.gz blocks + stored map | 7,828 / 7,828 | 40,960 | 15,231 / 15,231 | 61,440 |
+| Hybrid: DEFLATE files + duplicate solid tar.gz | 2,222 / 2,222 | 6,115 | 3,209 / 3,209 | 8,057 |
+| ZIP DEFLATE + stored version manifest + EOCD hint | 2,222 / 2,222 | 6,115 | 3,209 / 3,209 | 8,057 |
+
+<!-- ZIP_ACCESS_END -->
+
+Whole-stream rows complete the entire stream, including **9,431,582 raw payload bytes** or **9,953,280 tar bytes** for Rust; gzip, zstd and xz additionally validate their trailer checksums. Streaming can discard earlier output but cannot jump directly to the section. Early exit after reaching a target also processes all preceding stream history and does not verify a final checksum; neither satisfies the intended isolated access. The per-entry rows decode only the containing document. The block hybrid decodes only one bounded group, plus reads its stored map. Thus **plain ZIP DEFLATE/stored and the block hybrid meet the no-whole-package-decode condition; a lone solid member does not**. A duplicate hybrid meets it through its per-file copy.
+
+These are physical access results, not a claim to have implemented CARD-0004's semantic resolver. Stable section identity must use its agreed anchor/producer ID and scoped digest, with headings included for rename detection; byte offsets are only replaceable locators. A per-document section map can live in a clear central extra or independent manifest shard, or be recomputed after decoding that document. None requires decoding unrelated documents. Central-directory names alone do not provide stable section references, and these plain sizes do not include a future comprehensive section-ID/digest map. The block map is measured and included, but maps entries rather than stable sections. History-chain reconstruction also remains separate.
+
+Cold HTTP body-byte totals below include directory discovery, local-header probes, optional block-map retrieval and the selected payload. Each cell is **document bytes (requests) / section bytes (requests)**. Headers, RTT, CORS preflight and decoder delivery are excluded. The reader caches all previously fetched ranges. Starting with 22 bytes falls back to the full suffix when a comment prevents discovery; this happens on the versioned row. A small fixed profile comment would allow a more precise initial suffix.
+
+<!-- ZIP_RANGE_START -->
+
+| Variant | npm 22-byte start | npm 65,557-byte start | Rust 22-byte start | Rust 65,557-byte start |
+| --- | --- | --- | --- | --- |
+| ZIP, per-entry DEFLATE 6 | 14,285 (4) / 14,285 (4) | 65,557 (1) / 65,557 (1) | 58,316 (4) / 58,316 (4) | 68,796 (3) / 68,796 (3) |
+| ZIP, stored entries | 18,178 (4) / 12,914 (4) | 65,557 (1) / 65,557 (1) | 63,164 (4) / 55,282 (4) | 73,644 (3) / 65,762 (3) |
+| ZIP, one stored tar.gz (gzip 6) | 102,287 (4) / 102,287 (4) | 102,287 (3) / 102,287 (3) | 2,959,362 (4) / 2,959,362 (4) | 2,959,362 (3) / 2,959,362 (3) |
+| ZIP, one stored tar.zst (zstd 9) | 89,114 (4) / 89,114 (4) | 89,114 (3) / 89,114 (3) | 2,530,372 (4) / 2,530,372 (4) | 2,530,372 (3) / 2,530,372 (3) |
+| Hybrid: ZIP of 64 KiB tar.gz blocks + stored map | 16,674 (6) / 16,674 (6) | 73,903 (3) / 73,903 (3) | 63,467 (6) / 63,467 (6) | 117,994 (5) / 117,994 (5) |
+| Hybrid: DEFLATE files + duplicate solid tar.gz | 14,352 (4) / 14,352 (4) | 67,809 (3) / 67,809 (3) | 58,383 (4) / 58,383 (4) | 68,796 (3) / 68,796 (3) |
+| ZIP DEFLATE + stored version manifest + EOCD hint | 65,557 (2) / 65,557 (2) | 65,557 (1) / 65,557 (1) | 68,796 (4) / 68,796 (4) | 68,796 (3) / 68,796 (3) |
+
+<!-- ZIP_RANGE_END -->
+
+The conservative npm suffix already contains its late target, so the document and section cost the same **65,557 bytes**. That is overfetch, not free random access. For Rust, a 22-byte discovery plus directory and target DEFLATE member costs **58,316 bytes** for either the document or its section; with a cached directory/extent it falls to **3,209 bytes**. No new latency or memory benchmark was run: the original raw-DEFLATE entry timing remains applicable to its identical compressed payload, while the table measures the previously excluded container/network bytes.
+
+### Raw prefix compatibility: actual tools
+
+Five fixtures contain a stored manifest with custom fields/comments and a deflated **145,000-byte** document. “Adjusted” writes the prefix before constructing ZIP so **both central-directory location and every local-header offset include it**. “Unadjusted” simply prepends bytes to an already complete ZIP. The prefixes are `01` and illustrative `ff ff 00`; the latter exercises three bytes, not an approved continuation encoding. Acceptance requires both extracted payload SHA-256 hashes to match, not just a successful open call. All files have a `.zip` extension.
+
+| Reader / installed version | Normal PK ZIP | 1-byte adjusted | 3-byte adjusted | 1-byte unadjusted | 3-byte unadjusted |
+| --- | --- | --- | --- | --- | --- |
+| Windows 10 Pro 19045, Explorer/zipfldr **10.0.19041.4522** | Accept | Accept | Accept | Fails to list entries | Fails to list entries |
+| 7-Zip **21.07 x64** | Accept, exit 0 | Accept, exit 0 | Accept, exit 0 | Reject, exit 2 | Reject, exit 2 |
+| Info-ZIP UnZip **6.00, 20 Apr 2009** | Accept, exit 0 | Accept, exit 0 | Accept, exit 0 | Recovers, warning/exit 1 | Recovers, warning/exit 1 |
+| Python **3.10.2**, standard `zipfile` | Accept | Accept | Accept | Accept | Accept |
+| **fflate 0.8.2** `unzipSync`, Node **24.6.0** | Accept | Accept | Accept | Returns wrong names/empty payloads | Returns wrong names/empty payloads |
+| macOS Archive Utility | Unavailable | Unavailable | Unavailable | Unavailable | Unavailable |
+
+The Windows test uses the **actual built-in compressed-folder Shell namespace**, enumerates its items, and extracts through `Shell.Application.NameSpace(...).CopyHere`; it is not .NET `Expand-Archive`. It does not claim a visual double-click test or custom-extension association. macOS is not reachable; Windows 11, newer 7-Zip and other JS libraries were not exercised. The installed versions, fixture hashes, output and warnings are in [zip-shell-results.json](compression/zip-shell-results.json), [zip-compat-results.json](compression/zip-compat-results.json) and [zip-js-results.json](compression/zip-js-results.json).
+
+**CARD-0001's raw first byte is technically viable with corrected offsets in all five tested readers.** “Most ZIP readers scan backward, so prepend anything” is unsafe: only Python and Info-ZIP repaired the stale offsets here. A prefix does not survive every rewrite even when readers initially accept it. The raw byte also changes leading magic and may affect file sniffers; extension/magic-based dispatch beyond these tests needs qualification. Python explicitly supports writing ZIP after an existing file, but that API behavior does not promise other tools' repair policies. [Python zipfile append documentation](https://docs.python.org/3/library/zipfile.html#zipfile.ZipFile).
+
+### Version placement and archive rewrites
+
+**Recommend `.mdpkg/manifest.json` stored, unencrypted and first as the authoritative version; optionally mirror `MDPKG/<version>` in EOCD.** Keep standard leading PK for the proposed ZIP profile. This is an explicit proposed revision of CARD-0001's first-byte requirement, requiring the owner's decision in consolidation. If that requirement is retained, use corrected absolute ZIP offsets and also keep the manifest; the prefix can serve dispatch but should not be the sole recoverable version.
+
+| Candidate | Exactly how to find it | Rewrite consequence |
+| --- | --- | --- |
+| Raw prefix | Read byte 0, then the defined continuation bytes; ZIP reader separately uses recorded offsets | New ZIP creation from extracted files loses it; preserving/updating an existing stub is tool-dependent |
+| EOCD comment | Read final 65,557 bytes, find a terminal EOCD whose declared comment ends at EOF, validate magic and parse version | Easy to replace/drop as an archive comment; use as a hint, compare with authoritative manifest |
+| First stored manifest | At byte 0 parse the 30-byte local header and variable name/extra lengths, verify expected name and method 0, then read bounded manifest bytes; a conforming producer should provide sizes without a descriptor | Entry contents tend to survive ordinary repacking, but its order and stored method do not; find it by central-directory name if moved |
+| Manifest found through directory | Fetch EOCD/directory, locate the unique well-known name, read its local lengths then payload; if a generic tool compressed it, decoding that small entry is necessary | Provides the durable recovery path; generic repacking can yield a recoverable but nonconforming package |
+| Custom extra | Parse local extra near the first member or scan central extras for an agreed ID and payload magic | Unknown extras may be dropped or copied selectively; never make them the only authority |
+| Central entry comment | Find the agreed manifest entry in the directory and parse its comment | Editable human metadata with no automatic preservation guarantee |
+
+Actual rewrite outcomes from the **adjusted one-byte** fixture (both ordinary entry contents survived all five operations):
+
+| Operation | Raw prefix | EOCD comment | Manifest entry comment | Custom local + central extras | Manifest content / method |
+| --- | --- | --- | --- | --- | --- |
+| Python rebuild by filename and bytes | Lost | Lost | Lost | Lost | Preserved / stored |
+| Python rebuild copying `ZipInfo` and archive comment explicitly | Lost | Preserved | Preserved | Preserved | Preserved / stored |
+| 7-Zip 21.07 `a`, adding a file to existing archive | Preserved | Preserved | Preserved | Preserved | Preserved / stored |
+| Windows compressed-folder extract then create ZIP | Lost | Lost | Lost | Lost | Preserved / stored in this fixture |
+| fflate 0.8.2 `unzipSync` then `zipSync` | Lost | Lost | Lost | Lost | Preserved / **DEFLATE** |
+
+The recommended profile should reject conflicting version copies and never infer version 1 just because PK exists. EOCD is a discovery hint, not authority or authentication. If the comment disappears but a stored manifest survives, no-decompress version discovery still works through the directory. If generic repacking compresses the manifest too, strict no-decompress discovery no longer holds: a repair/import path may decode just that manifest and re-emit a conforming package. An archive rewrite preserving payload bytes is not necessarily a format-preserving package rewrite. If files change, section maps/digests must be recomputed by a package-aware producer.
+
+### The “file attribute” idea
+
+**NTFS alternate data streams are readable without unzipping, but are outside the portable byte stream.** Native code can read `package.zip:mdpkg.version` or enumerate streams. In the local experiment, a one-byte version stream survived PowerShell `Copy-Item` on NTFS. The same package copied using `ReadAllBytes`/`WriteAllBytes`, packed/extracted through Python ZIP, or downloaded over HTTP lost that stream, while the ordinary file's SHA-256 stayed identical. Thus it can be a local cache/convenience, never the sole portable version. Stream storage and ordinary file attributes are separate concepts. [Microsoft file streams](https://learn.microsoft.com/en-us/windows/win32/fileio/file-streams).
+
+**POSIX-style xattrs have the same transport limitation**, with OS/filesystem-specific APIs and limits; they are not a universally specified POSIX file-body feature. Linux `getxattr`/`listxattr` can inspect them without reading/decompressing package contents. Linux documents a 255-byte attribute-name limit and 64 KiB value/list limits, with tighter filesystem limits possible. Attribute-aware copy/backup may preserve them when the destination supports them; ordinary file bytes, HTTP downloads and generic archive entries do not encode them automatically. No Linux/macOS xattr execution is claimed here. [Linux xattr(7)](https://man7.org/linux/man-pages/man7/xattr.7.html).
+
+For a concrete cross-platform API distinction, Python `copyfile` copies file contents, while `copy2` attempts extended-attribute preservation on Linux but still cannot preserve all metadata or Windows alternate streams. Both source/destination capability and the transfer tool matter. An archive with explicitly serialized xattrs/ADS can transport them, but that is additional in-band data and reader support, not a property of the `.zip` byte stream's filesystem attributes. [Python shutil](https://docs.python.org/3/library/shutil.html).
+
+### Follow-up reproduction, checks and handoff
+
+After the original setup below, run from `C:\src\markdown-package` in this order. No new dependencies are required. Installed tool paths are explicit in `zip_compat.py`; Explorer automation is Windows-only. Info-ZIP `unzip` is installed, its separate `zip` writer is not; no Info-ZIP rewrite result is claimed.
+
+```powershell
+.antiphon/compression-work/venv/Scripts/python docs/investigations/compression/zip_benchmark.py
+& docs/investigations/compression/zip_shell_probe.ps1
+node docs/investigations/compression/zip_probe.mjs
+.antiphon/compression-work/venv/Scripts/python docs/investigations/compression/zip_compat.py
+.antiphon/compression-work/venv/Scripts/python docs/investigations/compression/verify_zip_evidence.py
+.antiphon/compression-work/venv/Scripts/python docs/investigations/compression/render_zip_tables.py
+```
+
+Artifacts: [ZIP sizes/access](compression/zip-results.json), [JS ranges/library behavior](compression/zip-js-results.json), [native compatibility/rewrites](compression/zip-compat-results.json), [Windows shell/ADS](compression/zip-shell-results.json), [verification counts](compression/zip-verification.json). Binary fixtures and extraction directories remain ignored under `.antiphon/compression-work/zip/`. Shell/native runs use fresh directories, so saved scratch paths change across reruns. The JS probe handles only trusted experimental fixtures; no production parser, extraction service or browser security test suite was added.
+
+Validation: **799 corpus-entry matches, 4 exact gzip baseline checks, 5,780 payload round trips, 32 document/section comparisons, 6 metadata boundary checks, and 14 archive size/hash/CRC audits**. Compatibility: **25 tool/fixture cases, 19 successful extractions and 6 observed failures**, all six on stale-offset prefixes; **5 metadata rewrite cases**. HTTP: **56 selective-access scenarios, 3 metadata fixtures, 198 successful 206 responses**; **5 ADS presence/transport checks**. **0 unexpected failures in final evidence.** Two preliminary harness invocations failed: an absent optional Info-ZIP writer queried for its version, and Windows default text decoding of the JS results. Both were fixed and reran successfully. No timing suite or application build was needed for this follow-up.
+
+**Decision for CARD-0001/0005:** adopt standard ZIP DEFLATE/stored with the manifest/EOCD version arrangement, revising byte-zero version dispatch; or retain a corrected prefix with explicit rewrite/import rules. If smaller packages outweigh direct document browsing, the measured block hybrid preserves bounded access and is the alternative. A single solid member is unsuitable as the only representation under CARD-0004. CARD-0004 still owns stable section IDs, rename detection and the final section-map encoding; this investigation establishes that independent documents or bounded groups can satisfy its I/O requirement.
+
+## Original proposed compression section (non-ZIP alternative)
 
 These are proposed requirements for CARD-0005 to consolidate. Numeric codec IDs, field encodings, offsets, the container envelope and reference syntax remain with their owning cards.
 
@@ -240,7 +433,7 @@ These include loopback module/asset loading, parsing, compilation and instantiat
 
 The measured fallback costs are well below a megabyte, so rejecting Brotli/zstd on an assumed 1 MB download would be wrong. They are still roughly 40–47 times the compressed JS-only gzip candidate. On npm, gzip's 142,863-byte entry payload is smaller on a cold reader than Brotli-11 entries plus the measured gzipped decoder (214,097), or zstd-9/16-KiB-dictionary entries plus decoder (199,197). With a cached decoder or the larger corpus the ratio advantage can win. The recommendation follows the native-availability priority, not a claim that the other algorithms are unusable.
 
-## Plan and cross-card handoff
+## Original codec handoff (qualified by the ZIP follow-up above)
 
 1. Adopt the proposed stored/gzip-per-entry baseline as the compression input to consolidation. Keep Brotli, zstd and xz out of mandatory reader capabilities. Reserve extension space without assigning codec numbers here. Do not ship two compressed copies merely to negotiate around missing native browser codecs.
 2. **CARD-0001 (container):** decide adopt-vs-invent first. A ZIP selection implies the raw-DEFLATE adaptation noted above. Otherwise expose exact independent member extents and output lengths, preserve the clear version prefix, and make the lookup information obtainable without decoding all payloads. Gzip members must be dispatched separately. Whole-body HTTP content encoding changes the byte representation against which ranges apply; serving the package unchanged is simplest for range-addressed access. Dictionary IDs are unnecessary in the baseline; an extension would need dictionary extent, content identity, bounded size and declared dependency before decoding an entry.

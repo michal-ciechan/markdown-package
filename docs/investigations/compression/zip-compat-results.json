@@ -1,0 +1,258 @@
+{
+  "versions": {
+    "python": "3.10.2",
+    "seven_zip": [
+      "",
+      "7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26",
+      ""
+    ],
+    "unzip": [
+      "UnZip 6.00 of 20 April 2009, by Info-ZIP.  Maintained by C. Spieler.  Send",
+      "bug reports using http://www.info-zip.org/zip-bug.html; see README for details.",
+      ""
+    ],
+    "zip": "Not installed"
+  },
+  "cases": [
+    {
+      "tool": "Python zipfile",
+      "version": "3.10.2",
+      "case": "normal",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      }
+    },
+    {
+      "tool": "7-Zip",
+      "case": "normal",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      },
+      "returncode": 0,
+      "output": "\r\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\r\n\r\nScanning the drive for archives:\r\n1 file, 710 bytes (1 KiB)\r\n\r\nExtracting archive: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\normal.zip\r\n--\r\nPath = C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\normal.zip\r\nType = zip\r\nPhysical Size = 710\r\nComment = MDPKG/1\r\n\r\nEverything is Ok\r\n\r\nFiles: 2\r\nSize:       145042\r\nCompressed: 710\r\n"
+    },
+    {
+      "tool": "Info-ZIP unzip",
+      "case": "normal",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      },
+      "returncode": 0,
+      "output": "Archive:  C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\normal.zip\nMDPKG/1\n extracting: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\native-4736dd8b22f845d3bff46ef35c113d40\\Info-ZIP-normal/manifest.json  \n  inflating: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\native-4736dd8b22f845d3bff46ef35c113d40\\Info-ZIP-normal/document.md  \n"
+    },
+    {
+      "tool": "Python zipfile",
+      "version": "3.10.2",
+      "case": "prefix-1-adjusted",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      }
+    },
+    {
+      "tool": "7-Zip",
+      "case": "prefix-1-adjusted",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      },
+      "returncode": 0,
+      "output": "\r\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\r\n\r\nScanning the drive for archives:\r\n1 file, 711 bytes (1 KiB)\r\n\r\nExtracting archive: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-1-adjusted.zip\r\nWARNING:\r\nC:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-1-adjusted.zip\r\nThe archive is open with offset\r\n\r\n--\r\nPath = C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-1-adjusted.zip\r\nWarning: The archive is open with offset\r\nType = zip\r\nPhysical Size = 711\r\nEmbedded Stub Size = 1\r\nComment = MDPKG/1\r\n\r\nEverything is Ok\r\n\r\nArchives with Warnings: 1\r\nFiles: 2\r\nSize:       145042\r\nCompressed: 711\r\n"
+    },
+    {
+      "tool": "Info-ZIP unzip",
+      "case": "prefix-1-adjusted",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      },
+      "returncode": 0,
+      "output": "Archive:  C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-1-adjusted.zip\nMDPKG/1\n extracting: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\native-4736dd8b22f845d3bff46ef35c113d40\\Info-ZIP-prefix-1-adjusted/manifest.json  \n  inflating: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\native-4736dd8b22f845d3bff46ef35c113d40\\Info-ZIP-prefix-1-adjusted/document.md  \n"
+    },
+    {
+      "tool": "Python zipfile",
+      "version": "3.10.2",
+      "case": "prefix-1-unadjusted",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      }
+    },
+    {
+      "tool": "7-Zip",
+      "case": "prefix-1-unadjusted",
+      "accepted": false,
+      "hashes": {},
+      "returncode": 2,
+      "output": "\r\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\r\n\r\nScanning the drive for archives:\r\n1 file, 711 bytes (1 KiB)\r\n\r\nExtracting archive: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-1-unadjusted.zip\r\nERROR: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-1-unadjusted.zip\r\nC:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-1-unadjusted.zip\r\nOpen ERROR: Cannot open the file as [zip] archive\r\n\r\n\r\nERRORS:\r\nIs not archive\r\n\r\nCan't open as archive: 1\r\nFiles: 0\r\nSize:       0\r\nCompressed: 0\r\n"
+    },
+    {
+      "tool": "Info-ZIP unzip",
+      "case": "prefix-1-unadjusted",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      },
+      "returncode": 1,
+      "output": "Archive:  C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-1-unadjusted.zip\nMDPKG/1\nwarning [C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-1-unadjusted.zip]:  1 extra byte at beginning or within zipfile\n  (attempting to process anyway)\n extracting: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\native-4736dd8b22f845d3bff46ef35c113d40\\Info-ZIP-prefix-1-unadjusted/manifest.json  \n  inflating: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\native-4736dd8b22f845d3bff46ef35c113d40\\Info-ZIP-prefix-1-unadjusted/document.md  \n"
+    },
+    {
+      "tool": "Python zipfile",
+      "version": "3.10.2",
+      "case": "prefix-3-adjusted",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      }
+    },
+    {
+      "tool": "7-Zip",
+      "case": "prefix-3-adjusted",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      },
+      "returncode": 0,
+      "output": "\r\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\r\n\r\nScanning the drive for archives:\r\n1 file, 713 bytes (1 KiB)\r\n\r\nExtracting archive: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-3-adjusted.zip\r\nWARNING:\r\nC:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-3-adjusted.zip\r\nThe archive is open with offset\r\n\r\n--\r\nPath = C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-3-adjusted.zip\r\nWarning: The archive is open with offset\r\nType = zip\r\nPhysical Size = 713\r\nEmbedded Stub Size = 3\r\nComment = MDPKG/1\r\n\r\nEverything is Ok\r\n\r\nArchives with Warnings: 1\r\nFiles: 2\r\nSize:       145042\r\nCompressed: 713\r\n"
+    },
+    {
+      "tool": "Info-ZIP unzip",
+      "case": "prefix-3-adjusted",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      },
+      "returncode": 0,
+      "output": "Archive:  C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-3-adjusted.zip\nMDPKG/1\n extracting: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\native-4736dd8b22f845d3bff46ef35c113d40\\Info-ZIP-prefix-3-adjusted/manifest.json  \n  inflating: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\native-4736dd8b22f845d3bff46ef35c113d40\\Info-ZIP-prefix-3-adjusted/document.md  \n"
+    },
+    {
+      "tool": "Python zipfile",
+      "version": "3.10.2",
+      "case": "prefix-3-unadjusted",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      }
+    },
+    {
+      "tool": "7-Zip",
+      "case": "prefix-3-unadjusted",
+      "accepted": false,
+      "hashes": {},
+      "returncode": 2,
+      "output": "\r\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\r\n\r\nScanning the drive for archives:\r\n1 file, 713 bytes (1 KiB)\r\n\r\nExtracting archive: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-3-unadjusted.zip\r\nERROR: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-3-unadjusted.zip\r\nC:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-3-unadjusted.zip\r\nOpen ERROR: Cannot open the file as [zip] archive\r\n\r\n\r\nERRORS:\r\nIs not archive\r\n\r\nCan't open as archive: 1\r\nFiles: 0\r\nSize:       0\r\nCompressed: 0\r\n"
+    },
+    {
+      "tool": "Info-ZIP unzip",
+      "case": "prefix-3-unadjusted",
+      "accepted": true,
+      "hashes": {
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+      },
+      "returncode": 1,
+      "output": "Archive:  C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-3-unadjusted.zip\nMDPKG/1\nwarning [C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\compat\\prefix-3-unadjusted.zip]:  3 extra bytes at beginning or within zipfile\n  (attempting to process anyway)\n extracting: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\native-4736dd8b22f845d3bff46ef35c113d40\\Info-ZIP-prefix-3-unadjusted/manifest.json  \n  inflating: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\native-4736dd8b22f845d3bff46ef35c113d40\\Info-ZIP-prefix-3-unadjusted/document.md  \n"
+    }
+  ],
+  "rewrites": [
+    {
+      "tool": "Python names-only",
+      "metadata": {
+        "prefix_bytes": "",
+        "archive_comment": "",
+        "entry_comment": "",
+        "central_extra": "",
+        "local_extra": "",
+        "manifest_sha256": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "manifest_method": 0,
+        "file_hashes": {
+          "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+          "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+        }
+      }
+    },
+    {
+      "tool": "Python copy-ZipInfo-and-comment",
+      "metadata": {
+        "prefix_bytes": "",
+        "archive_comment": "MDPKG/1",
+        "entry_comment": "entry-version=1",
+        "central_extra": "6dd007004d44504b472f31",
+        "local_extra": "6dd007004d44504b472f31",
+        "manifest_sha256": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "manifest_method": 0,
+        "file_hashes": {
+          "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+          "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+        }
+      }
+    },
+    {
+      "tool": "7-Zip update",
+      "metadata": {
+        "prefix_bytes": "01",
+        "archive_comment": "MDPKG/1",
+        "entry_comment": "entry-version=1",
+        "central_extra": "6dd007004d44504b472f31",
+        "local_extra": "6dd007004d44504b472f31",
+        "manifest_sha256": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "manifest_method": 0,
+        "file_hashes": {
+          "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+          "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+        }
+      },
+      "returncode": 2,
+      "output": "\r\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\r\n\r\nOpen archive: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\native-4736dd8b22f845d3bff46ef35c113d40\\7-Zip-updated.zip\r\n--\r\nPath = C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\native-4736dd8b22f845d3bff46ef35c113d40\\7-Zip-updated.zip\r\nType = zip\r\nPhysical Size = 711\r\nEmbedded Stub Size = 1\r\nComment = MDPKG/1\r\n\r\nScanning the drive:\r\n1 file, 22 bytes (1 KiB)\r\n\r\nUpdating archive: C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\native-4736dd8b22f845d3bff46ef35c113d40\\7-Zip-updated.zip\r\n\r\nKeep old data in archive: 2 files, 145042 bytes (142 KiB)\r\nAdd new data to archive: 1 file, 22 bytes (1 KiB)\r\n\r\n\r\n\r\nSystem ERROR:\r\nNot implemented\r\n"
+    },
+    {
+      "tool": "Windows compressed folder extract/repack",
+      "metadata": {
+        "prefix_bytes": "",
+        "archive_comment": "",
+        "entry_comment": "",
+        "central_extra": "",
+        "local_extra": "",
+        "manifest_sha256": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "manifest_method": 0,
+        "file_hashes": {
+          "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+          "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+        }
+      }
+    },
+    {
+      "tool": "fflate unzipSync -> zipSync",
+      "metadata": {
+        "prefix_bytes": "",
+        "archive_comment": "",
+        "entry_comment": "",
+        "central_extra": "",
+        "local_extra": "",
+        "manifest_sha256": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+        "manifest_method": 8,
+        "file_hashes": {
+          "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647",
+          "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337"
+        }
+      }
+    }
+  ],
+  "ads_zip_transport_survives": false,
+  "macos": "Not reachable from this Windows environment"
+}

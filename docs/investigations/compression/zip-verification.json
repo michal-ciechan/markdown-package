@@ -1,0 +1,17 @@
+{
+  "corpus_entries": 799,
+  "baseline_sizes": 4,
+  "payload_roundtrips": 5780,
+  "document_section_hashes": 32,
+  "metadata_boundaries": 6,
+  "archive_size_hash_crc_audits": 14,
+  "tool_fixture_cases": 25,
+  "successful_tool_extractions": 19,
+  "observed_prefix_failures": 6,
+  "metadata_rewrites": 5,
+  "http_range_scenarios": 56,
+  "http_metadata_fixtures": 3,
+  "http_206_responses": 198,
+  "ads_transport_checks": 5,
+  "unexpected_failures": 0
+}

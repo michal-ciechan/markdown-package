@@ -1,0 +1,81 @@
+{
+  "os": "Microsoft Windows NT 10.0.19045.0",
+  "explorer": "10.0.19041.4522 (WinBuild.160101.0800)",
+  "zipfldr": "10.0.19041.4522 (WinBuild.160101.0800)",
+  "route": "Shell.Application compressed-folder namespace; enumerate and CopyHere, SHA-256 both files",
+  "cases": [
+    {
+      "case": "normal",
+      "listed": [
+        "manifest.json",
+        "document.md"
+      ],
+      "accepted": true,
+      "hashes": {
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337",
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647"
+      },
+      "error": null
+    },
+    {
+      "case": "prefix-1-adjusted",
+      "listed": [
+        "manifest.json",
+        "document.md"
+      ],
+      "accepted": true,
+      "hashes": {
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337",
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647"
+      },
+      "error": null
+    },
+    {
+      "case": "prefix-1-unadjusted",
+      "listed": [],
+      "accepted": false,
+      "hashes": {},
+      "error": null
+    },
+    {
+      "case": "prefix-3-adjusted",
+      "listed": [
+        "manifest.json",
+        "document.md"
+      ],
+      "accepted": true,
+      "hashes": {
+        "document.md": "1d8053db19ea4fb09a7bca3a26eb7ef13c776b28cdd1e2f620d06b82f2e85337",
+        "manifest.json": "7d09f193a2187e1568de54f3aaa8db688c6b575e31ac8dbfcb9010c14eaa8647"
+      },
+      "error": null
+    },
+    {
+      "case": "prefix-3-unadjusted",
+      "listed": [],
+      "accepted": false,
+      "hashes": {},
+      "error": null
+    }
+  ],
+  "repacked": "C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\shell-4696222118b34063a343f334f9d8572b\\shell-repacked.zip",
+  "repacked_count": 2,
+  "ads": [
+    {
+      "file": "ads-source.zip",
+      "has_version_stream": true,
+      "sha256": "5dddc5e2cddd14e8261791391def0320c4a5175fe1c0441675c2b3b4058488e9"
+    },
+    {
+      "file": "ads-copy.zip",
+      "has_version_stream": true,
+      "sha256": "5dddc5e2cddd14e8261791391def0320c4a5175fe1c0441675c2b3b4058488e9"
+    },
+    {
+      "file": "byte-copy.zip",
+      "has_version_stream": false,
+      "sha256": "5dddc5e2cddd14e8261791391def0320c4a5175fe1c0441675c2b3b4058488e9"
+    }
+  ],
+  "ads_source": "C:\\src\\markdown-package\\.antiphon\\compression-work\\zip\\shell-4696222118b34063a343f334f9d8572b\\ads-source.zip"
+}
