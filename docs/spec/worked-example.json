@@ -1,0 +1,892 @@
+{
+ "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+ "commits": {
+  "c0": "28d8c71e94abd862c91537e85978a35ecc92c739",
+  "c1": "08ae3497de2558fe65f196844a2ec60fe55e5f73",
+  "c2": "d038a20593503cc7250243ce9d4b36f148db479b",
+  "s1": "b414f39b3a54a4232fbaa6a0de0dd4966bdf981c"
+ },
+ "verification": {
+  "full": {
+   "status_lines_before_read_tree": 8,
+   "untracked_after_read_tree": [
+    ".mdpkg/history.json",
+    ".mdpkg/manifest.json"
+   ],
+   "head": "d038a20593503cc7250243ce9d4b36f148db479b",
+   "fsck": "clean",
+   "blob_bindings": "verified"
+  },
+  "squashed": {
+   "status_lines_before_read_tree": 10,
+   "untracked_after_read_tree": [
+    ".mdpkg/history.json",
+    ".mdpkg/history/bindings.json",
+    ".mdpkg/history/ranges/ff2689cd726e96680fd7c32435119059ae199fbd70310111b970bac4bdabf6b0.json",
+    ".mdpkg/manifest.json"
+   ],
+   "head": "b414f39b3a54a4232fbaa6a0de0dd4966bdf981c",
+   "fsck": "clean",
+   "blob_bindings": "verified"
+  }
+ },
+ "trees": {
+  "t0": "500c623d262505383d02bdc184a7b9af59e05007",
+  "t1": "63cee821a5a58be068d77534b581c59906d1bfd4",
+  "t2": "a15125f8a3e632c91484515105dabb99b3d87583"
+ },
+ "blobs": {
+  "guide.md@4262738c": "baa7cf3536e81aca073609b58b215ec0f860a668",
+  "notes.md@727cb592": "143227537cf0e613855eb072fc61269cf85387f5",
+  "guide.md@c871fdf7": "f9695ad813beb3d281dceed4dbf7f291bc9eb04c",
+  "guide.md@1cf920f3": "7e5cdaf1d0796bd7280ba1fbee7f506ecf90dc64",
+  ".mdpkg/address/overrides.json@0c334bc1": "752dff649fddd64bfb1804adc5c5da5960d55d78"
+ },
+ "ledger": {
+  "version": 1,
+  "anchor": "cm0312-trail-source-v1",
+  "entries": {
+   "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+    "to": [
+     "section",
+     "guide.md",
+     [
+      [
+       "# Guide",
+       0
+      ],
+      [
+       "## Installation",
+       0
+      ]
+     ]
+    ]
+   }
+  }
+ },
+ "ledger_bytes": "{\"anchor\":\"cm0312-trail-source-v1\",\"entries\":{\"b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984\":{\"to\":[\"section\",\"guide.md\",[[\"# Guide\",0],[\"## Installation\",0]]]}},\"version\":1}\n",
+ "summary": {
+  "version": 1,
+  "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+  "anchor": "cm0312-trail-source-v1",
+  "profile": "cm0312-source-lf-v1",
+  "walk": "first-parent",
+  "coverage": "complete",
+  "base": "sha1-28d8c71e94abd862c91537e85978a35ecc92c739",
+  "tip": "sha1-d038a20593503cc7250243ce9d4b36f148db479b",
+  "sourceCommits": [
+   "sha1-08ae3497de2558fe65f196844a2ec60fe55e5f73",
+   "sha1-d038a20593503cc7250243ce9d4b36f148db479b"
+  ],
+  "collapsedInputs": [
+   "sha1-08ae3497de2558fe65f196844a2ec60fe55e5f73",
+   "sha1-d038a20593503cc7250243ce9d4b36f148db479b"
+  ],
+  "beforeStateDigest": "a1d25502a8490ce28dfa39903593435fbb28a5837ff09e5249416886be36cd6c",
+  "afterStateDigest": "d654b9a9cdf4fa4c11d03f669594099dbcae455356e95b9791ab49dd8a571ea3",
+  "nested": [],
+  "contentTouched": [
+   "52f7f2741ea95e947ab04da60e3cb037562daf0374b657ba70a0d30f5a0b7f70",
+   "9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f",
+   "a859a7e3a78cebcc72622e85cd4dc6e101ec516a6eca6b497b2765a459e9dc57",
+   "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984"
+  ],
+  "changedAt": {
+   "52f7f2741ea95e947ab04da60e3cb037562daf0374b657ba70a0d30f5a0b7f70": [
+    1
+   ],
+   "9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f": [
+    1,
+    2
+   ],
+   "a859a7e3a78cebcc72622e85cd4dc6e101ec516a6eca6b497b2765a459e9dc57": [
+    1,
+    2
+   ],
+   "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": [
+    2
+   ]
+  },
+  "endpoints": {
+   "52f7f2741ea95e947ab04da60e3cb037562daf0374b657ba70a0d30f5a0b7f70": {
+    "before": "db52812eb4fc2b0574663ecab0660e030bfef1bca21e320bb646c646999874d5",
+    "after": "684ba2cde243d6593c183ee88ec27f5891eec436ba269e5bccfd0a514fc0f9fa"
+   },
+   "9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f": {
+    "before": "e4822c64f6130f432510d2d42da3ed15291fe24089cad708b0ab817ce86d0359",
+    "after": "6747c5b9f53aedd9d4c77e90846d12982793eee81e044e8b091c60955248bda0"
+   },
+   "a859a7e3a78cebcc72622e85cd4dc6e101ec516a6eca6b497b2765a459e9dc57": {
+    "before": "42f8eccfe768a94d6c26e363f1d8ab0a8ff20a1466e3e9b869abaa4d9f25a40c",
+    "after": "995f4e3eaefd2ea1e94950cecd2f719bd7617db926816dc9b49c9856c06185b3"
+   },
+   "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+    "before": "2078ef26101467257c9b4d35e4c617b96c9f4e719b460088f4f78e4d927d0264",
+    "after": "29f1bb85c6f01fffb19ded47d9e0213372fdac79cb9785e6197ddbba46f629a9"
+   }
+  },
+  "identityEvents": []
+ },
+ "summary_name": ".mdpkg/history/ranges/ff2689cd726e96680fd7c32435119059ae199fbd70310111b970bac4bdabf6b0.json",
+ "bindings": {
+  "version": 1,
+  "bindings": [
+   {
+    "emitted": "sha1-b414f39b3a54a4232fbaa6a0de0dd4966bdf981c",
+    "summary": ".mdpkg/history/ranges/ff2689cd726e96680fd7c32435119059ae199fbd70310111b970bac4bdabf6b0.json",
+    "hash": "ff2689cd726e96680fd7c32435119059ae199fbd70310111b970bac4bdabf6b0"
+   }
+  ]
+ },
+ "inventories": {
+  "c1": {
+   "a859a7e3a78cebcc72622e85cd4dc6e101ec516a6eca6b497b2765a459e9dc57": {
+    "locator": [
+     "document",
+     "guide.md",
+     []
+    ],
+    "digest": "8ac8c74d7461d11b380c40dc9502b6018cc3dcf175ec1bbe3aa564c6db309039"
+   },
+   "1cee2a9e65a42b7a64ecc9bd3325b60e94d40e6b5064122e73381800ed580bca": {
+    "locator": [
+     "preamble",
+     "guide.md",
+     []
+    ],
+    "digest": "451c3844bf183a5e8cdf28e53ee32ae6fc71e3f371561995b106649f0a65c590"
+   },
+   "9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f": {
+    "locator": [
+     "section",
+     "guide.md",
+     [
+      [
+       "# Guide",
+       0
+      ]
+     ]
+    ],
+    "digest": "6b626b3e6854fe2d95302f05d1ca8aae16864c82be1606bbebb84425dc7ccf11"
+   },
+   "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+    "locator": [
+     "section",
+     "guide.md",
+     [
+      [
+       "# Guide",
+       0
+      ],
+      [
+       "## Setup",
+       0
+      ]
+     ]
+    ],
+    "digest": "2078ef26101467257c9b4d35e4c617b96c9f4e719b460088f4f78e4d927d0264"
+   },
+   "52f7f2741ea95e947ab04da60e3cb037562daf0374b657ba70a0d30f5a0b7f70": {
+    "locator": [
+     "section",
+     "guide.md",
+     [
+      [
+       "# Guide",
+       0
+      ],
+      [
+       "## Usage",
+       0
+      ]
+     ]
+    ],
+    "digest": "684ba2cde243d6593c183ee88ec27f5891eec436ba269e5bccfd0a514fc0f9fa"
+   },
+   "074b1c8cbff0a00a397ccff1316eeedfd38a9aab195315f5ed527cd98eeff68c": {
+    "locator": [
+     "document",
+     "notes.md",
+     []
+    ],
+    "digest": "e99e9141449cb484ad702d32d8e032e030496c4c5233fb6ffa2f2851c2478c61"
+   },
+   "cfd881b831ad4d4be68a3edc7b47d7ccec715cec480ee8b1804e29d574b7749d": {
+    "locator": [
+     "preamble",
+     "notes.md",
+     []
+    ],
+    "digest": "451c3844bf183a5e8cdf28e53ee32ae6fc71e3f371561995b106649f0a65c590"
+   },
+   "9eb15fd9bde49742ffc9491831a2ee2db3b2ebf0fd5fb9ef243372cf87a7430d": {
+    "locator": [
+     "section",
+     "notes.md",
+     [
+      [
+       "# Notes",
+       0
+      ]
+     ]
+    ],
+    "digest": "accffe26cd40a8c3d5fe04db5a33af16ba6b441119f60406be87fa43ce204f8c"
+   },
+   "c1fb83ff728d81247fe7c6b41f62897fa54fd9df3823247ee75fd65f5fc4692d": {
+    "locator": [
+     "section",
+     "notes.md",
+     [
+      [
+       "# Notes",
+       0
+      ],
+      [
+       "## Todo",
+       0
+      ]
+     ]
+    ],
+    "digest": "0e3cb80374f66eae7b4cae61f3753e3838b819ef5e42421f741fa4a8d7c0ee2e"
+   }
+  },
+  "c2": {
+   "a859a7e3a78cebcc72622e85cd4dc6e101ec516a6eca6b497b2765a459e9dc57": {
+    "locator": [
+     "document",
+     "guide.md",
+     []
+    ],
+    "digest": "995f4e3eaefd2ea1e94950cecd2f719bd7617db926816dc9b49c9856c06185b3"
+   },
+   "1cee2a9e65a42b7a64ecc9bd3325b60e94d40e6b5064122e73381800ed580bca": {
+    "locator": [
+     "preamble",
+     "guide.md",
+     []
+    ],
+    "digest": "451c3844bf183a5e8cdf28e53ee32ae6fc71e3f371561995b106649f0a65c590"
+   },
+   "9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f": {
+    "locator": [
+     "section",
+     "guide.md",
+     [
+      [
+       "# Guide",
+       0
+      ]
+     ]
+    ],
+    "digest": "6747c5b9f53aedd9d4c77e90846d12982793eee81e044e8b091c60955248bda0"
+   },
+   "fff44a68a1b5a2dcb69dfa9135adf85380f5dc5cb30932fead6954a9194c654b": {
+    "locator": [
+     "section",
+     "guide.md",
+     [
+      [
+       "# Guide",
+       0
+      ],
+      [
+       "## Installation",
+       0
+      ]
+     ]
+    ],
+    "digest": "29f1bb85c6f01fffb19ded47d9e0213372fdac79cb9785e6197ddbba46f629a9"
+   },
+   "52f7f2741ea95e947ab04da60e3cb037562daf0374b657ba70a0d30f5a0b7f70": {
+    "locator": [
+     "section",
+     "guide.md",
+     [
+      [
+       "# Guide",
+       0
+      ],
+      [
+       "## Usage",
+       0
+      ]
+     ]
+    ],
+    "digest": "684ba2cde243d6593c183ee88ec27f5891eec436ba269e5bccfd0a514fc0f9fa"
+   },
+   "074b1c8cbff0a00a397ccff1316eeedfd38a9aab195315f5ed527cd98eeff68c": {
+    "locator": [
+     "document",
+     "notes.md",
+     []
+    ],
+    "digest": "e99e9141449cb484ad702d32d8e032e030496c4c5233fb6ffa2f2851c2478c61"
+   },
+   "cfd881b831ad4d4be68a3edc7b47d7ccec715cec480ee8b1804e29d574b7749d": {
+    "locator": [
+     "preamble",
+     "notes.md",
+     []
+    ],
+    "digest": "451c3844bf183a5e8cdf28e53ee32ae6fc71e3f371561995b106649f0a65c590"
+   },
+   "9eb15fd9bde49742ffc9491831a2ee2db3b2ebf0fd5fb9ef243372cf87a7430d": {
+    "locator": [
+     "section",
+     "notes.md",
+     [
+      [
+       "# Notes",
+       0
+      ]
+     ]
+    ],
+    "digest": "accffe26cd40a8c3d5fe04db5a33af16ba6b441119f60406be87fa43ce204f8c"
+   },
+   "c1fb83ff728d81247fe7c6b41f62897fa54fd9df3823247ee75fd65f5fc4692d": {
+    "locator": [
+     "section",
+     "notes.md",
+     [
+      [
+       "# Notes",
+       0
+      ],
+      [
+       "## Todo",
+       0
+      ]
+     ]
+    ],
+    "digest": "0e3cb80374f66eae7b4cae61f3753e3838b819ef5e42421f741fa4a8d7c0ee2e"
+   }
+  }
+ },
+ "reviews": {
+  "setup": {
+   "root": "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984",
+   "locator": [
+    "section",
+    "guide.md",
+    [
+     [
+      "# Guide",
+      0
+     ],
+     [
+      "## Setup",
+      0
+     ]
+    ]
+   ],
+   "expect": "2078ef26101467257c9b4d35e4c617b96c9f4e719b460088f4f78e4d927d0264",
+   "reviewedAt": "sha1-08ae3497de2558fe65f196844a2ec60fe55e5f73",
+   "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=2078ef26101467257c9b4d35e4c617b96c9f4e719b460088f4f78e4d927d0264&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+   "with_ledger": {
+    "status": "flagged-changed",
+    "reason": "source-changed",
+    "locator": [
+     "section",
+     "guide.md",
+     [
+      [
+       "# Guide",
+       0
+      ],
+      [
+       "## Installation",
+       0
+      ]
+     ]
+    ],
+    "actual": "29f1bb85c6f01fffb19ded47d9e0213372fdac79cb9785e6197ddbba46f629a9"
+   },
+   "without_ledger": {
+    "status": "unconfirmed",
+    "reason": "possibly-renamed-moved-or-deleted"
+   },
+   "touched_after_review": [
+    2
+   ]
+  },
+  "usage": {
+   "root": "52f7f2741ea95e947ab04da60e3cb037562daf0374b657ba70a0d30f5a0b7f70",
+   "locator": [
+    "section",
+    "guide.md",
+    [
+     [
+      "# Guide",
+      0
+     ],
+     [
+      "## Usage",
+      0
+     ]
+    ]
+   ],
+   "expect": "684ba2cde243d6593c183ee88ec27f5891eec436ba269e5bccfd0a514fc0f9fa",
+   "reviewedAt": "sha1-08ae3497de2558fe65f196844a2ec60fe55e5f73",
+   "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/52f7f2741ea95e947ab04da60e3cb037562daf0374b657ba70a0d30f5a0b7f70?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=684ba2cde243d6593c183ee88ec27f5891eec436ba269e5bccfd0a514fc0f9fa&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgVXNhZ2UiLDBdXV0K",
+   "with_ledger": {
+    "status": "survives",
+    "reason": "same-source",
+    "locator": [
+     "section",
+     "guide.md",
+     [
+      [
+       "# Guide",
+       0
+      ],
+      [
+       "## Usage",
+       0
+      ]
+     ]
+    ],
+    "actual": "684ba2cde243d6593c183ee88ec27f5891eec436ba269e5bccfd0a514fc0f9fa"
+   },
+   "without_ledger": {
+    "status": "survives",
+    "reason": "same-source",
+    "locator": [
+     "section",
+     "guide.md",
+     [
+      [
+       "# Guide",
+       0
+      ],
+      [
+       "## Usage",
+       0
+      ]
+     ]
+    ],
+    "actual": "684ba2cde243d6593c183ee88ec27f5891eec436ba269e5bccfd0a514fc0f9fa"
+   },
+   "touched_after_review": []
+  },
+  "todo": {
+   "root": "c1fb83ff728d81247fe7c6b41f62897fa54fd9df3823247ee75fd65f5fc4692d",
+   "locator": [
+    "section",
+    "notes.md",
+    [
+     [
+      "# Notes",
+      0
+     ],
+     [
+      "## Todo",
+      0
+     ]
+    ]
+   ],
+   "expect": "0e3cb80374f66eae7b4cae61f3753e3838b819ef5e42421f741fa4a8d7c0ee2e",
+   "reviewedAt": "sha1-08ae3497de2558fe65f196844a2ec60fe55e5f73",
+   "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/c1fb83ff728d81247fe7c6b41f62897fa54fd9df3823247ee75fd65f5fc4692d?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=0e3cb80374f66eae7b4cae61f3753e3838b819ef5e42421f741fa4a8d7c0ee2e&loc=WyJzZWN0aW9uIiwibm90ZXMubWQiLFtbIiMgTm90ZXMiLDBdLFsiIyMgVG9kbyIsMF1dXQo",
+   "with_ledger": {
+    "status": "survives",
+    "reason": "same-source",
+    "locator": [
+     "section",
+     "notes.md",
+     [
+      [
+       "# Notes",
+       0
+      ],
+      [
+       "## Todo",
+       0
+      ]
+     ]
+    ],
+    "actual": "0e3cb80374f66eae7b4cae61f3753e3838b819ef5e42421f741fa4a8d7c0ee2e"
+   },
+   "without_ledger": {
+    "status": "survives",
+    "reason": "same-source",
+    "locator": [
+     "section",
+     "notes.md",
+     [
+      [
+       "# Notes",
+       0
+      ],
+      [
+       "## Todo",
+       0
+      ]
+     ]
+    ],
+    "actual": "0e3cb80374f66eae7b4cae61f3753e3838b819ef5e42421f741fa4a8d7c0ee2e"
+   },
+   "touched_after_review": []
+  }
+ },
+ "packages": {
+  "full": {
+   "head": "d038a20593503cc7250243ce9d4b36f148db479b",
+   "manifest": {
+    "mdpkg": "markdown-package/1",
+    "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+    "current": "sha1-d038a20593503cc7250243ce9d4b36f148db479b",
+    "addressing": {
+     "anchor": "cm0312-trail-source-v1",
+     "digest": "cm0312-source-lf-v1",
+     "coverage": "complete",
+     "overrides": ".mdpkg/address/overrides.json"
+    },
+    "history": {
+     "coverage": "complete",
+     "transform": [],
+     "detail": ".mdpkg/history.json"
+    }
+   },
+   "manifest_bytes": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":\".mdpkg/address/overrides.json\"},\"current\":\"sha1-d038a20593503cc7250243ce9d4b36f148db479b\",\"history\":{\"coverage\":\"complete\",\"detail\":\".mdpkg/history.json\",\"transform\":[]},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"}\n",
+   "history": {
+    "walk": "first-parent",
+    "root": "original",
+    "shallowBoundaries": [],
+    "retainedCommits": 3,
+    "sourceBase": "sha1-28d8c71e94abd862c91537e85978a35ecc92c739",
+    "sourceTip": "sha1-d038a20593503cc7250243ce9d4b36f148db479b",
+    "addressingCoverage": [
+     {
+      "from": "sha1-28d8c71e94abd862c91537e85978a35ecc92c739",
+      "to": "sha1-d038a20593503cc7250243ce9d4b36f148db479b",
+      "coverage": "complete"
+     }
+    ],
+    "transformations": [],
+    "ranges": [],
+    "patches": []
+   },
+   "bytes": 4986,
+   "sha256": "7d55bbf97c47ea15e5ad69bcf0c2a4525a8b7245869342af63fd910a655d6c45",
+   "entries": [
+    {
+     "name": ".mdpkg/manifest.json",
+     "local": 0,
+     "data": 50,
+     "method": 0,
+     "csize": 366,
+     "usize": 366,
+     "crc": "ea0fa00b",
+     "end": 416,
+     "flags": 0
+    },
+    {
+     "name": ".mdpkg/address/overrides.json",
+     "local": 416,
+     "data": 475,
+     "method": 8,
+     "csize": 160,
+     "usize": 195,
+     "crc": "a14c171c",
+     "end": 635,
+     "flags": 0
+    },
+    {
+     "name": "guide.md",
+     "local": 635,
+     "data": 673,
+     "method": 8,
+     "csize": 119,
+     "usize": 163,
+     "crc": "cf83f8e7",
+     "end": 792,
+     "flags": 0
+    },
+    {
+     "name": "notes.md",
+     "local": 792,
+     "data": 830,
+     "method": 0,
+     "csize": 36,
+     "usize": 36,
+     "crc": "ba3d4b41",
+     "end": 866,
+     "flags": 0
+    },
+    {
+     "name": ".mdpkg/history.json",
+     "local": 866,
+     "data": 915,
+     "method": 8,
+     "csize": 224,
+     "usize": 407,
+     "crc": "d3059271",
+     "end": 1139,
+     "flags": 0
+    },
+    {
+     "name": ".git/HEAD",
+     "local": 1139,
+     "data": 1178,
+     "method": 0,
+     "csize": 21,
+     "usize": 21,
+     "crc": "576463b5",
+     "end": 1199,
+     "flags": 0
+    },
+    {
+     "name": ".git/config",
+     "local": 1199,
+     "data": 1240,
+     "method": 0,
+     "csize": 50,
+     "usize": 50,
+     "crc": "184bf63d",
+     "end": 1290,
+     "flags": 0
+    },
+    {
+     "name": ".git/refs/heads/main",
+     "local": 1290,
+     "data": 1340,
+     "method": 0,
+     "csize": 41,
+     "usize": 41,
+     "crc": "3bb8b0aa",
+     "end": 1381,
+     "flags": 0
+    },
+    {
+     "name": ".git/objects/pack/pack-18335051c8115c97654be611ca0d5eeaf6f5e597.idx",
+     "local": 1381,
+     "data": 1478,
+     "method": 0,
+     "csize": 1436,
+     "usize": 1436,
+     "crc": "496d5124",
+     "end": 2914,
+     "flags": 0
+    },
+    {
+     "name": ".git/objects/pack/pack-18335051c8115c97654be611ca0d5eeaf6f5e597.pack",
+     "local": 2914,
+     "data": 3012,
+     "method": 0,
+     "csize": 1233,
+     "usize": 1233,
+     "crc": "e28c5164",
+     "end": 4245,
+     "flags": 0
+    }
+   ],
+   "eocd": {
+    "eocd": 4964,
+    "count": 10,
+    "cd_size": 719,
+    "cd_offset": 4245,
+    "comment": 0
+   },
+   "typing_hex": "000000  50 4b 03 04 14 00 00 00 00 00 00 00 21 00 0b a0  PK..........!...\n000010  0f ea 6e 01 00 00 6e 01 00 00 14 00 00 00 2e 6d  ..n...n........m\n000020  64 70 6b 67 2f 6d 61 6e 69 66 65 73 74 2e 6a 73  dpkg/manifest.js\n000030  6f 6e 7b 22 6d 64 70 6b 67 22 3a 22 6d 61 72 6b  on{\"mdpkg\":\"mark\n000040  64 6f 77 6e 2d 70 61 63 6b 61 67 65 2f 31 22     down-package/1\"",
+   "eocd_hex": "001364  50 4b 05 06 00 00 00 00 0a 00 0a 00 cf 02 00 00  PK..............\n001374  95 10 00 00 00 00                                ......",
+   "tree": "100644 blob 752dff649fddd64bfb1804adc5c5da5960d55d78\t.mdpkg/address/overrides.json\n100644 blob 7e5cdaf1d0796bd7280ba1fbee7f506ecf90dc64\tguide.md\n100644 blob 143227537cf0e613855eb072fc61269cf85387f5\tnotes.md\n"
+  },
+  "squashed": {
+   "head": "b414f39b3a54a4232fbaa6a0de0dd4966bdf981c",
+   "manifest": {
+    "mdpkg": "markdown-package/1",
+    "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+    "current": "sha1-b414f39b3a54a4232fbaa6a0de0dd4966bdf981c",
+    "addressing": {
+     "anchor": "cm0312-trail-source-v1",
+     "digest": "cm0312-source-lf-v1",
+     "coverage": "complete",
+     "overrides": ".mdpkg/address/overrides.json"
+    },
+    "history": {
+     "coverage": "complete",
+     "transform": [
+      "squashed"
+     ],
+     "detail": ".mdpkg/history.json"
+    }
+   },
+   "manifest_bytes": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":\".mdpkg/address/overrides.json\"},\"current\":\"sha1-b414f39b3a54a4232fbaa6a0de0dd4966bdf981c\",\"history\":{\"coverage\":\"complete\",\"detail\":\".mdpkg/history.json\",\"transform\":[\"squashed\"]},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"}\n",
+   "history": {
+    "walk": "first-parent",
+    "root": "original",
+    "shallowBoundaries": [],
+    "retainedCommits": 2,
+    "sourceBase": "sha1-28d8c71e94abd862c91537e85978a35ecc92c739",
+    "sourceTip": "sha1-d038a20593503cc7250243ce9d4b36f148db479b",
+    "addressingCoverage": [
+     {
+      "from": "sha1-28d8c71e94abd862c91537e85978a35ecc92c739",
+      "to": "sha1-b414f39b3a54a4232fbaa6a0de0dd4966bdf981c",
+      "coverage": "complete"
+     }
+    ],
+    "transformations": [
+     {
+      "kind": "squashed",
+      "sourceBase": "sha1-28d8c71e94abd862c91537e85978a35ecc92c739",
+      "sourceTip": "sha1-d038a20593503cc7250243ce9d4b36f148db479b",
+      "emitted": "sha1-b414f39b3a54a4232fbaa6a0de0dd4966bdf981c",
+      "summary": ".mdpkg/history/ranges/ff2689cd726e96680fd7c32435119059ae199fbd70310111b970bac4bdabf6b0.json"
+     }
+    ],
+    "ranges": [
+     ".mdpkg/history/ranges/ff2689cd726e96680fd7c32435119059ae199fbd70310111b970bac4bdabf6b0.json"
+    ],
+    "patches": [],
+    "bindings": ".mdpkg/history/bindings.json"
+   },
+   "bytes": 6322,
+   "sha256": "b6fb3f23464452d3d4ab44660790e4f22c6cfa3fff1c184dd69152c3f4325ca9",
+   "entries": [
+    {
+     "name": ".mdpkg/manifest.json",
+     "local": 0,
+     "data": 50,
+     "method": 0,
+     "csize": 376,
+     "usize": 376,
+     "crc": "bd7adfde",
+     "end": 426,
+     "flags": 0
+    },
+    {
+     "name": ".mdpkg/address/overrides.json",
+     "local": 426,
+     "data": 485,
+     "method": 8,
+     "csize": 160,
+     "usize": 195,
+     "crc": "a14c171c",
+     "end": 645,
+     "flags": 0
+    },
+    {
+     "name": "guide.md",
+     "local": 645,
+     "data": 683,
+     "method": 8,
+     "csize": 119,
+     "usize": 163,
+     "crc": "cf83f8e7",
+     "end": 802,
+     "flags": 0
+    },
+    {
+     "name": "notes.md",
+     "local": 802,
+     "data": 840,
+     "method": 0,
+     "csize": 36,
+     "usize": 36,
+     "crc": "ba3d4b41",
+     "end": 876,
+     "flags": 0
+    },
+    {
+     "name": ".mdpkg/history.json",
+     "local": 876,
+     "data": 925,
+     "method": 8,
+     "csize": 368,
+     "usize": 844,
+     "crc": "1be94c50",
+     "end": 1293,
+     "flags": 0
+    },
+    {
+     "name": ".mdpkg/history/bindings.json",
+     "local": 1293,
+     "data": 1351,
+     "method": 8,
+     "csize": 169,
+     "usize": 265,
+     "crc": "cafccc48",
+     "end": 1520,
+     "flags": 0
+    },
+    {
+     "name": ".mdpkg/history/ranges/ff2689cd726e96680fd7c32435119059ae199fbd70310111b970bac4bdabf6b0.json",
+     "local": 1520,
+     "data": 1641,
+     "method": 8,
+     "csize": 947,
+     "usize": 2202,
+     "crc": "67747d75",
+     "end": 2588,
+     "flags": 0
+    },
+    {
+     "name": ".git/HEAD",
+     "local": 2588,
+     "data": 2627,
+     "method": 0,
+     "csize": 21,
+     "usize": 21,
+     "crc": "576463b5",
+     "end": 2648,
+     "flags": 0
+    },
+    {
+     "name": ".git/config",
+     "local": 2648,
+     "data": 2689,
+     "method": 0,
+     "csize": 50,
+     "usize": 50,
+     "crc": "184bf63d",
+     "end": 2739,
+     "flags": 0
+    },
+    {
+     "name": ".git/refs/heads/main",
+     "local": 2739,
+     "data": 2789,
+     "method": 0,
+     "csize": 41,
+     "usize": 41,
+     "crc": "4f5dffdc",
+     "end": 2830,
+     "flags": 0
+    },
+    {
+     "name": ".git/objects/pack/pack-90bb59018b3df8e15cd07c8899e108e3ded2c475.idx",
+     "local": 2830,
+     "data": 2927,
+     "method": 0,
+     "csize": 1352,
+     "usize": 1352,
+     "crc": "afc5f15c",
+     "end": 4279,
+     "flags": 0
+    },
+    {
+     "name": ".git/objects/pack/pack-90bb59018b3df8e15cd07c8899e108e3ded2c475.pack",
+     "local": 4279,
+     "data": 4377,
+     "method": 0,
+     "csize": 993,
+     "usize": 993,
+     "crc": "8dc1b4b6",
+     "end": 5370,
+     "flags": 0
+    }
+   ],
+   "eocd": {
+    "eocd": 6300,
+    "count": 12,
+    "cd_size": 930,
+    "cd_offset": 5370,
+    "comment": 0
+   },
+   "typing_hex": "000000  50 4b 03 04 14 00 00 00 00 00 00 00 21 00 de df  PK..........!...\n000010  7a bd 78 01 00 00 78 01 00 00 14 00 00 00 2e 6d  z.x...x........m\n000020  64 70 6b 67 2f 6d 61 6e 69 66 65 73 74 2e 6a 73  dpkg/manifest.js\n000030  6f 6e 7b 22 6d 64 70 6b 67 22 3a 22 6d 61 72 6b  on{\"mdpkg\":\"mark\n000040  64 6f 77 6e 2d 70 61 63 6b 61 67 65 2f 31 22     down-package/1\"",
+   "eocd_hex": "00189c  50 4b 05 06 00 00 00 00 0c 00 0c 00 a2 03 00 00  PK..............\n0018ac  fa 14 00 00 00 00                                ......",
+   "tree": "100644 blob 752dff649fddd64bfb1804adc5c5da5960d55d78\t.mdpkg/address/overrides.json\n100644 blob 7e5cdaf1d0796bd7280ba1fbee7f506ecf90dc64\tguide.md\n100644 blob 143227537cf0e613855eb072fc61269cf85387f5\tnotes.md\n"
+  }
+ }
+}
