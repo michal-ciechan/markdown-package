@@ -1,0 +1,103 @@
+{
+  "checks": {
+    "corpus_entry_continuity": 799,
+    "first_parent_continuity": 64,
+    "source_blob_hashes": 796,
+    "base_blob_continuity": 716,
+    "flat_delta_reconstruction": 83,
+    "flat_snapshot_reconstruction": 64,
+    "git_fsck": 16,
+    "bundle_verify": 14,
+    "bundle_clone_fsck": 14,
+    "bundle_head_snapshot": 14,
+    "zip_entry_roundtrips": 5415,
+    "squash_delta_reconstruction": 97,
+    "archive_hash_and_metadata_audits": 42,
+    "browser_asset_hashes": 2,
+    "pack_object_hashes": 573,
+    "pack_document_hashes": 132,
+    "browser_document_hashes": 990,
+    "browser_section_hashes": 990,
+    "browser_profiles": 30,
+    "semantic_cases": 5,
+    "expected_negative_git_operations": 2,
+    "timed_native_bundle_imports": 6
+  },
+  "complete_browser_suites": [
+    "firefox"
+  ],
+  "browser_scenario_coverage": [
+    {
+      "browser": "chrome",
+      "corpus": "npm",
+      "mode": "directory",
+      "target": 0,
+      "profiles": 3
+    },
+    {
+      "browser": "chrome",
+      "corpus": "npm",
+      "mode": "directory",
+      "target": 1,
+      "profiles": 3
+    },
+    {
+      "browser": "firefox",
+      "corpus": "npm",
+      "mode": "bundle",
+      "target": 0,
+      "profiles": 3
+    },
+    {
+      "browser": "firefox",
+      "corpus": "npm",
+      "mode": "bundle",
+      "target": 1,
+      "profiles": 3
+    },
+    {
+      "browser": "firefox",
+      "corpus": "npm",
+      "mode": "directory",
+      "target": 0,
+      "profiles": 3
+    },
+    {
+      "browser": "firefox",
+      "corpus": "npm",
+      "mode": "directory",
+      "target": 1,
+      "profiles": 3
+    },
+    {
+      "browser": "firefox",
+      "corpus": "rust",
+      "mode": "bundle",
+      "target": 0,
+      "profiles": 3
+    },
+    {
+      "browser": "firefox",
+      "corpus": "rust",
+      "mode": "bundle",
+      "target": 1,
+      "profiles": 3
+    },
+    {
+      "browser": "firefox",
+      "corpus": "rust",
+      "mode": "directory",
+      "target": 0,
+      "profiles": 3
+    },
+    {
+      "browser": "firefox",
+      "corpus": "rust",
+      "mode": "directory",
+      "target": 1,
+      "profiles": 3
+    }
+  ],
+  "recorded_browser_launch_failures": 6,
+  "unexpected_validation_failures": 0
+}

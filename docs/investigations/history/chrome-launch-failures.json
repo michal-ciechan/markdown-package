@@ -1,0 +1,50 @@
+[
+  {
+    "corpus": "npm",
+    "mode": "directory",
+    "target": 1,
+    "repeat": 1,
+    "attempt": 0,
+    "error": "Command '['C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe', '--headless=new', '--user-data-dir=C:\\\\src\\\\markdown-package\\\\.antiphon\\\\history-work\\\\profiles\\\\92b1a1e3-c840-4d44-adb8-d20ed19adc46', '--no-first-run', '--no-default-browser-check', '--disable-extensions', 'http://127.0.0.1:52948/']' timed out after 10 seconds"
+  },
+  {
+    "corpus": "npm",
+    "mode": "directory",
+    "target": 1,
+    "repeat": 1,
+    "attempt": 1,
+    "error": "Command '['C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe', '--headless=new', '--user-data-dir=C:\\\\src\\\\markdown-package\\\\.antiphon\\\\history-work\\\\profiles\\\\dfe8328f-f454-4ca2-ba57-3fb2df0c51c6', '--no-first-run', '--no-default-browser-check', '--disable-extensions', 'http://127.0.0.1:52948/']' timed out after 10 seconds"
+  },
+  {
+    "corpus": "npm",
+    "mode": "directory",
+    "target": 1,
+    "repeat": 2,
+    "attempt": 0,
+    "error": "Command '['C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe', '--headless=new', '--user-data-dir=C:\\\\src\\\\markdown-package\\\\.antiphon\\\\history-work\\\\profiles\\\\bc53b437-fdd5-4593-b353-bcbb3fe38fcd', '--no-first-run', '--no-default-browser-check', '--disable-extensions', 'http://127.0.0.1:52948/']' timed out after 10 seconds"
+  },
+  {
+    "corpus": "npm",
+    "mode": "bundle",
+    "target": 0,
+    "repeat": 0,
+    "attempt": 0,
+    "error": "Command '['C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe', '--headless=new', '--user-data-dir=C:\\\\src\\\\markdown-package\\\\.antiphon\\\\history-work\\\\profiles\\\\a9ae58dd-d0f7-45cb-9ba3-b25fd11e8e45', '--no-first-run', '--no-default-browser-check', '--disable-extensions', 'http://127.0.0.1:52948/']' timed out after 10 seconds"
+  },
+  {
+    "corpus": "npm",
+    "mode": "bundle",
+    "target": 0,
+    "repeat": 0,
+    "attempt": 1,
+    "error": "Command '['C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe', '--headless=new', '--user-data-dir=C:\\\\src\\\\markdown-package\\\\.antiphon\\\\history-work\\\\profiles\\\\33eda739-b3b3-46fc-90bb-569c1a23cce4', '--no-first-run', '--no-default-browser-check', '--disable-extensions', 'http://127.0.0.1:52948/']' timed out after 10 seconds"
+  },
+  {
+    "corpus": "npm",
+    "mode": "bundle",
+    "target": 0,
+    "repeat": 0,
+    "attempt": 2,
+    "error": "Command '['C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe', '--headless=new', '--user-data-dir=C:\\\\src\\\\markdown-package\\\\.antiphon\\\\history-work\\\\profiles\\\\9e90dc6f-cb57-4a7a-8f19-28092b8b093f', '--no-first-run', '--no-default-browser-check', '--disable-extensions', 'http://127.0.0.1:52948/']' timed out after 10 seconds"
+  }
+]

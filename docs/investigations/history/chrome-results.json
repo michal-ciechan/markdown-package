@@ -1,0 +1,1346 @@
+[
+  {
+    "browser": "chrome",
+    "config": {
+      "corpus": "npm",
+      "fixture_head": "5c3e0ffdc40df11a74024b12ee97c9d15afad99b",
+      "mode": "directory",
+      "target": 0
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "moduleMs": 45.5,
+      "prepareMs": 0,
+      "indexedObjects": 0,
+      "firstMs": 73.30000019073486,
+      "startupAndFirstMs": 118.80000019073486,
+      "warmMedianMs": 35.200000286102295,
+      "warmSamplesMs": [
+        41.299999713897705,
+        37.700000286102295,
+        35.200000286102295,
+        35,
+        35.30000019073486,
+        33.69999980926514,
+        35
+      ],
+      "sectionParseMedianMs": 0.40000009536743164,
+      "sectionSamplesMs": [
+        0.5,
+        0.39999961853027344,
+        0.40000009536743164,
+        0.39999961853027344,
+        0.40000009536743164,
+        0.40000009536743164,
+        0.5
+      ],
+      "hashChecks": 33,
+      "sectionChecks": 33,
+      "firstReads": {
+        "files": [
+          {
+            "path": ".git/objects/pack/pack-11269e9de55be8379b268873153d4d1281de6630.idx",
+            "calls": 1,
+            "bytes": 10396
+          },
+          {
+            "path": ".git/objects/pack/pack-11269e9de55be8379b268873153d4d1281de6630.pack",
+            "calls": 1,
+            "bytes": 147354
+          }
+        ],
+        "unique_bytes": 157750,
+        "read_call_bytes": 157750
+      },
+      "uniqueDocumentBytes": 12216,
+      "preloadedBytes": 159246
+    },
+    "content_pid": 24148,
+    "identity_deltas": [
+      [
+        0.3125,
+        24148
+      ],
+      [
+        0.0,
+        48888
+      ],
+      [
+        0.0,
+        14312
+      ],
+      [
+        0.0,
+        6408
+      ],
+      [
+        0.0,
+        2572
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 30212,
+        "rss": 122105856,
+        "peak": 122109952,
+        "content": false,
+        "cpu": 1.015625
+      },
+      {
+        "pid": 5592,
+        "rss": 10547200,
+        "peak": 10551296,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 21452,
+        "rss": 80842752,
+        "peak": 82292736,
+        "content": false,
+        "cpu": 1.765625
+      },
+      {
+        "pid": 60880,
+        "rss": 38858752,
+        "peak": 39170048,
+        "content": false,
+        "cpu": 0.15625
+      },
+      {
+        "pid": 12416,
+        "rss": 19763200,
+        "peak": 19767296,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 2572,
+        "rss": 92217344,
+        "peak": 92221440,
+        "content": true,
+        "cpu": 0.515625
+      },
+      {
+        "pid": 24148,
+        "rss": 58679296,
+        "peak": 58683392,
+        "content": true,
+        "cpu": 0.421875
+      },
+      {
+        "pid": 48888,
+        "rss": 33452032,
+        "peak": 33456128,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 6408,
+        "rss": 45711360,
+        "peak": 45715456,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 14312,
+        "rss": 44232704,
+        "peak": 44236800,
+        "content": true,
+        "cpu": 0.109375
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 30212,
+        "rss": 122130432,
+        "peak": 122134528,
+        "content": false,
+        "cpu": 1.015625
+      },
+      {
+        "pid": 5592,
+        "rss": 10547200,
+        "peak": 10551296,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 21452,
+        "rss": 80855040,
+        "peak": 82292736,
+        "content": false,
+        "cpu": 1.765625
+      },
+      {
+        "pid": 60880,
+        "rss": 38674432,
+        "peak": 39309312,
+        "content": false,
+        "cpu": 0.171875
+      },
+      {
+        "pid": 12416,
+        "rss": 19763200,
+        "peak": 19767296,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 2572,
+        "rss": 92217344,
+        "peak": 92221440,
+        "content": true,
+        "cpu": 0.515625
+      },
+      {
+        "pid": 24148,
+        "rss": 70459392,
+        "peak": 72065024,
+        "content": true,
+        "cpu": 0.546875
+      },
+      {
+        "pid": 48888,
+        "rss": 33452032,
+        "peak": 33456128,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 6408,
+        "rss": 45711360,
+        "peak": 45715456,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 14312,
+        "rss": 44232704,
+        "peak": 44236800,
+        "content": true,
+        "cpu": 0.109375
+      }
+    ]
+  },
+  {
+    "browser": "chrome",
+    "config": {
+      "corpus": "npm",
+      "fixture_head": "5c3e0ffdc40df11a74024b12ee97c9d15afad99b",
+      "mode": "directory",
+      "target": 0
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "moduleMs": 162.5,
+      "prepareMs": 0,
+      "indexedObjects": 0,
+      "firstMs": 78.10000038146973,
+      "startupAndFirstMs": 240.60000038146973,
+      "warmMedianMs": 35.799999713897705,
+      "warmSamplesMs": [
+        42.30000019073486,
+        39,
+        35.799999713897705,
+        36.30000019073486,
+        35.299999713897705,
+        32.90000009536743,
+        35.40000009536743
+      ],
+      "sectionParseMedianMs": 0.40000009536743164,
+      "sectionSamplesMs": [
+        0.5,
+        0.40000009536743164,
+        0.40000009536743164,
+        1,
+        0.5,
+        0.3000001907348633,
+        0.39999961853027344
+      ],
+      "hashChecks": 33,
+      "sectionChecks": 33,
+      "firstReads": {
+        "files": [
+          {
+            "path": ".git/objects/pack/pack-11269e9de55be8379b268873153d4d1281de6630.idx",
+            "calls": 1,
+            "bytes": 10396
+          },
+          {
+            "path": ".git/objects/pack/pack-11269e9de55be8379b268873153d4d1281de6630.pack",
+            "calls": 1,
+            "bytes": 147354
+          }
+        ],
+        "unique_bytes": 157750,
+        "read_call_bytes": 157750
+      },
+      "uniqueDocumentBytes": 12216,
+      "preloadedBytes": 159246
+    },
+    "content_pid": 61408,
+    "identity_deltas": [
+      [
+        0.296875,
+        61408
+      ],
+      [
+        0.0,
+        55856
+      ],
+      [
+        0.0,
+        28152
+      ],
+      [
+        0.0,
+        26324
+      ],
+      [
+        0.0,
+        12804
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 49112,
+        "rss": 121479168,
+        "peak": 121483264,
+        "content": false,
+        "cpu": 1.09375
+      },
+      {
+        "pid": 36016,
+        "rss": 10551296,
+        "peak": 10555392,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 30768,
+        "rss": 81022976,
+        "peak": 81825792,
+        "content": false,
+        "cpu": 1.421875
+      },
+      {
+        "pid": 30596,
+        "rss": 39276544,
+        "peak": 39473152,
+        "content": false,
+        "cpu": 0.296875
+      },
+      {
+        "pid": 27544,
+        "rss": 19689472,
+        "peak": 19693568,
+        "content": false,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 26324,
+        "rss": 94076928,
+        "peak": 94081024,
+        "content": true,
+        "cpu": 0.53125
+      },
+      {
+        "pid": 61408,
+        "rss": 61542400,
+        "peak": 61550592,
+        "content": true,
+        "cpu": 0.390625
+      },
+      {
+        "pid": 55856,
+        "rss": 33415168,
+        "peak": 33419264,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 12804,
+        "rss": 48664576,
+        "peak": 48668672,
+        "content": true,
+        "cpu": 0.140625
+      },
+      {
+        "pid": 28152,
+        "rss": 41496576,
+        "peak": 41500672,
+        "content": true,
+        "cpu": 0.078125
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 49112,
+        "rss": 121483264,
+        "peak": 121487360,
+        "content": false,
+        "cpu": 1.109375
+      },
+      {
+        "pid": 36016,
+        "rss": 10551296,
+        "peak": 10555392,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 30768,
+        "rss": 81022976,
+        "peak": 81825792,
+        "content": false,
+        "cpu": 1.421875
+      },
+      {
+        "pid": 30596,
+        "rss": 39174144,
+        "peak": 39661568,
+        "content": false,
+        "cpu": 0.3125
+      },
+      {
+        "pid": 27544,
+        "rss": 19689472,
+        "peak": 19693568,
+        "content": false,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 26324,
+        "rss": 94076928,
+        "peak": 94081024,
+        "content": true,
+        "cpu": 0.53125
+      },
+      {
+        "pid": 61408,
+        "rss": 72736768,
+        "peak": 74543104,
+        "content": true,
+        "cpu": 0.5625
+      },
+      {
+        "pid": 55856,
+        "rss": 33415168,
+        "peak": 33419264,
+        "content": true,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 12804,
+        "rss": 48664576,
+        "peak": 48668672,
+        "content": true,
+        "cpu": 0.140625
+      },
+      {
+        "pid": 28152,
+        "rss": 41496576,
+        "peak": 41500672,
+        "content": true,
+        "cpu": 0.078125
+      }
+    ]
+  },
+  {
+    "browser": "chrome",
+    "config": {
+      "corpus": "npm",
+      "fixture_head": "5c3e0ffdc40df11a74024b12ee97c9d15afad99b",
+      "mode": "directory",
+      "target": 0
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "moduleMs": 32.09999990463257,
+      "prepareMs": 0,
+      "indexedObjects": 0,
+      "firstMs": 76.09999990463257,
+      "startupAndFirstMs": 108.19999980926514,
+      "warmMedianMs": 36.799999713897705,
+      "warmSamplesMs": [
+        43.19999980926514,
+        40,
+        41.40000009536743,
+        36.09999990463257,
+        36.799999713897705,
+        34,
+        35
+      ],
+      "sectionParseMedianMs": 0.40000009536743164,
+      "sectionSamplesMs": [
+        0.5999999046325684,
+        0.40000009536743164,
+        0.3000001907348633,
+        0.40000009536743164,
+        0.5,
+        0.5,
+        0.40000009536743164
+      ],
+      "hashChecks": 33,
+      "sectionChecks": 33,
+      "firstReads": {
+        "files": [
+          {
+            "path": ".git/objects/pack/pack-11269e9de55be8379b268873153d4d1281de6630.idx",
+            "calls": 1,
+            "bytes": 10396
+          },
+          {
+            "path": ".git/objects/pack/pack-11269e9de55be8379b268873153d4d1281de6630.pack",
+            "calls": 1,
+            "bytes": 147354
+          }
+        ],
+        "unique_bytes": 157750,
+        "read_call_bytes": 157750
+      },
+      "uniqueDocumentBytes": 12216,
+      "preloadedBytes": 159246
+    },
+    "content_pid": 55348,
+    "identity_deltas": [
+      [
+        0.296875,
+        55348
+      ],
+      [
+        0.0,
+        60168
+      ],
+      [
+        0.0,
+        54488
+      ],
+      [
+        0.0,
+        47564
+      ],
+      [
+        0.0,
+        6896
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 22804,
+        "rss": 122011648,
+        "peak": 122015744,
+        "content": false,
+        "cpu": 1.28125
+      },
+      {
+        "pid": 21804,
+        "rss": 10559488,
+        "peak": 10563584,
+        "content": false,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 46680,
+        "rss": 39419904,
+        "peak": 39829504,
+        "content": false,
+        "cpu": 0.359375
+      },
+      {
+        "pid": 53660,
+        "rss": 81199104,
+        "peak": 83132416,
+        "content": false,
+        "cpu": 1.46875
+      },
+      {
+        "pid": 35460,
+        "rss": 19632128,
+        "peak": 19636224,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 6896,
+        "rss": 97464320,
+        "peak": 97468416,
+        "content": true,
+        "cpu": 0.546875
+      },
+      {
+        "pid": 55348,
+        "rss": 61513728,
+        "peak": 61521920,
+        "content": true,
+        "cpu": 0.359375
+      },
+      {
+        "pid": 60168,
+        "rss": 33357824,
+        "peak": 33361920,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 47564,
+        "rss": 45494272,
+        "peak": 45498368,
+        "content": true,
+        "cpu": 0.125
+      },
+      {
+        "pid": 54488,
+        "rss": 41463808,
+        "peak": 41467904,
+        "content": true,
+        "cpu": 0.078125
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 22804,
+        "rss": 122011648,
+        "peak": 122015744,
+        "content": false,
+        "cpu": 1.28125
+      },
+      {
+        "pid": 21804,
+        "rss": 10559488,
+        "peak": 10563584,
+        "content": false,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 46680,
+        "rss": 39395328,
+        "peak": 39862272,
+        "content": false,
+        "cpu": 0.359375
+      },
+      {
+        "pid": 53660,
+        "rss": 81199104,
+        "peak": 83132416,
+        "content": false,
+        "cpu": 1.46875
+      },
+      {
+        "pid": 35460,
+        "rss": 19632128,
+        "peak": 19636224,
+        "content": false,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 6896,
+        "rss": 97464320,
+        "peak": 97468416,
+        "content": true,
+        "cpu": 0.546875
+      },
+      {
+        "pid": 55348,
+        "rss": 72945664,
+        "peak": 74944512,
+        "content": true,
+        "cpu": 0.515625
+      },
+      {
+        "pid": 60168,
+        "rss": 33357824,
+        "peak": 33361920,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 47564,
+        "rss": 45494272,
+        "peak": 45498368,
+        "content": true,
+        "cpu": 0.125
+      },
+      {
+        "pid": 54488,
+        "rss": 41463808,
+        "peak": 41467904,
+        "content": true,
+        "cpu": 0.078125
+      }
+    ]
+  },
+  {
+    "browser": "chrome",
+    "config": {
+      "corpus": "npm",
+      "fixture_head": "5c3e0ffdc40df11a74024b12ee97c9d15afad99b",
+      "mode": "directory",
+      "target": 1
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "moduleMs": 163.5,
+      "prepareMs": 0,
+      "indexedObjects": 0,
+      "firstMs": 101.2000002861023,
+      "startupAndFirstMs": 264.7000002861023,
+      "warmMedianMs": 60.90000009536743,
+      "warmSamplesMs": [
+        62.89999961853027,
+        62.80000019073486,
+        61.10000038146973,
+        60.90000009536743,
+        60.799999713897705,
+        60.30000019073486,
+        52.80000019073486
+      ],
+      "sectionParseMedianMs": 1.8000001907348633,
+      "sectionSamplesMs": [
+        1.8000001907348633,
+        1.8999996185302734,
+        1.8999996185302734,
+        1.8000001907348633,
+        1.9000000953674316,
+        1.5999999046325684,
+        1.799999713897705
+      ],
+      "hashChecks": 33,
+      "sectionChecks": 33,
+      "firstReads": {
+        "files": [
+          {
+            "path": ".git/objects/pack/pack-11269e9de55be8379b268873153d4d1281de6630.idx",
+            "calls": 1,
+            "bytes": 10396
+          },
+          {
+            "path": ".git/objects/pack/pack-11269e9de55be8379b268873153d4d1281de6630.pack",
+            "calls": 1,
+            "bytes": 147354
+          }
+        ],
+        "unique_bytes": 157750,
+        "read_call_bytes": 157750
+      },
+      "uniqueDocumentBytes": 414547,
+      "preloadedBytes": 159246
+    },
+    "content_pid": 56952,
+    "identity_deltas": [
+      [
+        0.3125,
+        56952
+      ],
+      [
+        0.0,
+        58316
+      ],
+      [
+        0.0,
+        55556
+      ],
+      [
+        0.0,
+        27440
+      ],
+      [
+        0.0,
+        20588
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 3692,
+        "rss": 121778176,
+        "peak": 121782272,
+        "content": false,
+        "cpu": 1.140625
+      },
+      {
+        "pid": 61312,
+        "rss": 10772480,
+        "peak": 10776576,
+        "content": false,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 32784,
+        "rss": 80707584,
+        "peak": 82743296,
+        "content": false,
+        "cpu": 1.765625
+      },
+      {
+        "pid": 35624,
+        "rss": 36352000,
+        "peak": 36556800,
+        "content": false,
+        "cpu": 0.15625
+      },
+      {
+        "pid": 36024,
+        "rss": 19660800,
+        "peak": 19664896,
+        "content": false,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 55556,
+        "rss": 92848128,
+        "peak": 92852224,
+        "content": true,
+        "cpu": 0.453125
+      },
+      {
+        "pid": 56952,
+        "rss": 58552320,
+        "peak": 58560512,
+        "content": true,
+        "cpu": 0.5
+      },
+      {
+        "pid": 27440,
+        "rss": 4538368,
+        "peak": 4542464,
+        "content": true,
+        "cpu": 0.0
+      },
+      {
+        "pid": 58316,
+        "rss": 45744128,
+        "peak": 45748224,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 20588,
+        "rss": 43720704,
+        "peak": 43724800,
+        "content": true,
+        "cpu": 0.0625
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 3692,
+        "rss": 123166720,
+        "peak": 123195392,
+        "content": false,
+        "cpu": 1.21875
+      },
+      {
+        "pid": 61312,
+        "rss": 10772480,
+        "peak": 10776576,
+        "content": false,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 32784,
+        "rss": 80699392,
+        "peak": 82743296,
+        "content": false,
+        "cpu": 1.765625
+      },
+      {
+        "pid": 35624,
+        "rss": 36261888,
+        "peak": 36732928,
+        "content": false,
+        "cpu": 0.15625
+      },
+      {
+        "pid": 36024,
+        "rss": 19660800,
+        "peak": 19664896,
+        "content": false,
+        "cpu": 0.09375
+      },
+      {
+        "pid": 55556,
+        "rss": 92811264,
+        "peak": 92860416,
+        "content": true,
+        "cpu": 0.453125
+      },
+      {
+        "pid": 56952,
+        "rss": 72245248,
+        "peak": 76214272,
+        "content": true,
+        "cpu": 0.6875
+      },
+      {
+        "pid": 27440,
+        "rss": 4538368,
+        "peak": 4542464,
+        "content": true,
+        "cpu": 0.0
+      },
+      {
+        "pid": 58316,
+        "rss": 45744128,
+        "peak": 45748224,
+        "content": true,
+        "cpu": 0.078125
+      },
+      {
+        "pid": 20588,
+        "rss": 43720704,
+        "peak": 43724800,
+        "content": true,
+        "cpu": 0.0625
+      }
+    ]
+  },
+  {
+    "browser": "chrome",
+    "config": {
+      "corpus": "npm",
+      "fixture_head": "5c3e0ffdc40df11a74024b12ee97c9d15afad99b",
+      "mode": "directory",
+      "target": 1
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "moduleMs": 970.6999998092651,
+      "prepareMs": 0,
+      "indexedObjects": 0,
+      "firstMs": 149.80000019073486,
+      "startupAndFirstMs": 1120.5,
+      "warmMedianMs": 74.69999980926514,
+      "warmSamplesMs": [
+        176.80000019073486,
+        127.09999990463257,
+        74.69999980926514,
+        85.2999997138977,
+        72.19999980926514,
+        68.2999997138977,
+        56.09999990463257
+      ],
+      "sectionParseMedianMs": 1.9000000953674316,
+      "sectionSamplesMs": [
+        1.9000000953674316,
+        2,
+        1.700000286102295,
+        2.200000286102295,
+        1.8000001907348633,
+        1.700000286102295,
+        1.9000000953674316
+      ],
+      "hashChecks": 33,
+      "sectionChecks": 33,
+      "firstReads": {
+        "files": [
+          {
+            "path": ".git/objects/pack/pack-11269e9de55be8379b268873153d4d1281de6630.idx",
+            "calls": 1,
+            "bytes": 10396
+          },
+          {
+            "path": ".git/objects/pack/pack-11269e9de55be8379b268873153d4d1281de6630.pack",
+            "calls": 1,
+            "bytes": 147354
+          }
+        ],
+        "unique_bytes": 157750,
+        "read_call_bytes": 157750
+      },
+      "uniqueDocumentBytes": 414547,
+      "preloadedBytes": 159246
+    },
+    "content_pid": 13564,
+    "identity_deltas": [
+      [
+        0.203125,
+        13564
+      ],
+      [
+        0.0,
+        57012
+      ],
+      [
+        0.0,
+        35936
+      ],
+      [
+        0.0,
+        25832
+      ],
+      [
+        0.0,
+        11124
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 59468,
+        "rss": 122134528,
+        "peak": 122183680,
+        "content": false,
+        "cpu": 0.921875
+      },
+      {
+        "pid": 57688,
+        "rss": 10850304,
+        "peak": 10854400,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 9472,
+        "rss": 39247872,
+        "peak": 39608320,
+        "content": false,
+        "cpu": 0.21875
+      },
+      {
+        "pid": 12992,
+        "rss": 72654848,
+        "peak": 74510336,
+        "content": false,
+        "cpu": 2.15625
+      },
+      {
+        "pid": 16936,
+        "rss": 19697664,
+        "peak": 19701760,
+        "content": false,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 25832,
+        "rss": 88236032,
+        "peak": 88240128,
+        "content": true,
+        "cpu": 0.484375
+      },
+      {
+        "pid": 13564,
+        "rss": 62066688,
+        "peak": 62070784,
+        "content": true,
+        "cpu": 0.3125
+      },
+      {
+        "pid": 11124,
+        "rss": 8921088,
+        "peak": 8925184,
+        "content": true,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 57012,
+        "rss": 49004544,
+        "peak": 49008640,
+        "content": true,
+        "cpu": 0.140625
+      },
+      {
+        "pid": 35936,
+        "rss": 44425216,
+        "peak": 44429312,
+        "content": true,
+        "cpu": 0.078125
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 59468,
+        "rss": 123879424,
+        "peak": 123904000,
+        "content": false,
+        "cpu": 1.0
+      },
+      {
+        "pid": 57688,
+        "rss": 10850304,
+        "peak": 10854400,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 9472,
+        "rss": 39059456,
+        "peak": 39698432,
+        "content": false,
+        "cpu": 0.25
+      },
+      {
+        "pid": 12992,
+        "rss": 78004224,
+        "peak": 81367040,
+        "content": false,
+        "cpu": 3.53125
+      },
+      {
+        "pid": 16936,
+        "rss": 19697664,
+        "peak": 19701760,
+        "content": false,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 25832,
+        "rss": 91856896,
+        "peak": 91860992,
+        "content": true,
+        "cpu": 0.5
+      },
+      {
+        "pid": 13564,
+        "rss": 76615680,
+        "peak": 78327808,
+        "content": true,
+        "cpu": 0.53125
+      },
+      {
+        "pid": 11124,
+        "rss": 11763712,
+        "peak": 11767808,
+        "content": true,
+        "cpu": 0.015625
+      },
+      {
+        "pid": 57012,
+        "rss": 49057792,
+        "peak": 49061888,
+        "content": true,
+        "cpu": 0.140625
+      },
+      {
+        "pid": 35936,
+        "rss": 44425216,
+        "peak": 44429312,
+        "content": true,
+        "cpu": 0.078125
+      }
+    ]
+  },
+  {
+    "browser": "chrome",
+    "config": {
+      "corpus": "npm",
+      "fixture_head": "5c3e0ffdc40df11a74024b12ee97c9d15afad99b",
+      "mode": "directory",
+      "target": 1
+    },
+    "result": {
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "moduleMs": 190.60000038146973,
+      "prepareMs": 0,
+      "indexedObjects": 0,
+      "firstMs": 116.19999980926514,
+      "startupAndFirstMs": 306.80000019073486,
+      "warmMedianMs": 59.19999980926514,
+      "warmSamplesMs": [
+        66.89999961853027,
+        62.30000019073486,
+        60.80000019073486,
+        57.5,
+        59.19999980926514,
+        55.89999961853027,
+        54.69999980926514
+      ],
+      "sectionParseMedianMs": 1.8000001907348633,
+      "sectionSamplesMs": [
+        2.8000001907348633,
+        1.6999998092651367,
+        1.799999713897705,
+        1.8000001907348633,
+        2.200000286102295,
+        1.700000286102295,
+        3.700000286102295
+      ],
+      "hashChecks": 33,
+      "sectionChecks": 33,
+      "firstReads": {
+        "files": [
+          {
+            "path": ".git/objects/pack/pack-11269e9de55be8379b268873153d4d1281de6630.idx",
+            "calls": 1,
+            "bytes": 10396
+          },
+          {
+            "path": ".git/objects/pack/pack-11269e9de55be8379b268873153d4d1281de6630.pack",
+            "calls": 1,
+            "bytes": 147354
+          }
+        ],
+        "unique_bytes": 157750,
+        "read_call_bytes": 157750
+      },
+      "uniqueDocumentBytes": 414547,
+      "preloadedBytes": 159246
+    },
+    "content_pid": 43184,
+    "identity_deltas": [
+      [
+        0.3125,
+        43184
+      ],
+      [
+        0.0,
+        57208
+      ],
+      [
+        0.0,
+        46656
+      ],
+      [
+        0.0,
+        28840
+      ],
+      [
+        0.0,
+        23612
+      ]
+    ],
+    "memory_before": [
+      {
+        "pid": 18600,
+        "rss": 121987072,
+        "peak": 121991168,
+        "content": false,
+        "cpu": 1.390625
+      },
+      {
+        "pid": 34656,
+        "rss": 10772480,
+        "peak": 10776576,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 23564,
+        "rss": 39677952,
+        "peak": 39809024,
+        "content": false,
+        "cpu": 0.140625
+      },
+      {
+        "pid": 11064,
+        "rss": 79880192,
+        "peak": 80687104,
+        "content": false,
+        "cpu": 1.453125
+      },
+      {
+        "pid": 44760,
+        "rss": 19664896,
+        "peak": 19668992,
+        "content": false,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 23612,
+        "rss": 94826496,
+        "peak": 94830592,
+        "content": true,
+        "cpu": 0.53125
+      },
+      {
+        "pid": 43184,
+        "rss": 61747200,
+        "peak": 61751296,
+        "content": true,
+        "cpu": 0.53125
+      },
+      {
+        "pid": 57208,
+        "rss": 35164160,
+        "peak": 35168256,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 28840,
+        "rss": 48578560,
+        "peak": 48582656,
+        "content": true,
+        "cpu": 0.109375
+      },
+      {
+        "pid": 46656,
+        "rss": 41472000,
+        "peak": 41476096,
+        "content": true,
+        "cpu": 0.078125
+      }
+    ],
+    "memory_first": [
+      {
+        "pid": 18600,
+        "rss": 122130432,
+        "peak": 122134528,
+        "content": false,
+        "cpu": 1.40625
+      },
+      {
+        "pid": 34656,
+        "rss": 10772480,
+        "peak": 10776576,
+        "content": false,
+        "cpu": 0.03125
+      },
+      {
+        "pid": 23564,
+        "rss": 39555072,
+        "peak": 40054784,
+        "content": false,
+        "cpu": 0.140625
+      },
+      {
+        "pid": 11064,
+        "rss": 81956864,
+        "peak": 82792448,
+        "content": false,
+        "cpu": 1.8125
+      },
+      {
+        "pid": 44760,
+        "rss": 19664896,
+        "peak": 19668992,
+        "content": false,
+        "cpu": 0.046875
+      },
+      {
+        "pid": 23612,
+        "rss": 95268864,
+        "peak": 95272960,
+        "content": true,
+        "cpu": 0.53125
+      },
+      {
+        "pid": 43184,
+        "rss": 76230656,
+        "peak": 77627392,
+        "content": true,
+        "cpu": 0.75
+      },
+      {
+        "pid": 57208,
+        "rss": 35164160,
+        "peak": 35168256,
+        "content": true,
+        "cpu": 0.0625
+      },
+      {
+        "pid": 28840,
+        "rss": 48578560,
+        "peak": 48582656,
+        "content": true,
+        "cpu": 0.109375
+      },
+      {
+        "pid": 46656,
+        "rss": 41472000,
+        "peak": 41476096,
+        "content": true,
+        "cpu": 0.078125
+      }
+    ]
+  }
+]

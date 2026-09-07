@@ -1,0 +1,46 @@
+{
+  "shallow": {
+    "create_exit": 0,
+    "create_stderr": "",
+    "is_shallow": true,
+    "boundary": "3d7340a03a25d2aa9dafc7da30330159f6f60b37",
+    "raw_parent_preserved": true,
+    "log_treats_boundary_as_root": true,
+    "verify_exit": 0,
+    "verify_stderr": "C:/src/markdown-package/.antiphon/history-work/semantics/827ba536-278d-4576-9a43-2e84c0878208/shallow.bundle is okay\n",
+    "fetch_exit": 1,
+    "fetch_stderr": "error: Could not read f4e94c59e95eb11f98c8ff57eb89e40d2b174e4b\nfatal: Failed to traverse parents of commit 3d7340a03a25d2aa9dafc7da30330159f6f60b37\nerror: C:\\src\\markdown-package\\.antiphon\\history-work\\semantics\\827ba536-278d-4576-9a43-2e84c0878208\\shallow.bundle did not send all necessary objects\n",
+    "header": "# v2 git bundle\nfb519db03ab4d061a037652651782a962050c3be refs/heads/main"
+  },
+  "incremental_bundle": {
+    "header": "# v2 git bundle\n-f4e94c59e95eb11f98c8ff57eb89e40d2b174e4b Change 1\nfb519db03ab4d061a037652651782a962050c3be refs/heads/main",
+    "empty_verify_exit": 1,
+    "empty_verify_stderr": "error: Repository lacks these prerequisite commits:\nerror: f4e94c59e95eb11f98c8ff57eb89e40d2b174e4b \n",
+    "source_verify_exit": 0
+  },
+  "synthetic_root": {
+    "is_shallow": false,
+    "bundle_verify_exit": 0,
+    "rewritten_commit_ids": true
+  },
+  "squash": {
+    "parent_count": 1,
+    "merge_head_written": false,
+    "ordinary_commit_same_oid": true,
+    "oid": "04b309e2ea6bfce1e718ac959fa2efc00fdbbd15"
+  },
+  "sections": {
+    "touched_across_range": [
+      "a",
+      "b"
+    ],
+    "net_changed": [
+      "b"
+    ],
+    "heading_rename_retains_id": "b",
+    "after_truncation_old_a_change": "unknown",
+    "retained_touched_summary_bytes": 10
+  },
+  "semantic_cases": 5,
+  "unexpected_failures": 0
+}

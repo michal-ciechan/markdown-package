@@ -1,0 +1,24 @@
+[
+  {
+    "corpus": "npm",
+    "operation": "git clone --bare extracted-bundle new-directory",
+    "samples_ms": [
+      511.84909977018833,
+      434.36660012230277,
+      477.94759972020984
+    ],
+    "median_ms": 477.94759972020984,
+    "checked_imports": 3
+  },
+  {
+    "corpus": "rust",
+    "operation": "git clone --bare extracted-bundle new-directory",
+    "samples_ms": [
+      595.5854002386332,
+      573.6951003782451,
+      519.2965003661811
+    ],
+    "median_ms": 573.6951003782451,
+    "checked_imports": 3
+  }
+]

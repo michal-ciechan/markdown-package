@@ -1,0 +1,58 @@
+[
+  {
+    "corpus": "npm",
+    "target": "compression-target",
+    "path": "docs/lib/content/using-npm/workspaces.md",
+    "whole_pack_bytes": 147354,
+    "selected_pack_bytes": 24635,
+    "selected_objects": 177,
+    "inflated_stream_bytes": 40809,
+    "reconstructed_object_bytes": 51097,
+    "extra_blob_bases": 0,
+    "extra_blob_base_bytes": 0,
+    "object_hash_checks": 177,
+    "document_hash_checks": 33
+  },
+  {
+    "corpus": "npm",
+    "target": "most-revised",
+    "path": "docs/lib/content/configuring-npm/package-json.md",
+    "whole_pack_bytes": 147354,
+    "selected_pack_bytes": 35428,
+    "selected_objects": 194,
+    "inflated_stream_bytes": 70429,
+    "reconstructed_object_bytes": 453359,
+    "extra_blob_bases": 0,
+    "extra_blob_base_bytes": 0,
+    "object_hash_checks": 194,
+    "document_hash_checks": 33
+  },
+  {
+    "corpus": "rust",
+    "target": "compression-target",
+    "path": "text/3872-crates-io-security.md",
+    "whole_pack_bytes": 3287785,
+    "selected_pack_bytes": 37042,
+    "selected_objects": 100,
+    "inflated_stream_bytes": 56848,
+    "reconstructed_object_bytes": 1145750,
+    "extra_blob_bases": 0,
+    "extra_blob_base_bytes": 0,
+    "object_hash_checks": 100,
+    "document_hash_checks": 33
+  },
+  {
+    "corpus": "rust",
+    "target": "most-revised",
+    "path": "text/0320-nonzeroing-dynamic-drop.md",
+    "whole_pack_bytes": 3287785,
+    "selected_pack_bytes": 42244,
+    "selected_objects": 102,
+    "inflated_stream_bytes": 75920,
+    "reconstructed_object_bytes": 1218899,
+    "extra_blob_bases": 0,
+    "extra_blob_base_bytes": 0,
+    "object_hash_checks": 102,
+    "document_hash_checks": 33
+  }
+]
