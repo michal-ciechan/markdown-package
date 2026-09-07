@@ -1,10 +1,10 @@
 # CARD-0004: section addressing investigation
 
-Status: investigation and computed-default follow-up complete; proposed semantics and executable evidence, not a production format implementation. Checked on 2026-09-07. The [ZIP container](compression.md) and [real packed `.git` history](history.md) are accepted inputs to this card.
+Status: investigation, sparse follow-up, and no-stored-table refinement complete; proposed semantics and executable evidence, not a production format implementation. Checked on 2026-09-07. The [ZIP container](compression.md) and [real packed `.git` history](history.md) are accepted inputs to this card.
 
-**Current verdict: replace mandatory per-entity UUID maps with computed default identities and confirmed sparse exceptions.** Compute all scoped digests at runtime. Store identity records only when the default stops representing continuity, including rename/move, duplicate displacement, retirement, and reuse of an old location. Under the same identity-aware producer contract as the original proposal, the confirmed sparse model matches all 189 semantic comparisons. Automatic Git-only population does not meet that contract. See the [follow-up recommendation and measurements](#follow-up-computed-default-identities-and-sparse-exceptions).
+**Current verdict under the refined no-table requirement: zero identity/rename metadata supports best-effort read-time matching, not guaranteed entity continuity.** Walking retained Git history recovers some renames that endpoint comparison misses, but still makes false matches, costs work proportional to retained changes, and loses essential evidence after squash/truncation. Use an explicit **unmatched / unreviewed** fallback and preserve the external review; do not silently treat inference as confirmed identity. See the [primary no-table investigation](#refinement-zero-stored-identity-or-rename-metadata).
 
-The original design below is retained as the measured full-map baseline; its mandatory UUID maps and UUID reference grammar are superseded by the follow-up, not a second recommended storage layer. Its source scopes, changed-state semantics, explicit coverage and ordered squash evidence still apply. **Git does have a native shallow marker, `.git/shallow`; synthetic snapshot roots still need an explicit truncation declaration.** [Git shallow repository documentation](https://git-scm.com/docs/shallow).
+The full-map and sparse-table sections below remain measured alternatives, not storage secretly added to the refined primary candidate. The refinement explicitly excludes even the sparse table previously recommended at `d0590d0`. Source scopes, changed-state semantics and coverage disclosures still matter; preserving discarded identity/change evidence now conflicts with the zero-identity-metadata constraint. **Git does have a native shallow marker, `.git/shallow`; synthetic snapshot roots still need an explicit truncation declaration.** [Git shallow repository documentation](https://git-scm.com/docs/shallow).
 
 ## Original full-map design: identity, review scope, and producer contract
 
@@ -265,9 +265,9 @@ The initial recommendation was producer-assigned UUIDs with adaptive identity-on
 
 ## Follow-up: computed default identities and sparse exceptions
 
-**Recommend the requester's storage direction, with a broader exception contract than “renames/moves only.”** The original **31.60% / 17.21%** costs already excluded stored digests. The avoidable cost was the all-entity identity/locator map. Digests remain runtime computations in both designs. On the identical base snapshots, a sparse table with one binding for 5% of headings costs **2.32% / 0.99%**; at 20%, **7.12% / 3.77%**. A second experiment actually carries controlled rename/move events through the existing 32-transition histories and also favors sparse storage. These are measured encodings and workload sensitivities, not claims about observed real-world rename frequencies.
+**Earlier recommendation, superseded by the no-table refinement below:** computed defaults with a broader exception contract than “renames/moves only.” The original **31.60% / 17.21%** costs already excluded stored digests. The avoidable cost was the all-entity identity/locator map. Digests remain runtime computations in both designs. On the identical base snapshots, a sparse table with one binding for 5% of headings costs **2.32% / 0.99%**; at 20%, **7.12% / 3.77%**. A second experiment actually carries controlled rename/move events through the existing 32-transition histories and also favors sparse storage. These are measured encodings and workload sensitivities, not claims about observed real-world rename frequencies.
 
-This replaces the full-map recommendation under its **existing producer-compliance assumption**. It does not replace confirmation with a similarity threshold. The extra storage of full maps does not make arbitrary editors or editorial intent inferable either. Their advantages are simpler fixed-size references, direct UUID lookup, and easier local validation of bound locators; those advantages do not justify making every unchanged entity carry a record in these measured workloads.
+At that stage, this replaced the full-map recommendation under its **existing producer-compliance assumption**. It did not replace confirmation with a similarity threshold. The extra storage of full maps does not make arbitrary editors or editorial intent inferable either. Their advantages are simpler fixed-size references, direct UUID lookup, and easier local validation of bound locators; the sparse experiment quantified the cost of those advantages.
 
 ### Computed default and exception mechanics
 
@@ -434,7 +434,7 @@ The override ledger is versioned in Git trees and copied into a retained endpoin
 
 Ordered touched summaries still need source checkpoint positions and edit/revert events. Key them by the computed origin root, declare this anchor profile/identity encoding in their schema, and carry partial correspondence coverage. The sparse probe verifies an edit/revert produces both events for the same origin root and does not touch an unchanged sibling. Current content equivalence cannot substitute for temporal evidence. This follow-up does not remeasure full summary or patch retention; the earlier summary experiment remains separate, and 64-hex root keys can cost more per summary event than UUID strings.
 
-**Replace the original all-ID-map recommendation with computed defaults plus a confirmed sparse lifecycle ledger.** Keep runtime source digests, parent-inclusive scopes, permanent preambles, namespace separation, exact historical references and coverage disclosures. Let explicit editing operations generate exceptions automatically; let Git suggest uncertain correspondences for confirmation. No producer must hand-maintain an ID and digest for every section. No similarity threshold is allowed to silently upgrade an uncertain match to reviewed identity.
+**The earlier sparse recommendation was computed defaults plus a confirmed lifecycle ledger.** It remains a cheaper strong-correspondence alternative if stored exceptions become permissible; it is not the primary candidate after the refinement. Runtime source digests, parent-inclusive scopes, permanent preambles, namespace separation, exact historical references and coverage disclosures remain useful independently of that table.
 
 ### Follow-up reproduction and evidence
 
@@ -460,3 +460,152 @@ Final validation: **55 original model checks**, **189 confirmed sparse conforman
 <!-- SPARSE_VALIDATION_END -->
 
 Evidence: [semantic comparisons and exceptions](addressing/sparse-case-results.json), [native Git detection](addressing/sparse-detection-results.json), [pinned source checks](addressing/sparse-source-results.json), [controlled event schedules](addressing/sparse-corpus-results.json), [all package sizes and hashes](addressing/sparse-size-results.json), and [independent audit](addressing/sparse-verification.json). A first Windows packaging attempt used the default text code page and rejected a Unicode JSON fixture; explicit UTF-8 fixed that harness issue. The model's initially discarded reverted alias was corrected and regression-tested. Neither issue is included as a successful sample. These are investigation fixtures, not a shipped producer, production schema validator or UI. No new application build or browser integration was claimed.
+
+## Refinement: zero stored identity or rename metadata
+
+**The refinement explicitly rules out the sparse table too.** The primary candidate is now: keep the review commit and locator outside the package, derive section anchors/digests at read time, and infer correspondence from the package's retained Git history. No UUID map, alias table, section-change summary, or persisted matching cache is added for this mechanism. The sparse/full-map results above are comparison points, not components smuggled into the zero-table reader.
+
+**Verdict: zero identity/rename storage is achievable; the original hard continuity guarantee is not.** A full retained walk improves recall over one endpoint diff, but it cannot reliably distinguish repeated sections, replacement versus rename, or information discarded by squash. I recommend the no-table mechanism only with an explicit **best-effort correspondence contract and unmatched/unreviewed fallback**. If “renamed always resolves as the same entity, changed” remains a hard requirement, the no-table constraint and that guarantee are incompatible in the tested cases. This finding supersedes the prior recommendation to store sparse exceptions; a decision to permit them would be a change to the refined constraint.
+
+### Read-time mechanism actually tested
+
+An external review record must contain **the full reviewed commit OID**, namespace/scope, digest and anchor profiles, the reviewed locator, and the expected scoped digest. The reviewed OID is essential input, not just optional audit decoration in this mode. A reference can be modelled as:
+
+```json
+{
+  "namespace": "<package-lineage namespace>",
+  "reviewedAt": "sha1-<full commit id>",
+  "locator": ["section", "spec.md", [["# Topic", 0]]],
+  "expectedDigest": "<scoped SHA-256>",
+  "anchorProfile": "cm0312-trail-source-v1",
+  "digestProfile": "cm0312-source-lf-v1"
+}
+```
+
+The ordinary package namespace/scope still binds the selected package; no extra per-entity record is required. Read-time results have **inferred** identity, never a producer-confirmed origin root. On a later review, save a new reviewed commit and locator externally. Do not mistake a computed locator that reappears for proof that the old entity returned.
+
+Two range strategies are implemented:
+
+1. **Endpoint:** load A and B, compute their section inventories, and compare A directly with B. `git diff A..B` means endpoint comparison, not replay of every intervening edit. It may be fast and useful, but it cannot see an edit/revert or delete/recreate with equal endpoints. [Git diff range semantics](https://git-scm.com/docs/git-diff).
+2. **Walk:** verify A lies on B's retained first-parent path, enumerate each transition in `(A, B]`, and carry the current locator through them. Parse source from actual Git tree/blob objects at those commits. A surviving default locator follows the default rule; when it disappears, calculate rename candidates. Stop on an unmatched step instead of resurrecting the reference when matching text reappears later. Two arbitrary valid OIDs need not form such a path; a review on another branch is explicitly unsupported by this first-parent policy rather than silently treating `A..B`'s commit set as a sequence from A.
+
+The strict literal `git diff -M` version remains limited to **files**, as the preceding 50%/80% experiment established. To give the proposal a stronger test, the reader uses native file rename candidates plus **runtime-computed section projections** for unmatched sections. It writes temporary ordinary Git objects with one scoped section per file and asks real Git `-M50%`/`-M80%` to match those. This is a parser/reader feature, not Git's built-in knowledge of headings. Native file mappings take precedence over projected matches. Projected objects and correspondence caches are scratch/runtime data; none is shipped in the package. Even this stronger zero-table variant fails the guarantee, so native file rename detection alone cannot establish it.
+
+The native backend batches commit/tree/blob reads with `git cat-file --batch`, caches parsed blobs and computed snapshot inventories, and calls rename detection only when a tracked default locator disappears. It does not launch one process per section or blindly run a similarity search for every unchanged body edit. The implementation is an experiment using native Git and Node, not a production browser Git reader.
+
+### Arbitrary ranges: endpoint comparison versus walking
+
+The new fixture has **512 actual Git transitions**, one 5,388-byte Markdown document, a heading rename every eight transitions, a file move every 32, and a gradual complete rewrite of its paragraph spans. Each adjacent change retains enough similarity for both tested thresholds. After 32 transitions, the initial paragraph spans have all changed. Source and identity metadata are separate: the fixture ships Markdown and ordinary Git history, **zero identity files**.
+
+Tested `(A, B)` positions are **(0,32), (0,128), (16,128), (128,256), and (256,512)** at both thresholds. For all ten ranges:
+
+- The **full walk follows the intended section** and reports changed source.
+- A **single endpoint comparison is unmatched**, despite the valid intermediate correspondence chain.
+
+These are 20 actual range queries, including reviews made well inside the history. Rename detection is not transitive: success on each adjacent edge does not imply that Git will match the two endpoints. Conversely, a separate shared-boilerplate fixture **does** produce an endpoint match after 32 edits. The first exploratory rewrite fixture retained enough shared spans to match; it is retained as this positive control rather than reported as a miss. The complete-rewrite fixture uses short, wholly replaced spans to exercise the distinct failure. A count of changed lines alone is not a reliable predictor of Git's similarity score.
+
+A three-transition **rename → revert → unchanged** range returns same current source in both strategies, as it should for source equivalence. The walk observes two source changes and two inferred remappings; endpoint comparison observes none. A **delete → recreate identical source → unchanged** range is different: the walk stops at deletion, but endpoint comparison treats the new entity as the old one. Thus endpoint equivalence can be correct for current source while wrong for entity continuity.
+
+### Existing awkward cases at read time
+
+The reader resolves every original entity in all 21 original/extended state transitions, plus the separate long-boilerplate replacement case: **192 queries at each threshold**. Inventories used for matching are computed from actual source blobs with temporary local labels; the earlier producer UUIDs are used **only afterward to grade the answer**, not by the reader. These queries reuse the original duplicate, move, rename, split/merge, child, preamble and headingless cases and add the replacement/rewrite counterexamples. The earlier 55 parser/model checks are retained separately; they are not relabelled as evidence that heuristic identity is correct.
+
+<!-- RUNTIME_ERRORS_START -->
+
+| Threshold | Queries | Wrong identity matches | Missed true continuations | Total unmatched |
+| --- | --- | --- | --- | --- |
+| 50% | 192 | 4 | 4 | 10 |
+| 80% | 192 | 4 | 6 | 12 |
+
+<!-- RUNTIME_ERRORS_END -->
+
+The four wrong-identity results at each threshold are **two displaced repeats, one identical same-slot replacement, and one R099 boilerplate replacement**. A complete one-edge history is already available in these cases. Walking farther cannot manufacture editorial intent that the diff did not record. Raising the threshold misses more legitimate continuations and still accepts the R099 wrong pair. A duplicate guard can decline ambiguous repeated-heading cases, but cannot prove that a unique, highly similar replacement is a rename. Splits/merges still have no inherent one-to-many/many-to-one identity meaning in Git rename pairs.
+
+Document and preamble lookups are included in these runtime-query totals, unlike the earlier 14-section-mapping detection denominator. “Missed continuity” counts retained intended entities that become unmatched; “total unmatched” also includes old entities that the producer retired. The wrong matches are candidate defects, not successful preservation of review state.
+
+### Read cost and a bounded walk
+
+The timing fixture compares **1, 32, 128 and 512 transitions**, three samples per method. `endpoint` reads only the two endpoint snapshots; `walk` follows the complete retained path; `bounded64` processes at most 64 transitions and returns unresolved if the current commit has not been reached. Timing includes native Git process launches, tree/blob reads, strict UTF-8 source decoding, parsing, hashing, temporary section projection and matching. ZIP download/extraction, browser execution, and native Git installation are excluded.
+
+“Reader-cold” means fresh reader object/edge caches and cleared parser cache; OS caches and shared desktop load are not controlled. “Warm” immediately repeats the same query on the same reader with in-memory cached data and matches. It is not a second fresh process or a promise that a different package/query is free. All samples are retained; the variable endpoint times show host/process-launch noise. The one-document fixture is a controlled lower-complexity workload, not a bound for a package with thousands of modified files.
+
+<!-- RUNTIME_COST_START -->
+
+| Transitions | Method | Reader-cold median ms | Range ms | Same-reader warm median ms | Git calls / decoded Markdown bytes | Outcome |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | endpoint | 594.8 | 512.2–945.9 | 0.04 | 5 / 10,776 | source-changed |
+| 1 | walk | 891.2 | 844.0–1255.9 | 0.02 | 6 / 10,776 | source-changed |
+| 1 | bounded64 | 512.8 | 435.7–903.0 | 0.02 | 6 / 10,776 | source-changed |
+| 32 | endpoint | 1308.8 | 880.3–1445.2 | 0.07 | 8 / 10,776 | no-rename-candidate |
+| 32 | walk | 3004.4 | 2944.4–3475.3 | 0.11 | 15 / 177,804 | source-changed |
+| 32 | bounded64 | 1773.1 | 1676.5–3281.8 | 0.09 | 15 / 177,804 | source-changed |
+| 128 | endpoint | 1648.8 | 1479.8–1878.2 | 0.06 | 8 / 10,776 | no-rename-candidate |
+| 128 | walk | 5867.0 | 5503.5–8084.2 | 0.20 | 39 / 695,052 | source-changed |
+| 128 | bounded64 | 1664.4 | 1525.6–2012.9 | 80.84 | 23 / 350,220 | history-budget-exceeded |
+| 512 | endpoint | 446.1 | 414.7–514.6 | 0.07 | 8 / 10,776 | no-rename-candidate |
+| 512 | walk | 10086.5 | 9184.5–11071.6 | 0.57 | 135 / 2,764,044 | source-changed |
+| 512 | bounded64 | 1282.9 | 1187.4–1440.9 | 44.06 | 23 / 350,220 | history-budget-exceeded |
+
+<!-- RUNTIME_COST_END -->
+
+The complete 512-transition walk reads **2,764,044 decoded Markdown bytes**, reconstructs 513 snapshots and performs **135 native Git calls** in this adapter; its median is approximately **10.1 seconds**. With cached data/matches the repeated query is approximately **0.57 ms**. Much of the native latency is process/backend overhead; an integrated Git object reader could reduce it, but no browser speedup is measured here. The source/parsing work and retained-edge dependency still exist.
+
+For 32 transitions, `walk` and `bounded64` perform identical work; their different measured times are run-order/host noise, not a speedup from an inactive cap. Object/byte/call counts are the more stable scaling evidence. These timings should not be used as application latency guarantees.
+
+The 64-transition cap reduces the 512-range work to **350,220 decoded Markdown bytes / 23 Git calls**, about **1.28 seconds** in this run, and returns **`unmatched: history-budget-exceeded`**. It does not claim a result at B after inspecting only the prefix. Warm bounded runs still perform one availability check for the unread target commit in this prototype. A transition cap is not a hard wall-clock or memory cap: one transition can change many large files, and ancestry enumeration itself still costs work. A production reader should additionally budget decoded bytes, candidate comparisons and elapsed time, share per-edge computations between reviews, and resume or report unresolved when exhausted. Keep such caches in runtime memory to preserve the no-stored-table rule.
+
+### Squash and truncation are correctness boundaries
+
+All of the following are real Git repositories, packed or genuinely shallow, containing no `.mdpkg/address` records:
+
+| History condition | Read-time result | What can actually be claimed |
+| --- | --- | --- |
+| Entire gradual 512-transition range retained | Walk follows the section | Inferred continuity along the retained path; still a heuristic |
+| Same range collapsed to base + one tip commit | No rename candidate at the endpoints | **Unmatched**; the intermediate similarity chain was discarded |
+| Review commit lies inside that discarded range | Original review OID unavailable | **Unmatched / review-commit-unavailable**, before diffing |
+| Rename/revert collapsed to an unchanged endpoint | Retained walk sees zero source changes | Current source matches; original touched history is **unknown**, not “never changed” |
+| Delete/recreate collapsed to the same endpoint | Same bytes and apparent default identity | Entity continuity is **unknown**; a literal fallback would wrongly preserve the old review |
+| Depth-two shallow clone, review older than its boundary | Review object unavailable | **Unmatched**, with the native shallow boundary disclosed |
+| Review and current commit both lie in the retained shallow range | One-edge walk resolves | Earlier truncation does not prevent this retained-range query |
+| Later synthetic root replaces the old history | Review object unavailable | **Unmatched**, with explicit synthetic-root/truncation coverage |
+| A is a different branch and not on B's first-parent path | Path precondition fails | **Unmatched / unsupported path**, not a guessed linear history |
+
+The net-zero squash counterexample is stronger than a weak similarity score. **A rename/revert history, a delete/recreate history, and a history that never deleted the section can be collapsed into the same retained commit/tree representation.** The probe asserts identical squash commit identity for the rename/revert and delete/recreate constructions. A reader of the same bytes cannot know which lost identity history occurred. The candidate's raw `touched: 0` only means no changes in the *retained comparison*; once coverage says the original trail was collapsed, report original-range touched state as unknown.
+
+The earlier ordered section-summary solution would preserve some of that information, but it is stored section-change evidence and therefore **not part of this refined zero-metadata candidate**. Ordinary global provenance/coverage can warn that evidence was discarded; it cannot reconstruct the discarded rename or deletion. Keeping every original commit or fetching it from an explicitly available source can restore a lost trail, but then storage/availability requirements move to Git history or that external source. Exact commit/diff/hunk references retain their earlier availability rules.
+
+### Storage and the recommended fallback
+
+**Identity/rename metadata is exactly zero bytes** in the tested Git-only trees. On the prior exact base-snapshot comparison, this selects the already verified no-map packages: **122,687 bytes npm / 3,132,664 bytes Rust**, rather than **161,453 / 3,671,931** for full maps. The sparse 5% alternatives were **125,528 / 3,163,551**, and sparse 20% **131,421 / 3,250,827**. The zero-table candidate also avoids the sparse profile-selector addition because the external review specifies its addressing algorithm. These are identity-storage comparisons with the same earlier manifest/history exclusions, not a promise that retaining an arbitrarily long original Git history costs nothing.
+
+Zero bytes does **not** make the correctness failures disappear. The default requested in the refinement should be:
+
+- **No match, unavailable history, unsupported path or exhausted budget:** keep the external review record, leave the current section **new/unmatched and unreviewed relative to it**, and provide the specific reason. “Possibly renamed/moved, unconfirmed” may be a recovery hint; do not assert deletion merely because a locator disappeared.
+- **A Git match:** the requested policy carries the review forward as an **inferred correspondence**, then compares the scoped source digest. A changed digest marks the section changed; an equal digest preserves source-review status under this best-effort policy. The measured wrong-identity cases can therefore inherit a review incorrectly. This cannot be advertised as the former hard identity guarantee.
+- **Collapsed or incomplete evidence:** expose unknown continuity/touched history. An equal locator and digest proves current canonical source equivalence, not uninterrupted identity. Do not silently upgrade a missing trail to “unchanged since review.”
+
+Under the user's strict no-table constraint, this best-effort behavior is the implementable default. **I do not recommend it as a replacement that claims the original hard guarantee.** If that guarantee is non-negotiable, preserve explicit confirmed correspondence or sufficient producer identity evidence; the measured sparse scheme remains the lower-storage option if the constraint is relaxed. This is the concrete decision remaining, not a hidden requirement to approve a new stored table.
+
+### Refinement reproduction and validation
+
+Use the existing pinned dependencies and native tools. The refined reader uses ordinary packed Git objects and temporary section projections under ignored `.antiphon/addressing-work/`, not a saved alias ledger. Run sequentially from the repository root:
+
+```powershell
+node docs/investigations/addressing/cases.mjs
+node docs/investigations/addressing/sparse_cases.mjs
+.antiphon/compression-work/venv/Scripts/python docs/investigations/addressing/runtime_prepare.py
+node docs/investigations/addressing/runtime_cases.mjs
+node docs/investigations/addressing/runtime_benchmark.mjs
+.antiphon/compression-work/venv/Scripts/python docs/investigations/addressing/runtime_verify.py
+.antiphon/compression-work/venv/Scripts/python docs/investigations/addressing/runtime_render.py
+```
+
+The first two commands only regenerate the shared test source/ground-truth fixtures; **their identity maps are never included in runtime test repositories or consumed by the runtime matcher**. Run the timing command without another benchmark alongside it. Node 24.6.0, Git 2.50.1.windows.1, the existing CommonMark parser and this shared Windows host are the tested environment. The runtime adapter now rejects malformed UTF-8 explicitly; all recorded timing documents are valid UTF-8.
+
+<!-- RUNTIME_VALIDATION_START -->
+
+Validation: **384 runtime queries over the original/extended fixture states**, **20 arbitrary-range queries**, **34 range/loss assertions**, **36 timed samples / 72 cold/warm status checks**, **14 repository history checks**, **14 zero-identity-metadata tree checks**, and **4 missing-review-object checks**. **0 unexpected final validation failures.** Wrong identity matches and misses in the table are measured limitations of the candidate, not successful continuity resolutions.
+
+<!-- RUNTIME_VALIDATION_END -->
+
+Evidence: [Git fixtures and retained histories](addressing/runtime-fixture-results.json), [runtime correspondences, range queries and loss cases](addressing/runtime-case-results.json), [all timing samples and object/byte counts](addressing/runtime-timing-results.json), and [audit](addressing/runtime-verification.json). The exploratory shared-tail fixture initially contradicted the assumption that replacing every line guarantees an endpoint miss; that assumption was corrected and the matching example retained. This refinement adds an investigation and a prototype native reader, not a shipped format implementation or browser performance claim.

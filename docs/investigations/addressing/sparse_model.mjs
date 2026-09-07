@@ -2,6 +2,7 @@
 import {sections,hash,canonicalJson,PROFILE,canonicalScope,UUID} from './model.mjs';
 export const ANCHOR='cm0312-trail-source-v1';
 const parseCache=new Map();
+export const clearParseCache=()=>parseCache.clear();
 export function parsedSource(source){if(!parseCache.has(source))parseCache.set(source,sections(Buffer.from(source)));return parseCache.get(source);}
 export const slot=(namespace,locator)=>hash(`mdpkg-default\0${ANCHOR}\0${namespace}\0${canonicalJson(locator)}`);
 export function inventory(namespace,documents){

@@ -1,0 +1,2093 @@
+{
+  "node": "v24.6.0",
+  "git": "git version 2.50.1.windows.1",
+  "rows": [
+    {
+      "transitions": 1,
+      "method": "endpoint",
+      "repeat": 0,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 594.8457000000001,
+        "cost": {
+          "gitCalls": 5,
+          "gitStdoutBytes": 11706,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 0
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 0.04479999999989559,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 1,
+      "method": "endpoint",
+      "repeat": 1,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 512.2386999999999,
+        "cost": {
+          "gitCalls": 5,
+          "gitStdoutBytes": 11706,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 0
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 0.03440000000000509,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 1,
+      "method": "endpoint",
+      "repeat": 2,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 945.9106000000002,
+        "cost": {
+          "gitCalls": 5,
+          "gitStdoutBytes": 11706,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 0
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 0.044200000000273576,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 1,
+      "method": "walk",
+      "repeat": 0,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 844.0368000000003,
+        "cost": {
+          "gitCalls": 6,
+          "gitStdoutBytes": 11788,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 0
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 0.05319999999983338,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 1,
+      "method": "walk",
+      "repeat": 1,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 891.2383999999997,
+        "cost": {
+          "gitCalls": 6,
+          "gitStdoutBytes": 11788,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 0
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 0.02269999999953143,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 1,
+      "method": "walk",
+      "repeat": 2,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 1255.8847000000005,
+        "cost": {
+          "gitCalls": 6,
+          "gitStdoutBytes": 11788,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 0
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 0.019800000000032014,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 1,
+      "method": "bounded64",
+      "repeat": 0,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 512.7660999999998,
+        "cost": {
+          "gitCalls": 6,
+          "gitStdoutBytes": 11788,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 0
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 0.03150000000005093,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 1,
+      "method": "bounded64",
+      "repeat": 1,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 435.66939999999977,
+        "cost": {
+          "gitCalls": 6,
+          "gitStdoutBytes": 11788,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 0
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 0.023600000000442378,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 1,
+      "method": "bounded64",
+      "repeat": 2,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 902.9987000000001,
+        "cost": {
+          "gitCalls": 6,
+          "gitStdoutBytes": 11788,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 0
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-000.md",
+          [
+            [
+              "# Topic 000",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "d7a8f94055d0a32b987345d2b7beafb9c3c4bb78a0ac3363d87efb256ebf01a5",
+        "touched": 1,
+        "matches": 0,
+        "transitions": 1,
+        "identity": "inferred",
+        "ms": 0.021600000000034925,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 32,
+      "method": "endpoint",
+      "repeat": 0,
+      "cold": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 880.3427000000011,
+        "cost": {
+          "gitCalls": 8,
+          "gitStdoutBytes": 12018,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 1
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 0.07690000000002328,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 32,
+      "method": "endpoint",
+      "repeat": 1,
+      "cold": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 1308.7939999999999,
+        "cost": {
+          "gitCalls": 8,
+          "gitStdoutBytes": 12018,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 1
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 0.0650999999998021,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 32,
+      "method": "endpoint",
+      "repeat": 2,
+      "cold": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 1445.2119000000002,
+        "cost": {
+          "gitCalls": 8,
+          "gitStdoutBytes": 12018,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 1
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 0.07370000000082655,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 32,
+      "method": "walk",
+      "repeat": 0,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-001.md",
+          [
+            [
+              "# Topic 004",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "9e0d896e36596cdbb649f729ab699fff917c93c85311479a1ff926949677fe29",
+        "touched": 32,
+        "matches": 4,
+        "transitions": 32,
+        "identity": "inferred",
+        "ms": 3475.2602000000006,
+        "cost": {
+          "gitCalls": 15,
+          "gitStdoutBytes": 196025,
+          "objects": 99,
+          "blobBytes": 177804,
+          "parsedDocumentBytes": 177804,
+          "edges": 4
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-001.md",
+          [
+            [
+              "# Topic 004",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "9e0d896e36596cdbb649f729ab699fff917c93c85311479a1ff926949677fe29",
+        "touched": 32,
+        "matches": 4,
+        "transitions": 32,
+        "identity": "inferred",
+        "ms": 0.11090000000149303,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 32,
+      "method": "walk",
+      "repeat": 1,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-001.md",
+          [
+            [
+              "# Topic 004",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "9e0d896e36596cdbb649f729ab699fff917c93c85311479a1ff926949677fe29",
+        "touched": 32,
+        "matches": 4,
+        "transitions": 32,
+        "identity": "inferred",
+        "ms": 2944.4357999999993,
+        "cost": {
+          "gitCalls": 15,
+          "gitStdoutBytes": 196025,
+          "objects": 99,
+          "blobBytes": 177804,
+          "parsedDocumentBytes": 177804,
+          "edges": 4
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-001.md",
+          [
+            [
+              "# Topic 004",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "9e0d896e36596cdbb649f729ab699fff917c93c85311479a1ff926949677fe29",
+        "touched": 32,
+        "matches": 4,
+        "transitions": 32,
+        "identity": "inferred",
+        "ms": 0.09869999999864376,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 32,
+      "method": "walk",
+      "repeat": 2,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-001.md",
+          [
+            [
+              "# Topic 004",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "9e0d896e36596cdbb649f729ab699fff917c93c85311479a1ff926949677fe29",
+        "touched": 32,
+        "matches": 4,
+        "transitions": 32,
+        "identity": "inferred",
+        "ms": 3004.4304999999986,
+        "cost": {
+          "gitCalls": 15,
+          "gitStdoutBytes": 196025,
+          "objects": 99,
+          "blobBytes": 177804,
+          "parsedDocumentBytes": 177804,
+          "edges": 4
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-001.md",
+          [
+            [
+              "# Topic 004",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "9e0d896e36596cdbb649f729ab699fff917c93c85311479a1ff926949677fe29",
+        "touched": 32,
+        "matches": 4,
+        "transitions": 32,
+        "identity": "inferred",
+        "ms": 0.13940000000002328,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 32,
+      "method": "bounded64",
+      "repeat": 0,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-001.md",
+          [
+            [
+              "# Topic 004",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "9e0d896e36596cdbb649f729ab699fff917c93c85311479a1ff926949677fe29",
+        "touched": 32,
+        "matches": 4,
+        "transitions": 32,
+        "identity": "inferred",
+        "ms": 3281.8374000000003,
+        "cost": {
+          "gitCalls": 15,
+          "gitStdoutBytes": 196025,
+          "objects": 99,
+          "blobBytes": 177804,
+          "parsedDocumentBytes": 177804,
+          "edges": 4
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-001.md",
+          [
+            [
+              "# Topic 004",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "9e0d896e36596cdbb649f729ab699fff917c93c85311479a1ff926949677fe29",
+        "touched": 32,
+        "matches": 4,
+        "transitions": 32,
+        "identity": "inferred",
+        "ms": 0.08510000000023865,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 32,
+      "method": "bounded64",
+      "repeat": 1,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-001.md",
+          [
+            [
+              "# Topic 004",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "9e0d896e36596cdbb649f729ab699fff917c93c85311479a1ff926949677fe29",
+        "touched": 32,
+        "matches": 4,
+        "transitions": 32,
+        "identity": "inferred",
+        "ms": 1676.4831000000013,
+        "cost": {
+          "gitCalls": 15,
+          "gitStdoutBytes": 196025,
+          "objects": 99,
+          "blobBytes": 177804,
+          "parsedDocumentBytes": 177804,
+          "edges": 4
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-001.md",
+          [
+            [
+              "# Topic 004",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "9e0d896e36596cdbb649f729ab699fff917c93c85311479a1ff926949677fe29",
+        "touched": 32,
+        "matches": 4,
+        "transitions": 32,
+        "identity": "inferred",
+        "ms": 0.0849000000016531,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 32,
+      "method": "bounded64",
+      "repeat": 2,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-001.md",
+          [
+            [
+              "# Topic 004",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "9e0d896e36596cdbb649f729ab699fff917c93c85311479a1ff926949677fe29",
+        "touched": 32,
+        "matches": 4,
+        "transitions": 32,
+        "identity": "inferred",
+        "ms": 1773.0521000000008,
+        "cost": {
+          "gitCalls": 15,
+          "gitStdoutBytes": 196025,
+          "objects": 99,
+          "blobBytes": 177804,
+          "parsedDocumentBytes": 177804,
+          "edges": 4
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-001.md",
+          [
+            [
+              "# Topic 004",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "9e0d896e36596cdbb649f729ab699fff917c93c85311479a1ff926949677fe29",
+        "touched": 32,
+        "matches": 4,
+        "transitions": 32,
+        "identity": "inferred",
+        "ms": 0.09959999999773572,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 128,
+      "method": "endpoint",
+      "repeat": 0,
+      "cold": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 1648.8001000000004,
+        "cost": {
+          "gitCalls": 8,
+          "gitStdoutBytes": 12018,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 1
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 0.06649999999717693,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 128,
+      "method": "endpoint",
+      "repeat": 1,
+      "cold": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 1878.160899999999,
+        "cost": {
+          "gitCalls": 8,
+          "gitStdoutBytes": 12018,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 1
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 0.058100000002013985,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 128,
+      "method": "endpoint",
+      "repeat": 2,
+      "cold": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 1479.7657000000036,
+        "cost": {
+          "gitCalls": 8,
+          "gitStdoutBytes": 12018,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 1
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 0.055999999996856786,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 128,
+      "method": "walk",
+      "repeat": 0,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-004.md",
+          [
+            [
+              "# Topic 016",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "c3bac2404dccc284b531094ddc19e5cc2461178456f7359d9226623f3bb333a8",
+        "touched": 128,
+        "matches": 16,
+        "transitions": 128,
+        "identity": "inferred",
+        "ms": 5503.497000000003,
+        "cost": {
+          "gitCalls": 39,
+          "gitStdoutBytes": 766058,
+          "objects": 387,
+          "blobBytes": 695052,
+          "parsedDocumentBytes": 695052,
+          "edges": 16
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-004.md",
+          [
+            [
+              "# Topic 016",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "c3bac2404dccc284b531094ddc19e5cc2461178456f7359d9226623f3bb333a8",
+        "touched": 128,
+        "matches": 16,
+        "transitions": 128,
+        "identity": "inferred",
+        "ms": 0.19879999999830034,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 128,
+      "method": "walk",
+      "repeat": 1,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-004.md",
+          [
+            [
+              "# Topic 016",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "c3bac2404dccc284b531094ddc19e5cc2461178456f7359d9226623f3bb333a8",
+        "touched": 128,
+        "matches": 16,
+        "transitions": 128,
+        "identity": "inferred",
+        "ms": 8084.154900000001,
+        "cost": {
+          "gitCalls": 39,
+          "gitStdoutBytes": 766058,
+          "objects": 387,
+          "blobBytes": 695052,
+          "parsedDocumentBytes": 695052,
+          "edges": 16
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-004.md",
+          [
+            [
+              "# Topic 016",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "c3bac2404dccc284b531094ddc19e5cc2461178456f7359d9226623f3bb333a8",
+        "touched": 128,
+        "matches": 16,
+        "transitions": 128,
+        "identity": "inferred",
+        "ms": 0.21529999999620486,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 128,
+      "method": "walk",
+      "repeat": 2,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-004.md",
+          [
+            [
+              "# Topic 016",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "c3bac2404dccc284b531094ddc19e5cc2461178456f7359d9226623f3bb333a8",
+        "touched": 128,
+        "matches": 16,
+        "transitions": 128,
+        "identity": "inferred",
+        "ms": 5866.954899999997,
+        "cost": {
+          "gitCalls": 39,
+          "gitStdoutBytes": 766058,
+          "objects": 387,
+          "blobBytes": 695052,
+          "parsedDocumentBytes": 695052,
+          "edges": 16
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-004.md",
+          [
+            [
+              "# Topic 016",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "c3bac2404dccc284b531094ddc19e5cc2461178456f7359d9226623f3bb333a8",
+        "touched": 128,
+        "matches": 16,
+        "transitions": 128,
+        "identity": "inferred",
+        "ms": 0.1592000000018743,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 128,
+      "method": "bounded64",
+      "repeat": 0,
+      "cold": {
+        "status": "unmatched",
+        "reason": "history-budget-exceeded",
+        "processed": 64,
+        "total": 128,
+        "ms": 2012.9032999999981,
+        "cost": {
+          "gitCalls": 23,
+          "gitStdoutBytes": 388660,
+          "objects": 195,
+          "blobBytes": 350220,
+          "parsedDocumentBytes": 350220,
+          "edges": 8
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "history-budget-exceeded",
+        "processed": 64,
+        "total": 128,
+        "ms": 68.43239999999787,
+        "cost": {
+          "gitCalls": 1,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 128,
+      "method": "bounded64",
+      "repeat": 1,
+      "cold": {
+        "status": "unmatched",
+        "reason": "history-budget-exceeded",
+        "processed": 64,
+        "total": 128,
+        "ms": 1525.6464999999953,
+        "cost": {
+          "gitCalls": 23,
+          "gitStdoutBytes": 388660,
+          "objects": 195,
+          "blobBytes": 350220,
+          "parsedDocumentBytes": 350220,
+          "edges": 8
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "history-budget-exceeded",
+        "processed": 64,
+        "total": 128,
+        "ms": 96.86190000000352,
+        "cost": {
+          "gitCalls": 1,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 128,
+      "method": "bounded64",
+      "repeat": 2,
+      "cold": {
+        "status": "unmatched",
+        "reason": "history-budget-exceeded",
+        "processed": 64,
+        "total": 128,
+        "ms": 1664.4372999999978,
+        "cost": {
+          "gitCalls": 23,
+          "gitStdoutBytes": 388660,
+          "objects": 195,
+          "blobBytes": 350220,
+          "parsedDocumentBytes": 350220,
+          "edges": 8
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "history-budget-exceeded",
+        "processed": 64,
+        "total": 128,
+        "ms": 80.83550000000105,
+        "cost": {
+          "gitCalls": 1,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 512,
+      "method": "endpoint",
+      "repeat": 0,
+      "cold": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 514.5968000000066,
+        "cost": {
+          "gitCalls": 8,
+          "gitStdoutBytes": 12018,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 1
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 0.061199999996460974,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 512,
+      "method": "endpoint",
+      "repeat": 1,
+      "cold": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 414.70270000000164,
+        "cost": {
+          "gitCalls": 8,
+          "gitStdoutBytes": 12018,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 1
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 0.11639999999897555,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 512,
+      "method": "endpoint",
+      "repeat": 2,
+      "cold": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 446.0955000000031,
+        "cost": {
+          "gitCalls": 8,
+          "gitStdoutBytes": 12018,
+          "objects": 6,
+          "blobBytes": 10776,
+          "parsedDocumentBytes": 10776,
+          "edges": 1
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "no-rename-candidate",
+        "at": 1,
+        "ms": 0.06979999999748543,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 512,
+      "method": "walk",
+      "repeat": 0,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-016.md",
+          [
+            [
+              "# Topic 064",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "a7fd94d200710b2e20812aa42570c66dfab75f9f839c2bbfdddf581bc25a2180",
+        "touched": 512,
+        "matches": 64,
+        "transitions": 512,
+        "identity": "inferred",
+        "ms": 10086.508199999997,
+        "cost": {
+          "gitCalls": 135,
+          "gitStdoutBytes": 3046190,
+          "objects": 1539,
+          "blobBytes": 2764044,
+          "parsedDocumentBytes": 2764044,
+          "edges": 64
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-016.md",
+          [
+            [
+              "# Topic 064",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "a7fd94d200710b2e20812aa42570c66dfab75f9f839c2bbfdddf581bc25a2180",
+        "touched": 512,
+        "matches": 64,
+        "transitions": 512,
+        "identity": "inferred",
+        "ms": 0.7204000000056112,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 512,
+      "method": "walk",
+      "repeat": 1,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-016.md",
+          [
+            [
+              "# Topic 064",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "a7fd94d200710b2e20812aa42570c66dfab75f9f839c2bbfdddf581bc25a2180",
+        "touched": 512,
+        "matches": 64,
+        "transitions": 512,
+        "identity": "inferred",
+        "ms": 11071.610400000005,
+        "cost": {
+          "gitCalls": 135,
+          "gitStdoutBytes": 3046190,
+          "objects": 1539,
+          "blobBytes": 2764044,
+          "parsedDocumentBytes": 2764044,
+          "edges": 64
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-016.md",
+          [
+            [
+              "# Topic 064",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "a7fd94d200710b2e20812aa42570c66dfab75f9f839c2bbfdddf581bc25a2180",
+        "touched": 512,
+        "matches": 64,
+        "transitions": 512,
+        "identity": "inferred",
+        "ms": 0.5745999999926426,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 512,
+      "method": "walk",
+      "repeat": 2,
+      "cold": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-016.md",
+          [
+            [
+              "# Topic 064",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "a7fd94d200710b2e20812aa42570c66dfab75f9f839c2bbfdddf581bc25a2180",
+        "touched": 512,
+        "matches": 64,
+        "transitions": 512,
+        "identity": "inferred",
+        "ms": 9184.466400000005,
+        "cost": {
+          "gitCalls": 135,
+          "gitStdoutBytes": 3046190,
+          "objects": 1539,
+          "blobBytes": 2764044,
+          "parsedDocumentBytes": 2764044,
+          "edges": 64
+        }
+      },
+      "warm": {
+        "status": "source-changed",
+        "locator": [
+          "section",
+          "spec-016.md",
+          [
+            [
+              "# Topic 064",
+              0
+            ]
+          ]
+        ],
+        "computedSlot": "a7fd94d200710b2e20812aa42570c66dfab75f9f839c2bbfdddf581bc25a2180",
+        "touched": 512,
+        "matches": 64,
+        "transitions": 512,
+        "identity": "inferred",
+        "ms": 0.44359999999869615,
+        "cost": {
+          "gitCalls": 0,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 512,
+      "method": "bounded64",
+      "repeat": 0,
+      "cold": {
+        "status": "unmatched",
+        "reason": "history-budget-exceeded",
+        "processed": 64,
+        "total": 512,
+        "ms": 1440.8945000000094,
+        "cost": {
+          "gitCalls": 23,
+          "gitStdoutBytes": 404404,
+          "objects": 195,
+          "blobBytes": 350220,
+          "parsedDocumentBytes": 350220,
+          "edges": 8
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "history-budget-exceeded",
+        "processed": 64,
+        "total": 512,
+        "ms": 50.61010000000533,
+        "cost": {
+          "gitCalls": 1,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 512,
+      "method": "bounded64",
+      "repeat": 1,
+      "cold": {
+        "status": "unmatched",
+        "reason": "history-budget-exceeded",
+        "processed": 64,
+        "total": 512,
+        "ms": 1282.8764999999985,
+        "cost": {
+          "gitCalls": 23,
+          "gitStdoutBytes": 404404,
+          "objects": 195,
+          "blobBytes": 350220,
+          "parsedDocumentBytes": 350220,
+          "edges": 8
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "history-budget-exceeded",
+        "processed": 64,
+        "total": 512,
+        "ms": 43.35910000000149,
+        "cost": {
+          "gitCalls": 1,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    },
+    {
+      "transitions": 512,
+      "method": "bounded64",
+      "repeat": 2,
+      "cold": {
+        "status": "unmatched",
+        "reason": "history-budget-exceeded",
+        "processed": 64,
+        "total": 512,
+        "ms": 1187.4099000000133,
+        "cost": {
+          "gitCalls": 23,
+          "gitStdoutBytes": 404404,
+          "objects": 195,
+          "blobBytes": 350220,
+          "parsedDocumentBytes": 350220,
+          "edges": 8
+        }
+      },
+      "warm": {
+        "status": "unmatched",
+        "reason": "history-budget-exceeded",
+        "processed": 64,
+        "total": 512,
+        "ms": 44.058499999999185,
+        "cost": {
+          "gitCalls": 1,
+          "gitStdoutBytes": 0,
+          "objects": 0,
+          "blobBytes": 0,
+          "parsedDocumentBytes": 0,
+          "edges": 0
+        }
+      }
+    }
+  ],
+  "summary": [
+    {
+      "transitions": 1,
+      "method": "endpoint",
+      "coldMedianMs": 594.8457000000001,
+      "coldRangeMs": [
+        512.2386999999999,
+        945.9106000000002
+      ],
+      "warmMedianMs": 0.044200000000273576,
+      "status": "source-changed",
+      "reason": null,
+      "cost": {
+        "gitCalls": 5,
+        "gitStdoutBytes": 11706,
+        "objects": 6,
+        "blobBytes": 10776,
+        "parsedDocumentBytes": 10776,
+        "edges": 0
+      },
+      "warmCost": {
+        "gitCalls": 0,
+        "gitStdoutBytes": 0,
+        "objects": 0,
+        "blobBytes": 0,
+        "parsedDocumentBytes": 0,
+        "edges": 0
+      }
+    },
+    {
+      "transitions": 1,
+      "method": "walk",
+      "coldMedianMs": 891.2383999999997,
+      "coldRangeMs": [
+        844.0368000000003,
+        1255.8847000000005
+      ],
+      "warmMedianMs": 0.02269999999953143,
+      "status": "source-changed",
+      "reason": null,
+      "cost": {
+        "gitCalls": 6,
+        "gitStdoutBytes": 11788,
+        "objects": 6,
+        "blobBytes": 10776,
+        "parsedDocumentBytes": 10776,
+        "edges": 0
+      },
+      "warmCost": {
+        "gitCalls": 0,
+        "gitStdoutBytes": 0,
+        "objects": 0,
+        "blobBytes": 0,
+        "parsedDocumentBytes": 0,
+        "edges": 0
+      }
+    },
+    {
+      "transitions": 1,
+      "method": "bounded64",
+      "coldMedianMs": 512.7660999999998,
+      "coldRangeMs": [
+        435.66939999999977,
+        902.9987000000001
+      ],
+      "warmMedianMs": 0.023600000000442378,
+      "status": "source-changed",
+      "reason": null,
+      "cost": {
+        "gitCalls": 6,
+        "gitStdoutBytes": 11788,
+        "objects": 6,
+        "blobBytes": 10776,
+        "parsedDocumentBytes": 10776,
+        "edges": 0
+      },
+      "warmCost": {
+        "gitCalls": 0,
+        "gitStdoutBytes": 0,
+        "objects": 0,
+        "blobBytes": 0,
+        "parsedDocumentBytes": 0,
+        "edges": 0
+      }
+    },
+    {
+      "transitions": 32,
+      "method": "endpoint",
+      "coldMedianMs": 1308.7939999999999,
+      "coldRangeMs": [
+        880.3427000000011,
+        1445.2119000000002
+      ],
+      "warmMedianMs": 0.07370000000082655,
+      "status": "unmatched",
+      "reason": "no-rename-candidate",
+      "cost": {
+        "gitCalls": 8,
+        "gitStdoutBytes": 12018,
+        "objects": 6,
+        "blobBytes": 10776,
+        "parsedDocumentBytes": 10776,
+        "edges": 1
+      },
+      "warmCost": {
+        "gitCalls": 0,
+        "gitStdoutBytes": 0,
+        "objects": 0,
+        "blobBytes": 0,
+        "parsedDocumentBytes": 0,
+        "edges": 0
+      }
+    },
+    {
+      "transitions": 32,
+      "method": "walk",
+      "coldMedianMs": 3004.4304999999986,
+      "coldRangeMs": [
+        2944.4357999999993,
+        3475.2602000000006
+      ],
+      "warmMedianMs": 0.11090000000149303,
+      "status": "source-changed",
+      "reason": null,
+      "cost": {
+        "gitCalls": 15,
+        "gitStdoutBytes": 196025,
+        "objects": 99,
+        "blobBytes": 177804,
+        "parsedDocumentBytes": 177804,
+        "edges": 4
+      },
+      "warmCost": {
+        "gitCalls": 0,
+        "gitStdoutBytes": 0,
+        "objects": 0,
+        "blobBytes": 0,
+        "parsedDocumentBytes": 0,
+        "edges": 0
+      }
+    },
+    {
+      "transitions": 32,
+      "method": "bounded64",
+      "coldMedianMs": 1773.0521000000008,
+      "coldRangeMs": [
+        1676.4831000000013,
+        3281.8374000000003
+      ],
+      "warmMedianMs": 0.08510000000023865,
+      "status": "source-changed",
+      "reason": null,
+      "cost": {
+        "gitCalls": 15,
+        "gitStdoutBytes": 196025,
+        "objects": 99,
+        "blobBytes": 177804,
+        "parsedDocumentBytes": 177804,
+        "edges": 4
+      },
+      "warmCost": {
+        "gitCalls": 0,
+        "gitStdoutBytes": 0,
+        "objects": 0,
+        "blobBytes": 0,
+        "parsedDocumentBytes": 0,
+        "edges": 0
+      }
+    },
+    {
+      "transitions": 128,
+      "method": "endpoint",
+      "coldMedianMs": 1648.8001000000004,
+      "coldRangeMs": [
+        1479.7657000000036,
+        1878.160899999999
+      ],
+      "warmMedianMs": 0.058100000002013985,
+      "status": "unmatched",
+      "reason": "no-rename-candidate",
+      "cost": {
+        "gitCalls": 8,
+        "gitStdoutBytes": 12018,
+        "objects": 6,
+        "blobBytes": 10776,
+        "parsedDocumentBytes": 10776,
+        "edges": 1
+      },
+      "warmCost": {
+        "gitCalls": 0,
+        "gitStdoutBytes": 0,
+        "objects": 0,
+        "blobBytes": 0,
+        "parsedDocumentBytes": 0,
+        "edges": 0
+      }
+    },
+    {
+      "transitions": 128,
+      "method": "walk",
+      "coldMedianMs": 5866.954899999997,
+      "coldRangeMs": [
+        5503.497000000003,
+        8084.154900000001
+      ],
+      "warmMedianMs": 0.19879999999830034,
+      "status": "source-changed",
+      "reason": null,
+      "cost": {
+        "gitCalls": 39,
+        "gitStdoutBytes": 766058,
+        "objects": 387,
+        "blobBytes": 695052,
+        "parsedDocumentBytes": 695052,
+        "edges": 16
+      },
+      "warmCost": {
+        "gitCalls": 0,
+        "gitStdoutBytes": 0,
+        "objects": 0,
+        "blobBytes": 0,
+        "parsedDocumentBytes": 0,
+        "edges": 0
+      }
+    },
+    {
+      "transitions": 128,
+      "method": "bounded64",
+      "coldMedianMs": 1664.4372999999978,
+      "coldRangeMs": [
+        1525.6464999999953,
+        2012.9032999999981
+      ],
+      "warmMedianMs": 80.83550000000105,
+      "status": "unmatched",
+      "reason": "history-budget-exceeded",
+      "cost": {
+        "gitCalls": 23,
+        "gitStdoutBytes": 388660,
+        "objects": 195,
+        "blobBytes": 350220,
+        "parsedDocumentBytes": 350220,
+        "edges": 8
+      },
+      "warmCost": {
+        "gitCalls": 1,
+        "gitStdoutBytes": 0,
+        "objects": 0,
+        "blobBytes": 0,
+        "parsedDocumentBytes": 0,
+        "edges": 0
+      }
+    },
+    {
+      "transitions": 512,
+      "method": "endpoint",
+      "coldMedianMs": 446.0955000000031,
+      "coldRangeMs": [
+        414.70270000000164,
+        514.5968000000066
+      ],
+      "warmMedianMs": 0.06979999999748543,
+      "status": "unmatched",
+      "reason": "no-rename-candidate",
+      "cost": {
+        "gitCalls": 8,
+        "gitStdoutBytes": 12018,
+        "objects": 6,
+        "blobBytes": 10776,
+        "parsedDocumentBytes": 10776,
+        "edges": 1
+      },
+      "warmCost": {
+        "gitCalls": 0,
+        "gitStdoutBytes": 0,
+        "objects": 0,
+        "blobBytes": 0,
+        "parsedDocumentBytes": 0,
+        "edges": 0
+      }
+    },
+    {
+      "transitions": 512,
+      "method": "walk",
+      "coldMedianMs": 10086.508199999997,
+      "coldRangeMs": [
+        9184.466400000005,
+        11071.610400000005
+      ],
+      "warmMedianMs": 0.5745999999926426,
+      "status": "source-changed",
+      "reason": null,
+      "cost": {
+        "gitCalls": 135,
+        "gitStdoutBytes": 3046190,
+        "objects": 1539,
+        "blobBytes": 2764044,
+        "parsedDocumentBytes": 2764044,
+        "edges": 64
+      },
+      "warmCost": {
+        "gitCalls": 0,
+        "gitStdoutBytes": 0,
+        "objects": 0,
+        "blobBytes": 0,
+        "parsedDocumentBytes": 0,
+        "edges": 0
+      }
+    },
+    {
+      "transitions": 512,
+      "method": "bounded64",
+      "coldMedianMs": 1282.8764999999985,
+      "coldRangeMs": [
+        1187.4099000000133,
+        1440.8945000000094
+      ],
+      "warmMedianMs": 44.058499999999185,
+      "status": "unmatched",
+      "reason": "history-budget-exceeded",
+      "cost": {
+        "gitCalls": 23,
+        "gitStdoutBytes": 404404,
+        "objects": 195,
+        "blobBytes": 350220,
+        "parsedDocumentBytes": 350220,
+        "edges": 8
+      },
+      "warmCost": {
+        "gitCalls": 1,
+        "gitStdoutBytes": 0,
+        "objects": 0,
+        "blobBytes": 0,
+        "parsedDocumentBytes": 0,
+        "edges": 0
+      }
+    }
+  ],
+  "samples": 36,
+  "checks": 72,
+  "failures": 0
+}

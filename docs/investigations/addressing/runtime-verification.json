@@ -1,0 +1,12 @@
+{
+  "adjacent_runtime_queries": 384,
+  "arbitrary_range_queries": 20,
+  "range_semantic_assertions": 34,
+  "timed_samples": 36,
+  "timed_status_checks": 72,
+  "repository_history_checks": 14,
+  "zero_metadata_tree_checks": 14,
+  "missing_review_object_checks": 4,
+  "identity_metadata_bytes": 0,
+  "failures": 0
+}
