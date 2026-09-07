@@ -1,0 +1,126 @@
+{
+  "git": "git version 2.50.1.windows.1",
+  "fixture_repo": "git\\f44e44e9-9c70-42b7-9b73-e63d1939fc67\\source.git",
+  "commits": {
+    "base": "88d3df770e8f0a2099e1e051a81fed8ed053669b",
+    "renamed": "0e8e03da0efb717b6130ac49a39b1e1111fe1c05",
+    "reverted": "844c59d8359be806678900520fa5a3439b2c30d0",
+    "tip": "374c10b1102e8b4b046537c2519452aea546a236",
+    "squash": "eead3b04724d70cc66afaea670aa996943305c0d",
+    "synthetic": "78fc2b9423ab8b1690dd3c50eedda44012796cc6"
+  },
+  "refs": {
+    "commit": "mdpkg://524c0eed-e8b3-4593-b2a1-966963524b77/v1/commit/sha1-0e8e03da0efb717b6130ac49a39b1e1111fe1c05",
+    "diff": "mdpkg://524c0eed-e8b3-4593-b2a1-966963524b77/v1/diff/sha1-88d3df770e8f0a2099e1e051a81fed8ed053669b..sha1-0e8e03da0efb717b6130ac49a39b1e1111fe1c05?document=2148dd42-4a45-4a93-b32d-ad3499e510b8&profile=git-myers-u3-v1",
+    "hunk": "mdpkg://524c0eed-e8b3-4593-b2a1-966963524b77/v1/hunk/sha1-88d3df770e8f0a2099e1e051a81fed8ed053669b..sha1-0e8e03da0efb717b6130ac49a39b1e1111fe1c05?document=2148dd42-4a45-4a93-b32d-ad3499e510b8&profile=git-myers-u3-v1&patch=47afec6481538a66231179cffdbab7074a5729528475f655248763f558ba7288&ordinal=0",
+    "patch_sha256": "47afec6481538a66231179cffdbab7074a5729528475f655248763f558ba7288",
+    "patch_bytes": 233,
+    "hunk_sha256": "be9b2be53d2de59af9f48896d0a3cb5a24df694cb773f0350dff7db1784e0e33"
+  },
+  "shallow": {
+    "boundary": "844c59d8359be806678900520fa5a3439b2c30d0",
+    "native_marker": true,
+    "old_commit_available": false
+  },
+  "synthetic": {
+    "native_shallow_marker": false,
+    "explicit_coverage_required": true
+  },
+  "size_rows": [
+    {
+      "bytes": 2925,
+      "sha256": "b5c97990ff391723078e8f808a8550c8a16a566137cee680bd33245f9624df78",
+      "pack_bytes": 980,
+      "manifest_bytes": 281,
+      "file": "git\\f44e44e9-9c70-42b7-9b73-e63d1939fc67\\none-full\\package.zip",
+      "mode": "none",
+      "scenario": "full"
+    },
+    {
+      "bytes": 2470,
+      "sha256": "7817a65f5ff23dbe393ea6951554549dc78233152177acb1b58df2c55be480e3",
+      "pack_bytes": 659,
+      "manifest_bytes": 281,
+      "file": "git\\f44e44e9-9c70-42b7-9b73-e63d1939fc67\\none-squash\\package.zip",
+      "mode": "none",
+      "scenario": "squash"
+    },
+    {
+      "bytes": 2120,
+      "sha256": "b4700389d5ce0debc0b2df90bd0e0f345e7f93cd1491b6bf2d6a23e3ca75de8c",
+      "pack_bytes": 400,
+      "manifest_bytes": 288,
+      "file": "git\\f44e44e9-9c70-42b7-9b73-e63d1939fc67\\none-later-root\\package.zip",
+      "mode": "none",
+      "scenario": "later-root"
+    },
+    {
+      "bytes": 5972,
+      "sha256": "84bf3c720eaf644e28293415679a5287ce2e601bb398522486c5cc124cbf8652",
+      "pack_bytes": 3223,
+      "manifest_bytes": 281,
+      "file": "git\\f44e44e9-9c70-42b7-9b73-e63d1939fc67\\identity-full\\package.zip",
+      "mode": "identity",
+      "scenario": "full"
+    },
+    {
+      "bytes": 5112,
+      "sha256": "4abc9075e4ac888d792fd37de6f4e0de718cd3a6144345d22530d753223e31fc",
+      "pack_bytes": 2626,
+      "manifest_bytes": 281,
+      "file": "git\\f44e44e9-9c70-42b7-9b73-e63d1939fc67\\identity-squash\\package.zip",
+      "mode": "identity",
+      "scenario": "squash"
+    },
+    {
+      "bytes": 3984,
+      "sha256": "b8ef508db1a54913d3df48234a63d8a902c12e421fd471c1a256e532fdace90e",
+      "pack_bytes": 1863,
+      "manifest_bytes": 288,
+      "file": "git\\f44e44e9-9c70-42b7-9b73-e63d1939fc67\\identity-later-root\\package.zip",
+      "mode": "identity",
+      "scenario": "later-root"
+    },
+    {
+      "bytes": 6711,
+      "sha256": "80d8ad2d9e46b3dedc87f297dfb45aa163bceb480c77c31ec1ff79d81744e8e6",
+      "pack_bytes": 3935,
+      "manifest_bytes": 281,
+      "file": "git\\f44e44e9-9c70-42b7-9b73-e63d1939fc67\\cached-full\\package.zip",
+      "mode": "cached",
+      "scenario": "full"
+    },
+    {
+      "bytes": 5653,
+      "sha256": "02bb4311a9039d80fbf92fd6ee8cc0bdba66ab6c3c08c4842f15b888474561ab",
+      "pack_bytes": 3173,
+      "manifest_bytes": 281,
+      "file": "git\\f44e44e9-9c70-42b7-9b73-e63d1939fc67\\cached-squash\\package.zip",
+      "mode": "cached",
+      "scenario": "squash"
+    },
+    {
+      "bytes": 4338,
+      "sha256": "de8e823fabebbb14fb6a51a9b38b67cde6a4249be20ce13c9300f3bd737b197b",
+      "pack_bytes": 2215,
+      "manifest_bytes": 288,
+      "file": "git\\f44e44e9-9c70-42b7-9b73-e63d1939fc67\\cached-later-root\\package.zip",
+      "mode": "cached",
+      "scenario": "later-root"
+    }
+  ],
+  "checks": {
+    "source_repository_checks": 1,
+    "native_snapshot_queries": 20,
+    "squash_semantics": 3,
+    "shallow_semantics": 5,
+    "synthetic_root_semantics": 2,
+    "native_file_rename_checks": 1,
+    "immutable_patch_after_repack": 2,
+    "zip_entry_roundtrips": 63,
+    "packed_repositories_checked": 9,
+    "repackage_member_equalities": 7,
+    "removed_endpoint_checks": 1
+  },
+  "failures": 0
+}

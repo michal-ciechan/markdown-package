@@ -1,0 +1,77 @@
+{
+  "corpora": [
+    {
+      "corpus": "npm",
+      "base": "fefd509992a05c2dfddbe7bc46931c42f1da69d7",
+      "documents": 83,
+      "headingSections": 644,
+      "preambles": 83,
+      "totalRecords": 810,
+      "shardHex": 1,
+      "nonemptyShards": 16,
+      "target": {
+        "path": "docs/lib/content/using-npm/workspaces.md",
+        "bytes": 6115,
+        "section": "e706823c-38df-4a4c-8f2f-cd1e8e2af149",
+        "document": "cde3ba23-a37c-4ecb-b93a-4d3cb0dd9581",
+        "neededShards": [
+          "e",
+          "c"
+        ],
+        "parseFirstMs": 0.504099999999994,
+        "parseWarmMedianMs": 0.8672000000000253,
+        "resolveFirstMs": 1.076599999999985,
+        "resolveWarmMedianMs": 1.1919000000000324,
+        "verifiedCacheLookupMedianMs": 0.00005192999999999301
+      },
+      "continuityChecks": 83,
+      "checks": 32,
+      "metadataFixtures": {
+        "identity": "corpus/npm/identity.json",
+        "cached": "corpus/npm/cached.json",
+        "identity256": "corpus/npm/identity256.json"
+      }
+    },
+    {
+      "corpus": "rust",
+      "base": "0b20d5d7c1fa934bae255236f7455ae781a02bf7",
+      "documents": 633,
+      "headingSections": 9087,
+      "preambles": 633,
+      "totalRecords": 10353,
+      "shardHex": 2,
+      "nonemptyShards": 256,
+      "target": {
+        "path": "text/3872-crates-io-security.md",
+        "bytes": 8057,
+        "section": "b9ab98c9-0371-4383-9924-1420337d6217",
+        "document": "6729f1d7-b71d-45a2-85e8-01740e911681",
+        "neededShards": [
+          "b9",
+          "67"
+        ],
+        "parseFirstMs": 0.5992000000005646,
+        "parseWarmMedianMs": 0.5562999999992826,
+        "resolveFirstMs": 0.9048000000002503,
+        "resolveWarmMedianMs": 0.8566000000000713,
+        "verifiedCacheLookupMedianMs": 0.0000345299999999952
+      },
+      "continuityChecks": 633,
+      "checks": 32,
+      "metadataFixtures": {
+        "identity": "corpus/rust/identity.json",
+        "cached": "corpus/rust/cached.json",
+        "identity256": "corpus/rust/identity256.json"
+      }
+    }
+  ],
+  "assets": {
+    "node": "v24.6.0",
+    "commonmark": "0.31.2",
+    "esbuild": "0.25.9",
+    "parserJSBytes": 159521,
+    "parserGzipBytes": 47999,
+    "sha256": "b83f0f38d8003c9036f314dba63b7f3aabf45b009fad027f27ec58ca6352e4f7",
+    "profile": "cm0312-source-lf-v1"
+  }
+}

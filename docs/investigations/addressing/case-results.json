@@ -1,0 +1,355 @@
+{
+  "namespace": "524c0eed-e8b3-4593-b2a1-966963524b77",
+  "ids": {
+    "D": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+    "N": "517cc2b0-1818-493e-8404-0a64812b6eab",
+    "P": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+    "NP": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+    "S": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+    "C": "3982217e-573e-4b1b-baac-279561bcf6ca",
+    "O": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+    "R1": "62bb0778-a940-4f05-a12a-2cf97331579e",
+    "R2": "47bbbe92-cfdb-48a6-8fa6-599a1c318122"
+  },
+  "checks": 55,
+  "failures": 0,
+  "checkNames": [
+    "edits before and after Section 1",
+    "whole document detects unrelated edit",
+    "heading rename retains ID and flags change",
+    "heading trail fails rename",
+    "insert indistinguishable repeated heading",
+    "ordinal selector silently chooses another duplicate",
+    "move whole subtree within document",
+    "move subtree to another document",
+    "old document detects section removal",
+    "file rename preserves document review",
+    "file rename preserves section review",
+    "child edit invalidates parent review",
+    "child itself changes",
+    "sibling remains reviewed",
+    "promotion changes heading markup",
+    "split returns retired identity and two successors",
+    "split successors receive no original review",
+    "merge retires both original identities",
+    "second merged identity resolves tombstone",
+    "deletion is explicit rather than missing ID",
+    "headingless preamble survives first appended heading",
+    "whole headingless document detects new heading",
+    "content before first heading changes preamble digest",
+    "preamble edit does not change Section 1",
+    "CRLF repackaging leaves normalized content unchanged",
+    "boundary separator blank lines are ignored",
+    "CommonMark top-level headings exclude fence quote and list",
+    "Setext heading text and underline included",
+    "Unicode is not normalized invisibly",
+    "invalid UTF-8 rejected",
+    "duplicate producer IDs rejected",
+    "missing heading assignment rejected",
+    "duplicate document paths rejected",
+    "namespace separation enforced",
+    "missing object under truncation is unavailable",
+    "partial entity coverage is not a deletion",
+    "bad line locator rejected",
+    "metadata bound to exact Git blob",
+    "cached digest cannot bless changed content",
+    "reference round trip",
+    "unknown URI parameter cannot overwrite identity",
+    "duplicate URI parameters rejected",
+    "profile upgrade requires new review interpretation",
+    "source profile does not claim external link-definition review",
+    "reverted content is reviewed by current-state policy",
+    "range summary preserves reverted heading edit",
+    "range endpoint digests alone miss reverted edit",
+    "event ordinals answer inside a collapsed range",
+    "complete untouched evidence answers a subrange",
+    "missing range coverage cannot mean unchanged",
+    "nested squash propagates reverted inner edit",
+    "review after the revert is not invalidated by older touches",
+    "nested squashes flatten source ordinals correctly",
+    "nested squash propagates incomplete coverage",
+    "nested summary with mismatched endpoint is rejected"
+  ],
+  "outcomes": [
+    {
+      "case": "edits before and after Section 1",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "beforeDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "afterDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "spec.md",
+      "successors": []
+    },
+    {
+      "case": "heading rename retains ID and flags change",
+      "status": "flagged-changed",
+      "reason": "source-changed",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "beforeDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "afterDigest": "862659f5f85a0ca424a886b01173ffbf343f02d699b43a58c72bd1b3db1bffae",
+      "path": "spec.md",
+      "successors": []
+    },
+    {
+      "case": "insert indistinguishable repeated heading",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "beforeDigest": "de107d866b8ece89cbaf40f989ff93e0026b50f598e776715ab33e3bffc72a76",
+      "afterDigest": "de107d866b8ece89cbaf40f989ff93e0026b50f598e776715ab33e3bffc72a76",
+      "path": "spec.md",
+      "successors": []
+    },
+    {
+      "case": "move whole subtree within document",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "beforeDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "afterDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "spec.md",
+      "successors": []
+    },
+    {
+      "case": "move subtree to another document",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "beforeDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "afterDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "notes.md",
+      "successors": []
+    },
+    {
+      "case": "file rename preserves document review",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "beforeDigest": "ad866b389ddfe8246adfb53b258516e795347ce76b13ab5eaf29304bd0b4ac48",
+      "afterDigest": "ad866b389ddfe8246adfb53b258516e795347ce76b13ab5eaf29304bd0b4ac48",
+      "path": "folder/renamed.md",
+      "successors": []
+    },
+    {
+      "case": "child edit invalidates parent review",
+      "status": "flagged-changed",
+      "reason": "source-changed",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "beforeDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "afterDigest": "07dc4f00d2dbf558abf9a06a0c7d073be34e07b5a6fe984494c72116637cdcc2",
+      "path": "spec.md",
+      "successors": []
+    },
+    {
+      "case": "promotion changes heading markup",
+      "status": "flagged-changed",
+      "reason": "source-changed",
+      "id": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "beforeDigest": "1e9232fd0abee8d3e58ea2820be50fb2f9cf81bb8b55de2cee23254e982ed455",
+      "afterDigest": "a1b0c0ac56dbc61e643dcbc499d6a24bac843e5a11ba9eb95dec68f5a927801e",
+      "path": "notes.md",
+      "successors": []
+    },
+    {
+      "case": "split returns retired identity and two successors",
+      "status": "flagged-changed",
+      "reason": "split",
+      "id": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "beforeDigest": "8845803c8114309ffddecdf7558a850ec9eb07a15b6c543bf52184cb3e5c3c95",
+      "afterDigest": null,
+      "path": null,
+      "successors": [
+        "eb64f6b8-5ed2-496b-9e93-5bcaaadcd674",
+        "7400ccd3-f7e9-4182-be3b-7c7fe3b70a91"
+      ]
+    },
+    {
+      "case": "merge retires both original identities",
+      "status": "flagged-changed",
+      "reason": "merged",
+      "id": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "beforeDigest": "de107d866b8ece89cbaf40f989ff93e0026b50f598e776715ab33e3bffc72a76",
+      "afterDigest": null,
+      "path": null,
+      "successors": [
+        "b3fa6282-dfca-4ddf-a03f-a30c20ceff9a"
+      ]
+    },
+    {
+      "case": "deletion is explicit rather than missing ID",
+      "status": "flagged-changed",
+      "reason": "deleted",
+      "id": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "beforeDigest": "8845803c8114309ffddecdf7558a850ec9eb07a15b6c543bf52184cb3e5c3c95",
+      "afterDigest": null,
+      "path": null,
+      "successors": []
+    },
+    {
+      "case": "headingless preamble survives first appended heading",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "beforeDigest": "a21dd893728526e8b2ad6fc730bbf69b4a3f3d658398b2b343651842b3e50142",
+      "afterDigest": "a21dd893728526e8b2ad6fc730bbf69b4a3f3d658398b2b343651842b3e50142",
+      "path": "notes.md",
+      "successors": []
+    },
+    {
+      "case": "content before first heading changes preamble digest",
+      "status": "flagged-changed",
+      "reason": "source-changed",
+      "id": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "beforeDigest": "56666a99931b4a3736e7755f9d3a65fa59d2cb1447ce2075c64e69a23c1bc391",
+      "afterDigest": "8c89f35240a74b845338a2ff7397d31e20c49deb03033bf2bdd09e243daf45cd",
+      "path": "spec.md",
+      "successors": []
+    },
+    {
+      "case": "CRLF repackaging leaves normalized content unchanged",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "beforeDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "afterDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "spec.md",
+      "successors": []
+    },
+    {
+      "case": "boundary separator blank lines are ignored",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "beforeDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "afterDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "spec.md",
+      "successors": []
+    }
+  ],
+  "examples": {
+    "section": "mdpkg://524c0eed-e8b3-4593-b2a1-966963524b77/v1/section/edae244c-f23e-49d2-a49e-dd72dd73babb?profile=cm0312-source-lf-v1&expect=52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+    "document": "mdpkg://524c0eed-e8b3-4593-b2a1-966963524b77/v1/document/2148dd42-4a45-4a93-b32d-ad3499e510b8?profile=cm0312-source-lf-v1&expect=ad866b389ddfe8246adfb53b258516e795347ce76b13ab5eaf29304bd0b4ac48"
+  },
+  "profile": "cm0312-source-lf-v1",
+  "revertedSummary": {
+    "version": 1,
+    "namespace": "524c0eed-e8b3-4593-b2a1-966963524b77",
+    "profile": "cm0312-source-lf-v1",
+    "walk": "first-parent",
+    "coverage": "complete",
+    "base": "sha1-0000000000000000000000000000000000000000",
+    "tip": "sha1-2222222222222222222222222222222222222222",
+    "sourceCommits": [
+      "sha1-1111111111111111111111111111111111111111",
+      "sha1-2222222222222222222222222222222222222222"
+    ],
+    "collapsedInputs": [
+      "sha1-1111111111111111111111111111111111111111",
+      "sha1-2222222222222222222222222222222222222222"
+    ],
+    "beforeStateDigest": "47642b8bd8bd7d025662a566ec0183d447e268e79cf0880dcae54f62342cf554",
+    "afterStateDigest": "47642b8bd8bd7d025662a566ec0183d447e268e79cf0880dcae54f62342cf554",
+    "nested": [],
+    "contentTouched": [
+      "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "edae244c-f23e-49d2-a49e-dd72dd73babb"
+    ],
+    "changedAt": {
+      "2148dd42-4a45-4a93-b32d-ad3499e510b8": [
+        1,
+        2
+      ],
+      "edae244c-f23e-49d2-a49e-dd72dd73babb": [
+        1,
+        2
+      ]
+    },
+    "endpoints": {
+      "2148dd42-4a45-4a93-b32d-ad3499e510b8": {
+        "before": "ad866b389ddfe8246adfb53b258516e795347ce76b13ab5eaf29304bd0b4ac48",
+        "after": "ad866b389ddfe8246adfb53b258516e795347ce76b13ab5eaf29304bd0b4ac48"
+      },
+      "edae244c-f23e-49d2-a49e-dd72dd73babb": {
+        "before": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+        "after": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4"
+      }
+    },
+    "identityEvents": []
+  },
+  "nestedSummary": {
+    "version": 1,
+    "namespace": "524c0eed-e8b3-4593-b2a1-966963524b77",
+    "profile": "cm0312-source-lf-v1",
+    "walk": "first-parent",
+    "coverage": "complete",
+    "base": "sha1-0000000000000000000000000000000000000000",
+    "tip": "sha1-3333333333333333333333333333333333333333",
+    "sourceCommits": [
+      "sha1-1111111111111111111111111111111111111111",
+      "sha1-2222222222222222222222222222222222222222",
+      "sha1-3333333333333333333333333333333333333333"
+    ],
+    "collapsedInputs": [
+      "sha1-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sha1-3333333333333333333333333333333333333333"
+    ],
+    "beforeStateDigest": "47642b8bd8bd7d025662a566ec0183d447e268e79cf0880dcae54f62342cf554",
+    "afterStateDigest": "a363969bbfb7ea63295176e1d1b6ef3b2c895efbfa142e2d22b04ef8e2f9a148",
+    "nested": [
+      {
+        "summary": "5c012bc97f1c48621ec9b5d004fcbfb49867ffcb8073050bda666df2f79e5a22",
+        "emitted": "sha1-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "contentTouched": [
+      "1365a4aa-360b-4fad-892d-af60e46828d8",
+      "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "edae244c-f23e-49d2-a49e-dd72dd73babb"
+    ],
+    "changedAt": {
+      "2148dd42-4a45-4a93-b32d-ad3499e510b8": [
+        1,
+        2,
+        3
+      ],
+      "edae244c-f23e-49d2-a49e-dd72dd73babb": [
+        1,
+        2
+      ],
+      "28d4380a-fb80-4ac9-a38d-813385a734b8": [
+        3
+      ],
+      "1365a4aa-360b-4fad-892d-af60e46828d8": [
+        3
+      ]
+    },
+    "endpoints": {
+      "1365a4aa-360b-4fad-892d-af60e46828d8": {
+        "before": null,
+        "after": "b002cdede00aef38094fb7402dc9786ef90248769b749f4afcec98f44e6d6d76"
+      },
+      "2148dd42-4a45-4a93-b32d-ad3499e510b8": {
+        "before": "ad866b389ddfe8246adfb53b258516e795347ce76b13ab5eaf29304bd0b4ac48",
+        "after": "aed08778ef1898a12b46cce121b131c75b1bd033918713d3be81c7868c910b9e"
+      },
+      "28d4380a-fb80-4ac9-a38d-813385a734b8": {
+        "before": "8845803c8114309ffddecdf7558a850ec9eb07a15b6c543bf52184cb3e5c3c95",
+        "after": "5cb6eb77cd28ad4b61e44df75b92b78227582020f33de30278682539e9bd8c59"
+      },
+      "edae244c-f23e-49d2-a49e-dd72dd73babb": {
+        "before": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+        "after": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4"
+      }
+    },
+    "identityEvents": [
+      {
+        "at": 3,
+        "id": "1365a4aa-360b-4fad-892d-af60e46828d8",
+        "event": "created",
+        "kind": "section"
+      }
+    ]
+  }
+}

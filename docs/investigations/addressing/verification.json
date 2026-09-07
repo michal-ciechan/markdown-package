@@ -1,0 +1,110 @@
+{
+  "model_checks": 55,
+  "git_resolution_checks": 25,
+  "native_checks": {
+    "source_repository_checks": 1,
+    "native_snapshot_queries": 20,
+    "squash_semantics": 3,
+    "shallow_semantics": 5,
+    "synthetic_root_semantics": 2,
+    "native_file_rename_checks": 1,
+    "immutable_patch_after_repack": 2,
+    "zip_entry_roundtrips": 63,
+    "packed_repositories_checked": 9,
+    "repackage_member_equalities": 7,
+    "removed_endpoint_checks": 1
+  },
+  "corpus_source_checks": 716,
+  "corpus_timed_resolution_checks": 64,
+  "metadata_zip_roundtrips": 1112,
+  "audited_archives": 17,
+  "audited_archive_members": 119,
+  "archives": [
+    {
+      "file": ".antiphon/addressing-work/git/f44e44e9-9c70-42b7-9b73-e63d1939fc67/none-full/package.zip",
+      "bytes": 2925,
+      "sha256": "b5c97990ff391723078e8f808a8550c8a16a566137cee680bd33245f9624df78"
+    },
+    {
+      "file": ".antiphon/addressing-work/git/f44e44e9-9c70-42b7-9b73-e63d1939fc67/none-squash/package.zip",
+      "bytes": 2470,
+      "sha256": "7817a65f5ff23dbe393ea6951554549dc78233152177acb1b58df2c55be480e3"
+    },
+    {
+      "file": ".antiphon/addressing-work/git/f44e44e9-9c70-42b7-9b73-e63d1939fc67/none-later-root/package.zip",
+      "bytes": 2120,
+      "sha256": "b4700389d5ce0debc0b2df90bd0e0f345e7f93cd1491b6bf2d6a23e3ca75de8c"
+    },
+    {
+      "file": ".antiphon/addressing-work/git/f44e44e9-9c70-42b7-9b73-e63d1939fc67/identity-full/package.zip",
+      "bytes": 5972,
+      "sha256": "84bf3c720eaf644e28293415679a5287ce2e601bb398522486c5cc124cbf8652"
+    },
+    {
+      "file": ".antiphon/addressing-work/git/f44e44e9-9c70-42b7-9b73-e63d1939fc67/identity-squash/package.zip",
+      "bytes": 5112,
+      "sha256": "4abc9075e4ac888d792fd37de6f4e0de718cd3a6144345d22530d753223e31fc"
+    },
+    {
+      "file": ".antiphon/addressing-work/git/f44e44e9-9c70-42b7-9b73-e63d1939fc67/identity-later-root/package.zip",
+      "bytes": 3984,
+      "sha256": "b8ef508db1a54913d3df48234a63d8a902c12e421fd471c1a256e532fdace90e"
+    },
+    {
+      "file": ".antiphon/addressing-work/git/f44e44e9-9c70-42b7-9b73-e63d1939fc67/cached-full/package.zip",
+      "bytes": 6711,
+      "sha256": "80d8ad2d9e46b3dedc87f297dfb45aa163bceb480c77c31ec1ff79d81744e8e6"
+    },
+    {
+      "file": ".antiphon/addressing-work/git/f44e44e9-9c70-42b7-9b73-e63d1939fc67/cached-squash/package.zip",
+      "bytes": 5653,
+      "sha256": "02bb4311a9039d80fbf92fd6ee8cc0bdba66ab6c3c08c4842f15b888474561ab"
+    },
+    {
+      "file": ".antiphon/addressing-work/git/f44e44e9-9c70-42b7-9b73-e63d1939fc67/cached-later-root/package.zip",
+      "bytes": 4338,
+      "sha256": "de8e823fabebbb14fb6a51a9b38b67cde6a4249be20ce13c9300f3bd737b197b"
+    },
+    {
+      "file": ".antiphon/addressing-work/metadata-packs/473602b3272a493a9b55fde588a61175/npm/none/package.zip",
+      "bytes": 122687,
+      "sha256": "5334351b981b065c2e27aef8e84d117eef7c7c3dd9d8e2784d707d71cee3c09f"
+    },
+    {
+      "file": ".antiphon/addressing-work/metadata-packs/473602b3272a493a9b55fde588a61175/npm/identity/package.zip",
+      "bytes": 161453,
+      "sha256": "8ca4c823758af8fe53a5d821390faca24fda5fafeea008ac17fdb9bf58c3450a"
+    },
+    {
+      "file": ".antiphon/addressing-work/metadata-packs/473602b3272a493a9b55fde588a61175/npm/cached/package.zip",
+      "bytes": 188183,
+      "sha256": "79076e2ebc9cb7ec37dc7bb7ea385084537dbd8d67e44634ece513173c312a9c"
+    },
+    {
+      "file": ".antiphon/addressing-work/metadata-packs/473602b3272a493a9b55fde588a61175/npm/identity256/package.zip",
+      "bytes": 194639,
+      "sha256": "5129c054e5a49e3395cffcd6f5937bff3a924dfcb9eebdb04c42889150e70d1f"
+    },
+    {
+      "file": ".antiphon/addressing-work/metadata-packs/473602b3272a493a9b55fde588a61175/rust/none/package.zip",
+      "bytes": 3132664,
+      "sha256": "faaec6970c3286ba6f6eabeb23743ed5b0d4551e96ff892ceacbf9cbc1367141"
+    },
+    {
+      "file": ".antiphon/addressing-work/metadata-packs/473602b3272a493a9b55fde588a61175/rust/identity/package.zip",
+      "bytes": 3671931,
+      "sha256": "5aedb9fe4a34354ec90f45153f255fbc47434d7948ff9090beb4061b8e32710a"
+    },
+    {
+      "file": ".antiphon/addressing-work/metadata-packs/473602b3272a493a9b55fde588a61175/rust/cached/package.zip",
+      "bytes": 4093314,
+      "sha256": "0d675c3c3998553b6ceb29ff95b53af419240391c7ba3a24e4714cb51070a1c0"
+    },
+    {
+      "file": ".antiphon/addressing-work/metadata-packs/473602b3272a493a9b55fde588a61175/rust/identity256/package.zip",
+      "bytes": 3671931,
+      "sha256": "5aedb9fe4a34354ec90f45153f255fbc47434d7948ff9090beb4061b8e32710a"
+    }
+  ],
+  "failures": 0
+}

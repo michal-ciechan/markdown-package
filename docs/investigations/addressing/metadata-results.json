@@ -1,0 +1,118 @@
+{
+  "fixture_directory": ".antiphon/addressing-work/metadata-packs/473602b3272a493a9b55fde588a61175",
+  "rows": [
+    {
+      "corpus": "npm",
+      "variant": "none",
+      "raw_metadata_bytes": 0,
+      "standalone_metadata_zip_bytes": 0,
+      "packaged_snapshot_bytes": 122687,
+      "with_current_map_copy_bytes": 122687,
+      "current_map_copy_increment": 0,
+      "metadata_entries": 0,
+      "over_no_metadata_pct": 0.0
+    },
+    {
+      "corpus": "npm",
+      "variant": "identity",
+      "raw_metadata_bytes": 96304,
+      "standalone_metadata_zip_bytes": 39570,
+      "packaged_snapshot_bytes": 161453,
+      "with_current_map_copy_bytes": 201273,
+      "current_map_copy_increment": 39820,
+      "metadata_entries": 17,
+      "target_lookup_compressed_bytes": 4265,
+      "target_lookup_decoded_bytes": 10681,
+      "target_entries": 3,
+      "over_no_metadata_pct": 31.597479765582335
+    },
+    {
+      "corpus": "npm",
+      "variant": "cached",
+      "raw_metadata_bytes": 157864,
+      "standalone_metadata_zip_bytes": 66278,
+      "packaged_snapshot_bytes": 188183,
+      "with_current_map_copy_bytes": 254711,
+      "current_map_copy_increment": 66528,
+      "metadata_entries": 17,
+      "target_lookup_compressed_bytes": 7232,
+      "target_lookup_decoded_bytes": 17445,
+      "target_entries": 3,
+      "over_no_metadata_pct": 53.38462917831555
+    },
+    {
+      "corpus": "npm",
+      "variant": "identity256",
+      "raw_metadata_bytes": 96768,
+      "standalone_metadata_zip_bytes": 88064,
+      "packaged_snapshot_bytes": 194639,
+      "with_current_map_copy_bytes": 286665,
+      "current_map_copy_increment": 92026,
+      "metadata_entries": 249,
+      "target_lookup_compressed_bytes": 586,
+      "target_lookup_decoded_bytes": 967,
+      "target_entries": 3,
+      "over_no_metadata_pct": 58.646800394499834
+    },
+    {
+      "corpus": "rust",
+      "variant": "none",
+      "raw_metadata_bytes": 0,
+      "standalone_metadata_zip_bytes": 0,
+      "packaged_snapshot_bytes": 3132664,
+      "with_current_map_copy_bytes": 3132664,
+      "current_map_copy_increment": 0,
+      "metadata_entries": 0,
+      "over_no_metadata_pct": 0.0
+    },
+    {
+      "corpus": "rust",
+      "variant": "identity",
+      "raw_metadata_bytes": 1214224,
+      "standalone_metadata_zip_bytes": 555724,
+      "packaged_snapshot_bytes": 3671931,
+      "with_current_map_copy_bytes": 4231745,
+      "current_map_copy_increment": 559814,
+      "metadata_entries": 257,
+      "target_lookup_compressed_bytes": 4098,
+      "target_lookup_decoded_bytes": 9466,
+      "target_entries": 3,
+      "over_no_metadata_pct": 17.214326209258314
+    },
+    {
+      "corpus": "rust",
+      "variant": "cached",
+      "raw_metadata_bytes": 2001052,
+      "standalone_metadata_zip_bytes": 977089,
+      "packaged_snapshot_bytes": 4093314,
+      "with_current_map_copy_bytes": 5074493,
+      "current_map_copy_increment": 981179,
+      "metadata_entries": 257,
+      "target_lookup_compressed_bytes": 7368,
+      "target_lookup_decoded_bytes": 15546,
+      "target_entries": 3,
+      "over_no_metadata_pct": 30.665593245876344
+    },
+    {
+      "corpus": "rust",
+      "variant": "identity256",
+      "raw_metadata_bytes": 1214224,
+      "standalone_metadata_zip_bytes": 555724,
+      "packaged_snapshot_bytes": 3671931,
+      "with_current_map_copy_bytes": 4231745,
+      "current_map_copy_increment": 559814,
+      "metadata_entries": 257,
+      "target_lookup_compressed_bytes": 4098,
+      "target_lookup_decoded_bytes": 9466,
+      "target_entries": 3,
+      "over_no_metadata_pct": 17.214326209258314
+    }
+  ],
+  "summary": {
+    "raw_bytes": 2124,
+    "zip_bytes": 1397,
+    "summary_bytes": 1955,
+    "bindings_bytes": 169
+  },
+  "zip_roundtrip_checks": 1112
+}

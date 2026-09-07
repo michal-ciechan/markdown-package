@@ -1,0 +1,672 @@
+{
+  "rows": [
+    {
+      "case": "base",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "actualDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "spec.md",
+      "line": 3,
+      "cacheValid": true,
+      "git": {
+        "commit": "88d3df770e8f0a2099e1e051a81fed8ed053669b",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/e.json",
+            "bytes": 222
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 244
+          },
+          {
+            "path": "spec.md",
+            "bytes": 103
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "unrelated",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "actualDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "spec.md",
+      "line": 6,
+      "cacheValid": true,
+      "git": {
+        "commit": "673239f984c417ca7cb22d33b9d61b8d939e1d3b",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/e.json",
+            "bytes": 222
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 245
+          },
+          {
+            "path": "spec.md",
+            "bytes": 155
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "heading-rename",
+      "status": "flagged-changed",
+      "reason": "source-changed",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "actualDigest": "862659f5f85a0ca424a886b01173ffbf343f02d699b43a58c72bd1b3db1bffae",
+      "path": "spec.md",
+      "line": 3,
+      "cacheValid": true,
+      "git": {
+        "commit": "0e8e03da0efb717b6130ac49a39b1e1111fe1c05",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/e.json",
+            "bytes": 222
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 244
+          },
+          {
+            "path": "spec.md",
+            "bytes": 109
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "duplicate-insert",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "actualDigest": "de107d866b8ece89cbaf40f989ff93e0026b50f598e776715ab33e3bffc72a76",
+      "path": "spec.md",
+      "line": 18,
+      "cacheValid": true,
+      "git": {
+        "commit": "f29a839b1cfe4687f08cc00a253de9aaa45745d7",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/4.json",
+            "bytes": 117
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 244
+          },
+          {
+            "path": "spec.md",
+            "bytes": 119
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "move-within",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "actualDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "spec.md",
+      "line": 12,
+      "cacheValid": true,
+      "git": {
+        "commit": "874959dfd97ec9dc999d515778c13979c623382d",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/e.json",
+            "bytes": 223
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 244
+          },
+          {
+            "path": "spec.md",
+            "bytes": 103
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "move-across",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "actualDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "notes.md",
+      "line": 3,
+      "cacheValid": true,
+      "git": {
+        "commit": "09c7cdb2379026d491c267bcdcc46aebadbce671",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/e.json",
+            "bytes": 222
+          },
+          {
+            "path": ".mdpkg/address/ids/5.json",
+            "bytes": 131
+          },
+          {
+            "path": "notes.md",
+            "bytes": 62
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "file-rename",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "actualDigest": "ad866b389ddfe8246adfb53b258516e795347ce76b13ab5eaf29304bd0b4ac48",
+      "path": "folder/renamed.md",
+      "cacheValid": true,
+      "git": {
+        "commit": "cb55b3945334d0748df8af67797ed6d455c1ca1b",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 254
+          },
+          {
+            "path": "folder/renamed.md",
+            "bytes": 103
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "child-edit",
+      "status": "flagged-changed",
+      "reason": "source-changed",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "actualDigest": "07dc4f00d2dbf558abf9a06a0c7d073be34e07b5a6fe984494c72116637cdcc2",
+      "path": "spec.md",
+      "line": 3,
+      "cacheValid": true,
+      "git": {
+        "commit": "4fd3ae19e8dc76083bfe08c5f75727bd1cc465f2",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/e.json",
+            "bytes": 222
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 244
+          },
+          {
+            "path": "spec.md",
+            "bytes": 105
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "promote-child",
+      "status": "flagged-changed",
+      "reason": "source-changed",
+      "id": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "actualDigest": "a1b0c0ac56dbc61e643dcbc499d6a24bac843e5a11ba9eb95dec68f5a927801e",
+      "path": "notes.md",
+      "line": 3,
+      "cacheValid": true,
+      "git": {
+        "commit": "937fb092cb1c3a3770415731800d1c5ef3d3affd",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/3.json",
+            "bytes": 116
+          },
+          {
+            "path": ".mdpkg/address/ids/5.json",
+            "bytes": 131
+          },
+          {
+            "path": "notes.md",
+            "bytes": 41
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "split",
+      "status": "flagged-changed",
+      "reason": "split",
+      "successors": [
+        "eb64f6b8-5ed2-496b-9e93-5bcaaadcd674",
+        "7400ccd3-f7e9-4182-be3b-7c7fe3b70a91"
+      ],
+      "git": {
+        "commit": "041f5ec73e68ccb4de4140acd056a0955cb58ff9",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 312
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "merge",
+      "status": "flagged-changed",
+      "reason": "merged",
+      "successors": [
+        "b3fa6282-dfca-4ddf-a03f-a30c20ceff9a"
+      ],
+      "git": {
+        "commit": "2777d389bc530ed1af8c76da908b498331bd6b6e",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/6.json",
+            "bytes": 146
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "delete",
+      "status": "flagged-changed",
+      "reason": "deleted",
+      "successors": [],
+      "git": {
+        "commit": "873400dbce93069b6fbe7bdb4aea900e10587544",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 237
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "first-heading",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "actualDigest": "a21dd893728526e8b2ad6fc730bbf69b4a3f3d658398b2b343651842b3e50142",
+      "path": "notes.md",
+      "cacheValid": true,
+      "git": {
+        "commit": "ddf742a05bacf56614cce4d4d40bdedff8cd73c9",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/8.json",
+            "bytes": 108
+          },
+          {
+            "path": ".mdpkg/address/ids/5.json",
+            "bytes": 131
+          },
+          {
+            "path": "notes.md",
+            "bytes": 48
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "preamble-edit",
+      "status": "flagged-changed",
+      "reason": "source-changed",
+      "id": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "actualDigest": "8c89f35240a74b845338a2ff7397d31e20c49deb03033bf2bdd09e243daf45cd",
+      "path": "spec.md",
+      "cacheValid": true,
+      "git": {
+        "commit": "80530d084fe062554ea4e55c89770bbfafad93b6",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/e.json",
+            "bytes": 222
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 244
+          },
+          {
+            "path": "spec.md",
+            "bytes": 118
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "crlf",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "actualDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "spec.md",
+      "line": 3,
+      "cacheValid": true,
+      "git": {
+        "commit": "06c212ed0f1ccf93ae8199efca805dd901cbd595",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/e.json",
+            "bytes": 222
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 244
+          },
+          {
+            "path": "spec.md",
+            "bytes": 120
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "separator-blanks",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "actualDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "spec.md",
+      "line": 3,
+      "cacheValid": true,
+      "git": {
+        "commit": "159908635d591d93f2c0147e3f0934a85bdd42a7",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/e.json",
+            "bytes": 222
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 245
+          },
+          {
+            "path": "spec.md",
+            "bytes": 105
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "after-real-squash",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "actualDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "spec.md",
+      "line": 6,
+      "cacheValid": true,
+      "git": {
+        "commit": "eead3b04724d70cc66afaea670aa996943305c0d",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/e.json",
+            "bytes": 222
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 245
+          },
+          {
+            "path": "spec.md",
+            "bytes": 155
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "after-shallow-truncation",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "actualDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "spec.md",
+      "line": 6,
+      "cacheValid": true,
+      "git": {
+        "commit": "374c10b1102e8b4b046537c2519452aea546a236",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/e.json",
+            "bytes": 222
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 245
+          },
+          {
+            "path": "spec.md",
+            "bytes": 155
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "after-synthetic-truncation",
+      "status": "survives",
+      "reason": "same-source",
+      "id": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "actualDigest": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+      "path": "spec.md",
+      "line": 6,
+      "cacheValid": true,
+      "git": {
+        "commit": "78fc2b9423ab8b1690dd3c50eedda44012796cc6",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/e.json",
+            "bytes": 222
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 245
+          },
+          {
+            "path": "spec.md",
+            "bytes": 155
+          }
+        ],
+        "log_walks": 0
+      }
+    },
+    {
+      "case": "tombstone-carried-through-truncation",
+      "status": "flagged-changed",
+      "reason": "deleted",
+      "successors": [],
+      "git": {
+        "commit": "fd1bac36750098aa17d6c82fe398aab10026cb33",
+        "reads": [
+          {
+            "path": ".mdpkg/address/config.json",
+            "bytes": 110
+          },
+          {
+            "path": ".mdpkg/address/ids/2.json",
+            "bytes": 237
+          }
+        ],
+        "log_walks": 0
+      }
+    }
+  ],
+  "checks": 25,
+  "failures": 0,
+  "summary": {
+    "id": "d58353fdf75306d994d848c23528889899c49dcf353ce08f93369dfa7c056e2b",
+    "bytes": 1955,
+    "bindingsBytes": 169,
+    "body": {
+      "version": 1,
+      "namespace": "524c0eed-e8b3-4593-b2a1-966963524b77",
+      "profile": "cm0312-source-lf-v1",
+      "walk": "first-parent",
+      "coverage": "complete",
+      "base": "sha1-88d3df770e8f0a2099e1e051a81fed8ed053669b",
+      "tip": "sha1-374c10b1102e8b4b046537c2519452aea546a236",
+      "sourceCommits": [
+        "sha1-0e8e03da0efb717b6130ac49a39b1e1111fe1c05",
+        "sha1-844c59d8359be806678900520fa5a3439b2c30d0",
+        "sha1-374c10b1102e8b4b046537c2519452aea546a236"
+      ],
+      "collapsedInputs": [
+        "sha1-0e8e03da0efb717b6130ac49a39b1e1111fe1c05",
+        "sha1-844c59d8359be806678900520fa5a3439b2c30d0",
+        "sha1-374c10b1102e8b4b046537c2519452aea546a236"
+      ],
+      "beforeStateDigest": "47642b8bd8bd7d025662a566ec0183d447e268e79cf0880dcae54f62342cf554",
+      "afterStateDigest": "a363969bbfb7ea63295176e1d1b6ef3b2c895efbfa142e2d22b04ef8e2f9a148",
+      "nested": [],
+      "contentTouched": [
+        "1365a4aa-360b-4fad-892d-af60e46828d8",
+        "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+        "28d4380a-fb80-4ac9-a38d-813385a734b8",
+        "edae244c-f23e-49d2-a49e-dd72dd73babb"
+      ],
+      "changedAt": {
+        "2148dd42-4a45-4a93-b32d-ad3499e510b8": [
+          1,
+          2,
+          3
+        ],
+        "edae244c-f23e-49d2-a49e-dd72dd73babb": [
+          1,
+          2
+        ],
+        "28d4380a-fb80-4ac9-a38d-813385a734b8": [
+          3
+        ],
+        "1365a4aa-360b-4fad-892d-af60e46828d8": [
+          3
+        ]
+      },
+      "endpoints": {
+        "1365a4aa-360b-4fad-892d-af60e46828d8": {
+          "before": null,
+          "after": "b002cdede00aef38094fb7402dc9786ef90248769b749f4afcec98f44e6d6d76"
+        },
+        "2148dd42-4a45-4a93-b32d-ad3499e510b8": {
+          "before": "ad866b389ddfe8246adfb53b258516e795347ce76b13ab5eaf29304bd0b4ac48",
+          "after": "aed08778ef1898a12b46cce121b131c75b1bd033918713d3be81c7868c910b9e"
+        },
+        "28d4380a-fb80-4ac9-a38d-813385a734b8": {
+          "before": "8845803c8114309ffddecdf7558a850ec9eb07a15b6c543bf52184cb3e5c3c95",
+          "after": "5cb6eb77cd28ad4b61e44df75b92b78227582020f33de30278682539e9bd8c59"
+        },
+        "edae244c-f23e-49d2-a49e-dd72dd73babb": {
+          "before": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4",
+          "after": "52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4"
+        }
+      },
+      "identityEvents": [
+        {
+          "at": 3,
+          "id": "1365a4aa-360b-4fad-892d-af60e46828d8",
+          "event": "created",
+          "kind": "section"
+        }
+      ]
+    }
+  }
+}
