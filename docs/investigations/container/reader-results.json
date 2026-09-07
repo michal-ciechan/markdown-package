@@ -1,0 +1,877 @@
+{
+  "node": "v24.6.0",
+  "access": [
+    {
+      "package": "npm: no comment, 22-byte start",
+      "target": "docs/lib/content/using-npm/workspaces.md",
+      "mode": "document",
+      "heading": null,
+      "initial_suffix_bytes": 22,
+      "expect_clean": true,
+      "eocd_comment_bytes": 0,
+      "manifest_current": "sha1-5c3e0ffdc40df11a74024b12ee97c9d15afad99b",
+      "overrides_entry": null,
+      "overrides_records": 0,
+      "requests": 6,
+      "bytes_read": 10369,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 288637,
+      "payload_bytes": 6101,
+      "payload_sha256": "0e98fdd1eb90aaede32e0ae7701723082029afc81e615dba77fbeae98cb7f3a4",
+      "git_bytes_touched": 0,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 82,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          337
+        ],
+        [
+          288615,
+          288637
+        ],
+        [
+          280884,
+          288615
+        ],
+        [
+          119302,
+          119332
+        ],
+        [
+          119372,
+          121592
+        ]
+      ]
+    },
+    {
+      "package": "npm: no comment, 22-byte start",
+      "target": "docs/lib/content/using-npm/workspaces.md",
+      "mode": "section",
+      "heading": "### Defining workspaces",
+      "initial_suffix_bytes": 22,
+      "expect_clean": true,
+      "eocd_comment_bytes": 0,
+      "manifest_current": "sha1-5c3e0ffdc40df11a74024b12ee97c9d15afad99b",
+      "overrides_entry": null,
+      "overrides_records": 0,
+      "requests": 6,
+      "bytes_read": 10369,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 288637,
+      "payload_bytes": 981,
+      "payload_sha256": "cc6db05f7223c133a5f0d0156c0293a41ecf6216e5f036af80941deca3a04467",
+      "git_bytes_touched": 0,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 82,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          337
+        ],
+        [
+          288615,
+          288637
+        ],
+        [
+          280884,
+          288615
+        ],
+        [
+          119302,
+          119332
+        ],
+        [
+          119372,
+          121592
+        ]
+      ]
+    },
+    {
+      "package": "npm: override ledger, 22-byte start",
+      "target": "docs/lib/content/using-npm/workspaces.md",
+      "mode": "document",
+      "heading": null,
+      "initial_suffix_bytes": 22,
+      "expect_clean": true,
+      "eocd_comment_bytes": 0,
+      "manifest_current": "sha1-175f146db82ce344f8781f2204344cb95b9532a6",
+      "overrides_entry": ".mdpkg/address/overrides.json",
+      "overrides_records": 29,
+      "requests": 8,
+      "bytes_read": 12312,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 292648,
+      "payload_bytes": 6101,
+      "payload_sha256": "0e98fdd1eb90aaede32e0ae7701723082029afc81e615dba77fbeae98cb7f3a4",
+      "git_bytes_touched": 0,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 82,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          364
+        ],
+        [
+          292626,
+          292648
+        ],
+        [
+          284820,
+          292626
+        ],
+        [
+          364,
+          394
+        ],
+        [
+          423,
+          2234
+        ],
+        [
+          121199,
+          121229
+        ],
+        [
+          121269,
+          123489
+        ]
+      ]
+    },
+    {
+      "package": "npm: override ledger, 22-byte start",
+      "target": "docs/lib/content/using-npm/workspaces.md",
+      "mode": "section",
+      "heading": "### Defining workspaces",
+      "initial_suffix_bytes": 22,
+      "expect_clean": true,
+      "eocd_comment_bytes": 0,
+      "manifest_current": "sha1-175f146db82ce344f8781f2204344cb95b9532a6",
+      "overrides_entry": ".mdpkg/address/overrides.json",
+      "overrides_records": 29,
+      "requests": 8,
+      "bytes_read": 12312,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 292648,
+      "payload_bytes": 981,
+      "payload_sha256": "cc6db05f7223c133a5f0d0156c0293a41ecf6216e5f036af80941deca3a04467",
+      "git_bytes_touched": 0,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 82,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          364
+        ],
+        [
+          292626,
+          292648
+        ],
+        [
+          284820,
+          292626
+        ],
+        [
+          364,
+          394
+        ],
+        [
+          423,
+          2234
+        ],
+        [
+          121199,
+          121229
+        ],
+        [
+          121269,
+          123489
+        ]
+      ]
+    },
+    {
+      "package": "npm: 7-byte EOCD comment, naive 22-byte start",
+      "target": "docs/lib/content/using-npm/workspaces.md",
+      "mode": "document",
+      "heading": null,
+      "initial_suffix_bytes": 22,
+      "expect_clean": false,
+      "eocd_comment_bytes": 7,
+      "manifest_current": "sha1-5c3e0ffdc40df11a74024b12ee97c9d15afad99b",
+      "overrides_entry": null,
+      "overrides_records": 0,
+      "requests": 6,
+      "bytes_read": 68195,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 288644,
+      "payload_bytes": 6101,
+      "payload_sha256": "0e98fdd1eb90aaede32e0ae7701723082029afc81e615dba77fbeae98cb7f3a4",
+      "git_bytes_touched": 57797,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 82,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          337
+        ],
+        [
+          288622,
+          288644
+        ],
+        [
+          223087,
+          288644
+        ],
+        [
+          119302,
+          119332
+        ],
+        [
+          119372,
+          121592
+        ]
+      ]
+    },
+    {
+      "package": "npm: 7-byte EOCD comment, naive 22-byte start",
+      "target": "docs/lib/content/using-npm/workspaces.md",
+      "mode": "section",
+      "heading": "### Defining workspaces",
+      "initial_suffix_bytes": 22,
+      "expect_clean": false,
+      "eocd_comment_bytes": 7,
+      "manifest_current": "sha1-5c3e0ffdc40df11a74024b12ee97c9d15afad99b",
+      "overrides_entry": null,
+      "overrides_records": 0,
+      "requests": 6,
+      "bytes_read": 68195,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 288644,
+      "payload_bytes": 981,
+      "payload_sha256": "cc6db05f7223c133a5f0d0156c0293a41ecf6216e5f036af80941deca3a04467",
+      "git_bytes_touched": 57797,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 82,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          337
+        ],
+        [
+          288622,
+          288644
+        ],
+        [
+          223087,
+          288644
+        ],
+        [
+          119302,
+          119332
+        ],
+        [
+          119372,
+          121592
+        ]
+      ]
+    },
+    {
+      "package": "npm: 7-byte EOCD comment, profile-aware 29-byte start",
+      "target": "docs/lib/content/using-npm/workspaces.md",
+      "mode": "document",
+      "heading": null,
+      "initial_suffix_bytes": 29,
+      "expect_clean": true,
+      "eocd_comment_bytes": 7,
+      "manifest_current": "sha1-5c3e0ffdc40df11a74024b12ee97c9d15afad99b",
+      "overrides_entry": null,
+      "overrides_records": 0,
+      "requests": 6,
+      "bytes_read": 10376,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 288644,
+      "payload_bytes": 6101,
+      "payload_sha256": "0e98fdd1eb90aaede32e0ae7701723082029afc81e615dba77fbeae98cb7f3a4",
+      "git_bytes_touched": 0,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 82,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          337
+        ],
+        [
+          288615,
+          288644
+        ],
+        [
+          280884,
+          288615
+        ],
+        [
+          119302,
+          119332
+        ],
+        [
+          119372,
+          121592
+        ]
+      ]
+    },
+    {
+      "package": "npm: 7-byte EOCD comment, profile-aware 29-byte start",
+      "target": "docs/lib/content/using-npm/workspaces.md",
+      "mode": "section",
+      "heading": "### Defining workspaces",
+      "initial_suffix_bytes": 29,
+      "expect_clean": true,
+      "eocd_comment_bytes": 7,
+      "manifest_current": "sha1-5c3e0ffdc40df11a74024b12ee97c9d15afad99b",
+      "overrides_entry": null,
+      "overrides_records": 0,
+      "requests": 6,
+      "bytes_read": 10376,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 288644,
+      "payload_bytes": 981,
+      "payload_sha256": "cc6db05f7223c133a5f0d0156c0293a41ecf6216e5f036af80941deca3a04467",
+      "git_bytes_touched": 0,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 82,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          337
+        ],
+        [
+          288615,
+          288644
+        ],
+        [
+          280884,
+          288615
+        ],
+        [
+          119302,
+          119332
+        ],
+        [
+          119372,
+          121592
+        ]
+      ]
+    },
+    {
+      "package": "rust: no comment, 22-byte start",
+      "target": "text/3872-crates-io-security.md",
+      "mode": "document",
+      "heading": null,
+      "initial_suffix_bytes": 22,
+      "expect_clean": true,
+      "eocd_comment_bytes": 0,
+      "manifest_current": "sha1-225f040a97be486142b8110b9965cecfc867a378",
+      "overrides_entry": null,
+      "overrides_records": 0,
+      "requests": 6,
+      "bytes_read": 54440,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 6664426,
+      "payload_bytes": 8057,
+      "payload_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437",
+      "git_bytes_touched": 0,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 649,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          337
+        ],
+        [
+          6664404,
+          6664426
+        ],
+        [
+          6613591,
+          6664404
+        ],
+        [
+          3141623,
+          3141653
+        ],
+        [
+          3141684,
+          3144893
+        ]
+      ]
+    },
+    {
+      "package": "rust: no comment, 22-byte start",
+      "target": "text/3872-crates-io-security.md",
+      "mode": "section",
+      "heading": "## Motivation",
+      "initial_suffix_bytes": 22,
+      "expect_clean": true,
+      "eocd_comment_bytes": 0,
+      "manifest_current": "sha1-225f040a97be486142b8110b9965cecfc867a378",
+      "overrides_entry": null,
+      "overrides_records": 0,
+      "requests": 6,
+      "bytes_read": 54440,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 6664426,
+      "payload_bytes": 2053,
+      "payload_sha256": "ebedcb0229925cb2733d3437a77965df7e40fed004e354ee581c3eb8635e13ea",
+      "git_bytes_touched": 0,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 649,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          337
+        ],
+        [
+          6664404,
+          6664426
+        ],
+        [
+          6613591,
+          6664404
+        ],
+        [
+          3141623,
+          3141653
+        ],
+        [
+          3141684,
+          3144893
+        ]
+      ]
+    },
+    {
+      "package": "rust: override ledger, 22-byte start",
+      "target": "text/3872-crates-io-security.md",
+      "mode": "document",
+      "heading": null,
+      "initial_suffix_bytes": 22,
+      "expect_clean": true,
+      "eocd_comment_bytes": 0,
+      "manifest_current": "sha1-df8476d9e7470677b4bbb12c6823bcc89d0b87db",
+      "overrides_entry": ".mdpkg/address/overrides.json",
+      "overrides_records": 478,
+      "requests": 8,
+      "bytes_read": 85447,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 6726561,
+      "payload_bytes": 8057,
+      "payload_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437",
+      "git_bytes_touched": 0,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 649,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          364
+        ],
+        [
+          6726539,
+          6726561
+        ],
+        [
+          6675651,
+          6726539
+        ],
+        [
+          364,
+          394
+        ],
+        [
+          423,
+          31298
+        ],
+        [
+          3172584,
+          3172614
+        ],
+        [
+          3172645,
+          3175854
+        ]
+      ]
+    },
+    {
+      "package": "rust: override ledger, 22-byte start",
+      "target": "text/3872-crates-io-security.md",
+      "mode": "section",
+      "heading": "## Motivation",
+      "initial_suffix_bytes": 22,
+      "expect_clean": true,
+      "eocd_comment_bytes": 0,
+      "manifest_current": "sha1-df8476d9e7470677b4bbb12c6823bcc89d0b87db",
+      "overrides_entry": ".mdpkg/address/overrides.json",
+      "overrides_records": 478,
+      "requests": 8,
+      "bytes_read": 85447,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 6726561,
+      "payload_bytes": 2053,
+      "payload_sha256": "ebedcb0229925cb2733d3437a77965df7e40fed004e354ee581c3eb8635e13ea",
+      "git_bytes_touched": 0,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 649,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          364
+        ],
+        [
+          6726539,
+          6726561
+        ],
+        [
+          6675651,
+          6726539
+        ],
+        [
+          364,
+          394
+        ],
+        [
+          423,
+          31298
+        ],
+        [
+          3172584,
+          3172614
+        ],
+        [
+          3172645,
+          3175854
+        ]
+      ]
+    },
+    {
+      "package": "rust: 7-byte EOCD comment, naive 22-byte start",
+      "target": "text/3872-crates-io-security.md",
+      "mode": "document",
+      "heading": null,
+      "initial_suffix_bytes": 22,
+      "expect_clean": false,
+      "eocd_comment_bytes": 7,
+      "manifest_current": "sha1-225f040a97be486142b8110b9965cecfc867a378",
+      "overrides_entry": null,
+      "overrides_records": 0,
+      "requests": 6,
+      "bytes_read": 69184,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 6664433,
+      "payload_bytes": 8057,
+      "payload_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437",
+      "git_bytes_touched": 14715,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 649,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          337
+        ],
+        [
+          6664411,
+          6664433
+        ],
+        [
+          6598876,
+          6664433
+        ],
+        [
+          3141623,
+          3141653
+        ],
+        [
+          3141684,
+          3144893
+        ]
+      ]
+    },
+    {
+      "package": "rust: 7-byte EOCD comment, naive 22-byte start",
+      "target": "text/3872-crates-io-security.md",
+      "mode": "section",
+      "heading": "## Motivation",
+      "initial_suffix_bytes": 22,
+      "expect_clean": false,
+      "eocd_comment_bytes": 7,
+      "manifest_current": "sha1-225f040a97be486142b8110b9965cecfc867a378",
+      "overrides_entry": null,
+      "overrides_records": 0,
+      "requests": 6,
+      "bytes_read": 69184,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 6664433,
+      "payload_bytes": 2053,
+      "payload_sha256": "ebedcb0229925cb2733d3437a77965df7e40fed004e354ee581c3eb8635e13ea",
+      "git_bytes_touched": 14715,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 649,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          337
+        ],
+        [
+          6664411,
+          6664433
+        ],
+        [
+          6598876,
+          6664433
+        ],
+        [
+          3141623,
+          3141653
+        ],
+        [
+          3141684,
+          3144893
+        ]
+      ]
+    },
+    {
+      "package": "rust: 7-byte EOCD comment, profile-aware 29-byte start",
+      "target": "text/3872-crates-io-security.md",
+      "mode": "document",
+      "heading": null,
+      "initial_suffix_bytes": 29,
+      "expect_clean": true,
+      "eocd_comment_bytes": 7,
+      "manifest_current": "sha1-225f040a97be486142b8110b9965cecfc867a378",
+      "overrides_entry": null,
+      "overrides_records": 0,
+      "requests": 6,
+      "bytes_read": 54447,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 6664433,
+      "payload_bytes": 8057,
+      "payload_sha256": "090b3aa805bbc78aa66accfde67f667cb43b482591afd6b5bcd287452c31f437",
+      "git_bytes_touched": 0,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 649,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          337
+        ],
+        [
+          6664404,
+          6664433
+        ],
+        [
+          6613591,
+          6664404
+        ],
+        [
+          3141623,
+          3141653
+        ],
+        [
+          3141684,
+          3144893
+        ]
+      ]
+    },
+    {
+      "package": "rust: 7-byte EOCD comment, profile-aware 29-byte start",
+      "target": "text/3872-crates-io-security.md",
+      "mode": "section",
+      "heading": "## Motivation",
+      "initial_suffix_bytes": 29,
+      "expect_clean": true,
+      "eocd_comment_bytes": 7,
+      "manifest_current": "sha1-225f040a97be486142b8110b9965cecfc867a378",
+      "overrides_entry": null,
+      "overrides_records": 0,
+      "requests": 6,
+      "bytes_read": 54447,
+      "warm_repeat_bytes": 0,
+      "package_bytes": 6664433,
+      "payload_bytes": 2053,
+      "payload_sha256": "ebedcb0229925cb2733d3437a77965df7e40fed004e354ee581c3eb8635e13ea",
+      "git_bytes_touched": 0,
+      "other_document_bytes_touched": 0,
+      "git_entries": 6,
+      "other_documents": 649,
+      "ranges": [
+        [
+          0,
+          79
+        ],
+        [
+          50,
+          337
+        ],
+        [
+          6664404,
+          6664433
+        ],
+        [
+          6613591,
+          6664404
+        ],
+        [
+          3141623,
+          3141653
+        ],
+        [
+          3141684,
+          3144893
+        ]
+      ]
+    }
+  ],
+  "typing": [
+    {
+      "input": "valid package",
+      "input_bytes": 288637,
+      "accepted": true,
+      "reason": null,
+      "bytes_read": 79,
+      "requests": 1,
+      "directory_fallback": null,
+      "fallback_bytes": 79
+    },
+    {
+      "input": "random bytes",
+      "input_bytes": 4096,
+      "accepted": false,
+      "reason": "no local file header signature at offset 0",
+      "bytes_read": 79,
+      "requests": 1,
+      "directory_fallback": "no readable central directory",
+      "fallback_bytes": 4197
+    },
+    {
+      "input": "empty file",
+      "input_bytes": 0,
+      "accepted": false,
+      "reason": "shorter than the fixed manifest header",
+      "bytes_read": 0,
+      "requests": 1,
+      "directory_fallback": "no readable central directory",
+      "fallback_bytes": 0
+    },
+    {
+      "input": "plain ZIP, first entry is not the manifest",
+      "input_bytes": 7928,
+      "accepted": false,
+      "reason": "first entry name length differs",
+      "bytes_read": 79,
+      "requests": 1,
+      "directory_fallback": "no manifest entry",
+      "fallback_bytes": 523
+    },
+    {
+      "input": "manifest present but not first",
+      "input_bytes": 288637,
+      "accepted": false,
+      "reason": "first entry name length differs",
+      "bytes_read": 79,
+      "requests": 1,
+      "directory_fallback": "manifest found in the central directory",
+      "fallback_bytes": 7832
+    },
+    {
+      "input": "streamed write, data descriptors",
+      "input_bytes": 290096,
+      "accepted": false,
+      "reason": "first entry uses a data descriptor",
+      "bytes_read": 79,
+      "requests": 1,
+      "directory_fallback": "manifest found in the central directory",
+      "fallback_bytes": 7832
+    },
+    {
+      "input": "truncated to 40 bytes",
+      "input_bytes": 40,
+      "accepted": false,
+      "reason": "shorter than the fixed manifest header",
+      "bytes_read": 40,
+      "requests": 1,
+      "directory_fallback": "no readable central directory",
+      "fallback_bytes": 40
+    }
+  ]
+}

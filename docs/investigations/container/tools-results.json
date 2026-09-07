@@ -1,0 +1,406 @@
+{
+  "platform": "Windows-10-10.0.19045-SP0",
+  "python": "3.10.2",
+  "git": "git version 2.50.1.windows.1",
+  "seven_zip": "7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26",
+  "unzip": "UnZip 6.00 of 20 April 2009, by Info-ZIP.  Maintained by C. Spieler.  Send",
+  "run_directory": "C:\\src\\markdown-package\\.antiphon\\container-work\\tools-cbbc606fc6a743ba88b13060331e4e1c",
+  "paths": [
+    {
+      "case": "case-pair",
+      "tool": "Python zipfile",
+      "entries": 2,
+      "files_on_disk": 1,
+      "preserved": false,
+      "landed": {
+        "README.md": "cac45ff3a8d608c7"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "README.md": false,
+        "readme.md": false
+      }
+    },
+    {
+      "case": "case-pair",
+      "tool": "7-Zip",
+      "entries": 2,
+      "files_on_disk": 1,
+      "preserved": false,
+      "landed": {
+        "readme.md": "cac45ff3a8d608c7"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "README.md": false,
+        "readme.md": false
+      }
+    },
+    {
+      "case": "case-pair",
+      "tool": "Info-ZIP unzip",
+      "entries": 2,
+      "files_on_disk": 1,
+      "preserved": false,
+      "landed": {
+        "readme.md": "cac45ff3a8d608c7"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "README.md": false,
+        "readme.md": false
+      }
+    },
+    {
+      "case": "case-pair",
+      "tool": "Windows Explorer",
+      "entries": 2,
+      "files_on_disk": 1,
+      "preserved": false,
+      "landed": {
+        "readme.md": "cac45ff3a8d608c7"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "README.md": false,
+        "readme.md": false
+      }
+    },
+    {
+      "case": "unicode-nfc-nfd",
+      "tool": "Python zipfile",
+      "entries": 2,
+      "files_on_disk": 2,
+      "preserved": true,
+      "landed": {
+        "cafe\u0301.md": "4f29e8e1138c903e",
+        "caf\u00e9.md": "647b27057a751fb9"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "caf\u00e9.md": true,
+        "cafe\u0301.md": true
+      }
+    },
+    {
+      "case": "unicode-nfc-nfd",
+      "tool": "7-Zip",
+      "entries": 2,
+      "files_on_disk": 2,
+      "preserved": true,
+      "landed": {
+        "cafe\u0301.md": "4f29e8e1138c903e",
+        "caf\u00e9.md": "647b27057a751fb9"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "caf\u00e9.md": true,
+        "cafe\u0301.md": true
+      }
+    },
+    {
+      "case": "unicode-nfc-nfd",
+      "tool": "Info-ZIP unzip",
+      "entries": 2,
+      "files_on_disk": 2,
+      "preserved": true,
+      "landed": {
+        "cafe\u0301.md": "4f29e8e1138c903e",
+        "caf\u00e9.md": "647b27057a751fb9"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "caf\u00e9.md": true,
+        "cafe\u0301.md": true
+      }
+    },
+    {
+      "case": "unicode-nfc-nfd",
+      "tool": "Windows Explorer",
+      "entries": 2,
+      "files_on_disk": 2,
+      "preserved": true,
+      "landed": {
+        "cafe\u0301.md": "4f29e8e1138c903e",
+        "caf\u00e9.md": "647b27057a751fb9"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "caf\u00e9.md": true,
+        "cafe\u0301.md": true
+      }
+    },
+    {
+      "case": "non-ascii-single",
+      "tool": "Python zipfile",
+      "entries": 1,
+      "files_on_disk": 1,
+      "preserved": true,
+      "landed": {
+        "\u65e5\u672c\u8a9e.md": "d8af0bce03063048"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "\u65e5\u672c\u8a9e.md": true
+      }
+    },
+    {
+      "case": "non-ascii-single",
+      "tool": "7-Zip",
+      "entries": 1,
+      "files_on_disk": 1,
+      "preserved": true,
+      "landed": {
+        "\u65e5\u672c\u8a9e.md": "d8af0bce03063048"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "\u65e5\u672c\u8a9e.md": true
+      }
+    },
+    {
+      "case": "non-ascii-single",
+      "tool": "Info-ZIP unzip",
+      "entries": 1,
+      "files_on_disk": 1,
+      "preserved": true,
+      "landed": {
+        "\u65e5\u672c\u8a9e.md": "d8af0bce03063048"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "\u65e5\u672c\u8a9e.md": true
+      }
+    },
+    {
+      "case": "non-ascii-single",
+      "tool": "Windows Explorer",
+      "entries": 1,
+      "files_on_disk": 1,
+      "preserved": true,
+      "landed": {
+        "\u65e5\u672c\u8a9e.md": "d8af0bce03063048"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "\u65e5\u672c\u8a9e.md": true
+      }
+    },
+    {
+      "case": "backslash-in-name",
+      "tool": "Python zipfile",
+      "entries": 1,
+      "files_on_disk": 1,
+      "preserved": false,
+      "landed": {
+        "a/b.md": "ef8bd6c53342f864"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "a/b.md": false
+      }
+    },
+    {
+      "case": "backslash-in-name",
+      "tool": "7-Zip",
+      "entries": 1,
+      "files_on_disk": 1,
+      "preserved": false,
+      "landed": {
+        "a/b.md": "ef8bd6c53342f864"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "a/b.md": false
+      }
+    },
+    {
+      "case": "backslash-in-name",
+      "tool": "Info-ZIP unzip",
+      "entries": 1,
+      "files_on_disk": 1,
+      "preserved": false,
+      "landed": {
+        "a/b.md": "ef8bd6c53342f864"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "a/b.md": false
+      }
+    },
+    {
+      "case": "backslash-in-name",
+      "tool": "Windows Explorer",
+      "entries": 1,
+      "files_on_disk": 1,
+      "preserved": false,
+      "landed": {
+        "a/b.md": "ef8bd6c53342f864"
+      },
+      "returncode": 0,
+      "utf8_flag_bit11": {
+        "a/b.md": false
+      }
+    }
+  ],
+  "git_paths": [
+    {
+      "case": "README.md vs readme.md",
+      "path": "readme.md",
+      "plumbing_update_index": true,
+      "write_tree_ok": true,
+      "fsck_returncode": 0,
+      "checkout_returncode": 0,
+      "checkout_files": [
+        "readme.md"
+      ],
+      "checkout_output": "",
+      "output": ""
+    },
+    {
+      "case": "reserved .git/ path",
+      "path": ".git/hooks/x",
+      "plumbing_update_index": true,
+      "write_tree_ok": true,
+      "fsck_returncode": 2,
+      "checkout_returncode": 0,
+      "checkout_files": [],
+      "checkout_output": "",
+      "output": "Ignoring path .git/hooks/x"
+    },
+    {
+      "case": "reserved .GIT/ path",
+      "path": ".GIT/hooks/x",
+      "plumbing_update_index": true,
+      "write_tree_ok": true,
+      "fsck_returncode": 2,
+      "checkout_returncode": 0,
+      "checkout_files": [],
+      "checkout_output": "",
+      "output": "Ignoring path .GIT/hooks/x"
+    },
+    {
+      "case": "unreserved .mdpkg/ path",
+      "path": ".mdpkg/x.json",
+      "plumbing_update_index": true,
+      "write_tree_ok": true,
+      "fsck_returncode": 0,
+      "checkout_returncode": 0,
+      "checkout_files": [
+        ".mdpkg/x.json"
+      ],
+      "checkout_output": "",
+      "output": ""
+    },
+    {
+      "case": "checkout of both case variants on NTFS",
+      "path": "README.md + readme.md",
+      "plumbing_update_index": true,
+      "write_tree_ok": true,
+      "tree": "1d34d6bb80a8c41235df6731efe409853fea755a",
+      "returncode": 0,
+      "files_on_disk": [
+        "readme.md"
+      ],
+      "output": ""
+    }
+  ],
+  "extraction": [
+    {
+      "package": "npm",
+      "entries": 91,
+      "files_after_read_tree": 92,
+      "status_lines_before_read_tree": 85,
+      "read_tree_returncode": 0,
+      "index_bytes_if_shipped": 9043,
+      "head_matches_manifest": true,
+      "worktree_clean_ignoring_container_metadata": true,
+      "status_lines": 1,
+      "untracked_entries": [
+        ".mdpkg/history.json",
+        ".mdpkg/manifest.json"
+      ],
+      "tracked_files": 83,
+      "fsck_returncode": 0,
+      "fsck_output": "",
+      "status_output": "?? .mdpkg/"
+    },
+    {
+      "package": "rust",
+      "entries": 658,
+      "files_after_read_tree": 659,
+      "status_lines_before_read_tree": 652,
+      "read_tree_returncode": 0,
+      "index_bytes_if_shipped": 63610,
+      "head_matches_manifest": true,
+      "worktree_clean_ignoring_container_metadata": true,
+      "status_lines": 1,
+      "untracked_entries": [
+        ".mdpkg/history.json",
+        ".mdpkg/manifest.json"
+      ],
+      "tracked_files": 650,
+      "fsck_returncode": 0,
+      "fsck_output": "",
+      "status_output": "?? .mdpkg/"
+    }
+  ],
+  "rewrites": [
+    {
+      "operation": "as produced",
+      "readable": true,
+      "entries": 91,
+      "manifest_content_preserved": true,
+      "manifest_first": true,
+      "manifest_stored": true,
+      "fast_typing_ok": true,
+      "first_entry": ".mdpkg/manifest.json"
+    },
+    {
+      "operation": "Python rebuild by filename and bytes",
+      "readable": true,
+      "entries": 91,
+      "manifest_content_preserved": true,
+      "manifest_first": true,
+      "manifest_stored": true,
+      "fast_typing_ok": true,
+      "first_entry": ".mdpkg/manifest.json"
+    },
+    {
+      "operation": "7-Zip a (add one file), exit 0",
+      "readable": true,
+      "entries": 92,
+      "manifest_content_preserved": true,
+      "manifest_first": false,
+      "manifest_stored": true,
+      "fast_typing_ok": false,
+      "first_entry": ".git/config"
+    },
+    {
+      "operation": "PowerShell Compress-Archive of the extraction, exit 0",
+      "readable": true,
+      "entries": 95,
+      "manifest_content_preserved": true,
+      "manifest_first": false,
+      "manifest_stored": false,
+      "fast_typing_ok": false,
+      "first_entry": ".git/objects/"
+    },
+    {
+      "operation": "fflate unzipSync then zipSync",
+      "readable": true,
+      "entries": 91,
+      "manifest_content_preserved": true,
+      "manifest_first": true,
+      "manifest_stored": false,
+      "fast_typing_ok": false,
+      "first_entry": ".mdpkg/manifest.json"
+    }
+  ],
+  "checks": {
+    "path_extractions": 16,
+    "git_path_cases": 5,
+    "extraction_checks": 2,
+    "rewrite_cases": 5
+  }
+}
