@@ -1,0 +1,22 @@
+{
+  "checks": 780,
+  "first_parent_transitions": 64,
+  "base_blob_checks": 716,
+  "corpora": [
+    {
+      "corpus": "npm",
+      "base": "fefd509992a05c2dfddbe7bc46931c42f1da69d7",
+      "tip": "bdcc10d9f848940987b3d326ccd4673fab2bcfef",
+      "snapshots": 33,
+      "distinct_blobs": 129
+    },
+    {
+      "corpus": "rust",
+      "base": "0b20d5d7c1fa934bae255236f7455ae781a02bf7",
+      "tip": "f38f19132505ef47c5053cd71ac444932dfd0256",
+      "snapshots": 33,
+      "distinct_blobs": 667
+    }
+  ],
+  "failures": 0
+}

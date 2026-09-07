@@ -1,0 +1,1838 @@
+{
+  "originalModelChecks": 55,
+  "states": 21,
+  "counts": {
+    "comparisons": 189,
+    "confirmedRegressions": 0,
+    "naiveWrongIdentity": 3,
+    "naiveNotFound": 22,
+    "guardedUnconfirmed": 60
+  },
+  "extraChecks": [
+    "no stored per-section records in default base",
+    "new review after rename uses same root",
+    "revert retains alias for reviews issued at intermediate locator",
+    "old origin-hint review survives revert",
+    "retirement prevents same-slot false review transfer",
+    "missing total-rewrite match is unconfirmed not silently reviewed",
+    "sparse origins preserve edit/revert touched events",
+    "sparse current source survives edit/revert",
+    "sparse summary confirms untouched sibling",
+    "sparse URI round trip resolves intermediate review after revert",
+    "duplicate URI selector rejected",
+    "locator cannot select a parent directory",
+    "incomplete correspondence cannot bless an equal current locator and digest"
+  ],
+  "exampleURI": "mdpkg://524c0eed-e8b3-4593-b2a1-966963524b77/v2/section/cc81ab8a2cbb2984fc30bb8f29da0506a1c16e45642b43ec61951088dccbdfa4?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=52eb5af7d2a717ee824ee634d2f54a0a43096417fe9bda898eeeb7ba6f8f9ac4&loc=WyJzZWN0aW9uIiwic3BlYy5tZCIsW1siIyBTZWN0aW9uIDEiLDBdXV0K",
+  "exceptions": [
+    {
+      "case": "base",
+      "records": 0,
+      "rawBytes": 0
+    },
+    {
+      "case": "unrelated",
+      "records": 0,
+      "rawBytes": 0
+    },
+    {
+      "case": "heading-rename",
+      "records": 2,
+      "rawBytes": 319
+    },
+    {
+      "case": "duplicate-insert",
+      "records": 3,
+      "rawBytes": 399
+    },
+    {
+      "case": "move-within",
+      "records": 0,
+      "rawBytes": 0
+    },
+    {
+      "case": "move-across",
+      "records": 2,
+      "rawBytes": 309
+    },
+    {
+      "case": "file-rename",
+      "records": 7,
+      "rawBytes": 915
+    },
+    {
+      "case": "child-edit",
+      "records": 0,
+      "rawBytes": 0
+    },
+    {
+      "case": "promote-child",
+      "records": 1,
+      "rawBytes": 173
+    },
+    {
+      "case": "split",
+      "records": 1,
+      "rawBytes": 287
+    },
+    {
+      "case": "merge",
+      "records": 2,
+      "rawBytes": 382
+    },
+    {
+      "case": "delete",
+      "records": 1,
+      "rawBytes": 156
+    },
+    {
+      "case": "first-heading",
+      "records": 0,
+      "rawBytes": 0
+    },
+    {
+      "case": "preamble-edit",
+      "records": 0,
+      "rawBytes": 0
+    },
+    {
+      "case": "crlf",
+      "records": 0,
+      "rawBytes": 0
+    },
+    {
+      "case": "separator-blanks",
+      "records": 0,
+      "rawBytes": 0
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "records": 2,
+      "rawBytes": 329
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "records": 2,
+      "rawBytes": 280
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "records": 2,
+      "rawBytes": 268
+    },
+    {
+      "case": "similar-split",
+      "records": 1,
+      "rawBytes": 287
+    },
+    {
+      "case": "delete-and-add-similar",
+      "records": 1,
+      "rawBytes": 156
+    }
+  ],
+  "rows": [
+    {
+      "case": "base",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "base",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "base",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "base",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "base",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "base",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "base",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "base",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "base",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "unrelated",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "unrelated",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "unrelated",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "unrelated",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "unrelated",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "unrelated",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "unrelated",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "unrelated",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "unrelated",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "heading-rename",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "heading-rename",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "heading-rename",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "heading-rename",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "heading-rename",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "heading-rename",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "heading-rename",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "heading-rename",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "heading-rename",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "duplicate-insert",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "duplicate-insert",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "duplicate-insert",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "duplicate-insert",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "duplicate-insert",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "duplicate-insert",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": true,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "duplicate-insert",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": true,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "duplicate-insert",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "duplicate-insert",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "move-within",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "move-within",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "move-within",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "move-within",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "move-within",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "move-within",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "move-within",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "move-within",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "move-within",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "move-across",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "move-across",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "move-across",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "move-across",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "move-across",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "move-across",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "move-across",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "move-across",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "move-across",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "file-rename",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "file-rename",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "file-rename",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "file-rename",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "file-rename",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "file-rename",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "file-rename",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "file-rename",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "file-rename",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "child-edit",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "child-edit",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "child-edit",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "child-edit",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "child-edit",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "child-edit",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "child-edit",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "child-edit",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "child-edit",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "promote-child",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "promote-child",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "promote-child",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "promote-child",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "promote-child",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "promote-child",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "promote-child",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "promote-child",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "promote-child",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "split",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "split",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "split",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "split",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "split",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "split",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "split",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "split",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "split",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "merge",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "merge",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "merge",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "merge",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "merge",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "merge",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "merge",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "merge",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "merge",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "delete",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "delete",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "delete",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "delete",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "first-heading",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "first-heading",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "first-heading",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "first-heading",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "first-heading",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "first-heading",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "first-heading",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "first-heading",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "first-heading",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "preamble-edit",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "preamble-edit",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "preamble-edit",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "preamble-edit",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "preamble-edit",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "preamble-edit",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "preamble-edit",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "preamble-edit",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "preamble-edit",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "crlf",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "crlf",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "crlf",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "crlf",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "crlf",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "crlf",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "crlf",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "crlf",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "crlf",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "separator-blanks",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "separator-blanks",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "separator-blanks",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "separator-blanks",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "separator-blanks",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "separator-blanks",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "separator-blanks",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "separator-blanks",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "separator-blanks",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "survives",
+      "wrongNaiveIdentity": true,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "similar-split",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "similar-split",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "similar-split",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "similar-split",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "similar-split",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "similar-split",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "similar-split",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "similar-split",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "similar-split",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete-and-add-similar",
+      "entity": "2148dd42-4a45-4a93-b32d-ad3499e510b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "flagged-changed",
+      "wrongNaiveIdentity": false,
+      "guarded": "flagged-changed"
+    },
+    {
+      "case": "delete-and-add-similar",
+      "entity": "e9ce287c-0d8d-4aac-ab7d-664e3b993e30",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete-and-add-similar",
+      "entity": "edae244c-f23e-49d2-a49e-dd72dd73babb",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete-and-add-similar",
+      "entity": "3982217e-573e-4b1b-baac-279561bcf6ca",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete-and-add-similar",
+      "entity": "28d4380a-fb80-4ac9-a38d-813385a734b8",
+      "expected": "flagged-changed",
+      "confirmed": "flagged-changed",
+      "naive": "not-found",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "delete-and-add-similar",
+      "entity": "62bb0778-a940-4f05-a12a-2cf97331579e",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "delete-and-add-similar",
+      "entity": "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "unconfirmed"
+    },
+    {
+      "case": "delete-and-add-similar",
+      "entity": "517cc2b0-1818-493e-8404-0a64812b6eab",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    },
+    {
+      "case": "delete-and-add-similar",
+      "entity": "8aac3fc2-1336-4b6d-b3d1-f303a6f8fdc0",
+      "expected": "survives",
+      "confirmed": "survives",
+      "naive": "survives",
+      "wrongNaiveIdentity": false,
+      "guarded": "survives"
+    }
+  ],
+  "failures": 0
+}

@@ -1,0 +1,28 @@
+{
+  "original_model_checks": 55,
+  "confirmed_sparse_comparisons": 189,
+  "sparse_extra_checks": 13,
+  "native_git_diff_runs": 88,
+  "strategy_evaluations": 132,
+  "injected_resolution_checks": 40174,
+  "pinned_source_checks": 780,
+  "archive_hash_audits": 72,
+  "zip_member_audits": 504,
+  "packed_tree_equalities": 72,
+  "commit_count_checks": 72,
+  "prior_size_equalities": 12,
+  "detected_regressions": {
+    "naive_wrong_identity": 3,
+    "naive_not_found": 22,
+    "hybrid50": {
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 14,
+      "proposals": 11,
+      "true_positive": 10,
+      "false_positive": 1,
+      "false_negative": 4
+    }
+  },
+  "failures": 0
+}

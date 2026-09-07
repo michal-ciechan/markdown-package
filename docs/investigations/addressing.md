@@ -1,12 +1,12 @@
 # CARD-0004: section addressing investigation
 
-Status: investigation complete; proposed semantics and executable evidence, not a production format implementation. Checked on 2026-09-07. The [ZIP container](compression.md) and [real packed `.git` history](history.md) are accepted inputs to this card.
+Status: investigation and computed-default follow-up complete; proposed semantics and executable evidence, not a production format implementation. Checked on 2026-09-07. The [ZIP container](compression.md) and [real packed `.git` history](history.md) are accepted inputs to this card.
 
-**Verdict: a producer-assigned identity plus a scoped source digest satisfies the requested review behavior.** Keep a section UUID through heading renames and moves; include the heading and its descendant sections in the digest. Edits before and after the section preserve its review, while a heading rename resolves to the same identity with `flagged-changed`. A heading trail, slug, ordinal, content hash, or Git commit ID cannot supply both properties. Strong continuity requires an identity-aware producer; it cannot be recovered reliably from arbitrary Markdown edits after the fact.
+**Current verdict: replace mandatory per-entity UUID maps with computed default identities and confirmed sparse exceptions.** Compute all scoped digests at runtime. Store identity records only when the default stops representing continuity, including rename/move, duplicate displacement, retirement, and reuse of an old location. Under the same identity-aware producer contract as the original proposal, the confirmed sparse model matches all 189 semantic comparisons. Automatic Git-only population does not meet that contract. See the [follow-up recommendation and measurements](#follow-up-computed-default-identities-and-sparse-exceptions).
 
-Recommend versioned identity maps in each indexed Git snapshot, with digests recomputed from the selected document blob. Avoid mandatory stored digest caches. Keep squash provenance and ordered section-change summaries in manifest-bound ZIP sidecars, and declare graph, identity-index, and entity coverage separately. **Git does have a native shallow marker, `.git/shallow`; synthetic snapshot roots still need an explicit truncation declaration.** This corrects the inherited brief, not the accepted container/history choice. [Git shallow repository documentation](https://git-scm.com/docs/shallow).
+The original design below is retained as the measured full-map baseline; its mandatory UUID maps and UUID reference grammar are superseded by the follow-up, not a second recommended storage layer. Its source scopes, changed-state semantics, explicit coverage and ordered squash evidence still apply. **Git does have a native shallow marker, `.git/shallow`; synthetic snapshot roots still need an explicit truncation declaration.** [Git shallow repository documentation](https://git-scm.com/docs/shallow).
 
-## Identity, review scope, and producer contract
+## Original full-map design: identity, review scope, and producer contract
 
 Allocate a lineage namespace UUID, a UUID per document, a UUID per addressable heading section, and one permanent preamble UUID per document. Use canonical lowercase UUID strings; allocate them once, independently of text, pathname, position, and package bytes. Namespace follows the package lineage through updates and repackaging. Copies into unrelated lineages receive a new namespace; forks must declare whether they retain shared lineage identities. Never infer shared identity from equal content. The deterministic UUID allocation in the fixtures is only reproducibility machinery, not an algorithm for matching revisions.
 
@@ -259,6 +259,204 @@ Validation: **55 model checks**, **25 Git-backed resolution/summary/reference ch
 
 Raw evidence: [model cases](addressing/case-results.json), [real Git and ZIP cases](addressing/native-results.json), [Git-backed resolutions and range summary](addressing/resolution-results.json), [corpus/parser measurements](addressing/corpus-results.json), [exact metadata sizes](addressing/metadata-results.json), and [evidence audit](addressing/verification.json). The model deliberately tests negative inputs and unavailable history; these are expected results, not failed validations. During development, a package-export lookup and a rerun deleting Windows read-only pack files failed; direct package-file reading and fresh fixture directories corrected those harness issues. No application build exists for this investigation. URI production validation, SHA-256 Git object-format integration (native probes use SHA-1), a complete format schema, generic-editor identity reconciliation, full-DAG summaries and browser integration remain implementation work.
 
-## Decision to carry forward
+## Original decision, superseded by the follow-up
 
-Adopt producer-assigned UUIDs plus source digests with parent-inclusive sections and permanent preambles; require compliant identity maps for claimed continuity. Adopt the adaptive identity-only map layout, exact historical evidence references, explicit coverage, and manifest-bound ordered squash summaries. Default current review to source equivalence, with touched-since-checkpoint as a separate history result. These defaults fulfill the stated request under the declared producer contract. The owner should accept that contract and source-review scope before implementation; if arbitrary editors or rendered semantics are mandatory, the strong guarantee needs a different product contract rather than a more elaborate slug matcher.
+The initial recommendation was producer-assigned UUIDs with adaptive identity-only maps. The following experiment replaces that storage recommendation. Parent-inclusive source review, current equivalence versus touched-since-checkpoint, explicit coverage, and immutable historical evidence retain their earlier meaning.
+
+## Follow-up: computed default identities and sparse exceptions
+
+**Recommend the requester's storage direction, with a broader exception contract than “renames/moves only.”** The original **31.60% / 17.21%** costs already excluded stored digests. The avoidable cost was the all-entity identity/locator map. Digests remain runtime computations in both designs. On the identical base snapshots, a sparse table with one binding for 5% of headings costs **2.32% / 0.99%**; at 20%, **7.12% / 3.77%**. A second experiment actually carries controlled rename/move events through the existing 32-transition histories and also favors sparse storage. These are measured encodings and workload sensitivities, not claims about observed real-world rename frequencies.
+
+This replaces the full-map recommendation under its **existing producer-compliance assumption**. It does not replace confirmation with a similarity threshold. The extra storage of full maps does not make arbitrary editors or editorial intent inferable either. Their advantages are simpler fixed-size references, direct UUID lookup, and easier local validation of bound locators; those advantages do not justify making every unchanged entity carry a record in these measured workloads.
+
+### Computed default and exception mechanics
+
+Use the same namespace and `cm0312-source-lf-v1` digest scope. Add anchor profile `cm0312-trail-source-v1`, which defines a locator as `[scopeKind, repositoryRelativePath, headingTrail]`. A trail component is `[exact normalized heading source, zeroBasedOccurrenceAmongEqualSiblings]`; include ancestor components. Document and permanent preamble locators have empty trails and distinct kinds. The CommonMark parser supplies boundaries; absolute lines and byte offsets are not identity. Reordering unique siblings or inserting a differently named sibling does not change their default locators. Renaming an ancestor affects descendant trails and therefore needs descendant exceptions too.
+
+The default root is `SHA256("mdpkg-default\0" + anchorProfile + "\0" + namespace + "\0" + canonicalJson(locator))`. The hash is an encoding of a default anchor, not a digest of the section body. Canonical JSON is UTF-8, sorted object keys, compact separators, no ASCII escaping of Unicode, and a final LF, as in the executable model. Compute these roots and all content digests on read. The common case has no tracked identity file; the measured manifest pays **34 fixed bytes** to select the anchor profile.
+
+When confirmed correspondence differs from the default, store a sparse table in the selected Git tree:
+
+```text
+.mdpkg/address/overrides.json
+```
+
+```json
+{
+  "version": 1,
+  "anchor": "cm0312-trail-source-v1",
+  "entries": {
+    "<original root hash>": {"to": ["section", "moved.md", [["# New title", 0]]]},
+    "<retired root hash>": {"dead": "split", "next": ["<successor root>", "<successor root>"]},
+    "<unresolved root hash>": {"unknown": "unconfirmed-removal"}
+  }
+}
+```
+
+Active bindings go directly from the stable origin root to the **current locator**; flatten chains when updating. Retain the record once an entity becomes exceptional, even if a later revert restores its default location. A review may have been issued at an intermediate renamed location. The probe first exposed this case, then retained the binding so that an intermediate review resolves as changed after the revert instead of becoming unavailable.
+
+When issuing a new reference, use the inverse of the sparse active bindings to recover an already exceptional entity's origin root. Build that inverse in memory; no stored inverse index is required. Otherwise use the computed default root. If a new entity occupies an old entity's reserved root/location, allocate a fresh root **for that exceptional birth only** and store its binding. Retain retirement records so the old review cannot attach to the replacement. Initial/default entities need no allocated UUID. The fixture's hidden UUIDs label editorial ground truth for comparison; they are not written into sparse metadata. A real producer can mint a random fresh root for an exceptional birth instead of the fixture's deterministic allocation.
+
+Proposed current-reference syntax (the v1 UUID grammar above remains legacy):
+
+```text
+mdpkg://<namespace>/v2/section/<root-sha256>?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=<digest>&loc=<base64url-canonical-locator-json>
+```
+
+Use `document` in the path for document references; preamble uses `section` with locator kind `preamble`. The external review carries its root, expected digest, and a locator hint. This moves some bytes into external references: path/trail hints are larger than UUID-only references and are not counted as package bytes. The executable URI round trip covers a reference issued after rename and resolved after revert. Historical commit/diff/hunk references remain exact as before; an exact historical section selection applies the same sparse rules to that selected tree, without redirecting unavailable snapshots. The follow-up URI probe covers current references, not a complete historical URI implementation.
+
+Resolve from the manifest-selected tree: verify namespace and profiles, read the optional override blob, use its target or the external default locator, parse that one document, then compare the scoped source digest. Validate descriptor syntax, unique active target ownership, reserved-root reuse and the table's binding to the selected tree. There is no full-log walk and no stored per-section digest. The whole sparse table is read in this encoding; it can be cached and indexed in memory. At high exception density it may be sharded or replaced with a denser encoding in a later profile. That physical change must retain origin roots and historical bindings.
+
+This is a sparse **lifecycle** ledger, not just a list of heuristic rename pairs. The producer/editor can calculate the ordinary case and keep correspondence in memory during an edit, writing exceptions only when needed. An editor's explicit move/rename operation provides confirmation automatically. A generic Git import needs correspondence review when inference is ambiguous; merely writing the heuristic's guess into a table does not confirm it. Both the full and sparse schemes rely on producer intent for strong identity continuity.
+
+### Exact snapshot storage comparison
+
+The following reproduces the earlier no-map and full-map ZIP sizes **exactly**, using the same pinned 83 npm / 633 Rust base documents, real Git packing, stored packs, manifest-first ZIP and per-entry DEFLATE/stored choice. Digests are absent in both identity encodings. Percentages use that corpus's no-map package as denominator.
+
+This table prices a final sparse ledger with 0%, 5%, or 20% of heading records bound from alternate prior anchors to their current locators. It measures table cardinality over identical source bytes; it does **not** reconstruct a coherent earlier authoring history or price descendant propagation for those hypothetical prior labels. The next experiment exercises actual controlled transitions and their propagated exceptions. Rates round to 0 / 32 / 129 npm bindings and 0 / 454 / 1,817 Rust bindings.
+
+<!-- SPARSE_SNAPSHOT_START -->
+
+| Corpus | Alias rate / count | No-map ZIP bytes | Sparse ZIP bytes (over baseline) | Full-map ZIP bytes (over baseline) | Raw sparse ledger bytes |
+| --- | --- | --- | --- | --- | --- |
+| npm | 0% / 0 | 122,687 | 122,721 (+0.03%) | 161,453 (+31.60%) | 0 |
+| npm | 5% / 32 | 122,687 | 125,528 (+2.32%) | 161,453 (+31.60%) | 7,807 |
+| npm | 20% / 129 | 122,687 | 131,421 (+7.12%) | 161,453 (+31.60%) | 31,771 |
+| rust | 0% / 0 | 3,132,664 | 3,132,698 (+0.00%) | 3,671,931 (+17.21%) | 0 |
+| rust | 5% / 454 | 3,132,664 | 3,163,551 (+0.99%) | 3,671,931 (+17.21%) | 80,602 |
+| rust | 20% / 1,817 | 3,132,664 | 3,250,827 (+3.77%) | 3,671,931 (+17.21%) | 319,674 |
+
+<!-- SPARSE_SNAPSHOT_END -->
+
+At zero exceptions, sparse metadata has no Git blobs at all; the 34-byte increase is the manifest profile selector. The full-map comparator uses the original 16/256-shard identity-only layout, not the more expensive cached-digest variant. Both remain snapshot metadata costs; full coverage declarations, squash summaries, archived patches and a duplicate current-file view have the same exclusions as the original measurement. Do not subtract those independent features from a package budget merely because identity becomes sparse.
+
+### Rates across the existing histories
+
+Reuse all **64 original first-parent transitions** and verify all **716 base blobs**. For controlled rates, choose deterministic **leaf sections in documents whose blobs are unchanged across all 33 source snapshots**: 310 eligible npm sections and 7,502 Rust sections. This gives known correspondence without guessing whether an upstream edit was a rename. Keep the actual upstream changes and overlay confirmed events evenly across the 32 transitions: roughly half heading renames, half cross-document moves into one generated `addressing-relocated.md`. Selected headings move/rename once. Moved leaves are ordered by decreasing rank so they do not acquire new children. The 0% row means no injected events, not a promise that the real history never changed an anchor.
+
+Natural upstream correspondence has no producer oracle. Unmatched old default anchors are explicitly retained as **unconfirmed**, not labelled confirmed renames or deletions: 22 npm and 200 Rust records at the endpoint. These are unmatched anchors, not empirical rename counts. Default-slot matches on that imported history are not a proof of editorial identity either. The fixture manifest declares original-source correspondence **partial**. Both encodings receive the same assignment policy, authored bytes, event schedule, and retained uncertainty; all injected moves/renames have explicit ground truth and are checked. No claim is made that the upstream repositories adopted this identity contract.
+
+Each full-history row below includes 33 snapshots. Its baseline has the same source modifications and no address metadata, so source compression changes cannot be mistaken for metadata savings. The explicit record count includes uncertainty records; there is no free omission of them in sparse rows. Headers, filenames, config, Git objects, pack indexes, and ZIP overhead are counted.
+
+<!-- SPARSE_HISTORY_START -->
+
+| Corpus | Injected rate / events | Same-source no-map ZIP bytes | Sparse ZIP bytes (over baseline) | Full-map ZIP bytes (over baseline) | Sparse saving versus full, bytes |
+| --- | --- | --- | --- | --- | --- |
+| npm | 0% / 0 | 159,225 | 162,348 (+1.96%) | 224,762 (+41.16%) | 62,414 |
+| npm | 5% / 32 | 169,618 | 180,796 (+6.59%) | 246,225 (+45.16%) | 65,429 |
+| npm | 20% / 129 | 187,005 | 204,779 (+9.50%) | 293,825 (+57.12%) | 89,046 |
+| rust | 0% / 0 | 3,312,786 | 3,323,633 (+0.33%) | 3,981,589 (+20.19%) | 657,956 |
+| rust | 5% / 454 | 3,456,042 | 3,505,264 (+1.42%) | 4,571,770 (+32.28%) | 1,066,506 |
+| rust | 20% / 1,817 | 3,823,658 | 3,978,972 (+4.06%) | 5,418,705 (+41.72%) | 1,439,733 |
+
+<!-- SPARSE_HISTORY_END -->
+
+At 5% there are 16 renames + 16 moves for npm and 227 + 227 for Rust; at 20%, 65 + 64 and 909 + 908. Final sparse counts are **22 / 54 / 151** for npm and **200 / 654 / 2,017** for Rust at 0 / 5 / 20%. Direct heading-body edits do not need bindings. These leaf workloads avoid rename fan-out into descendants; they are a controlled common-case sensitivity, not a worst-case upper bound for moving files or renaming high-level headings. A deeply nested rename or file move can make most of a document exceptional.
+
+Endpoint packages also keep the ledger when squashing to base + tip or truncating to a later synthetic root. The table below gives metadata overhead against each operation's own identical-source baseline. Exact byte totals for all 72 packages are retained in the JSON evidence. These rows price identity storage; a squash's required ordered touched summary and archived patch retention remain separate costs.
+
+<!-- SPARSE_ENDPOINT_START -->
+
+| Corpus | Injected rate | Squash: sparse | Squash: full maps | Later root: sparse | Later root: full maps |
+| --- | --- | --- | --- | --- | --- |
+| npm | 0% | +0.90% | +33.30% | +0.98% | +32.58% |
+| npm | 5% | +2.55% | +33.50% | +2.84% | +32.54% |
+| npm | 20% | +6.18% | +32.93% | +7.32% | +32.23% |
+| rust | 0% | +0.25% | +18.26% | +0.25% | +17.58% |
+| rust | 5% | +1.11% | +18.62% | +1.15% | +17.48% |
+| rust | 20% | +3.24% | +18.13% | +3.60% | +17.01% |
+
+<!-- SPARSE_ENDPOINT_END -->
+
+The single sparse blob's decoded size at the 20% history endpoint is **27,769 / 321,136 bytes** for npm / Rust. This is substantially smaller than decoding the entire full map but larger than reading one full-map shard. Default lookup reads the ledger (or a cached copy) plus the target document and Git tree/index dependencies. Shared prefix encoding or range bindings for whole-file moves could reduce the measured table further; they are not credited here. Repeated events and long-lived retirement records accumulate. At sufficiently high lifetime exception density the sparse ledger may lose its advantage, so do not promise zero-cost identity forever.
+
+### Can Git populate the table reliably?
+
+**No. Native `git diff -M` detects filepairs, not heading sections.** The default threshold is 50%; `-M80%` requires greater similarity. It is a comparison heuristic, not recorded producer intent. [Git rename options](https://git-scm.com/docs/git-diff), [Git diffcore filepair processing](https://git-scm.com/docs/gitdiffcore).
+
+The probe makes real Git trees for **22 synthetic transitions** using all 16 original states plus complete rewrites, slot reuse, a similar split, unrelated replacement and a long boilerplate replacement. It runs both thresholds on (a) native Markdown file trees and (b) extra parser-generated trees with one scoped section per file named by its computed anchor. That projection is additional tooling; it is not something native `-M` does to Markdown. A third strategy prefers a native file mapping and supplements unmatched sections with projected matches. Each strategy is scored against hidden producer truth, never against Git's own answer.
+
+There are **14 required section-anchor continuations** across the fixture set: five under a file move, parent/child renames, cross-file section moves, promotion, duplicate displacement and complete rewrites. The scoring counts required identity mappings, not body edits whose default anchor remains stable. It excludes document/preamble identity from that denominator. There are 88 actual Git diff runs and 132 strategy evaluations.
+
+<!-- SPARSE_DETECTION_START -->
+
+| Candidate generator | Threshold | Needed mappings | Correct proposals | Wrong proposals | Missed mappings |
+| --- | --- | --- | --- | --- | --- |
+| Native file mapping | 50% | 14 | 5 | 0 | 9 |
+| Native file mapping | 80% | 14 | 5 | 0 | 9 |
+| Projected section files | 50% | 14 | 8 | 3 | 6 |
+| Projected section files | 80% | 14 | 6 | 3 | 8 |
+| Native first + projected | 50% | 14 | 10 | 1 | 4 |
+| Native first + projected | 80% | 14 | 8 | 1 | 6 |
+
+<!-- SPARSE_DETECTION_END -->
+
+Concrete failures matter more than an average similarity score:
+
+- **Heading rename in a retained file:** native Git returns a file modification, no rename pair. Lowering `-M` cannot add section awareness. Projecting sections finds some such pairs, including a renamed ancestor's otherwise unchanged child.
+- **Duplicate insertion:** two existing identical repeats acquire different occurrence selectors, but their old projected filenames/content still exist. Git emits no rename for either displaced identity. Both thresholds miss them. A plain default lookup can silently mark the wrong identical section reviewed.
+- **File move with duplicate sections:** native file mapping retains occurrence correspondence in this fixture. Independent projected matching swaps the two equal repeats at **R100**. A higher similarity threshold cannot disambiguate equal content. The hybrid avoids this particular swap by preferring the file mapping.
+- **Rename plus total rewrite:** both original identities in the parent/child fixture are missed even after section projection. A separately moved, completely rewritten headingless document also produces no native rename pair; it is outside the section-pair denominator but included in the case suite.
+- **Unrelated replacement with shared boilerplate:** the producer deletes one entity and creates another. Projected Git emits **R099** anyway, a false identity continuation accepted by both thresholds and by the hybrid. A similarity score cannot distinguish replacement from intentional continuity.
+- **Split/merge:** these require one-to-many or many-to-one lifecycle records. A rename detector proposes pairs, not those operations. In the small split/merge fixtures it produces no such lifecycle information; accepting a possible pair would still not settle the operation.
+
+Thus the best tested hybrid at 50% proposes **10 correct mappings, 1 wrong mapping, and misses 4 needed mappings**. At 80% it still makes the same wrong proposal and misses 6. These adversarial small fixtures are not an estimate of production precision/recall, but they decisively refute a hard guarantee from automatic similarity matching. Use candidates to reduce producer work, not as authority to transfer review state.
+
+### Awkward cases and the uncaught-change failure mode
+
+All 55 original model checks were rerun. The sparse conformance suite compares every original entity against the original stored-ID resolver across 21 states: **189 comparisons, zero confirmed-model regressions**, plus sparse-specific lifecycle, summary and URI checks. This covers all original state mutations, rather than counting unrelated parser checks as successful rename detections. It uses the **same declared correspondence** as the stored-ID fixture. It does not claim that an automatic importer supplied that correspondence.
+
+| Case | Confirmed sparse behavior / records in the small fixture | Without the needed exception |
+| --- | --- | --- |
+| Unrelated before/after edits; unique sibling reorder | Same review, **0 records** | Still works while the default identifies the same entity |
+| Parent heading rename | Changed parent; descendant identity retained, **2 records** | Parent and child old trails disappear; unconfirmed, not guaranteed changed |
+| Insert identical repeat before old repeats | Existing roots preserved and new birth separated, **3 records** | Occurrence-based lookup can silently select the wrong equal section |
+| Move subtree to another document | Source-equivalent review survives, **2 records** | Old locator unavailable; possible move cannot be confirmed from absence alone |
+| Rename file | Document, preamble and sections survive, **7 records** | All path-based defaults change; native Git can suggest a file mapping |
+| Child body edit | Child and parent changed; sibling unchanged, **0 records** | Works with unchanged outline identity |
+| Promote/move child | Changed digest, **1 record** | Missing old trail; possible move/rename |
+| Split / merge / delete | Changed/superseded with successors or deletion, **1 / 2 / 1 records** | Missing locator does not establish which lifecycle operation occurred |
+| Headingless text; first appended heading; preamble edit | Permanent preamble default and scoped digest, **0 records** | Works until document location/identity changes |
+| Delete then recreate identical content at the same slot | Old review stays deleted, new root minted, **2 records** | Same locator and same digest can silently inherit the deleted entity's review |
+| Rename then revert | Keep origin binding; source review survives and touched summary remembers both edits | Dropping the binding loses references issued at the intermediate locator |
+
+The naïve no-override resolver returns **22 not-found outcomes and 3 wrong-entity resolutions** in the 189 comparisons. The latter comprise displaced duplicates and exact slot reuse; a matching digest does not repair them. A conservative duplicate guard avoids those duplicate transfers by returning unconfirmed even for unresolved unchanged duplicates; the guard yields **60 unconfirmed outcomes** overall and still cannot infer a hidden same-slot replacement from source alone. It is a fallback, not restored identity certainty.
+
+**When a rename/move is missed, a literal computed lookup returns not found.** A safer resolver preserves the external review and returns **`unconfirmed: possibly renamed, moved, or deleted`**, with candidate locations only when evidence supports them. In the complete-rewrite case there may be no useful candidate. It must not assert “renamed,” “deleted,” “unchanged,” or move the reviewed badge to a candidate. If the old locator still exists, absence-based fallback cannot help; ambiguity/slot-reuse records or an incomplete-correspondence declaration are necessary to prevent a false transfer.
+
+Require explicit correspondence coverage per imported transition/range and carry unresolved roots through squash/truncation. Never treat the absence of an override file as proof that a generic editor performed no identity-changing operations. If correspondence for an affected range is incomplete, expose that uncertainty even when current locator/digest happens to match. A complete-coverage claim still depends on producer compliance, exactly as a full map depends on correct UUID assignment. Structural consistency is checkable; intent is not.
+
+This fallback is acceptable for an explicitly best-effort import/recovery view. **It is not acceptable as the sole implementation of the original hard “rename means changed, not missing” requirement.** The recommended default therefore uses confirmed exceptions to retain that requirement, and presents unconfirmed state whenever the producer cannot establish correspondence. Keeping every UUID would not remove that same missing-producer-information problem.
+
+### Squash, truncation, and the revised decision
+
+The override ledger is versioned in Git trees and copied into a retained endpoint on squash/truncation. Keep active exceptional roots, retirement/reuse generations and uncertainty records. Review identity remains independent of the commit ID. An origin root survives the operation when its ledger and current source survive; the original stability matrix applies under this confirmed-correspondence condition. Exact commit/diff/hunk availability remains governed by retained objects or archived patch evidence.
+
+Ordered touched summaries still need source checkpoint positions and edit/revert events. Key them by the computed origin root, declare this anchor profile/identity encoding in their schema, and carry partial correspondence coverage. The sparse probe verifies an edit/revert produces both events for the same origin root and does not touch an unchanged sibling. Current content equivalence cannot substitute for temporal evidence. This follow-up does not remeasure full summary or patch retention; the earlier summary experiment remains separate, and 64-hex root keys can cost more per summary event than UUID strings.
+
+**Replace the original all-ID-map recommendation with computed defaults plus a confirmed sparse lifecycle ledger.** Keep runtime source digests, parent-inclusive scopes, permanent preambles, namespace separation, exact historical references and coverage disclosures. Let explicit editing operations generate exceptions automatically; let Git suggest uncertain correspondences for confirmation. No producer must hand-maintain an ID and digest for every section. No similarity threshold is allowed to silently upgrade an uncertain match to reviewed identity.
+
+### Follow-up reproduction and evidence
+
+Use the same pinned Node dependencies, Git executable, Python environment and source checkouts as above. Run from the repository root, sequentially:
+
+```powershell
+node docs/investigations/addressing/cases.mjs
+node docs/investigations/addressing/sparse_cases.mjs
+.antiphon/compression-work/venv/Scripts/python docs/investigations/addressing/sparse_detect.py
+.antiphon/compression-work/venv/Scripts/python docs/investigations/addressing/sparse_prepare.py
+node docs/investigations/addressing/sparse_corpus.mjs
+.antiphon/compression-work/venv/Scripts/python docs/investigations/addressing/sparse_measure.py
+.antiphon/compression-work/venv/Scripts/python docs/investigations/addressing/sparse_verify.py
+.antiphon/compression-work/venv/Scripts/python docs/investigations/addressing/sparse_render.py
+```
+
+`sparse_corpus.mjs` generates a roughly 160 MB ignored storage plan and takes several minutes; no browser latency or memory claim is inferred from that offline fixture builder. Every packaging run uses a fresh `.antiphon/addressing-work/sparse-packs/` directory. All 72 real repositories are packed and checked with strict Git `fsck`. The final audit compares their trees to the exact expected source/metadata objects and checks 33 / 2 / 1 retained commits for full / squash / later-root packages. Git 2.50.1.windows.1 and the earlier ZIP settings are pinned by this evidence.
+
+<!-- SPARSE_VALIDATION_START -->
+
+Final validation: **55 original model checks**, **189 confirmed sparse conformance comparisons**, **13 sparse lifecycle/summary/URI/coverage checks**, **88 native diff runs / 132 scored strategies**, **40,174 injected-event resolution checks**, **780 pinned source checks**, and **72 archive hash / tree / history-count audits with 504 ZIP member checks**. The audit reproduces **12 exact prior size comparisons**. **0 unexpected validation failures in final evidence.** The documented wrong heuristic proposals and naïve-reference failures are intentional counterexamples, not hidden successful detections; suite counts overlap and are not a count of independent real-world edits.
+
+<!-- SPARSE_VALIDATION_END -->
+
+Evidence: [semantic comparisons and exceptions](addressing/sparse-case-results.json), [native Git detection](addressing/sparse-detection-results.json), [pinned source checks](addressing/sparse-source-results.json), [controlled event schedules](addressing/sparse-corpus-results.json), [all package sizes and hashes](addressing/sparse-size-results.json), and [independent audit](addressing/sparse-verification.json). A first Windows packaging attempt used the default text code page and rejected a Unicode JSON fixture; explicit UTF-8 fixed that harness issue. The model's initially discarded reverted alias was corrected and regression-tested. Neither issue is included as a successful sample. These are investigation fixtures, not a shipped producer, production schema validator or UI. No new application build or browser integration was claimed.

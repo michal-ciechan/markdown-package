@@ -1,0 +1,1765 @@
+{
+  "git": "git version 2.50.1.windows.1",
+  "fixture": ".antiphon/addressing-work/sparse-detect/527656ce2ff74ad1a4256c27a27d1fb8/repo.git",
+  "cases": 22,
+  "diff_runs": 88,
+  "strategy_evaluations": 132,
+  "totals": [
+    {
+      "mode": "native",
+      "threshold": 50,
+      "truth": 14,
+      "proposals": 5,
+      "true_positive": 5,
+      "false_positive": 0,
+      "false_negative": 9
+    },
+    {
+      "mode": "native",
+      "threshold": 80,
+      "truth": 14,
+      "proposals": 5,
+      "true_positive": 5,
+      "false_positive": 0,
+      "false_negative": 9
+    },
+    {
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 14,
+      "proposals": 11,
+      "true_positive": 8,
+      "false_positive": 3,
+      "false_negative": 6
+    },
+    {
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 14,
+      "proposals": 9,
+      "true_positive": 6,
+      "false_positive": 3,
+      "false_negative": 8
+    },
+    {
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 14,
+      "proposals": 11,
+      "true_positive": 10,
+      "false_positive": 1,
+      "false_negative": 4
+    },
+    {
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 14,
+      "proposals": 9,
+      "true_positive": 8,
+      "false_positive": 1,
+      "false_negative": 6
+    }
+  ],
+  "rows": [
+    {
+      "case": "base",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "base",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "base",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "base",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "base",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "base",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "unrelated",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "unrelated",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "unrelated",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "unrelated",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "unrelated",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "unrelated",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "heading-rename",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "heading-rename",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "heading-rename",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 2,
+      "proposals": 2,
+      "true_positive": 2,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [
+        {
+          "status": "R061",
+          "old": "cc81ab8a2cbb2984fc30bb8f29da0506a1c16e45642b43ec61951088dccbdfa4.md",
+          "new": "49d28ff158a78c1645c65dea065fcc1eaa18c59583781e154752b98ca1fc5b46.md"
+        },
+        {
+          "status": "R100",
+          "old": "5aece372a3cdc31d88710fa1c0efa382250fa27c5006beec9b6aa9fe1b9b5de8.md",
+          "new": "5e59d85d50c27c709183aa63c36c7999bab671b85636444773aeb2b999f93604.md"
+        }
+      ],
+      "wrong_pairs": []
+    },
+    {
+      "case": "heading-rename",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 2,
+      "proposals": 1,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 1,
+      "pairs": [
+        {
+          "status": "R100",
+          "old": "5aece372a3cdc31d88710fa1c0efa382250fa27c5006beec9b6aa9fe1b9b5de8.md",
+          "new": "5e59d85d50c27c709183aa63c36c7999bab671b85636444773aeb2b999f93604.md"
+        }
+      ],
+      "wrong_pairs": []
+    },
+    {
+      "case": "heading-rename",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 2,
+      "proposals": 2,
+      "true_positive": 2,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "heading-rename",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 2,
+      "proposals": 1,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 1,
+      "wrong_pairs": []
+    },
+    {
+      "case": "duplicate-insert",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "duplicate-insert",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "duplicate-insert",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "duplicate-insert",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "duplicate-insert",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "wrong_pairs": []
+    },
+    {
+      "case": "duplicate-insert",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "wrong_pairs": []
+    },
+    {
+      "case": "move-within",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "move-within",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "move-within",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "move-within",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "move-within",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "move-within",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "move-across",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "move-across",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "move-across",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 2,
+      "proposals": 2,
+      "true_positive": 2,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [
+        {
+          "status": "R100",
+          "old": "cc81ab8a2cbb2984fc30bb8f29da0506a1c16e45642b43ec61951088dccbdfa4.md",
+          "new": "e0f83b02099515e865a2629fba0e5948ad5b4d50bd4ff89c44ef628f3dd108a5.md"
+        },
+        {
+          "status": "R100",
+          "old": "5aece372a3cdc31d88710fa1c0efa382250fa27c5006beec9b6aa9fe1b9b5de8.md",
+          "new": "e6a1bbe6dce6c23133e7aab7744453f319f6ca1fa5110f8f9b8fbd51aec9f7cc.md"
+        }
+      ],
+      "wrong_pairs": []
+    },
+    {
+      "case": "move-across",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 2,
+      "proposals": 2,
+      "true_positive": 2,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [
+        {
+          "status": "R100",
+          "old": "cc81ab8a2cbb2984fc30bb8f29da0506a1c16e45642b43ec61951088dccbdfa4.md",
+          "new": "e0f83b02099515e865a2629fba0e5948ad5b4d50bd4ff89c44ef628f3dd108a5.md"
+        },
+        {
+          "status": "R100",
+          "old": "5aece372a3cdc31d88710fa1c0efa382250fa27c5006beec9b6aa9fe1b9b5de8.md",
+          "new": "e6a1bbe6dce6c23133e7aab7744453f319f6ca1fa5110f8f9b8fbd51aec9f7cc.md"
+        }
+      ],
+      "wrong_pairs": []
+    },
+    {
+      "case": "move-across",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 2,
+      "proposals": 2,
+      "true_positive": 2,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "move-across",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 2,
+      "proposals": 2,
+      "true_positive": 2,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "file-rename",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 5,
+      "proposals": 5,
+      "true_positive": 5,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [
+        {
+          "status": "R100",
+          "old": "spec.md",
+          "new": "folder/renamed.md"
+        }
+      ],
+      "wrong_pairs": []
+    },
+    {
+      "case": "file-rename",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 5,
+      "proposals": 5,
+      "true_positive": 5,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [
+        {
+          "status": "R100",
+          "old": "spec.md",
+          "new": "folder/renamed.md"
+        }
+      ],
+      "wrong_pairs": []
+    },
+    {
+      "case": "file-rename",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 5,
+      "proposals": 5,
+      "true_positive": 3,
+      "false_positive": 2,
+      "false_negative": 2,
+      "pairs": [
+        {
+          "status": "R100",
+          "old": "4f718bbab12512c799575e08b87f68b8be84da80361707c1895a1f4dd5d93b0a.md",
+          "new": "44873688cf7962ec03c7516a889240b205ee5083875397a87ea794930f52708f.md"
+        },
+        {
+          "status": "R100",
+          "old": "23a6c5fe94ade47231f1c0c91d594ce87e3f6e9a633bb21e25fd910e73323377.md",
+          "new": "67b80b96fb5e5e32bb0ecc7bcaec76a59c1dad449a5fa66c7d09b6e3fd0e7c4f.md"
+        },
+        {
+          "status": "R100",
+          "old": "5aece372a3cdc31d88710fa1c0efa382250fa27c5006beec9b6aa9fe1b9b5de8.md",
+          "new": "915962b35bdab2df7cda76b2778850961423dd9b82c38ca6f4f8953005774772.md"
+        },
+        {
+          "status": "R100",
+          "old": "cc81ab8a2cbb2984fc30bb8f29da0506a1c16e45642b43ec61951088dccbdfa4.md",
+          "new": "975528bd8cd09e62db70f4920b9c13c16fd233980a355e044b1c77b606bc13ab.md"
+        },
+        {
+          "status": "R100",
+          "old": "d9193f92a19fbc7b68a4b2a293576bc2e361356e49e3fbf7e0b7b6945d98652f.md",
+          "new": "dac7c7bfa61fa8e87027e036ffe05d58c058aaa7fa65a1307184d55a8fcec3f2.md"
+        }
+      ],
+      "wrong_pairs": [
+        [
+          "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+          "62bb0778-a940-4f05-a12a-2cf97331579e"
+        ],
+        [
+          "62bb0778-a940-4f05-a12a-2cf97331579e",
+          "47bbbe92-cfdb-48a6-8fa6-599a1c318122"
+        ]
+      ]
+    },
+    {
+      "case": "file-rename",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 5,
+      "proposals": 5,
+      "true_positive": 3,
+      "false_positive": 2,
+      "false_negative": 2,
+      "pairs": [
+        {
+          "status": "R100",
+          "old": "4f718bbab12512c799575e08b87f68b8be84da80361707c1895a1f4dd5d93b0a.md",
+          "new": "44873688cf7962ec03c7516a889240b205ee5083875397a87ea794930f52708f.md"
+        },
+        {
+          "status": "R100",
+          "old": "23a6c5fe94ade47231f1c0c91d594ce87e3f6e9a633bb21e25fd910e73323377.md",
+          "new": "67b80b96fb5e5e32bb0ecc7bcaec76a59c1dad449a5fa66c7d09b6e3fd0e7c4f.md"
+        },
+        {
+          "status": "R100",
+          "old": "5aece372a3cdc31d88710fa1c0efa382250fa27c5006beec9b6aa9fe1b9b5de8.md",
+          "new": "915962b35bdab2df7cda76b2778850961423dd9b82c38ca6f4f8953005774772.md"
+        },
+        {
+          "status": "R100",
+          "old": "cc81ab8a2cbb2984fc30bb8f29da0506a1c16e45642b43ec61951088dccbdfa4.md",
+          "new": "975528bd8cd09e62db70f4920b9c13c16fd233980a355e044b1c77b606bc13ab.md"
+        },
+        {
+          "status": "R100",
+          "old": "d9193f92a19fbc7b68a4b2a293576bc2e361356e49e3fbf7e0b7b6945d98652f.md",
+          "new": "dac7c7bfa61fa8e87027e036ffe05d58c058aaa7fa65a1307184d55a8fcec3f2.md"
+        }
+      ],
+      "wrong_pairs": [
+        [
+          "47bbbe92-cfdb-48a6-8fa6-599a1c318122",
+          "62bb0778-a940-4f05-a12a-2cf97331579e"
+        ],
+        [
+          "62bb0778-a940-4f05-a12a-2cf97331579e",
+          "47bbbe92-cfdb-48a6-8fa6-599a1c318122"
+        ]
+      ]
+    },
+    {
+      "case": "file-rename",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 5,
+      "proposals": 5,
+      "true_positive": 5,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "file-rename",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 5,
+      "proposals": 5,
+      "true_positive": 5,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "child-edit",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "child-edit",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "child-edit",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "child-edit",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "child-edit",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "child-edit",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "promote-child",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 1,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 1,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "promote-child",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 1,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 1,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "promote-child",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 1,
+      "proposals": 1,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [
+        {
+          "status": "R057",
+          "old": "5aece372a3cdc31d88710fa1c0efa382250fa27c5006beec9b6aa9fe1b9b5de8.md",
+          "new": "42af639da72a6eeabeb5a499ff0a3f2ffafd792a90f5daa1a91749db4c961a3f.md"
+        }
+      ],
+      "wrong_pairs": []
+    },
+    {
+      "case": "promote-child",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 1,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 1,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "promote-child",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 1,
+      "proposals": 1,
+      "true_positive": 1,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "promote-child",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 1,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 1,
+      "wrong_pairs": []
+    },
+    {
+      "case": "split",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "split",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "split",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "split",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "split",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "split",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "merge",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "merge",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "merge",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "merge",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "merge",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "merge",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "first-heading",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "first-heading",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "first-heading",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "first-heading",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "first-heading",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "first-heading",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "preamble-edit",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "preamble-edit",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "preamble-edit",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "preamble-edit",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "preamble-edit",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "preamble-edit",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "crlf",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "crlf",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "crlf",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "crlf",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "crlf",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "crlf",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "separator-blanks",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "separator-blanks",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "separator-blanks",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "separator-blanks",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "separator-blanks",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "separator-blanks",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "wrong_pairs": []
+    },
+    {
+      "case": "rename-and-total-rewrite",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 2,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 2,
+      "wrong_pairs": []
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "file-move-and-rewrite",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete-and-recreate-same-slot",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "similar-split",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "similar-split",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "similar-split",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "similar-split",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "similar-split",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "similar-split",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete-and-add-similar",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete-and-add-similar",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete-and-add-similar",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete-and-add-similar",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete-and-add-similar",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "delete-and-add-similar",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "wrong_pairs": []
+    },
+    {
+      "case": "long-similar-delete-add",
+      "mode": "native",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "long-similar-delete-add",
+      "mode": "native",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 0,
+      "true_positive": 0,
+      "false_positive": 0,
+      "false_negative": 0,
+      "pairs": [],
+      "wrong_pairs": []
+    },
+    {
+      "case": "long-similar-delete-add",
+      "mode": "projected",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 1,
+      "true_positive": 0,
+      "false_positive": 1,
+      "false_negative": 0,
+      "pairs": [
+        {
+          "status": "R099",
+          "old": "aba1f264ec0527eb4f19eb383750b5b4ba7a5249f07f2aac8b8d5d9098371477.md",
+          "new": "ae9349453ef583e702f92c183168d41e3e8c88b406be562c65f82415d8016d70.md"
+        }
+      ],
+      "wrong_pairs": [
+        [
+          "8bb83a80-f2a4-3534-abbb-f271ce104ad7",
+          "9e78ae74-7143-0013-981a-6975087dce39"
+        ]
+      ]
+    },
+    {
+      "case": "long-similar-delete-add",
+      "mode": "projected",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 1,
+      "true_positive": 0,
+      "false_positive": 1,
+      "false_negative": 0,
+      "pairs": [
+        {
+          "status": "R099",
+          "old": "aba1f264ec0527eb4f19eb383750b5b4ba7a5249f07f2aac8b8d5d9098371477.md",
+          "new": "ae9349453ef583e702f92c183168d41e3e8c88b406be562c65f82415d8016d70.md"
+        }
+      ],
+      "wrong_pairs": [
+        [
+          "8bb83a80-f2a4-3534-abbb-f271ce104ad7",
+          "9e78ae74-7143-0013-981a-6975087dce39"
+        ]
+      ]
+    },
+    {
+      "case": "long-similar-delete-add",
+      "mode": "hybrid",
+      "threshold": 50,
+      "truth": 0,
+      "proposals": 1,
+      "true_positive": 0,
+      "false_positive": 1,
+      "false_negative": 0,
+      "wrong_pairs": [
+        [
+          "8bb83a80-f2a4-3534-abbb-f271ce104ad7",
+          "9e78ae74-7143-0013-981a-6975087dce39"
+        ]
+      ]
+    },
+    {
+      "case": "long-similar-delete-add",
+      "mode": "hybrid",
+      "threshold": 80,
+      "truth": 0,
+      "proposals": 1,
+      "true_positive": 0,
+      "false_positive": 1,
+      "false_negative": 0,
+      "wrong_pairs": [
+        [
+          "8bb83a80-f2a4-3534-abbb-f271ce104ad7",
+          "9e78ae74-7143-0013-981a-6975087dce39"
+        ]
+      ]
+    }
+  ],
+  "failures": 0
+}
