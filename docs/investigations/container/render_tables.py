@@ -119,6 +119,39 @@ if __name__ == '__main__':
     replace('REWRITE', table(['Operation', 'Still opens', 'Manifest bytes preserved', 'First entry',
                               'Manifest stored', 'Offset-0 typing still works'], rows))
 
+    cm = build['comment']
+    rows = [[r['tier'], r['field_bytes'], r['comment_bytes'], n(r['first_version']),
+             n(r['last_version']), n(r['versions']), '`' + r['first_encoding'] + '`',
+             '`' + r['last_encoding'] + '`'] for r in cm['tiers']]
+    replace('COMMENTTIERS', table(['Tier', 'Field bytes', 'Comment bytes', 'First version',
+                                   'Last version', 'Versions', 'First encoding', 'Last encoding'], rows))
+
+    rows = [[n(r['value']), r['escalating'], r['leb128'], r['utf8'] or 'not encodable',
+             r['protobuf_varint']] for r in cm['prior_art']]
+    rows += [[f"{a['encoding']} field, whole range to {n(a['max_version'])}",
+              a['comment_bytes'] - len('MDPKG'), '—', '—', '—']
+             for a in cm['fixed_width_alternatives']]
+    replace('PRIORART', table(['Version value, or whole-field alternative', 'Field bytes',
+                               'LEB128', 'UTF-8', 'protobuf varint'], rows))
+
+    rows = [[r['corpus'], r['package'], r['route'], yes(r['decided']),
+             r['version'] if r['version'] is not None else '—',
+             n(r['requests']), n(r['bytes_read']), r['reason'] or '—']
+            for r in reader['version_probes']]
+    replace('VERSIONPROBE', table(['Corpus', 'Package', 'Route', 'Decides', 'Version',
+                                   'Requests', 'Bytes read', 'Why not'], rows))
+
+    def cost(v):
+        return n(v) + ' B' if v else 'unavailable'
+
+    rows = [[r['operation'], n(r['comment_bytes']) if r.get('readable') else '—',
+             r.get('outcome', r.get('error', '—')), cost(r.get('tail_typing_bytes')),
+             cost(r.get('offset0_typing_bytes')), cost(r.get('directory_typing_bytes'))]
+            for r in tools['comment_rewrites']]
+    replace('COMMENTREWRITE', table(['Operation', 'Comment bytes after', 'Outcome',
+                                     '34-byte tail route', '79-byte offset-0 route',
+                                     'Recoverable directory walk'], rows))
+
     c = verify['counts']
 
     def s(*keys):
@@ -147,6 +180,23 @@ if __name__ == '__main__':
                                                'extracted_worktree_is_clean_after_read_tree',
                                                'extracted_repository_passes_fsck', 'no_index_shipped')),
         ('archive-rewrite cases', s('manifest_entry_content_survives_rewrites')),
+        ('fixed-length EOCD comment checks (tier encoding, comment bytes, version routes, '
+         'tail-typed access, comment rewrite survival)',
+         s('version_tiers_are_contiguous_and_unique', 'version_tier_widths_grow',
+           'escalating_field_beats_leb128_below_the_first_escape',
+           'escalating_field_loses_to_leb128_above_the_first_escape',
+           'fixed_comment_costs_its_own_length', 'fixed_comment_bytes_are_the_declared_bytes',
+           'fixed_comment_package_still_types_at_offset_zero',
+           'tail_route_decides_only_for_the_fixed_comment',
+           'offset_zero_route_decides_for_every_package',
+           'tail_route_reads_less_than_the_offset_zero_route',
+           'tail_typed_access_costs_no_extra_requests', 'tail_typed_access_reads_fewer_bytes',
+           'tail_typed_access_reports_the_version', 'comment_rewrites_recorded',
+           'comment_is_never_replaced_by_a_foreign_comment',
+           'comment_is_stripped_by_at_least_one_rewrite',
+           'comment_rescues_exactly_one_rewrite_from_a_directory_walk',
+           'some_rewrite_leaves_only_the_directory_walk',
+           'comment_survives_fewer_rewrites_than_the_manifest_entry')),
         ('recorded counterexamples (EOCD-comment fallback, case collision, NFC/NFD survival, '
          'rewrite breaking fast typing)', s('comment_fallback_counterexample_recorded',
                                             'case_collision_loses_a_file_in_every_tool',

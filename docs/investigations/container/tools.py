@@ -279,6 +279,108 @@ fs.writeFileSync({json.dumps(str(js))}, Buffer.from(zipSync(u)));
     return rows
 
 
+def eocd_comment(data):
+    """The terminal EOCD's comment bytes, straight out of the archive tail."""
+    p = len(data) - 22
+    while p >= max(0, len(data) - 65557):
+        if data[p:p + 4] == b'PK' + bytes([5, 6]):
+            n = int.from_bytes(data[p + 20:p + 22], 'little')
+            if p + 22 + n == len(data):
+                return data[p + 22:]
+        p -= 1
+    raise ValueError('no terminal EOCD')
+
+
+def _eocd_field(data, offset, size=4):
+    p = len(data) - 22
+    while p >= max(0, len(data) - 65557):
+        if data[p:p + 4] == b'PK' + bytes([5, 6]):
+            n = int.from_bytes(data[p + 20:p + 22], 'little')
+            if p + 22 + n == len(data):
+                return data[p + offset:p + offset + size]
+        p -= 1
+    raise ValueError('no terminal EOCD')
+
+
+def probe_comment_rewrites(pkg):
+    """Does a fixed-length EOCD comment survive the same rewrites the manifest did?
+
+    Each row also prices the three typing routes on the rewritten archive: the 34-byte
+    tail window, the 79-byte read at offset 0, and the recoverable central-directory walk.
+    """
+    original = Path(pkg).read_bytes()
+    want = eocd_comment(original)
+    rows = []
+
+    def inspect(data, op):
+        try:
+            got = eocd_comment(data)
+        except ValueError as e:  # noqa: BLE001
+            rows.append(dict(operation=op, readable=False, error=str(e)))
+            return
+        try:
+            with zipfile.ZipFile(io.BytesIO(data)) as z:
+                info = z.infolist()
+                offset_zero_ok = (info[0].filename == MANIFEST_NAME
+                                  and info[0].compress_type == 0
+                                  and info[0].header_offset == 0)
+            cd_bytes = int.from_bytes(_eocd_field(data, 12), 'little')
+        except Exception:  # noqa: BLE001
+            offset_zero_ok, cd_bytes = False, None
+        rows.append(dict(operation=op, readable=True, comment_bytes=len(got),
+                         comment_hex=got.hex(), preserved=got == want,
+                         outcome='preserved unmodified' if got == want
+                         else 'stripped' if not got
+                         else 'replaced with a different comment',
+                         tail_typing_bytes=22 + 12 if got == want else None,
+                         offset0_typing_bytes=79 if offset_zero_ok else None,
+                         directory_typing_bytes=None if cd_bytes is None else 22 + cd_bytes))
+        bump('comment_rewrite_cases')
+
+    inspect(original, 'as produced')
+
+    out = io.BytesIO()
+    with zipfile.ZipFile(io.BytesIO(original)) as src, zipfile.ZipFile(out, 'w') as dst:
+        for i in src.infolist():
+            dst.writestr(i.filename, src.read(i))
+    inspect(out.getvalue(), 'Python rebuild by filename and bytes')
+
+    seven = RUN / 'sevenzip-comment.zip'
+    shutil.copyfile(pkg, seven)
+    extra = RUN / 'extra-comment.txt'
+    extra.write_text('added\n')
+    r = run([SEVEN, 'a', seven, extra])
+    inspect(seven.read_bytes(), f'7-Zip a (add one file), exit {r["returncode"]}')
+
+    ex = RUN / 'winshell-comment-src'
+    ex.mkdir(parents=True)
+    with zipfile.ZipFile(pkg) as z:
+        z.extractall(ex)
+    rebuilt = RUN / 'winshell-comment-rebuilt.zip'
+    r = run(['powershell', '-NoProfile', '-Command',
+             f"Compress-Archive -Path '{ex}\\*' -DestinationPath '{rebuilt}' -Force"])
+    if rebuilt.exists():
+        inspect(rebuilt.read_bytes(), f'PowerShell Compress-Archive of the extraction, exit {r["returncode"]}')
+    else:
+        rows.append(dict(operation='PowerShell Compress-Archive of the extraction',
+                         readable=False, error=r['output'][:200]))
+
+    node = RUN / 'fflate-comment.mjs'
+    js = RUN / 'fflate-comment-out.zip'
+    fflate = (ROOT / '.antiphon/compression-work/js/node_modules/fflate/esm/browser.js').as_uri()
+    node.write_text(f"""import {{unzipSync, zipSync}} from '{fflate}';
+import fs from 'node:fs';
+const u = unzipSync(new Uint8Array(fs.readFileSync({json.dumps(str(pkg))})));
+fs.writeFileSync({json.dumps(str(js))}, Buffer.from(zipSync(u)));
+""")
+    r = run(['node', node])
+    if js.exists():
+        inspect(js.read_bytes(), 'fflate unzipSync then zipSync')
+    else:
+        rows.append(dict(operation='fflate unzipSync then zipSync', readable=False, error=r['output'][:200]))
+    return rows
+
+
 if __name__ == '__main__':
     rmtree(RUN)
     RUN.mkdir(parents=True)
@@ -292,7 +394,9 @@ if __name__ == '__main__':
                run_directory=str(RUN),
                paths=probe_paths(), git_paths=probe_git_paths(),
                extraction=[probe_extraction(WORK / f'{c}/no-overrides.mdpkg', c) for c in ('npm', 'rust')],
-               rewrites=probe_rewrites(pkg), checks=CHECKS)
+               rewrites=probe_rewrites(pkg),
+               comment_rewrites=probe_comment_rewrites(WORK / 'npm/no-overrides-fixed.mdpkg'),
+               checks=CHECKS)
     compression.save(HERE / 'tools-results.json', out)
     print(json.dumps(dict(checks=CHECKS), indent=1))
     for r in out['paths']:
@@ -307,3 +411,7 @@ if __name__ == '__main__':
               r['index_bytes_if_shipped'], '| untracked', r['untracked_entries'])
     for r in out['rewrites']:
         print('rewrite:', r['operation'], r.get('fast_typing_ok'), r.get('manifest_content_preserved'), r.get('error', ''))
+    for r in out['comment_rewrites']:
+        print('comment:', r['operation'], '|', r.get('outcome', r.get('error')), '| tail',
+              r.get('tail_typing_bytes'), '| offset0', r.get('offset0_typing_bytes'),
+              '| directory', r.get('directory_typing_bytes'))

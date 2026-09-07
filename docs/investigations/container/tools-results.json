@@ -4,7 +4,7 @@
   "git": "git version 2.50.1.windows.1",
   "seven_zip": "7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26",
   "unzip": "UnZip 6.00 of 20 April 2009, by Info-ZIP.  Maintained by C. Spieler.  Send",
-  "run_directory": "C:\\src\\markdown-package\\.antiphon\\container-work\\tools-cbbc606fc6a743ba88b13060331e4e1c",
+  "run_directory": "C:\\src\\markdown-package\\.antiphon\\container-work\\tools-563e5bbc97334cda8dfd6543775f7bcc",
   "paths": [
     {
       "case": "case-pair",
@@ -397,10 +397,68 @@
       "first_entry": ".mdpkg/manifest.json"
     }
   ],
+  "comment_rewrites": [
+    {
+      "operation": "as produced",
+      "readable": true,
+      "comment_bytes": 8,
+      "comment_hex": "4d44504b47010000",
+      "preserved": true,
+      "outcome": "preserved unmodified",
+      "tail_typing_bytes": 34,
+      "offset0_typing_bytes": 79,
+      "directory_typing_bytes": 7753
+    },
+    {
+      "operation": "Python rebuild by filename and bytes",
+      "readable": true,
+      "comment_bytes": 0,
+      "comment_hex": "",
+      "preserved": false,
+      "outcome": "stripped",
+      "tail_typing_bytes": null,
+      "offset0_typing_bytes": 79,
+      "directory_typing_bytes": 7753
+    },
+    {
+      "operation": "7-Zip a (add one file), exit 0",
+      "readable": true,
+      "comment_bytes": 8,
+      "comment_hex": "4d44504b47010000",
+      "preserved": true,
+      "outcome": "preserved unmodified",
+      "tail_typing_bytes": 34,
+      "offset0_typing_bytes": null,
+      "directory_typing_bytes": 7852
+    },
+    {
+      "operation": "PowerShell Compress-Archive of the extraction, exit 0",
+      "readable": true,
+      "comment_bytes": 0,
+      "comment_hex": "",
+      "preserved": false,
+      "outcome": "stripped",
+      "tail_typing_bytes": null,
+      "offset0_typing_bytes": null,
+      "directory_typing_bytes": 7986
+    },
+    {
+      "operation": "fflate unzipSync then zipSync",
+      "readable": true,
+      "comment_bytes": 0,
+      "comment_hex": "",
+      "preserved": false,
+      "outcome": "stripped",
+      "tail_typing_bytes": null,
+      "offset0_typing_bytes": null,
+      "directory_typing_bytes": 7753
+    }
+  ],
   "checks": {
     "path_extractions": 16,
     "git_path_cases": 5,
     "extraction_checks": 2,
-    "rewrite_cases": 5
+    "rewrite_cases": 5,
+    "comment_rewrite_cases": 5
   }
 }

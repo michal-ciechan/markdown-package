@@ -73,6 +73,63 @@ if __name__ == '__main__':
     check('comment_fallback_counterexample_recorded',
           bool(dirty) and all(r['git_bytes_touched'] > 0 for r in dirty))
 
+    # Follow-up: the fixed-length EOCD comment.
+    tiers = build['comment']['tiers']
+    check('version_tiers_are_contiguous_and_unique',
+          all(a['last_version'] + 1 == b['first_version'] for a, b in zip(tiers, tiers[1:]))
+          and tiers[0]['first_version'] == 0)
+    check('version_tier_widths_grow', [t['field_bytes'] for t in tiers] == [1, 3, 7])
+    # The escalating field wins below 255 and loses above it; both halves are asserted.
+    check('escalating_field_beats_leb128_below_the_first_escape',
+          all(r['escalating'] <= r['leb128'] for r in build['comment']['prior_art'] if r['value'] < 0xFF))
+    check('escalating_field_loses_to_leb128_above_the_first_escape',
+          all(r['escalating'] >= r['leb128'] for r in build['comment']['prior_art'] if r['value'] >= 0xFF)
+          and any(r['escalating'] > r['leb128'] for r in build['comment']['prior_art'] if r['value'] >= 0xFF))
+    for corpus in build['corpora']:
+        fixed = corpus['packages'].get('no-overrides-fixed')
+        base = corpus['packages']['no-overrides']
+        check('fixed_comment_costs_its_own_length',
+              fixed['bytes'] - base['bytes'] == build['comment']['fixed_comment_bytes'], corpus['corpus'])
+        check('fixed_comment_bytes_are_the_declared_bytes',
+              fixed['directory']['comment_bytes'] == build['comment']['fixed_comment_bytes']
+              and fixed['comment_hex'] == build['comment']['fixed_comment_hex'], corpus['corpus'])
+        check('fixed_comment_package_still_types_at_offset_zero',
+              fixed['typing']['name_ok'] and fixed['typing']['magic_ok'], corpus['corpus'])
+
+    probes = reader['version_probes']
+    check('tail_route_decides_only_for_the_fixed_comment',
+          all(r['decided'] == (r['package'] == 'fixed 8-byte binary comment')
+              for r in probes if r['route'].startswith('tail')))
+    check('offset_zero_route_decides_for_every_package',
+          all(r['decided'] for r in probes if r['route'].startswith('offset')))
+    check('tail_route_reads_less_than_the_offset_zero_route',
+          all(a['bytes_read'] < b['bytes_read'] for a, b in zip(probes[::2], probes[1::2])))
+    for corpus in ('npm', 'rust'):
+        baseline = next(r for r in reader['access']
+                        if r['package'] == corpus + ': no comment, 22-byte start' and r['mode'] == 'document')
+        tail = next(r for r in reader['access']
+                    if r['package'].endswith('typed from the tail') and r['package'].startswith(corpus)
+                    and r['mode'] == 'document')
+        check('tail_typed_access_costs_no_extra_requests',
+              tail['requests'] == baseline['requests'], corpus)
+        check('tail_typed_access_reads_fewer_bytes',
+              tail['bytes_read'] < baseline['bytes_read'], corpus)
+        check('tail_typed_access_reports_the_version', tail['comment_version'] == 1, corpus)
+
+    cr = tools['comment_rewrites']
+    check('comment_rewrites_recorded', len(cr) == 5, str(len(cr)))
+    check('comment_is_never_replaced_by_a_foreign_comment',
+          not [r for r in cr if r.get('outcome') == 'replaced with a different comment'])
+    check('comment_is_stripped_by_at_least_one_rewrite',
+          bool([r for r in cr if r.get('outcome') == 'stripped']))
+    check('comment_rescues_exactly_one_rewrite_from_a_directory_walk',
+          sum(1 for r in cr if r.get('tail_typing_bytes') and not r.get('offset0_typing_bytes')) == 1)
+    check('some_rewrite_leaves_only_the_directory_walk',
+          bool([r for r in cr if not r.get('tail_typing_bytes') and not r.get('offset0_typing_bytes')]))
+    check('comment_survives_fewer_rewrites_than_the_manifest_entry',
+          sum(1 for r in cr if r.get('preserved'))
+          < sum(1 for r in tools['rewrites'] if r.get('manifest_content_preserved')))
+
     accepted = [r for r in reader['typing'] if r['accepted']]
     check('exactly_one_typing_input_accepted', len(accepted) == 1, str([r['input'] for r in accepted]))
     check('every_rejection_is_cheap', all(r['bytes_read'] <= 128 for r in reader['typing'] if not r['accepted']))

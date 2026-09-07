@@ -6,7 +6,7 @@ Status: investigation complete; a proposed envelope and executable evidence, not
 
 Four findings changed a choice rather than confirming one:
 
-- **Drop the EOCD comment.** It is measured to *cost* the bounded-access property, not to help it. A 7-byte `MDPKG/1` comment defeats a reader's fixed 22-byte tail probe; the fallback 65,557-byte suffix then reads **57,797 bytes of the npm pack and 14,715 of the Rust pack** that the query never needed. Version discovery is already stronger and cheaper at offset 0.
+- **Drop the EOCD comment.** It is measured to *cost* the bounded-access property, not to help it. A 7-byte `MDPKG/1` comment defeats a reader's fixed 22-byte tail probe; the fallback 65,557-byte suffix then reads **57,797 bytes of the npm pack and 14,715 of the Rust pack** that the query never needed. Version discovery is already stronger and cheaper at offset 0. **§7 re-examines this for a fixed, spec-declared comment length** at the requester's ask: the tail-probe cost does disappear for a reader that honours the declared length, and the comment then saves 37 bytes and no extra requests per cold read — but it survives only two of five archive rewrites, so it cannot be authoritative and removes no reader tier. The recommendation stands.
 - **The addressing override table is an ordinary tracked file, and therefore already a plain ZIP entry.** No mirror, no separate binding mechanism: the package's plain entries *are* the working tree of the manifest-declared commit, so `.mdpkg/address/overrides.json` appears there for the same reason `README.md` does. That is what makes a section reference resolvable without touching the pack.
 - **Git reserves `.git` for you; it does not reserve `.mdpkg`.** `git fsck --strict` rejects a tree containing `.git/…` or `.GIT/…` (exit 2, nothing checked out), but accepts and checks out `.mdpkg/x.json` cleanly. The format must enforce its own prefix reservation.
 - **The duplicated "current file view" from [history.md](history.md#ordinary-zip-browsing-is-a-separate-cost) is not dead weight — it is the working tree.** Extracting the package and running one plumbing command (`git read-tree HEAD`) yields an ordinary clean Git working tree: **83 / 650 tracked files, nothing modified or missing, one remaining untracked path (`.mdpkg/`, holding the two container-level files), `git fsck` clean, and `HEAD` equal to the manifest's `current`**.
@@ -98,7 +98,7 @@ Rejected fields, each with its measured cost on the two corpora:
 - **No entry count, offsets or sizes.** EOCD and the central directory.
 - **No package self-hash.** A document cannot contain its own container's digest; delivery identity belongs to the transport.
 
-**The EOCD comment is not authoritative, and the recommendation is to omit it entirely.** [compression.md](compression.md#version-placement-and-archive-rewrites) established the comment is lost by three of five rewrite operations while the manifest entry's content survived all five; this card re-measured the same asymmetry on the real package (§5) and adds a cost the earlier work flagged but did not price: a comment breaks fixed-tail discovery. See §4. If a producer emits one anyway, it is a **hint** — a reader that finds a comment version disagreeing with the manifest must reject the package, never prefer the comment, and never infer version 1 from the mere presence of `PK`.
+**The EOCD comment is not authoritative, and the recommendation is to omit it entirely.** [compression.md](compression.md#version-placement-and-archive-rewrites) established the comment is lost by three of five rewrite operations while the manifest entry's content survived all five; this card re-measured the same asymmetry on the real package (§5) and adds a cost the earlier work flagged but did not price: a comment breaks fixed-tail discovery. See §4. If a producer emits one anyway, it is a **hint** — a reader that finds a comment version disagreeing with the manifest must reject the package, never prefer the comment, and never infer version 1 from the mere presence of `PK`. The fixed-length form of that hint is measured in §7.
 
 ## 2. Where the addressing exception table lives
 
@@ -141,6 +141,7 @@ Entry order is a profile rule because ZIP does not constrain it. Three constrain
 | --- | --- | --- | --- | --- | --- |
 | recommended: manifest, documents, metadata, .git; no comment | 288,637 | 6,664,426 | 79 | 129,644 | 3,351,865 |
 | same order with a 7-byte MDPKG/1 EOCD comment | 288,644 | 6,664,433 | 79 | 129,651 | 3,351,872 |
+| same order with the fixed 8-byte binary EOCD comment | 288,645 | 6,664,434 | 79 | 129,652 | 3,351,873 |
 | documents under a content/ prefix | 289,965 | 6,674,826 | 79 | 130,972 | 3,362,265 |
 | .git first, documents last | 288,637 | 6,664,426 | 79 | 288,637 | 6,664,426 |
 | manifest last (nonconforming) | 288,637 | 6,664,426 | directory walk | 288,637 | 6,664,426 |
@@ -237,6 +238,12 @@ The requirement is a walk of EOCD → central directory → one entry, for a doc
 | npm: 7-byte EOCD comment, naive 22-byte start | section | 6 | 68,195 | 981 | 57,797 | 0 |
 | npm: 7-byte EOCD comment, profile-aware 29-byte start | document | 6 | 10,376 | 6,101 | 0 | 0 |
 | npm: 7-byte EOCD comment, profile-aware 29-byte start | section | 6 | 10,376 | 981 | 0 | 0 |
+| npm: fixed 8-byte comment, naive 22-byte start | document | 6 | 68,195 | 6,101 | 57,796 | 0 |
+| npm: fixed 8-byte comment, naive 22-byte start | section | 6 | 68,195 | 981 | 57,796 | 0 |
+| npm: fixed 8-byte comment, profile 34-byte window | document | 6 | 10,381 | 6,101 | 0 | 0 |
+| npm: fixed 8-byte comment, profile 34-byte window | section | 6 | 10,381 | 981 | 0 | 0 |
+| npm: fixed 8-byte comment, typed from the tail | document | 6 | 10,332 | 6,101 | 0 | 0 |
+| npm: fixed 8-byte comment, typed from the tail | section | 6 | 10,332 | 981 | 0 | 0 |
 | rust: no comment, 22-byte start | document | 6 | 54,440 | 8,057 | 0 | 0 |
 | rust: no comment, 22-byte start | section | 6 | 54,440 | 2,053 | 0 | 0 |
 | rust: override ledger, 22-byte start | document | 8 | 85,447 | 8,057 | 0 | 0 |
@@ -245,12 +252,18 @@ The requirement is a walk of EOCD → central directory → one entry, for a doc
 | rust: 7-byte EOCD comment, naive 22-byte start | section | 6 | 69,184 | 2,053 | 14,715 | 0 |
 | rust: 7-byte EOCD comment, profile-aware 29-byte start | document | 6 | 54,447 | 8,057 | 0 | 0 |
 | rust: 7-byte EOCD comment, profile-aware 29-byte start | section | 6 | 54,447 | 2,053 | 0 | 0 |
+| rust: fixed 8-byte comment, naive 22-byte start | document | 6 | 69,184 | 8,057 | 14,714 | 0 |
+| rust: fixed 8-byte comment, naive 22-byte start | section | 6 | 69,184 | 2,053 | 14,714 | 0 |
+| rust: fixed 8-byte comment, profile 34-byte window | document | 6 | 54,452 | 8,057 | 0 | 0 |
+| rust: fixed 8-byte comment, profile 34-byte window | section | 6 | 54,452 | 2,053 | 0 | 0 |
+| rust: fixed 8-byte comment, typed from the tail | document | 6 | 54,403 | 8,057 | 0 | 0 |
+| rust: fixed 8-byte comment, typed from the tail | section | 6 | 54,403 | 2,053 | 0 | 0 |
 
 <!-- ACCESS_END -->
 
 The npm walk is: 79 bytes at offset 0 (type), 287 bytes (manifest), 22 bytes (EOCD), 7,731 bytes (central directory), 30 bytes (local header), 2,220 bytes (the DEFLATE member). Section and document cost identically, confirming [compression.md](compression.md#one-document-and-one-section-card-0004)'s finding that a section read is a whole-document entry read plus parsing; the container adds nothing to it. A repeat query on a warm reader fetches **0 further bytes**. Rust's larger figure is almost entirely its 50,813-byte central directory, which a reader caches once per package.
 
-**The EOCD comment rows are the counterexample that decides §1.** A reader that probes the fixed 22-byte tail cannot find the EOCD when a comment is present, falls back to the conservative 65,557-byte suffix that [compression.md](compression.md#tail-only-js-and-real-http-ranges) specified, and that suffix runs straight into the pack: 57,797 npm and 14,715 Rust bytes of `.git` payload fetched for a query that needed none of it. A reader that knows the profile's exact comment length can start at 29 bytes and stay clean — but that only recovers what omitting the comment gives for free. The comment is not free, is not authoritative, and is dropped.
+**The EOCD comment rows are the counterexample that decides §1.** A reader that probes the fixed 22-byte tail cannot find the EOCD when a comment is present, falls back to the conservative 65,557-byte suffix that [compression.md](compression.md#tail-only-js-and-real-http-ranges) specified, and that suffix runs straight into the pack: 57,797 npm and 14,715 Rust bytes of `.git` payload fetched for a query that needed none of it. A reader that knows the profile's exact comment length can start at 29 bytes and stay clean — but that only recovers what omitting the comment gives for free. The comment is not free, is not authoritative, and is dropped. §7 measures the fixed-length form of the same idea, whose profile window is 34 bytes: the damage to a naive reader is unchanged (57,796 npm and 14,714 Rust `.git` bytes) and a profile-aware reader gains 37 bytes.
 
 ## 5. Magic bytes and file typing
 
@@ -297,7 +310,7 @@ Every rejection costs at most 79 bytes and never walks the central directory. Th
 
 <!-- REWRITE_END -->
 
-**The manifest's bytes survived all five operations; the fast path survived two.** 7-Zip reordered entries, `Compress-Archive` reordered *and* compressed the manifest, and fflate kept the order but re-compressed it — reproducing CARD-0002's fflate observation on this package. So the reader must be specified in two tiers: a **conforming** package types at offset 0 in 79 bytes, and a package that fails that check is **recoverable** if the central directory contains a `.mdpkg/manifest.json` entry that decodes to valid manifest bytes. A recovered package should be re-emitted in conforming form rather than treated as valid; a repacked archive preserving payload bytes is not a format-preserving package rewrite.
+**The manifest's bytes survived all five operations; the fast path survived two.** 7-Zip reordered entries, `Compress-Archive` reordered *and* compressed the manifest, and fflate kept the order but re-compressed it — reproducing CARD-0002's fflate observation on this package. So the reader must be specified in two tiers: a **conforming** package types at offset 0 in 79 bytes, and a package that fails that check is **recoverable** if the central directory contains a `.mdpkg/manifest.json` entry that decodes to valid manifest bytes. A recovered package should be re-emitted in conforming form rather than treated as valid; a repacked archive preserving payload bytes is not a format-preserving package rewrite. §7.3 runs the same five operations against an EOCD comment and finds it survives two of them — a different two.
 
 An extension (`.mdpkg`) and a media type (`application/vnd.…+zip`, unregistered here) are worth specifying for dispatch, but neither is evidence: the leading `PK` must stay so ordinary ZIP tools keep working, which means extension- and sniffer-based dispatch will sometimes see a generic ZIP. That is the accepted cost of adopting ZIP.
 
@@ -321,12 +334,136 @@ Nothing in §§1–5 forced a mechanism ZIP lacks.
 
 Two honest gaps, neither requiring a new container. First, ZIP has no way to *mark* an entry as metadata, so the reservation is by name and must be producer-enforced — measured above, because Git will not do it for you. Second, ZIP guarantees nothing about order, so the manifest-first rule survives production but not arbitrary repacking; §5's two-tier reader is the answer, and it is cheaper than any custom container that would have had to abandon ordinary ZIP tooling to get it.
 
+## 7. Follow-up: a fixed-length EOCD comment carrying the version
+
+§1 dropped the archive comment on evidence gathered against a *variable-length* one. This section re-runs the question for a **mandatory, spec-declared, fixed-length** comment whose first byte is the format version, with the escalating overflow rule from the original CARD-0001 version-prefix proposal scoped to that field. Everything below is measured on the same two packages; nothing in §§1–6 changed as a result.
+
+**Answer, in one line: a declared length does remove the tail-probe cost for a reader that honours it, and the comment then saves 37 bytes and no extra requests per cold read — but it survives only two of five archive rewrites, so it cannot be authoritative, cannot remove a reader tier, and is not recommended.**
+
+### 7.1 The byte layout
+
+The measured comment is 8 bytes, `4d 44 50 4b 47 01 00 00`:
+
+| Offset | Bytes | Field | Value |
+| --- | --- | --- | --- |
+| 0 | 5 | tag | `MDPKG`, ASCII, no separator |
+| 5 | 1–7 | version field | escalating, little-endian, see below |
+| 5 + width | rest | reserved padding | `0x00`, must be zero, rejected otherwise |
+
+The version field is the requested rule: one byte; the maximum byte value `0xFF` escapes to the next 2 bytes read as `uint16` LE; `0xFFFF` there escapes to the next 4 bytes as `uint32` LE. Little-endian matches every multi-byte field ZIP already defines, so a parser sitting on an EOCD needs no second convention.
+
+<!-- COMMENTTIERS_START -->
+
+| Tier | Field bytes | Comment bytes | First version | Last version | Versions | First encoding | Last encoding |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 1 | 6 | 0 | 254 | 255 | `00` | `fe` |
+| 1 | 3 | 8 | 255 | 65,789 | 65,535 | `ff0000` | `fffeff` |
+| 2 | 7 | 12 | 65,790 | 4,295,033,084 | 4,294,967,295 | `ffffff00000000` | `fffffffeffffff` |
+
+<!-- COMMENTTIERS_END -->
+
+Each tier is **biased** by the count of everything the shorter tiers encode — tier 1 starts at 255, tier 2 at 65,790 — so every version has exactly one legal encoding. Without the bias, versions 0–254 would each have three encodings, and comparing two packages' comment bytes would stop being the same thing as comparing their versions. This is precisely UTF-8's non-overlong rule; LEB128 and protobuf varints leave the same redundancy open and simply tolerate it.
+
+The tension the fixed-length requirement creates is real and unavoidable: **an escalating field cannot have a fixed width, so "fixed-length comment" and "escalating version field" are compatible only if the escalation room is pre-allocated.** Reserving tier 1's room makes the comment a constant 8 bytes for every version through 65,789, and 12 once tier 2 is in use, which is why a conforming reader reads the last `22 + 12 = 34` bytes rather than one exact length. Bounded, not fixed, is the property that actually buys anything.
+
+Against the prior art, and against simply declaring the field a fixed-width integer in the same comment:
+
+<!-- PRIORART_START -->
+
+| Version value, or whole-field alternative | Field bytes | LEB128 | UTF-8 | protobuf varint |
+| --- | --- | --- | --- | --- |
+| 1 | 1 | 1 | 1 | 1 |
+| 127 | 1 | 1 | 1 | 1 |
+| 128 | 1 | 2 | 2 | 2 |
+| 254 | 1 | 2 | 2 | 2 |
+| 255 | 3 | 2 | 2 | 2 |
+| 65,535 | 3 | 3 | 3 | 3 |
+| 65,790 | 7 | 3 | 4 | 3 |
+| 1,048,576 | 7 | 3 | 4 | 3 |
+| plain uint8 field, whole range to 255 | 1 | — | — | — |
+| plain uint16 LE field, whole range to 65,535 | 2 | — | — | — |
+| plain uint32 LE field, whole range to 4,294,967,295 | 4 | — | — | — |
+
+<!-- PRIORART_END -->
+
+The escalating field is one byte for versions 128–254 where LEB128 and UTF-8 both need two — and then loses, needing 3 bytes at version 255 where LEB128 needs 2, and 7 at 65,790 where LEB128 needs 3. That trade only pays in a stream where short values are common and the length is discovered by reading. **Inside a comment whose room is pre-allocated anyway, it pays nothing**: a plain `uint32` LE makes the comment 9 bytes and covers 4,294,967,296 versions, where the escalating field needs 12 bytes to cover 4,295,033,085 — three more bytes and two extra parser states for 0.0015% more range. If a fixed-length comment is adopted, the escalation rule should not come with it.
+
+### 7.2 Does a declared length remove the tail-probe cost?
+
+Partly, and not because it is *fixed*. Two rows in §4's access table decide it — the same package and the same reader, differing only in whether the reader honours the declared length.
+
+A reader that starts from the profile's 34-byte window is clean: **10,381 bytes for npm and 54,452 for Rust**, against a no-comment baseline of 10,369 / 54,440, the 12-byte difference being the window itself. A reader that starts from the fixed 22-byte tail probe still fails to find the EOCD, still falls back to the conservative 65,557-byte suffix, and still reads **57,796 bytes of the npm pack and 14,714 of the Rust pack**. That is within one byte of the variable-length comment's measured damage. **Making the length fixed does nothing for a reader that does not know the length; the property that helps is that the length is declared at all, which §4's 29-byte row already showed for the variable comment.**
+
+What the fixed comment adds over that is genuine but small. Because the tag and version sit inside the tail read a bounded reader must make anyway, typing can come out of it instead of out of a separate read at offset 0:
+
+<!-- VERSIONPROBE_START -->
+
+| Corpus | Package | Route | Decides | Version | Requests | Bytes read | Why not |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| npm | no comment | tail comment, 34-byte window | no | — | 1 | 34 | no archive comment |
+| npm | no comment | offset 0 manifest header, 79 bytes | yes | 1 | 1 | 79 | — |
+| npm | variable 7-byte ASCII comment | tail comment, 34-byte window | no | — | 1 | 34 | reserved padding is not zero |
+| npm | variable 7-byte ASCII comment | offset 0 manifest header, 79 bytes | yes | 1 | 1 | 79 | — |
+| npm | fixed 8-byte binary comment | tail comment, 34-byte window | yes | 1 | 1 | 34 | — |
+| npm | fixed 8-byte binary comment | offset 0 manifest header, 79 bytes | yes | 1 | 1 | 79 | — |
+| rust | no comment | tail comment, 34-byte window | no | — | 1 | 34 | no archive comment |
+| rust | no comment | offset 0 manifest header, 79 bytes | yes | 1 | 1 | 79 | — |
+| rust | variable 7-byte ASCII comment | tail comment, 34-byte window | no | — | 1 | 34 | reserved padding is not zero |
+| rust | variable 7-byte ASCII comment | offset 0 manifest header, 79 bytes | yes | 1 | 1 | 79 | — |
+| rust | fixed 8-byte binary comment | tail comment, 34-byte window | yes | 1 | 1 | 34 | — |
+| rust | fixed 8-byte binary comment | offset 0 manifest header, 79 bytes | yes | 1 | 1 | 79 | — |
+
+<!-- VERSIONPROBE_END -->
+
+A version-only decision costs **34 bytes from the tail against 79 at offset 0**, one request either way. Folded into a full document-and-section read, the saving is **37 bytes and zero requests**: 10,332 against 10,369 for npm and 54,403 against 54,440 for Rust, both still 6 requests, both still touching zero `.git` and zero other-document bytes. The comment adds 8 bytes to the archive, so a package pays for itself after roughly one cold read.
+
+The table also records that the two comment forms are mutually unreadable: the fixed reader rejects the earlier `MDPKG/1` ASCII comment (`/` decodes as version 47, and `1` is a non-zero byte in reserved padding) and rejects a comment-free package outright. A comment format is a one-way door in a way the manifest is not.
+
+### 7.3 Rewrite survival — the crux
+
+The same five operations §5 ran against entry order, run against the fixed comment, with each route to a version priced on the rewritten archive:
+
+<!-- COMMENTREWRITE_START -->
+
+| Operation | Comment bytes after | Outcome | 34-byte tail route | 79-byte offset-0 route | Recoverable directory walk |
+| --- | --- | --- | --- | --- | --- |
+| as produced | 8 | preserved unmodified | 34 B | 79 B | 7,753 B |
+| Python rebuild by filename and bytes | 0 | stripped | unavailable | 79 B | 7,753 B |
+| 7-Zip a (add one file), exit 0 | 8 | preserved unmodified | 34 B | unavailable | 7,852 B |
+| PowerShell Compress-Archive of the extraction, exit 0 | 0 | stripped | unavailable | unavailable | 7,986 B |
+| fflate unzipSync then zipSync | 0 | stripped | unavailable | unavailable | 7,753 B |
+
+<!-- COMMENTREWRITE_END -->
+
+**The comment survived two of five operations unmodified, was stripped by three, and was never replaced with a foreign comment.** That is the same score entry order got, and worse than the manifest entry's content, which survived all five. No tool rewrote the comment into something else, so a reader never has to arbitrate between two live version claims — it only ever has the comment or nothing.
+
+The failures are not the same failures, which is the one interesting result here. Python's rebuild preserves manifest-first order and strips the comment; 7-Zip's add preserves the comment and breaks manifest-first order. So the comment does rescue exactly one of the five cases from the recoverable central-directory walk — **34 bytes instead of 7,852 for the 7-Zip output, a factor of 231**. But `Compress-Archive` and fflate destroy both cheap routes, leaving the directory walk (7,986 and 7,753 bytes) as the only way in. Adding the comment therefore takes the number of rewrites with a cheap typing route from two of five to three of five; it does not take it to five, and it does not let a reader stop implementing the recoverable tier.
+
+### 7.4 Authority, and whether it is worth the bytes
+
+It cannot be authoritative. Three of five ordinary rewrites remove it, so a reader that treated a missing comment as "not a markdown-package" would reject packages whose every byte of content is intact — and a reader that does not treat it that way has, by construction, made it a hint. The manifest stays the single source of truth on the same evidence as §1: its bytes survived all five operations, and it is reachable through the central directory in every one of them.
+
+Given that, the ledger for adding it:
+
+| For | Against |
+| --- | --- |
+| 37 bytes and 0 extra requests per cold document read (0.36% of the npm read, 0.07% of the Rust read) | +8 bytes on every package |
+| 34-byte instead of 79-byte version-only probe | A second version location that is absent from 3 of 5 real round trips |
+| 34 bytes instead of 7,852 for one of the five rewritten archives | The recoverable central-directory tier stays mandatory, so no reader gets simpler |
+| One tail read serves typing, version and the central directory | A tag check, a tier decoder and a padding validator — which must also reject the format's own earlier comment form |
+| | A reader that ignores the declared length is damaged exactly as much as by the variable comment (57,796 / 14,714 `.git` bytes) |
+
+**Recommendation: still no.** The measured benefit is a 0.36% reduction in a read that is already three orders of magnitude below the package size, bought with a second version location that three of five ordinary tools silently delete. Nothing in the ledger changes what a reader must implement. §1 stands, with its reasoning narrowed: the comment's cost is a hazard for readers that ignore a declared length rather than an unconditional cost, and its benefit is real but too small to justify a second place where the version lives.
+
+If the owner adopts it regardless — a defensible call, since the tail read is where a range reader starts and the byte cost is trivial — then the layout above is the one measured, with two amendments the evidence supports: **drop the escalation rule** in favour of a plain `uint32` LE (§7.1), and **specify that a missing or unrecognised comment is not a rejection**, only a fall-through to offset-0 typing and then to the central-directory walk.
+
 ## Handoff
 
 1. **Owner decision, open:** [addressing.md](addressing.md#refinement-zero-stored-identity-or-rename-metadata)'s latest refinement supersedes the sparse-exception recommendation this brief described as settled, and leaves the choice between a confirmed-exception ledger and zero identity metadata with a best-effort contract. The envelope supports both without change: `addressing.coverage` selects the contract, and `addressing.overrides` is `null` in the zero-metadata mode. The measured override-ledger packages price the confirmed option; the ledger-free packages price the other.
 2. **CARD-0005:** the recommended manifest is 287 bytes, fixed. Its cost is negligible against the 288,637 / 6,664,426-byte packages; the material envelope costs are the current-file view and the central directory, both already visible in the region map.
 3. **Specify before implementation:** the ZIP64 policy, the media type and extension registration, the two-tier conforming/recoverable reader, and the producer's path-uniqueness check. None blocks the layout.
-4. **Not measured here:** browser range access against a served package (CARD-0002 measured that protocol on its own fixtures), macOS or normalization-insensitive filesystems, packages large enough to need ZIP64, and any encrypted or split archive.
+4. **Owner decision, answered but reversible:** §7 measured the fixed-length EOCD comment the requester asked about and recommends against it — 37 bytes saved per cold read, survived by two of five archive rewrites, never authoritative. If it is adopted anyway, §7.1 carries the exact layout, with the escalation rule replaced by a plain `uint32` LE and a missing comment defined as a fall-through rather than a rejection.
+5. **Not measured here:** browser range access against a served package (CARD-0002 measured that protocol on its own fixtures), macOS or normalization-insensitive filesystems, packages large enough to need ZIP64,, any encrypted or split archive, and Info-ZIP `zip` as a rewrite tool (not installed on this host).
 
 ## Reproduction and evidence
 
@@ -344,7 +481,7 @@ Run them in this order; `reader.mjs` and `tools.py` consume `build.py`'s package
 
 <!-- VALIDATION_START -->
 
-Validation: **40** package structure checks (manifest first, stored, offset zero, no data descriptors, methods in profile, packs stored, entries non-overlapping, directory placement, reserved prefixes), **16** package hash/size/stock-library CRC audits, **52** bounded-access boundary assertions, **10** typing accept/reject decisions, **16** real-tool path extractions, **3** Git path-reservation cases, **8** extraction / working-tree checks, **5** archive-rewrite cases, **4** recorded counterexamples (EOCD-comment fallback, case collision, NFC/NFD survival, rewrite breaking fast typing). **154 checks in total, 0 unexpected failures in final evidence.** The recorded counterexamples are deliberate measured limitations, not failed assertions.
+Validation: **60** package structure checks (manifest first, stored, offset zero, no data descriptors, methods in profile, packs stored, entries non-overlapping, directory placement, reserved prefixes), **24** package hash/size/stock-library CRC audits, **88** bounded-access boundary assertions, **14** typing accept/reject decisions, **16** real-tool path extractions, **3** Git path-reservation cases, **8** extraction / working-tree checks, **5** archive-rewrite cases, **25** fixed-length EOCD comment checks (tier encoding, comment bytes, version routes, tail-typed access, comment rewrite survival), **4** recorded counterexamples (EOCD-comment fallback, case collision, NFC/NFD survival, rewrite breaking fast typing). **247 checks in total, 0 unexpected failures in final evidence.** The recorded counterexamples are deliberate measured limitations, not failed assertions.
 
 <!-- VALIDATION_END -->
 

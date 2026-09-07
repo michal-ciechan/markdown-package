@@ -12,6 +12,13 @@ const ROOT = path.resolve(HERE, '../../..');
 const WORK = path.join(ROOT, '.antiphon/container-work');
 const MANIFEST = '.mdpkg/manifest.json';
 const MAGIC = '{"mdpkg":"markdown-package/1"';
+// Follow-up: the fixed-length EOCD comment. 5-byte tag, then an escalating version
+// field (1 byte; 0xFF escapes to uint16 LE; 0xFFFF escapes to uint32 LE), then defined
+// zero padding. 8 bytes through version 65,789, 12 once tier 2 is in use, so a reader
+// that knows the profile always reads exactly the last 22 + 12 bytes.
+const CTAG = 'MDPKG';
+const MAX_COMMENT = 12;
+const TAIL_WINDOW = 22 + MAX_COMMENT;
 
 class RangeFile {
   constructor(file) {
@@ -54,6 +61,33 @@ function typeCheck(file) {
   const body = file.read(30 + nameLen + extraLen, MAGIC.length);
   if (body.toString('utf8') !== MAGIC) return reason('manifest does not begin with the magic member');
   return { ok: true, bytes: file.bytes, requests: file.requests, manifestOffset: 30 + nameLen + extraLen };
+}
+
+// One bounded tail read: locate the terminal EOCD inside a window of known maximum
+// size and, if the comment is ours, decode the version without any further request.
+function tailType(file, window = TAIL_WINDOW) {
+  const tail = file.suffix(Math.min(window, file.size));
+  let p = tail.length - 22;
+  for (; p >= 0; p--) {
+    if (tail.readUInt32LE(p) === 0x06054b50 && p + 22 + tail.readUInt16LE(p + 20) === tail.length) break;
+  }
+  if (p < 0) return { ok: false, reason: 'no terminal EOCD inside the profile window', bytes: file.bytes, requests: file.requests };
+  const len = tail.readUInt16LE(p + 20);
+  const comment = tail.subarray(p + 22);
+  if (len === 0) return { ok: false, reason: 'no archive comment', bytes: file.bytes, requests: file.requests, commentBytes: 0 };
+  if (len < CTAG.length + 1 || comment.subarray(0, CTAG.length).toString('latin1') !== CTAG) {
+    return { ok: false, reason: 'comment is not an MDPKG comment', bytes: file.bytes, requests: file.requests, commentBytes: len };
+  }
+  const f = comment.subarray(CTAG.length);
+  let version; let width;
+  if (f[0] !== 0xff) { version = f[0]; width = 1; }
+  else if (f.length >= 3 && f.readUInt16LE(1) !== 0xffff) { version = 0xff + f.readUInt16LE(1); width = 3; }
+  else if (f.length >= 7) { version = 0xff + 0xffff + f.readUInt32LE(3); width = 7; }
+  else return { ok: false, reason: 'version field escapes past the comment', bytes: file.bytes, requests: file.requests, commentBytes: len };
+  if (f.subarray(width).some((b) => b !== 0)) {
+    return { ok: false, reason: 'reserved padding is not zero', bytes: file.bytes, requests: file.requests, commentBytes: len };
+  }
+  return { ok: true, version, fieldBytes: width, commentBytes: len, bytes: file.bytes, requests: file.requests };
 }
 
 function manifest(file) {
@@ -128,7 +162,7 @@ function overlap(ranges, extent) {
   return ranges.reduce((a, r) => a + Math.max(0, Math.min(r.end, extent.end) - Math.max(r.start, extent.start)), 0);
 }
 
-function scenario(pkg, targetPath, label, suffixGuess = 22, expectClean = true) {
+function scenario(pkg, targetPath, label, suffixGuess = 22, expectClean = true, typing = 'offset 0') {
   const results = [];
   const probe = new RangeFile(pkg);
   const dirAll = directory(probe);
@@ -145,8 +179,18 @@ function scenario(pkg, targetPath, label, suffixGuess = 22, expectClean = true) 
 
   for (const mode of ['document', 'section']) {
     const file = new RangeFile(pkg);
-    const mf = manifest(file);
-    const dir = directory(file, suffixGuess);
+    let mf; let dir; let tv = null;
+    if (typing === 'tail comment') {
+      // Typing and version come out of the tail read the reader must make anyway, so
+      // the central directory is already in hand and the manifest is read through it.
+      tv = tailType(file, suffixGuess);
+      if (!tv.ok) throw new Error(tv.reason);
+      dir = directory(file, suffixGuess);
+      mf = JSON.parse(readEntry(file, dir, MANIFEST).data.toString('utf8'));
+    } else {
+      mf = manifest(file);
+      dir = directory(file, suffixGuess);
+    }
     const overrides = mf.addressing.overrides ? readEntry(file, dir, mf.addressing.overrides) : null;
     const doc = readEntry(file, dir, targetPath);
     let payload = doc.data, heading = null;
@@ -160,6 +204,7 @@ function scenario(pkg, targetPath, label, suffixGuess = 22, expectClean = true) 
     readEntry(file, dir, targetPath);
     results.push({
       package: label, target: targetPath, mode, heading,
+      typing, comment_version: tv ? tv.version : null,
       initial_suffix_bytes: suffixGuess, expect_clean: expectClean, eocd_comment_bytes: dir.comment,
       manifest_current: mf.current,
       overrides_entry: mf.addressing.overrides, overrides_records: overrides
@@ -211,6 +256,37 @@ function typingCases() {
   return rows;
 }
 
+// Item 1: what a version/type decision alone costs, by route and by package.
+function versionProbes() {
+  const rows = [];
+  const packages = {
+    'no comment': 'no-overrides.mdpkg',
+    'variable 7-byte ASCII comment': 'no-overrides-comment.mdpkg',
+    'fixed 8-byte binary comment': 'no-overrides-fixed.mdpkg',
+  };
+  for (const corpus of ['npm', 'rust']) {
+    for (const [label, name] of Object.entries(packages)) {
+      const pkg = path.join(WORK, corpus, name);
+      for (const route of ['tail comment, 34-byte window', 'offset 0 manifest header, 79 bytes']) {
+        const file = new RangeFile(pkg);
+        let ok; let reason = null; let version = null;
+        if (route.startsWith('tail')) {
+          const r = tailType(file, TAIL_WINDOW);
+          ok = r.ok; reason = r.reason ?? null; version = r.version ?? null;
+        } else {
+          const r = typeCheck(file);
+          ok = r.ok; reason = r.reason ?? null;
+          version = r.ok ? 1 : null;   // the magic member carries the version in its text
+        }
+        rows.push({ corpus, package: label, route, decided: ok, version, reason,
+          requests: file.requests, bytes_read: file.bytes, package_bytes: file.size });
+        file.close();
+      }
+    }
+  }
+  return rows;
+}
+
 const targets = { npm: 'docs/lib/content/using-npm/workspaces.md', rust: 'text/3872-crates-io-security.md' };
 const access = [];
 for (const corpus of ['npm', 'rust']) {
@@ -221,8 +297,14 @@ for (const corpus of ['npm', 'rust']) {
   // straight into the pack. Measured, not assumed.
   access.push(...scenario(p('no-overrides-comment'), targets[corpus], corpus + ': 7-byte EOCD comment, naive 22-byte start', 22, false));
   access.push(...scenario(p('no-overrides-comment'), targets[corpus], corpus + ': 7-byte EOCD comment, profile-aware 29-byte start', 29, true));
+  // Follow-up: the same package with a fixed-length comment. A reader that ignores the
+  // declared length hits exactly the same fallback; one that honours it stays clean and
+  // gets the version out of the tail read it had to make anyway.
+  access.push(...scenario(p('no-overrides-fixed'), targets[corpus], corpus + ': fixed 8-byte comment, naive 22-byte start', 22, false));
+  access.push(...scenario(p('no-overrides-fixed'), targets[corpus], corpus + ': fixed 8-byte comment, profile 34-byte window', 34, true));
+  access.push(...scenario(p('no-overrides-fixed'), targets[corpus], corpus + ': fixed 8-byte comment, typed from the tail', 34, true, 'tail comment'));
 }
-const out = { node: process.version, access, typing: typingCases() };
+const out = { node: process.version, access, typing: typingCases(), version_probes: versionProbes() };
 fs.writeFileSync(path.join(HERE, 'reader-results.json'), JSON.stringify(out, null, 2) + '\n');
 const bad = access.filter((r) => r.expect_clean && (r.git_bytes_touched || r.other_document_bytes_touched));
 if (bad.length) { console.error('boundary violation', bad); process.exit(1); }

@@ -35,8 +35,98 @@ CHECKS = collections.Counter()
 RESERVED = ('.mdpkg/', '.git/')
 MANIFEST_NAME = '.mdpkg/manifest.json'
 MAGIC = 'markdown-package/1'
-COMMENT = b'MDPKG/1'
+COMMENT = b'MDPKG/1'          # CARD-0001 follow-up: the rejected variable-length ASCII form
+CMAGIC = b'MDPKG'             # follow-up: fixed binary comment, 5-byte tag + escalating version
+FIXED_COMMENT_BYTES = 8       # tag + a version field with tier-1 escalation room
+MAX_COMMENT_BYTES = 12        # the same comment once tier 2 is in use; readers read 22 + this
+FORMAT_VERSION = 1
+ESCAPE = bytes([0xFF])   # tier escape sentinel
+PAD = bytes([0x00])     # defined filler in the fixed slot
 NAMESPACE = '5cf1f1c1-6a5e-4a2a-9d3e-0b7f2e1c4a80'  # fixture lineage namespace, not a registry entry
+
+
+def version_field(v):
+    """Escalating version field: 1 byte, escape 0xFF to uint16, escape 0xFFFF to uint32.
+
+    Each tier is biased by the count of everything the shorter tiers already encode, so
+    every version has exactly one encoding. This is the non-overlong rule UTF-8 enforces
+    and that LEB128 and protobuf varints leave to the producer.
+    """
+    assert v >= 0
+    if v < 0xFF:
+        return bytes([v])
+    v -= 0xFF
+    if v < 0xFFFF:
+        return ESCAPE + struct.pack('<H', v)
+    v -= 0xFFFF
+    if v < 0xFFFFFFFF:
+        return ESCAPE + ESCAPE * 2 + struct.pack('<I', v)
+    raise ValueError('beyond the specified tiers')
+
+
+def read_version_field(buf):
+    """Inverse of version_field; returns (version, width) or raises."""
+    if buf[0] != 0xFF:
+        return buf[0], 1
+    v1 = struct.unpack_from('<H', buf, 1)[0]
+    if v1 != 0xFFFF:
+        return 0xFF + v1, 3
+    v2 = struct.unpack_from('<I', buf, 3)[0]
+    if v2 == 0xFFFFFFFF:
+        raise ValueError('beyond the specified tiers')
+    return 0xFF + 0xFFFF + v2, 7
+
+
+def fixed_comment(version=FORMAT_VERSION, slot=FIXED_COMMENT_BYTES):
+    """Tag, version field, then defined zero padding out to the fixed comment length."""
+    field = version_field(version)
+    assert len(CMAGIC) + len(field) <= slot, 'version does not fit the fixed slot'
+    body = CMAGIC + field
+    return body + PAD * (slot - len(body))
+
+
+def comment_tiers():
+    """Priced tiers, plus the fixed-width alternatives that occupy the same comment."""
+    rows, low = [], 0
+    for width, count in ((1, 0xFF), (3, 0xFFFF), (7, 0xFFFFFFFF)):
+        high = low + count - 1
+        sample = version_field(low) if low else version_field(0)
+        rows.append(dict(tier=len(rows), field_bytes=width, comment_bytes=len(CMAGIC) + width,
+                         first_version=low, last_version=high, versions=count,
+                         first_encoding=version_field(low).hex(),
+                         last_encoding=version_field(high).hex()))
+        assert read_version_field(version_field(low)) == (low, width)
+        assert read_version_field(version_field(high)) == (high, width)
+        assert len(sample) >= 1
+        CHECKS['version_field_roundtrips'] += 2
+        low = high + 1
+    plain = [dict(encoding='plain uint8', comment_bytes=len(CMAGIC) + 1, max_version=0xFF),
+             dict(encoding='plain uint16 LE', comment_bytes=len(CMAGIC) + 2, max_version=0xFFFF),
+             dict(encoding='plain uint32 LE', comment_bytes=len(CMAGIC) + 4, max_version=0xFFFFFFFF)]
+    # Prior art, same value, for the byte counts quoted in the report.
+    def leb128(v):
+        out = bytearray()
+        while True:
+            b = v & 0x7F
+            v >>= 7
+            out.append(b | (0x80 if v else 0))
+            if not v:
+                return bytes(out)
+
+    def utf8_len(v):
+        try:
+            return len(chr(v).encode())
+        except (ValueError, UnicodeEncodeError):
+            return None
+
+    art = [dict(value=v, escalating=len(version_field(v)), leb128=len(leb128(v)),
+                utf8=utf8_len(v), protobuf_varint=len(leb128(v)))
+           for v in (1, 127, 128, 254, 255, 65535, 65790, 1 << 20)]
+    return dict(tiers=rows, fixed_width_alternatives=plain, prior_art=art,
+                fixed_comment_hex=fixed_comment().hex(),
+                fixed_comment_bytes=FIXED_COMMENT_BYTES,
+                max_comment_bytes=MAX_COMMENT_BYTES,
+                reader_tail_window=22 + MAX_COMMENT_BYTES)
 
 
 def canon(obj):
@@ -294,6 +384,17 @@ def run_corpus(name, repo, prefix, revision):
         (WORK / name / (variant + '.mdpkg')).write_bytes(data)
         if variant == 'no-overrides':
             (WORK / name / (variant + '-comment.mdpkg')).write_bytes(assemble(items, comment=COMMENT))
+            fixed = assemble(items, comment=fixed_comment())
+            (WORK / name / (variant + '-fixed.mdpkg')).write_bytes(fixed)
+            packages['no-overrides-fixed'] = dict(
+                bytes=len(fixed), sha256=compression.sha(fixed), head=head,
+                manifest_bytes=len(manifest_bytes(mf)), manifest=mf,
+                entries=entry_table(fixed), regions=regions(entry_table(fixed), fixed)[0],
+                directory=layout(fixed), typing=typing_probe(fixed),
+                first_git_offset=min(r['offset'] for r in entry_table(fixed)
+                                     if r['name'].startswith('.git/')),
+                ledger_records=0, ledger_raw_bytes=0, headings=heading_count,
+                comment_hex=fixed_comment().hex())
         sizes[variant] = len(data)
 
     base_items = ([(MANIFEST_NAME, manifest_bytes(packages['no-overrides']['manifest']))]
@@ -360,7 +461,10 @@ def layout_variants(items):
     add('recommended: manifest, documents, metadata, .git; no comment',
         manifest + docs + meta + gitfiles, note='baseline')
     add('same order with a 7-byte MDPKG/1 EOCD comment',
-        manifest + docs + meta + gitfiles, comment=COMMENT, note='version hint')
+        manifest + docs + meta + gitfiles, comment=COMMENT, note='variable-length version hint')
+    add('same order with the fixed 8-byte binary EOCD comment',
+        manifest + docs + meta + gitfiles, comment=fixed_comment(),
+        note='fixed-length version hint')
     add('documents under a content/ prefix',
         manifest + [('content/' + n, d) for n, d in docs] + meta + gitfiles,
         note='reserved-prefix alternative')
@@ -437,6 +541,7 @@ if __name__ == '__main__':
     compression.save(HERE / 'container-results.json',
                      dict(git=subprocess.check_output(['git', '--version']).decode().strip(),
                           reserved_prefixes=list(RESERVED), magic=MAGIC,
-                          manifest_name=MANIFEST_NAME, corpora=results, checks=dict(CHECKS)))
+                          manifest_name=MANIFEST_NAME, corpora=results,
+                          comment=comment_tiers(), checks=dict(CHECKS)))
     print(json.dumps({r['corpus']: {k: v['bytes'] for k, v in r['packages'].items()} for r in results}))
     print(dict(CHECKS))
