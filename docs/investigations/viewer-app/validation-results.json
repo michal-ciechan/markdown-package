@@ -1,0 +1,85 @@
+{
+  "package": "C:\\src\\markdown-package\\.antiphon\\viewer-work\\review-delta.mdpkg",
+  "bytes": 4634,
+  "zipfile": {
+    "testzip": null,
+    "comment": "",
+    "names": [
+      ".mdpkg/manifest.json",
+      ".mdpkg/review/comments.json",
+      ".mdpkg/history.json",
+      ".git/HEAD",
+      ".git/config",
+      ".git/refs/heads/main",
+      ".git/objects/pack/pack-6487c0752c4a2092e234fb0bdaa30a92799e4c08.idx",
+      ".git/objects/pack/pack-6487c0752c4a2092e234fb0bdaa30a92799e4c08.pack"
+    ],
+    "internal_attr_all_zero": true,
+    "methods": [
+      0,
+      8
+    ],
+    "manifest_is_first": true,
+    "manifest_header_offset": 0
+  },
+  "manifest_first_29_bytes": "{\"mdpkg\":\"markdown-package/1\"",
+  "manifest": {
+    "mdpkg": "markdown-package/1",
+    "anchor": "cm0312-trail-source-v1",
+    "current": "sha1-6e338fb853597e685f40432bda34d6fdb546fbc7",
+    "namespace": "e9f0a1b2-3c4d-4e5f-9a0b-1c2d3e4f5a6b",
+    "profile": "cm0312-source-lf-v1",
+    "review": {
+      "detail": ".mdpkg/review/comments.json",
+      "of": {
+        "current": "sha1-d038a20593503cc7250243ce9d4b36f148db479b",
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+        "packageDigest": "sha256-7d55bbf97c47ea15e5ad69bcf0c2a4525a8b7245869342af63fd910a655d6c45"
+      },
+      "shape": "delta"
+    }
+  },
+  "threads": 1,
+  "git": {
+    "read_tree": {
+      "code": 0,
+      "stderr": ""
+    },
+    "status": {
+      "code": 0,
+      "lines": [
+        "?? .mdpkg/history.json",
+        "?? .mdpkg/manifest.json"
+      ]
+    },
+    "fsck": {
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "rev_parse": {
+      "code": 0,
+      "head": "6e338fb853597e685f40432bda34d6fdb546fbc7"
+    },
+    "head_matches_manifest": true,
+    "tip_tree": {
+      "code": 0,
+      "entries": [
+        "040000 tree e4a1148a1cdf2c277bb6d960f2fe1d6032380b45\t.mdpkg"
+      ]
+    },
+    "log": {
+      "code": 0,
+      "lines": [
+        "6e338fb853597e685f40432bda34d6fdb546fbc7 Review of guide.md",
+        "",
+        ".mdpkg/review/comments.json"
+      ]
+    },
+    "tracked_paths": [
+      ".mdpkg/review/comments.json"
+    ],
+    "only_review_paths": true
+  },
+  "accepted": true
+}

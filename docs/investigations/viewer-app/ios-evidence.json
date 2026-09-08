@@ -1,0 +1,110 @@
+{
+  "fetched": "2026-09-09",
+  "note": "Source snapshot for the iOS and browser-support claims in viewer-app.md. WebKit files were fetched from the tip of the default branch on the date above and are hashed here because that branch moves; the MDN compatibility files are pinned to the same commit compression.md pinned, so the two investigations quote one dataset.",
+  "sources": [
+    {
+      "id": "bcd-share_target",
+      "url": "https://raw.githubusercontent.com/mdn/browser-compat-data/8f78ef6691bea90b55a975344ad7323130f20f36/manifests/webapp/share_target.json",
+      "bytes": 1560,
+      "sha256": "0b5e68b07bef5e43cee51b1b4b1486840fd29580297984e2c8b247b9e6e78bef",
+      "claim": "share_target: chrome 89, chrome_android 76, safari false with impl_url https://webkit.org/b/194593, safari_ios mirrors safari, webview_ios mirrors safari, firefox false"
+    },
+    {
+      "id": "bcd-file_handlers",
+      "url": "https://raw.githubusercontent.com/mdn/browser-compat-data/8f78ef6691bea90b55a975344ad7323130f20f36/manifests/webapp/file_handlers.json",
+      "bytes": 1218,
+      "sha256": "7e182513f9e7487ea48f26b9205fa5cf900e83c1cc6f6b486efec038781b74b6",
+      "claim": "file_handlers: chrome 102, chrome_android false, safari false, safari_ios mirrors safari, firefox false"
+    },
+    {
+      "id": "bcd-protocol_handlers",
+      "url": "https://raw.githubusercontent.com/mdn/browser-compat-data/8f78ef6691bea90b55a975344ad7323130f20f36/manifests/webapp/protocol_handlers.json",
+      "bytes": 3463,
+      "sha256": "c78596129cc70ea5d6f3f17ce1d14d4e596aa58c0e240d71b2d009e50595bba6",
+      "claim": "protocol_handlers: chrome 96, chrome_android false, safari false, safari_ios mirrors safari"
+    },
+    {
+      "id": "bcd-Navigator",
+      "url": "https://raw.githubusercontent.com/mdn/browser-compat-data/8f78ef6691bea90b55a975344ad7323130f20f36/api/Navigator.json",
+      "bytes": 196919,
+      "sha256": "9d28a1d757444f4ab5dbc1f6d8b486672f09beaa574e6aa1aaf20f4a77a7bca9",
+      "claim": "Navigator.share: safari 12.1, safari_ios mirrors safari, chrome_android 61, chrome 128 (89-128 partial, ChromeOS and Windows only). Navigator.canShare: safari 14, safari_ios mirrors safari, chrome 128 (89-128 partial). webview_android false for both."
+    },
+    {
+      "id": "webkit-UnifiedWebPreferences",
+      "url": "https://raw.githubusercontent.com/WebKit/WebKit/main/Source/WTF/Scripts/Preferences/UnifiedWebPreferences.yaml",
+      "bytes": 220498,
+      "sha256": "f2957ca54f3e3d9458e8392ffcc79654a9af674e42c050b95a38464978be86b8",
+      "claim": "WebShareFileAPIEnabled (\"Web Share API Level 2\"): status stable; WebKit default true for PLATFORM(COCOA) && !PLATFORM(WATCHOS) && !PLATFORM(APPLETV), false elsewhere. DownloadAttributeEnabled: WebKit default true. FileSystemWritableStreamEnabled: true on PLATFORM(COCOA). No preference named for Web Share Target."
+    },
+    {
+      "id": "webkit-Navigator.cpp",
+      "url": "https://raw.githubusercontent.com/WebKit/WebKit/main/Source/WebCore/page/Navigator.cpp",
+      "bytes": 15853,
+      "sha256": "bc12e4c8bd7abfddeaef25e7a2a464d8d69463e6b1831da26e127161d9064658",
+      "claim": "Navigator::canShare gates files on settings().webShareFileAPIEnabled() and applies no MIME-type or size filter; Navigator::share rejects a second concurrent share with InvalidStateError and rejects cancellation with AbortError."
+    },
+    {
+      "id": "webkit-ShareDataReader.cpp",
+      "url": "https://raw.githubusercontent.com/WebKit/WebKit/main/Source/WebCore/page/ShareDataReader.cpp",
+      "bytes": 3697,
+      "sha256": "b20201013ea99e566d424f63973f0a5d6d827c58ce3d9a0c14da72b185cf93fe",
+      "claim": "Every shared file is loaded with FileReaderLoader::ReadAsArrayBuffer and copied into a SharedBuffer before the sheet opens; the blob's name is carried through."
+    },
+    {
+      "id": "webkit-WKShareSheet.mm",
+      "url": "https://raw.githubusercontent.com/WebKit/WebKit/main/Source/WebKit/UIProcess/Cocoa/WKShareSheet.mm",
+      "bytes": 21476,
+      "sha256": "9d686082c51ae6977e3ff6462ffdd279818ffdc4836c563037f7ea478aa41d3b",
+      "last_commit_seen": "c67c551252b620dbec2398512dc36c9cca679cf5",
+      "claim": "writeFileToShareableURL writes each file into a random temporary directory under the sanitized suggested filename, so the extension survives; typeIdentifierForFileURL derives the UTI from the filename extension via [UTType typeWithFilenameExtension:] and falls back to UTTypeData when nothing is registered."
+    },
+    {
+      "id": "webkit-WKFileUploadPanel.mm",
+      "url": "https://raw.githubusercontent.com/WebKit/WebKit/main/Source/WebKit/UIProcess/ios/forms/WKFileUploadPanel.mm",
+      "bytes": 55162,
+      "sha256": "de79a23f19e3bb285ab8267e700ae4bce2a3f39f6fd073845c7871bd8c73265b",
+      "claim": "accept file extensions are mapped through MIMETypeRegistry::mimeTypeForExtension and then UTType typeWithMIMEType, so an unregistered extension contributes nothing; when the accepted-UTI set is empty the document picker is opened with UTTypeItem, which allows any file."
+    },
+    {
+      "id": "webkit-bug-194593",
+      "url": "https://bugs.webkit.org/show_bug.cgi?id=194593",
+      "claim": "Add support for Web Share Target API. Reported 2019-02-13, status NEW, unassigned, no resolution as of 2026-09-09."
+    },
+    {
+      "id": "webkit-standards-position-11",
+      "url": "https://github.com/WebKit/standards-positions/issues/11",
+      "claim": "WebKit's published position on the Web Share Target API is neutral."
+    },
+    {
+      "id": "apple-shortcuts-input-types",
+      "url": "https://support.apple.com/guide/shortcuts/input-types-apd7644168e1/ios",
+      "claim": "Share Sheet input types include Files, defined as \"Any file, including documents, images, PDFs, zips, and more\"."
+    },
+    {
+      "id": "apple-shortcuts-url-scheme",
+      "url": "https://support.apple.com/guide/shortcuts/run-a-shortcut-from-a-url-apd624386f42/ios",
+      "claim": "shortcuts://run-shortcut?name=[name]&input=[input]&text=[text]; input accepts a text string or the word clipboard. No file parameter is documented."
+    },
+    {
+      "id": "apple-uniform-type-identifiers",
+      "url": "https://developer.apple.com/documentation/uniformtypeidentifiers/defining-file-and-data-types-for-your-app",
+      "claim": "UTExportedTypeDeclarations / UTImportedTypeDeclarations / CFBundleDocumentTypes are Info.plist keys inside an app bundle; a type declaration cannot be made outside one."
+    },
+    {
+      "id": "apple-review-guidelines",
+      "url": "https://developer.apple.com/app-store/review/guidelines/",
+      "claim": "Guideline 4.2 Minimum Functionality: \"Your app should include features, content, and UI that elevate it beyond a repackaged website.\""
+    },
+    {
+      "id": "webkit-storage-cap",
+      "url": "https://webkit.org/blog/10218/full-third-party-cookie-blocking-and-more/",
+      "claim": "Seven-day cap on all script-writable storage (IndexedDB, LocalStorage, Media keys, SessionStorage, Service Worker registrations and cache) after seven days of Safari use without user interaction on the site. Web applications added to the Home Screen are not part of Safari and have their own counter of days of use."
+    },
+    {
+      "id": "webkit-safari-27-beta",
+      "url": "https://webkit.org/blog/17967/news-from-wwdc26-webkit-in-safari-27-beta/",
+      "claim": "The Safari 27 beta feature list names no Web Share Target, file handling, File System Access, download or web-app-installation change."
+    }
+  ]
+}

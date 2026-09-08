@@ -1,0 +1,125 @@
+{
+  "reviewOf": {
+    "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+    "current": "sha1-d038a20593503cc7250243ce9d4b36f148db479b",
+    "packageDigest": "sha256-7d55bbf97c47ea15e5ad69bcf0c2a4525a8b7245869342af63fd910a655d6c45",
+    "packageBytes": 4986
+  },
+  "thread": {
+    "locator": [
+      "section",
+      "guide.md",
+      [
+        [
+          "# Guide",
+          0
+        ],
+        [
+          "## Usage",
+          0
+        ]
+      ]
+    ],
+    "root": "52f7f2741ea95e947ab04da60e3cb037562daf0374b657ba70a0d30f5a0b7f70",
+    "expect": "684ba2cde243d6593c183ee88ec27f5891eec436ba269e5bccfd0a514fc0f9fa",
+    "select": {
+      "start": 25,
+      "end": 42,
+      "quote": "produce a package",
+      "occurrence": 0,
+      "prefix": "## Usage\n\nRun `build` to ",
+      "suffix": ".\nRun `check` to validate it.\n"
+    },
+    "scopeLength": 72,
+    "scope": "## Usage\n\nRun `build` to produce a package.\nRun `check` to validate it.\n"
+  },
+  "crossCheck": {
+    "rootAppearsInWorkedExample": true,
+    "digestAppearsInWorkedExample": true
+  },
+  "commentsBytes": 1015,
+  "repo": {
+    "commit": "6e338fb853597e685f40432bda34d6fdb546fbc7",
+    "tree": "4f37f3173390e4106755c6dc27dbd5263e602923",
+    "packBytes": 966,
+    "idxBytes": 1212,
+    "packOids": 5
+  },
+  "package": {
+    "bytes": 4634,
+    "sha256": "42d6d628714c419de6096d6cc4d707c6e77fd8cdc88ecddf586cbe8cf0dd90a5"
+  },
+  "selfRead": {
+    "typing": {
+      "conforming": true,
+      "bytesRead": 79
+    },
+    "entries": [
+      {
+        "name": ".mdpkg/manifest.json",
+        "method": 0,
+        "internalAttributes": 0,
+        "compressedSize": 478,
+        "uncompressedSize": 478
+      },
+      {
+        "name": ".mdpkg/review/comments.json",
+        "method": 8,
+        "internalAttributes": 0,
+        "compressedSize": 654,
+        "uncompressedSize": 1015
+      },
+      {
+        "name": ".mdpkg/history.json",
+        "method": 8,
+        "internalAttributes": 0,
+        "compressedSize": 100,
+        "uncompressedSize": 108
+      },
+      {
+        "name": ".git/HEAD",
+        "method": 0,
+        "internalAttributes": 0,
+        "compressedSize": 21,
+        "uncompressedSize": 21
+      },
+      {
+        "name": ".git/config",
+        "method": 0,
+        "internalAttributes": 0,
+        "compressedSize": 50,
+        "uncompressedSize": 50
+      },
+      {
+        "name": ".git/refs/heads/main",
+        "method": 0,
+        "internalAttributes": 0,
+        "compressedSize": 41,
+        "uncompressedSize": 41
+      },
+      {
+        "name": ".git/objects/pack/pack-6487c0752c4a2092e234fb0bdaa30a92799e4c08.idx",
+        "method": 0,
+        "internalAttributes": 0,
+        "compressedSize": 1212,
+        "uncompressedSize": 1212
+      },
+      {
+        "name": ".git/objects/pack/pack-6487c0752c4a2092e234fb0bdaa30a92799e4c08.pack",
+        "method": 0,
+        "internalAttributes": 0,
+        "compressedSize": 966,
+        "uncompressedSize": 966
+      }
+    ],
+    "commentsRoundTrip": true,
+    "eocdCommentLengthZero": true,
+    "textFlagClearEverywhere": true
+  },
+  "node": "v24.6.0",
+  "versions": {
+    "isomorphic-git": "1.41.9",
+    "commonmark": "0.31.2"
+  },
+  "writtenTo": "C:\\src\\markdown-package\\.antiphon\\viewer-work\\review-delta.mdpkg"
+}

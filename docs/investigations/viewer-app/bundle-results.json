@@ -1,0 +1,101 @@
+{
+  "node": "v24.6.0",
+  "esbuild": "0.25.9",
+  "versions": {
+    "@zip.js/zip.js": "2.8.7",
+    "fflate": "0.8.2",
+    "commonmark": "0.31.2",
+    "isomorphic-git": "1.41.9",
+    "buffer": "6.0.3"
+  },
+  "assets": [
+    {
+      "name": "zip-read-native",
+      "entry_source": "export { ZipReader, BlobReader, HttpRangeReader, Uint8ArrayWriter, TextWriter, configure } from './js/node_modules/@zip.js/zip.js/index-native.js';",
+      "bytes": 138212,
+      "gzip_bytes": 66076,
+      "sha256": "a70131cb69b13d0ca1e25d7817b822d063481b459f534ac67377483f90b52073",
+      "input_count": 34
+    },
+    {
+      "name": "zip-readwrite-native",
+      "entry_source": "export { ZipReader, ZipWriter, BlobReader, BlobWriter, HttpRangeReader, Uint8ArrayReader, Uint8ArrayWriter, TextReader, TextWriter, configure } from './js/node_modules/@zip.js/zip.js/index-native.js';",
+      "bytes": 155923,
+      "gzip_bytes": 71883,
+      "sha256": "1397ae1ea6bbc4254856097cab39c7eb528817af4d2d81378de8f3f3a6220604",
+      "input_count": 34
+    },
+    {
+      "name": "zip-read-wasm-fallback",
+      "entry_source": "export { ZipReader, BlobReader, HttpRangeReader, Uint8ArrayWriter, TextWriter, configure } from './js/node_modules/@zip.js/zip.js/index.js';",
+      "bytes": 124658,
+      "gzip_bytes": 58505,
+      "sha256": "d9568c7c573ea582137676c7b0808129c963887ffee4b2b408d4999f41ef0b1f",
+      "input_count": 36
+    },
+    {
+      "name": "fflate-unzip",
+      "entry_source": "export { unzipSync } from './js/node_modules/fflate/esm/browser.js';",
+      "bytes": 5397,
+      "gzip_bytes": 2712,
+      "sha256": "1e9e3ecf0636c1f06e6c6ad6b7bdef340fc50319e44d5a3224c024676e7b3691",
+      "input_count": 2
+    },
+    {
+      "name": "fflate-zip-unzip",
+      "entry_source": "export { zipSync, unzipSync } from './js/node_modules/fflate/esm/browser.js';",
+      "bytes": 12449,
+      "gzip_bytes": 6047,
+      "sha256": "4169c443ef520f3eb25c7456b9f35cef5c7880bf49167bc740d3678820e92735",
+      "input_count": 2
+    },
+    {
+      "name": "commonmark-parse",
+      "entry_source": "export { Parser } from './js/node_modules/commonmark/lib/index.js';",
+      "bytes": 159521,
+      "gzip_bytes": 47999,
+      "sha256": "b83f0f38d8003c9036f314dba63b7f3aabf45b009fad027f27ec58ca6352e4f7",
+      "input_count": 20
+    },
+    {
+      "name": "commonmark-parse-render",
+      "entry_source": "export { Parser, HtmlRenderer } from './js/node_modules/commonmark/lib/index.js';",
+      "bytes": 159549,
+      "gzip_bytes": 48014,
+      "sha256": "3b54b5ceca9e9f6ea07489aa2815ea42fda858533339c023370e1a962d4aa127",
+      "input_count": 20
+    },
+    {
+      "name": "git-read",
+      "entry_source": "export { log, readBlob } from './js/node_modules/isomorphic-git/index.js';",
+      "bytes": 166033,
+      "gzip_bytes": 53773,
+      "sha256": "b7beb8e16db0ccf1064d16567d13e0235533f4919146febd20fd09dc5afbf725",
+      "input_count": 84
+    },
+    {
+      "name": "git-write-review",
+      "entry_source": "export { init, writeBlob, writeTree, writeCommit, writeRef, packObjects, indexPack } from './js/node_modules/isomorphic-git/index.js';",
+      "bytes": 160804,
+      "gzip_bytes": 52363,
+      "sha256": "9970358f5d051adc609670d9f630d6ded15eb7ce01e10a3da36f911b9eb3aced",
+      "input_count": 84
+    },
+    {
+      "name": "mdpkg-minimal-reader",
+      "entry_source": "export * from '../../docs/investigations/viewer-app/mdpkg_reader.mjs';",
+      "bytes": 3347,
+      "gzip_bytes": 1565,
+      "sha256": "f48f3164fc4883263a71af053631d79c3047acbd381f0df47a23649e86498e05",
+      "input_count": 2
+    },
+    {
+      "name": "mdpkg-minimal-writer",
+      "entry_source": "export * from '../../docs/investigations/viewer-app/mdpkg_writer.mjs';",
+      "bytes": 2125,
+      "gzip_bytes": 918,
+      "sha256": "a7d9b57d7f641f34f5890cb4ecb2acbaeb905c9e8d98dc15fb7bc5ca86a5e9f6",
+      "input_count": 3
+    }
+  ]
+}

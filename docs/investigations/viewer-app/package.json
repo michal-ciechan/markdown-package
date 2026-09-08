@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "dependencies": {
+    "@zip.js/zip.js": "2.8.7",
+    "buffer": "6.0.3",
+    "commonmark": "0.31.2",
+    "esbuild": "0.25.9",
+    "fflate": "0.8.2",
+    "isomorphic-git": "1.41.9"
+  }
+}

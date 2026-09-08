@@ -1,0 +1,372 @@
+{
+  "packages": [
+    {
+      "package": "full",
+      "size": 4986,
+      "sha256": "7d55bbf97c47ea15e5ad69bcf0c2a4525a8b7245869342af63fd910a655d6c45",
+      "typing": {
+        "conforming": true,
+        "bytesRead": 79,
+        "bytesAsked": 79
+      },
+      "rejections": [
+        {
+          "label": "random bytes",
+          "conforming": false,
+          "reason": "no local file header signature at 0",
+          "bytesAsked": 79
+        },
+        {
+          "label": "empty",
+          "conforming": false,
+          "reason": "shorter than 79 bytes",
+          "bytesAsked": 0
+        },
+        {
+          "label": "78-byte truncation",
+          "conforming": false,
+          "reason": "shorter than 79 bytes",
+          "bytesAsked": 0
+        },
+        {
+          "label": "bad signature",
+          "conforming": false,
+          "reason": "no local file header signature at 0",
+          "bytesAsked": 79
+        },
+        {
+          "label": "first entry renamed",
+          "conforming": false,
+          "reason": "first entry is \"xmdpkg/manifest.json\"",
+          "bytesAsked": 79
+        }
+      ],
+      "entries": [
+        {
+          "name": ".mdpkg/manifest.json",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 366,
+          "uncompressedSize": 366
+        },
+        {
+          "name": ".mdpkg/address/overrides.json",
+          "method": 8,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 160,
+          "uncompressedSize": 195
+        },
+        {
+          "name": "guide.md",
+          "method": 8,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 119,
+          "uncompressedSize": 163
+        },
+        {
+          "name": "notes.md",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 36,
+          "uncompressedSize": 36
+        },
+        {
+          "name": ".mdpkg/history.json",
+          "method": 8,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 224,
+          "uncompressedSize": 407
+        },
+        {
+          "name": ".git/HEAD",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 21,
+          "uncompressedSize": 21
+        },
+        {
+          "name": ".git/config",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 50,
+          "uncompressedSize": 50
+        },
+        {
+          "name": ".git/refs/heads/main",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 41,
+          "uncompressedSize": 41
+        },
+        {
+          "name": ".git/objects/pack/pack-18335051c8115c97654be611ca0d5eeaf6f5e597.idx",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 1436,
+          "uncompressedSize": 1436
+        },
+        {
+          "name": ".git/objects/pack/pack-18335051c8115c97654be611ca0d5eeaf6f5e597.pack",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 1233,
+          "uncompressedSize": 1233
+        }
+      ],
+      "checks": {
+        "manifestFirstAtZero": true,
+        "packIsLastEntry": true,
+        "onlyMethods0And8": true,
+        "textFlagClearEverywhere": true,
+        "eocdCommentLengthZero": true,
+        "packStored": true
+      },
+      "minimalReader": {
+        "entry": "guide.md",
+        "method": 8,
+        "typingBytes": 79,
+        "eocdBytes": 22,
+        "centralDirectoryBytes": 719,
+        "entryBytes": 149,
+        "totalAsked": 969,
+        "packageSize": 4986,
+        "sha256": "1cf920f3e2f91322b12e08c6edd7c2532d429a42adb2bcf7b22a96b73172b4f8",
+        "decodedBytes": 163
+      },
+      "zipjs": {
+        "entries": 10,
+        "directoryBytes": 741,
+        "totalAsked": 890,
+        "sha256": "1cf920f3e2f91322b12e08c6edd7c2532d429a42adb2bcf7b22a96b73172b4f8",
+        "matchesMinimal": true
+      },
+      "fflate": {
+        "totalAsked": 4986,
+        "sha256": "1cf920f3e2f91322b12e08c6edd7c2532d429a42adb2bcf7b22a96b73172b4f8",
+        "matchesMinimal": true
+      },
+      "sections": {
+        "topLevelHeadings": 3,
+        "headings": [
+          {
+            "level": 1,
+            "line": 1
+          },
+          {
+            "level": 2,
+            "line": 5
+          },
+          {
+            "level": 2,
+            "line": 9
+          }
+        ]
+      }
+    },
+    {
+      "package": "squashed",
+      "size": 6322,
+      "sha256": "b6fb3f23464452d3d4ab44660790e4f22c6cfa3fff1c184dd69152c3f4325ca9",
+      "typing": {
+        "conforming": true,
+        "bytesRead": 79,
+        "bytesAsked": 79
+      },
+      "rejections": [
+        {
+          "label": "random bytes",
+          "conforming": false,
+          "reason": "no local file header signature at 0",
+          "bytesAsked": 79
+        },
+        {
+          "label": "empty",
+          "conforming": false,
+          "reason": "shorter than 79 bytes",
+          "bytesAsked": 0
+        },
+        {
+          "label": "78-byte truncation",
+          "conforming": false,
+          "reason": "shorter than 79 bytes",
+          "bytesAsked": 0
+        },
+        {
+          "label": "bad signature",
+          "conforming": false,
+          "reason": "no local file header signature at 0",
+          "bytesAsked": 79
+        },
+        {
+          "label": "first entry renamed",
+          "conforming": false,
+          "reason": "first entry is \"xmdpkg/manifest.json\"",
+          "bytesAsked": 79
+        }
+      ],
+      "entries": [
+        {
+          "name": ".mdpkg/manifest.json",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 376,
+          "uncompressedSize": 376
+        },
+        {
+          "name": ".mdpkg/address/overrides.json",
+          "method": 8,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 160,
+          "uncompressedSize": 195
+        },
+        {
+          "name": "guide.md",
+          "method": 8,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 119,
+          "uncompressedSize": 163
+        },
+        {
+          "name": "notes.md",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 36,
+          "uncompressedSize": 36
+        },
+        {
+          "name": ".mdpkg/history.json",
+          "method": 8,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 368,
+          "uncompressedSize": 844
+        },
+        {
+          "name": ".mdpkg/history/bindings.json",
+          "method": 8,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 169,
+          "uncompressedSize": 265
+        },
+        {
+          "name": ".mdpkg/history/ranges/ff2689cd726e96680fd7c32435119059ae199fbd70310111b970bac4bdabf6b0.json",
+          "method": 8,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 947,
+          "uncompressedSize": 2202
+        },
+        {
+          "name": ".git/HEAD",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 21,
+          "uncompressedSize": 21
+        },
+        {
+          "name": ".git/config",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 50,
+          "uncompressedSize": 50
+        },
+        {
+          "name": ".git/refs/heads/main",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 41,
+          "uncompressedSize": 41
+        },
+        {
+          "name": ".git/objects/pack/pack-90bb59018b3df8e15cd07c8899e108e3ded2c475.idx",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 1352,
+          "uncompressedSize": 1352
+        },
+        {
+          "name": ".git/objects/pack/pack-90bb59018b3df8e15cd07c8899e108e3ded2c475.pack",
+          "method": 0,
+          "flags": 0,
+          "internalAttributes": 0,
+          "compressedSize": 993,
+          "uncompressedSize": 993
+        }
+      ],
+      "checks": {
+        "manifestFirstAtZero": true,
+        "packIsLastEntry": true,
+        "onlyMethods0And8": true,
+        "textFlagClearEverywhere": true,
+        "eocdCommentLengthZero": true,
+        "packStored": true
+      },
+      "minimalReader": {
+        "entry": "guide.md",
+        "method": 8,
+        "typingBytes": 79,
+        "eocdBytes": 22,
+        "centralDirectoryBytes": 930,
+        "entryBytes": 149,
+        "totalAsked": 1180,
+        "packageSize": 6322,
+        "sha256": "1cf920f3e2f91322b12e08c6edd7c2532d429a42adb2bcf7b22a96b73172b4f8",
+        "decodedBytes": 163
+      },
+      "zipjs": {
+        "entries": 12,
+        "directoryBytes": 952,
+        "totalAsked": 1101,
+        "sha256": "1cf920f3e2f91322b12e08c6edd7c2532d429a42adb2bcf7b22a96b73172b4f8",
+        "matchesMinimal": true
+      },
+      "fflate": {
+        "totalAsked": 6322,
+        "sha256": "1cf920f3e2f91322b12e08c6edd7c2532d429a42adb2bcf7b22a96b73172b4f8",
+        "matchesMinimal": true
+      },
+      "sections": {
+        "topLevelHeadings": 3,
+        "headings": [
+          {
+            "level": 1,
+            "line": 1
+          },
+          {
+            "level": 2,
+            "line": 5
+          },
+          {
+            "level": 2,
+            "line": 9
+          }
+        ]
+      }
+    }
+  ],
+  "node": "v24.6.0",
+  "versions": {
+    "@zip.js/zip.js": "2.8.7",
+    "fflate": "0.8.2",
+    "commonmark": "0.31.2"
+  }
+}
