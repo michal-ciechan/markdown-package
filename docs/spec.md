@@ -250,12 +250,12 @@ Squashing discards the intermediate revisions that answer "was this section touc
 | `namespace`, `anchor`, `profile`, `walk` | MUST match the manifest and be `first-parent` |
 | `coverage` | `complete` or `partial` |
 | `base`, `tip` | Source-range endpoints, qualified IDs |
-| `sourceCommits` | Ordered source commit IDs; position 0 is `base`, ordinal *n* is the *n*-th transition |
+| `sourceCommits` | Ordered source commit IDs, one per transition; `sourceCommits[n-1]` is the commit produced by transition *n*. Ordinals are 1-based; ordinal 0 denotes the `base` state, whose commit is in the `base` field and is not an element of this array |
 | `collapsedInputs` | The commits this squash replaced |
 | `beforeStateDigest`, `afterStateDigest` | SHA-256 of the canonical JSON map from every root to its scoped digest at each endpoint; binds the summary to exact states |
 | `contentTouched` | Sorted roots whose digest or live existence changed anywhere in the range |
 | `changedAt` | root → ordinals at which it changed; an edit and its revert both appear |
-| `endpoints` | root → `{before, after}` digests, `null` for absent |
+| `endpoints` | root → `{before, after}` digests at `base` and `tip`, for the roots in `contentTouched` only; `null` for absent |
 | `identityEvents` | `{at, root, event, …}` for creation, retirement (`split`, `merge`, `deleted`), restoration, with successor roots |
 | `nested` | `{summary, emitted}` hashes of earlier summaries this one expands, for repeated squash |
 
