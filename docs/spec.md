@@ -141,7 +141,7 @@ The canonical path of a document is the exact byte sequence Git records in the t
 
 - Forward slash only; no leading slash; no `.` or `..` component; no drive letter; no backslash. Every tested extractor turns `a\b.md` into a directory `a/`.
 - UTF-8 names with general-purpose bit 11 set whenever a name is not pure ASCII.
-- Entry names MUST be unique under Unicode NFC followed by simple case folding. This is stricter than Git and deliberately so: `README.md` plus `readme.md` is a valid Git tree, and every tested extractor and Git's own NTFS checkout silently keeps one of the two.
+- Entry names MUST be unique under Unicode NFC followed by simple case folding (D-16). This is stricter than Git and deliberately so: `README.md` plus `readme.md` is a valid Git tree, and every tested extractor and Git's own NTFS checkout silently keeps one of the two.
 - `.mdpkg/` and `.git/` are reserved. No tracked path may begin with either prefix after NFC and case folding, except the tracked addressing paths under `.mdpkg/address/` (§6.3). Git enforces `.git/` and `.GIT/` in `fsck` and checkout; it accepts `.mdpkg/x.json` without complaint, so the producer MUST enforce the `.mdpkg/` reservation itself. A producer importing a source tree that contains a real `.mdpkg/` directory MUST reject it or relocate the colliding paths and declare that it did.
 
 Document *content* is never normalized by the container; the source profile in §6.1 decides what a review covers.
@@ -273,7 +273,7 @@ A published hunk reference (§6.4) binds the SHA-256 of a complete patch. Becaus
 
 ### 6.1 Source digest profile `cm0312-source-lf-v1`
 
-1. Decode strict UTF-8; normalize CRLF and lone CR to LF. Do not normalize Unicode. A BOM, if present, is retained as source. Invalid UTF-8 is outside the profile.
+1. Decode strict UTF-8; normalize CRLF and lone CR to LF (D-17). Do not normalize Unicode. A BOM, if present, is retained as source. Invalid UTF-8 is outside the profile.
 2. Parse CommonMark 0.31.2 without smart punctuation. Only headings that are direct children of the document open addressable sections; ATX and Setext both count. Heading-like text inside fenced code, HTML blocks, blockquotes or list items does not.
 3. A heading section runs from the start of its heading's source line to just before the next top-level heading of equal or lower rank, or to end of file. It includes the heading's exact markup and all descendant sections. A child edit therefore changes the child's and every ancestor's digest; a sibling edit does not. A rank change changes the digest.
 4. The preamble is everything before the first top-level heading, or the whole document when it has none. Its identity is permanent even when it is empty.
@@ -705,6 +705,8 @@ Where the investigations established what must be declared but not its exact sha
 - **D-13** `.mdpkg` is used as the working file extension throughout; registration is open (§11.1).
 - **D-14** Version 1 packages use SHA-1 object IDs. The `sha256-` prefix is reserved in the grammar because the investigations qualified every ID, but no SHA-256 repository was packaged or read; conformance for SHA-256 packages is open (§11.2).
 - **D-15** The manifest's `mdpkg` key is written first and every other key sorted, exactly as container.md measured.
+- **D-16** Entry names MUST be unique case-insensitively: Unicode NFC followed by simple case folding (§3.6). This is adopted from the documented collision risk and the measured NTFS `README.md` / `readme.md` collision (container.md), not from a measured NFC/NFD collision on a normalization-insensitive filesystem; that verification remains open (§11.1).
+- **D-17** Line endings are normalized to LF wherever this format defines normalization: the source digest profile `cm0312-source-lf-v1` normalizes CRLF and lone CR to LF before hashing (§6.1 rule 1). This is the format's only EOL rule. It does not touch stored bytes: ZIP entry payloads and Git blobs keep the producer's exact bytes, CRLF included; only the digest input is normalized.
 
 ---
 
@@ -716,7 +718,7 @@ These were deferred by container.md and are **not** decided here.
 
 1. **ZIP64 policy.** Behaviour past 4 GiB or 65,535 entries. Options are: permit ZIP64 with mandatory locator handling (readers must follow the 20-byte locator before the EOCD to the ZIP64 EOCD, and the small tail read no longer suffices), or exclude it from the profile with a hard producer limit. Today's only tested behaviour is rejection by the evidence reader. Nothing in the corpora approaches the limits.
 2. **Media type and file extension registration.** What a `.mdpkg` file is called and served as. A media type of the form `application/vnd.…+zip` is unregistered. Because the file must begin with `PK` for ordinary tools to work, extension- and sniffer-based dispatch will sometimes see a generic ZIP; that is accepted, but the names are not chosen.
-3. **Cross-platform normalization testing.** No macOS, APFS, HFS+ or other normalization-insensitive filesystem was reachable. The NFC-plus-case-fold uniqueness rule is adopted from the documented risk and the measured NTFS case collision, not from a measured NFC/NFD collision. Windows 11, newer 7-Zip, macOS Archive Utility and Info-ZIP `zip` as a rewrite tool are untested.
+3. **Cross-platform normalization testing.** No macOS, APFS, HFS+ or other normalization-insensitive filesystem was reachable. The NFC-plus-case-fold uniqueness rule itself is decided (D-16); what remains open is verifying it against a real NFC/NFD collision, rather than the measured NTFS case collision it was adopted from. Windows 11, newer 7-Zip, macOS Archive Utility and Info-ZIP `zip` as a rewrite tool are untested.
 
 ### 11.2 Raised by the investigations and never closed
 

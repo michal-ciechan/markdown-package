@@ -177,7 +177,7 @@ The package's canonical path for a document is **the exact byte sequence Git rec
 
 - **Separator:** forward slash only, no leading slash, no `.` or `..` component, no drive letter, no backslash. A backslash is not a ZIP separator, yet every tested extractor treats it as one: an `a\b.md` entry lands as `a/b.md` in all four, so a producer that emitted a legal Git path containing a backslash would silently create a directory.
 - **Encoding:** UTF-8, with general-purpose bit 11 set whenever a name is not pure ASCII (Python's writer does this automatically). A single non-ASCII name round-tripped intact through all four extractors.
-- **Uniqueness:** entry names must be **unique under Unicode NFC followed by simple case folding**. This is stricter than Git, and deliberately so.
+- **Uniqueness:** entry names must be **unique under Unicode NFC followed by simple case folding**. This is stricter than Git, and deliberately so. The specification adopts this as a decided default (D-16 in spec.md §10), not an open question: only its verification against a real normalization-insensitive filesystem remains open (spec.md §11.1).
 
 <!-- PATHS_START -->
 
@@ -192,7 +192,7 @@ The package's canonical path for a document is **the exact byte sequence Git rec
 
 `README.md` plus `readme.md` is a valid Git tree — `fsck` accepts it — but **every tested extractor, and Git's own checkout on NTFS, keeps only one of the two**, with no error. That is silent data loss inside a format whose whole point is stable references to document sections, so the constraint is a producer requirement, not a warning. The NFC/NFD pair survived on this Windows host; it is included because a normalization-insensitive filesystem would collide it exactly as the case pair collides here, and **no macOS run was available** — the NFC rule is adopted from that documented risk, not from a local failure. Neither corpus violates either rule: **0 collisions across 733 paths, all pure ASCII, all already NFC.**
 
-Nothing else is normalized. Document *content* keeps its exact bytes; the source-normalization profile that decides what a review covers is CARD-0004's `cm0312-source-lf-v1`, applied to content, and is not a container concern.
+Nothing else is normalized at the container level: document *content* keeps its exact bytes, CRLF included. The one EOL rule in the format (spec.md D-17) lives in CARD-0004's `cm0312-source-lf-v1` digest profile, which normalizes CRLF and lone CR to LF before hashing; it is applied to content for that purpose only and is not a container concern.
 
 ### ZIP64
 
