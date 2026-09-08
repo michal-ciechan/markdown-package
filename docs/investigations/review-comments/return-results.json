@@ -1,0 +1,162 @@
+{
+ "distances": [
+  1,
+  4,
+  16,
+  32
+ ],
+ "quoteLength": 40,
+ "context": 40,
+ "corpora": [
+  {
+   "corpus": "npm",
+   "documents": 83,
+   "threads": 641,
+   "byDistance": {
+    "1": {
+     "documentGone": 0,
+     "sectionRootMissing": 0,
+     "sectionSurvives": 639,
+     "sectionFlaggedChanged": 2,
+     "inSurvivingSectionAnchorExact": 639,
+     "inSurvivingSectionAnchorMoved": 0,
+     "changed": {
+      "quoteRelocatedCorrect": 2,
+      "quoteRelocatedWrong": 0,
+      "quoteDetachedCorrect": 0,
+      "quoteDetachedFalse": 0,
+      "offsetCorrect": 2,
+      "offsetWrong": 0,
+      "offsetOutOfRange": 0
+     }
+    },
+    "4": {
+     "documentGone": 0,
+     "sectionRootMissing": 0,
+     "sectionSurvives": 638,
+     "sectionFlaggedChanged": 3,
+     "inSurvivingSectionAnchorExact": 638,
+     "inSurvivingSectionAnchorMoved": 0,
+     "changed": {
+      "quoteRelocatedCorrect": 3,
+      "quoteRelocatedWrong": 0,
+      "quoteDetachedCorrect": 0,
+      "quoteDetachedFalse": 0,
+      "offsetCorrect": 2,
+      "offsetWrong": 1,
+      "offsetOutOfRange": 0
+     }
+    },
+    "16": {
+     "documentGone": 6,
+     "sectionRootMissing": 1,
+     "sectionSurvives": 597,
+     "sectionFlaggedChanged": 37,
+     "inSurvivingSectionAnchorExact": 597,
+     "inSurvivingSectionAnchorMoved": 0,
+     "changed": {
+      "quoteRelocatedCorrect": 32,
+      "quoteRelocatedWrong": 1,
+      "quoteDetachedCorrect": 4,
+      "quoteDetachedFalse": 0,
+      "offsetCorrect": 27,
+      "offsetWrong": 10,
+      "offsetOutOfRange": 0
+     }
+    },
+    "32": {
+     "documentGone": 13,
+     "sectionRootMissing": 5,
+     "sectionSurvives": 544,
+     "sectionFlaggedChanged": 79,
+     "inSurvivingSectionAnchorExact": 544,
+     "inSurvivingSectionAnchorMoved": 0,
+     "changed": {
+      "quoteRelocatedCorrect": 71,
+      "quoteRelocatedWrong": 2,
+      "quoteDetachedCorrect": 6,
+      "quoteDetachedFalse": 0,
+      "offsetCorrect": 48,
+      "offsetWrong": 31,
+      "offsetOutOfRange": 0
+     }
+    }
+   }
+  },
+  {
+   "corpus": "rust",
+   "documents": 633,
+   "threads": 8967,
+   "byDistance": {
+    "1": {
+     "documentGone": 0,
+     "sectionRootMissing": 7,
+     "sectionSurvives": 8960,
+     "sectionFlaggedChanged": 0,
+     "inSurvivingSectionAnchorExact": 8960,
+     "inSurvivingSectionAnchorMoved": 0,
+     "changed": {
+      "quoteRelocatedCorrect": 0,
+      "quoteRelocatedWrong": 0,
+      "quoteDetachedCorrect": 0,
+      "quoteDetachedFalse": 0,
+      "offsetCorrect": 0,
+      "offsetWrong": 0,
+      "offsetOutOfRange": 0
+     }
+    },
+    "4": {
+     "documentGone": 0,
+     "sectionRootMissing": 7,
+     "sectionSurvives": 8960,
+     "sectionFlaggedChanged": 0,
+     "inSurvivingSectionAnchorExact": 8960,
+     "inSurvivingSectionAnchorMoved": 0,
+     "changed": {
+      "quoteRelocatedCorrect": 0,
+      "quoteRelocatedWrong": 0,
+      "quoteDetachedCorrect": 0,
+      "quoteDetachedFalse": 0,
+      "offsetCorrect": 0,
+      "offsetWrong": 0,
+      "offsetOutOfRange": 0
+     }
+    },
+    "16": {
+     "documentGone": 0,
+     "sectionRootMissing": 7,
+     "sectionSurvives": 8952,
+     "sectionFlaggedChanged": 8,
+     "inSurvivingSectionAnchorExact": 8952,
+     "inSurvivingSectionAnchorMoved": 0,
+     "changed": {
+      "quoteRelocatedCorrect": 8,
+      "quoteRelocatedWrong": 0,
+      "quoteDetachedCorrect": 0,
+      "quoteDetachedFalse": 0,
+      "offsetCorrect": 4,
+      "offsetWrong": 4,
+      "offsetOutOfRange": 0
+     }
+    },
+    "32": {
+     "documentGone": 0,
+     "sectionRootMissing": 7,
+     "sectionSurvives": 8948,
+     "sectionFlaggedChanged": 12,
+     "inSurvivingSectionAnchorExact": 8948,
+     "inSurvivingSectionAnchorMoved": 0,
+     "changed": {
+      "quoteRelocatedCorrect": 12,
+      "quoteRelocatedWrong": 0,
+      "quoteDetachedCorrect": 0,
+      "quoteDetachedFalse": 0,
+      "offsetCorrect": 7,
+      "offsetWrong": 5,
+      "offsetOutOfRange": 0
+     }
+    }
+   }
+  }
+ ]
+}

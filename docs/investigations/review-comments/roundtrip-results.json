@@ -1,0 +1,154 @@
+{
+ "identity": {
+  "twoRunsSameInputs": {
+   "currentEqual": true,
+   "bytesEqual": true,
+   "sizeA": 3812,
+   "sizeB": 3812,
+   "sha256A": "66ac4efb32c798490ac3710e701267af52b5e1aded1a861a0cc61ac76c3e308f",
+   "sha256B": "66ac4efb32c798490ac3710e701267af52b5e1aded1a861a0cc61ac76c3e308f"
+  },
+  "sameTipTruncatedHistory": {
+   "currentEqual": false,
+   "currentA": "1a68a3b5340657c02a444e3d04f125b7852b05f0",
+   "currentC": "931c99793167ca86b1deefeb35a0bc9c4076a8e0",
+   "tipTreeEqual": true,
+   "bytesEqual": false,
+   "sizeA": 3812,
+   "sizeC": 3490,
+   "sha256C": "a295fe4a38e964193e248ca9505dd01e18d10b1892fb148704f5524447f75e9e"
+  },
+  "repackedSameCurrent": {
+   "currentEqual": true,
+   "bytesEqual": true,
+   "sizeD": 3812,
+   "sha256D": "66ac4efb32c798490ac3710e701267af52b5e1aded1a861a0cc61ac76c3e308f"
+  },
+  "reemittedLevel9": {
+   "entryPayloadsEqual": true,
+   "bytesEqual": true,
+   "sizeE": 3812,
+   "sha256E": "66ac4efb32c798490ac3710e701267af52b5e1aded1a861a0cc61ac76c3e308f",
+   "currentEqual": true
+  },
+  "sameContentOneSecondApart": {
+   "currentEqual": false,
+   "currentF": "6e8af9166ac1f34cd39446aa15c70a53a907fc4b",
+   "tipTreeEqual": true,
+   "bytesEqual": false,
+   "sha256F": "9266da7acd8c242f09cf6b622baaae51db9c28cbc0b2ab13119a14102d851139"
+  },
+  "reemittedLevel9Npm": {
+   "entryPayloadsEqual": true,
+   "currentEqual": true,
+   "bytesEqual": false,
+   "sizeLevel6": 251778,
+   "sizeLevel9": 251753,
+   "sha256Level6": "67f504a8c1520d5aa5379756feca9c16a4d78d6c2d142ea0e98e5dfc37d4d545",
+   "sha256Level9": "19a61433e80948aa66f05d3b4dbe04aa893468a0e64fa148e4b903e40966e7d1"
+  }
+ },
+ "fixture": {
+  "originalBytes": 3812,
+  "documents": 2,
+  "rows": [
+   {
+    "threads": 1,
+    "comments": 2,
+    "reviewJsonBytes": 1412,
+    "anchorBytes": 201,
+    "identityBytes": 180,
+    "commentTextBytes": 326,
+    "deltaOnlyBytes": 4832,
+    "mergedBytes": 5745,
+    "originalBytes": 3812,
+    "deltaOverOriginalPct": 126.76,
+    "mergedOverOriginalPct": 150.71
+   },
+   {
+    "threads": 5,
+    "comments": 10,
+    "reviewJsonBytes": 5215,
+    "anchorBytes": 681,
+    "identityBytes": 959,
+    "commentTextBytes": 1630,
+    "deltaOnlyBytes": 6943,
+    "mergedBytes": 7857,
+    "originalBytes": 3812,
+    "deltaOverOriginalPct": 182.14,
+    "mergedOverOriginalPct": 206.11
+   },
+   {
+    "threads": 20,
+    "comments": 40,
+    "reviewJsonBytes": 19600,
+    "anchorBytes": 2670,
+    "identityBytes": 3815,
+    "commentTextBytes": 6520,
+    "deltaOnlyBytes": 7289,
+    "mergedBytes": 8202,
+    "originalBytes": 3812,
+    "deltaOverOriginalPct": 191.21,
+    "mergedOverOriginalPct": 215.16
+   }
+  ]
+ },
+ "npm": {
+  "originalBytes": 251778,
+  "documents": 83,
+  "rows": [
+   {
+    "threads": 1,
+    "comments": 2,
+    "reviewJsonBytes": 1576,
+    "anchorBytes": 195,
+    "identityBytes": 348,
+    "commentTextBytes": 326,
+    "deltaOnlyBytes": 5098,
+    "mergedBytes": 254262,
+    "originalBytes": 251778,
+    "deltaOverOriginalPct": 2.02,
+    "mergedOverOriginalPct": 100.99
+   },
+   {
+    "threads": 10,
+    "comments": 20,
+    "reviewJsonBytes": 12339,
+    "anchorBytes": 1837,
+    "identityBytes": 3745,
+    "commentTextBytes": 3260,
+    "deltaOnlyBytes": 11998,
+    "mergedBytes": 261164,
+    "originalBytes": 251778,
+    "deltaOverOriginalPct": 4.77,
+    "mergedOverOriginalPct": 103.73
+   },
+   {
+    "threads": 50,
+    "comments": 100,
+    "reviewJsonBytes": 58764,
+    "anchorBytes": 9140,
+    "identityBytes": 17427,
+    "commentTextBytes": 16300,
+    "deltaOnlyBytes": 37463,
+    "mergedBytes": 286628,
+    "originalBytes": 251778,
+    "deltaOverOriginalPct": 14.88,
+    "mergedOverOriginalPct": 113.84
+   },
+   {
+    "threads": 200,
+    "comments": 400,
+    "reviewJsonBytes": 235656,
+    "anchorBytes": 37315,
+    "identityBytes": 70744,
+    "commentTextBytes": 65200,
+    "deltaOnlyBytes": 134135,
+    "mergedBytes": 383298,
+    "originalBytes": 251778,
+    "deltaOverOriginalPct": 53.28,
+    "mergedOverOriginalPct": 152.24
+   }
+  ]
+ }
+}

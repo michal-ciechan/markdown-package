@@ -1,0 +1,902 @@
+{
+ "distances": [
+  1,
+  2,
+  4,
+  8
+ ],
+ "perSectionLines": 4,
+ "perSectionSpans": 2,
+ "spanLength": 40,
+ "context": 40,
+ "corpora": [
+  {
+   "corpus": "npm",
+   "repo": "npm-cli",
+   "documents": 25,
+   "revisions": 75,
+   "byDistance": {
+    "1": {
+     "pairsMeasured": 50,
+     "sectionsChecked": 996,
+     "sectionsLostByTrail": 5,
+     "anchors": 5214,
+     "anchorsLine": 3631,
+     "anchorsSpan": 1583,
+     "gtSurvives": 5162,
+     "gtDetached": 52,
+     "movedOutOfSection": 0,
+     "digest": {
+      "targetIntactSectionDigestChanged": 642,
+      "targetIntactSectionDigestSame": 4520,
+      "targetGoneSectionDigestSame": 0,
+      "targetIntactDocDigestChanged": 5162
+     },
+     "selectors": {
+      "lineOrdinal": {
+       "hit": 3495,
+       "misplaced": 1664,
+       "falseDetach": 3,
+       "correctDetach": 4,
+       "phantom": 48
+      },
+      "charOffset": {
+       "hit": 4835,
+       "misplaced": 313,
+       "falseDetach": 14,
+       "correctDetach": 7,
+       "phantom": 45
+      },
+      "quoteExact": {
+       "hit": 5159,
+       "misplaced": 3,
+       "falseDetach": 0,
+       "correctDetach": 52,
+       "phantom": 0
+      },
+      "quoteContext": {
+       "hit": 5154,
+       "misplaced": 0,
+       "falseDetach": 8,
+       "correctDetach": 52,
+       "phantom": 0
+      }
+     },
+     "byGranularity": {
+      "line": {
+       "lineOrdinal": {
+        "hit": 3495,
+        "misplaced": 92,
+        "falseDetach": 3,
+        "correctDetach": 3,
+        "phantom": 38
+       },
+       "charOffset": {
+        "hit": 3356,
+        "misplaced": 220,
+        "falseDetach": 14,
+        "correctDetach": 5,
+        "phantom": 36
+       },
+       "quoteExact": {
+        "hit": 3587,
+        "misplaced": 3,
+        "falseDetach": 0,
+        "correctDetach": 41,
+        "phantom": 0
+       },
+       "quoteContext": {
+        "hit": 3582,
+        "misplaced": 0,
+        "falseDetach": 8,
+        "correctDetach": 41,
+        "phantom": 0
+       }
+      },
+      "span": {
+       "lineOrdinal": {
+        "hit": 0,
+        "misplaced": 1572,
+        "falseDetach": 0,
+        "correctDetach": 1,
+        "phantom": 10
+       },
+       "charOffset": {
+        "hit": 1479,
+        "misplaced": 93,
+        "falseDetach": 0,
+        "correctDetach": 2,
+        "phantom": 9
+       },
+       "quoteExact": {
+        "hit": 1572,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 11,
+        "phantom": 0
+       },
+       "quoteContext": {
+        "hit": 1572,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 11,
+        "phantom": 0
+       }
+      }
+     }
+    },
+    "2": {
+     "pairsMeasured": 25,
+     "sectionsChecked": 743,
+     "sectionsLostByTrail": 4,
+     "anchors": 4001,
+     "anchorsLine": 2765,
+     "anchorsSpan": 1236,
+     "gtSurvives": 3967,
+     "gtDetached": 34,
+     "movedOutOfSection": 0,
+     "digest": {
+      "targetIntactSectionDigestChanged": 552,
+      "targetIntactSectionDigestSame": 3415,
+      "targetGoneSectionDigestSame": 0,
+      "targetIntactDocDigestChanged": 3967
+     },
+     "selectors": {
+      "lineOrdinal": {
+       "hit": 2664,
+       "misplaced": 1303,
+       "falseDetach": 0,
+       "correctDetach": 2,
+       "phantom": 32
+      },
+      "charOffset": {
+       "hit": 3644,
+       "misplaced": 313,
+       "falseDetach": 10,
+       "correctDetach": 2,
+       "phantom": 32
+      },
+      "quoteExact": {
+       "hit": 3964,
+       "misplaced": 3,
+       "falseDetach": 0,
+       "correctDetach": 34,
+       "phantom": 0
+      },
+      "quoteContext": {
+       "hit": 3960,
+       "misplaced": 0,
+       "falseDetach": 7,
+       "correctDetach": 34,
+       "phantom": 0
+      }
+     },
+     "byGranularity": {
+      "line": {
+       "lineOrdinal": {
+        "hit": 2664,
+        "misplaced": 72,
+        "falseDetach": 0,
+        "correctDetach": 1,
+        "phantom": 28
+       },
+       "charOffset": {
+        "hit": 2517,
+        "misplaced": 209,
+        "falseDetach": 10,
+        "correctDetach": 1,
+        "phantom": 28
+       },
+       "quoteExact": {
+        "hit": 2733,
+        "misplaced": 3,
+        "falseDetach": 0,
+        "correctDetach": 29,
+        "phantom": 0
+       },
+       "quoteContext": {
+        "hit": 2729,
+        "misplaced": 0,
+        "falseDetach": 7,
+        "correctDetach": 29,
+        "phantom": 0
+       }
+      },
+      "span": {
+       "lineOrdinal": {
+        "hit": 0,
+        "misplaced": 1231,
+        "falseDetach": 0,
+        "correctDetach": 1,
+        "phantom": 4
+       },
+       "charOffset": {
+        "hit": 1127,
+        "misplaced": 104,
+        "falseDetach": 0,
+        "correctDetach": 1,
+        "phantom": 4
+       },
+       "quoteExact": {
+        "hit": 1231,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 5,
+        "phantom": 0
+       },
+       "quoteContext": {
+        "hit": 1231,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 5,
+        "phantom": 0
+       }
+      }
+     }
+    },
+    "4": {
+     "pairsMeasured": 14,
+     "sectionsChecked": 537,
+     "sectionsLostByTrail": 2,
+     "anchors": 2933,
+     "anchorsLine": 2017,
+     "anchorsSpan": 916,
+     "gtSurvives": 2885,
+     "gtDetached": 48,
+     "movedOutOfSection": 0,
+     "digest": {
+      "targetIntactSectionDigestChanged": 618,
+      "targetIntactSectionDigestSame": 2267,
+      "targetGoneSectionDigestSame": 0,
+      "targetIntactDocDigestChanged": 2885
+     },
+     "selectors": {
+      "lineOrdinal": {
+       "hit": 1914,
+       "misplaced": 971,
+       "falseDetach": 0,
+       "correctDetach": 2,
+       "phantom": 46
+      },
+      "charOffset": {
+       "hit": 2538,
+       "misplaced": 334,
+       "falseDetach": 13,
+       "correctDetach": 2,
+       "phantom": 46
+      },
+      "quoteExact": {
+       "hit": 2882,
+       "misplaced": 3,
+       "falseDetach": 0,
+       "correctDetach": 48,
+       "phantom": 0
+      },
+      "quoteContext": {
+       "hit": 2878,
+       "misplaced": 0,
+       "falseDetach": 7,
+       "correctDetach": 48,
+       "phantom": 0
+      }
+     },
+     "byGranularity": {
+      "line": {
+       "lineOrdinal": {
+        "hit": 1914,
+        "misplaced": 62,
+        "falseDetach": 0,
+        "correctDetach": 1,
+        "phantom": 40
+       },
+       "charOffset": {
+        "hit": 1739,
+        "misplaced": 224,
+        "falseDetach": 13,
+        "correctDetach": 1,
+        "phantom": 40
+       },
+       "quoteExact": {
+        "hit": 1973,
+        "misplaced": 3,
+        "falseDetach": 0,
+        "correctDetach": 41,
+        "phantom": 0
+       },
+       "quoteContext": {
+        "hit": 1969,
+        "misplaced": 0,
+        "falseDetach": 7,
+        "correctDetach": 41,
+        "phantom": 0
+       }
+      },
+      "span": {
+       "lineOrdinal": {
+        "hit": 0,
+        "misplaced": 909,
+        "falseDetach": 0,
+        "correctDetach": 1,
+        "phantom": 6
+       },
+       "charOffset": {
+        "hit": 799,
+        "misplaced": 110,
+        "falseDetach": 0,
+        "correctDetach": 1,
+        "phantom": 6
+       },
+       "quoteExact": {
+        "hit": 909,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 7,
+        "phantom": 0
+       },
+       "quoteContext": {
+        "hit": 909,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 7,
+        "phantom": 0
+       }
+      }
+     }
+    },
+    "8": {
+     "pairsMeasured": 7,
+     "sectionsChecked": 293,
+     "sectionsLostByTrail": 0,
+     "anchors": 1627,
+     "anchorsLine": 1114,
+     "anchorsSpan": 513,
+     "gtSurvives": 1565,
+     "gtDetached": 62,
+     "movedOutOfSection": 0,
+     "digest": {
+      "targetIntactSectionDigestChanged": 692,
+      "targetIntactSectionDigestSame": 873,
+      "targetGoneSectionDigestSame": 0,
+      "targetIntactDocDigestChanged": 1565
+     },
+     "selectors": {
+      "lineOrdinal": {
+       "hit": 1018,
+       "misplaced": 547,
+       "falseDetach": 0,
+       "correctDetach": 0,
+       "phantom": 62
+      },
+      "charOffset": {
+       "hit": 1206,
+       "misplaced": 346,
+       "falseDetach": 13,
+       "correctDetach": 0,
+       "phantom": 62
+      },
+      "quoteExact": {
+       "hit": 1562,
+       "misplaced": 3,
+       "falseDetach": 0,
+       "correctDetach": 62,
+       "phantom": 0
+      },
+      "quoteContext": {
+       "hit": 1558,
+       "misplaced": 0,
+       "falseDetach": 7,
+       "correctDetach": 62,
+       "phantom": 0
+      }
+     },
+     "byGranularity": {
+      "line": {
+       "lineOrdinal": {
+        "hit": 1018,
+        "misplaced": 44,
+        "falseDetach": 0,
+        "correctDetach": 0,
+        "phantom": 52
+       },
+       "charOffset": {
+        "hit": 818,
+        "misplaced": 231,
+        "falseDetach": 13,
+        "correctDetach": 0,
+        "phantom": 52
+       },
+       "quoteExact": {
+        "hit": 1059,
+        "misplaced": 3,
+        "falseDetach": 0,
+        "correctDetach": 52,
+        "phantom": 0
+       },
+       "quoteContext": {
+        "hit": 1055,
+        "misplaced": 0,
+        "falseDetach": 7,
+        "correctDetach": 52,
+        "phantom": 0
+       }
+      },
+      "span": {
+       "lineOrdinal": {
+        "hit": 0,
+        "misplaced": 503,
+        "falseDetach": 0,
+        "correctDetach": 0,
+        "phantom": 10
+       },
+       "charOffset": {
+        "hit": 388,
+        "misplaced": 115,
+        "falseDetach": 0,
+        "correctDetach": 0,
+        "phantom": 10
+       },
+       "quoteExact": {
+        "hit": 503,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 10,
+        "phantom": 0
+       },
+       "quoteContext": {
+        "hit": 503,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 10,
+        "phantom": 0
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "corpus": "rust",
+   "repo": "rust-rfcs",
+   "documents": 630,
+   "revisions": 1732,
+   "byDistance": {
+    "1": {
+     "pairsMeasured": 1102,
+     "sectionsChecked": 8666,
+     "sectionsLostByTrail": 8973,
+     "anchors": 48578,
+     "anchorsLine": 32426,
+     "anchorsSpan": 16152,
+     "gtSurvives": 48314,
+     "gtDetached": 260,
+     "movedOutOfSection": 4,
+     "digest": {
+      "targetIntactSectionDigestChanged": 5447,
+      "targetIntactSectionDigestSame": 42867,
+      "targetGoneSectionDigestSame": 0,
+      "targetIntactDocDigestChanged": 48314
+     },
+     "selectors": {
+      "lineOrdinal": {
+       "hit": 31921,
+       "misplaced": 16391,
+       "falseDetach": 2,
+       "correctDetach": 10,
+       "phantom": 250
+      },
+      "charOffset": {
+       "hit": 45960,
+       "misplaced": 2333,
+       "falseDetach": 21,
+       "correctDetach": 27,
+       "phantom": 233
+      },
+      "quoteExact": {
+       "hit": 48312,
+       "misplaced": 2,
+       "falseDetach": 0,
+       "correctDetach": 257,
+       "phantom": 3
+      },
+      "quoteContext": {
+       "hit": 48167,
+       "misplaced": 0,
+       "falseDetach": 147,
+       "correctDetach": 257,
+       "phantom": 3
+      }
+     },
+     "byGranularity": {
+      "line": {
+       "lineOrdinal": {
+        "hit": 31921,
+        "misplaced": 313,
+        "falseDetach": 1,
+        "correctDetach": 5,
+        "phantom": 183
+       },
+       "charOffset": {
+        "hit": 30674,
+        "misplaced": 1541,
+        "falseDetach": 20,
+        "correctDetach": 17,
+        "phantom": 171
+       },
+       "quoteExact": {
+        "hit": 32233,
+        "misplaced": 2,
+        "falseDetach": 0,
+        "correctDetach": 187,
+        "phantom": 1
+       },
+       "quoteContext": {
+        "hit": 32150,
+        "misplaced": 0,
+        "falseDetach": 85,
+        "correctDetach": 187,
+        "phantom": 1
+       }
+      },
+      "span": {
+       "lineOrdinal": {
+        "hit": 0,
+        "misplaced": 16078,
+        "falseDetach": 1,
+        "correctDetach": 5,
+        "phantom": 67
+       },
+       "charOffset": {
+        "hit": 15286,
+        "misplaced": 792,
+        "falseDetach": 1,
+        "correctDetach": 10,
+        "phantom": 62
+       },
+       "quoteExact": {
+        "hit": 16079,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 70,
+        "phantom": 2
+       },
+       "quoteContext": {
+        "hit": 16017,
+        "misplaced": 0,
+        "falseDetach": 62,
+        "correctDetach": 70,
+        "phantom": 2
+       }
+      }
+     }
+    },
+    "2": {
+     "pairsMeasured": 471,
+     "sectionsChecked": 3582,
+     "sectionsLostByTrail": 4805,
+     "anchors": 20368,
+     "anchorsLine": 13612,
+     "anchorsSpan": 6756,
+     "gtSurvives": 20171,
+     "gtDetached": 191,
+     "movedOutOfSection": 6,
+     "digest": {
+      "targetIntactSectionDigestChanged": 4020,
+      "targetIntactSectionDigestSame": 16151,
+      "targetGoneSectionDigestSame": 0,
+      "targetIntactDocDigestChanged": 20171
+     },
+     "selectors": {
+      "lineOrdinal": {
+       "hit": 13005,
+       "misplaced": 7163,
+       "falseDetach": 3,
+       "correctDetach": 0,
+       "phantom": 191
+      },
+      "charOffset": {
+       "hit": 18144,
+       "misplaced": 2011,
+       "falseDetach": 16,
+       "correctDetach": 20,
+       "phantom": 171
+      },
+      "quoteExact": {
+       "hit": 20170,
+       "misplaced": 1,
+       "falseDetach": 0,
+       "correctDetach": 189,
+       "phantom": 2
+      },
+      "quoteContext": {
+       "hit": 20100,
+       "misplaced": 0,
+       "falseDetach": 71,
+       "correctDetach": 189,
+       "phantom": 2
+      }
+     },
+     "byGranularity": {
+      "line": {
+       "lineOrdinal": {
+        "hit": 13005,
+        "misplaced": 465,
+        "falseDetach": 2,
+        "correctDetach": 0,
+        "phantom": 136
+       },
+       "charOffset": {
+        "hit": 12137,
+        "misplaced": 1320,
+        "falseDetach": 15,
+        "correctDetach": 14,
+        "phantom": 122
+       },
+       "quoteExact": {
+        "hit": 13471,
+        "misplaced": 1,
+        "falseDetach": 0,
+        "correctDetach": 136,
+        "phantom": 0
+       },
+       "quoteContext": {
+        "hit": 13430,
+        "misplaced": 0,
+        "falseDetach": 42,
+        "correctDetach": 136,
+        "phantom": 0
+       }
+      },
+      "span": {
+       "lineOrdinal": {
+        "hit": 0,
+        "misplaced": 6698,
+        "falseDetach": 1,
+        "correctDetach": 0,
+        "phantom": 55
+       },
+       "charOffset": {
+        "hit": 6007,
+        "misplaced": 691,
+        "falseDetach": 1,
+        "correctDetach": 6,
+        "phantom": 49
+       },
+       "quoteExact": {
+        "hit": 6699,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 53,
+        "phantom": 2
+       },
+       "quoteContext": {
+        "hit": 6670,
+        "misplaced": 0,
+        "falseDetach": 29,
+        "correctDetach": 53,
+        "phantom": 2
+       }
+      }
+     }
+    },
+    "4": {
+     "pairsMeasured": 115,
+     "sectionsChecked": 1225,
+     "sectionsLostByTrail": 520,
+     "anchors": 7171,
+     "anchorsLine": 4807,
+     "anchorsSpan": 2364,
+     "gtSurvives": 7062,
+     "gtDetached": 104,
+     "movedOutOfSection": 5,
+     "digest": {
+      "targetIntactSectionDigestChanged": 2434,
+      "targetIntactSectionDigestSame": 4628,
+      "targetGoneSectionDigestSame": 0,
+      "targetIntactDocDigestChanged": 7062
+     },
+     "selectors": {
+      "lineOrdinal": {
+       "hit": 4086,
+       "misplaced": 2970,
+       "falseDetach": 6,
+       "correctDetach": 0,
+       "phantom": 104
+      },
+      "charOffset": {
+       "hit": 5608,
+       "misplaced": 1448,
+       "falseDetach": 6,
+       "correctDetach": 19,
+       "phantom": 85
+      },
+      "quoteExact": {
+       "hit": 7062,
+       "misplaced": 0,
+       "falseDetach": 0,
+       "correctDetach": 102,
+       "phantom": 2
+      },
+      "quoteContext": {
+       "hit": 7034,
+       "misplaced": 0,
+       "falseDetach": 28,
+       "correctDetach": 102,
+       "phantom": 2
+      }
+     },
+     "byGranularity": {
+      "line": {
+       "lineOrdinal": {
+        "hit": 4086,
+        "misplaced": 649,
+        "falseDetach": 4,
+        "correctDetach": 0,
+        "phantom": 65
+       },
+       "charOffset": {
+        "hit": 3784,
+        "misplaced": 951,
+        "falseDetach": 4,
+        "correctDetach": 14,
+        "phantom": 51
+       },
+       "quoteExact": {
+        "hit": 4739,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 65,
+        "phantom": 0
+       },
+       "quoteContext": {
+        "hit": 4731,
+        "misplaced": 0,
+        "falseDetach": 8,
+        "correctDetach": 65,
+        "phantom": 0
+       }
+      },
+      "span": {
+       "lineOrdinal": {
+        "hit": 0,
+        "misplaced": 2321,
+        "falseDetach": 2,
+        "correctDetach": 0,
+        "phantom": 39
+       },
+       "charOffset": {
+        "hit": 1824,
+        "misplaced": 497,
+        "falseDetach": 2,
+        "correctDetach": 5,
+        "phantom": 34
+       },
+       "quoteExact": {
+        "hit": 2323,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 37,
+        "phantom": 2
+       },
+       "quoteContext": {
+        "hit": 2303,
+        "misplaced": 0,
+        "falseDetach": 20,
+        "correctDetach": 37,
+        "phantom": 2
+       }
+      }
+     }
+    },
+    "8": {
+     "pairsMeasured": 87,
+     "sectionsChecked": 1049,
+     "sectionsLostByTrail": 8,
+     "anchors": 6174,
+     "anchorsLine": 4136,
+     "anchorsSpan": 2038,
+     "gtSurvives": 6002,
+     "gtDetached": 172,
+     "movedOutOfSection": 0,
+     "digest": {
+      "targetIntactSectionDigestChanged": 2888,
+      "targetIntactSectionDigestSame": 3114,
+      "targetGoneSectionDigestSame": 0,
+      "targetIntactDocDigestChanged": 6002
+     },
+     "selectors": {
+      "lineOrdinal": {
+       "hit": 3123,
+       "misplaced": 2872,
+       "falseDetach": 7,
+       "correctDetach": 0,
+       "phantom": 172
+      },
+      "charOffset": {
+       "hit": 4195,
+       "misplaced": 1797,
+       "falseDetach": 10,
+       "correctDetach": 35,
+       "phantom": 137
+      },
+      "quoteExact": {
+       "hit": 6002,
+       "misplaced": 0,
+       "falseDetach": 0,
+       "correctDetach": 168,
+       "phantom": 4
+      },
+      "quoteContext": {
+       "hit": 5984,
+       "misplaced": 0,
+       "falseDetach": 18,
+       "correctDetach": 168,
+       "phantom": 4
+      }
+     },
+     "byGranularity": {
+      "line": {
+       "lineOrdinal": {
+        "hit": 3123,
+        "misplaced": 902,
+        "falseDetach": 5,
+        "correctDetach": 0,
+        "phantom": 106
+       },
+       "charOffset": {
+        "hit": 2840,
+        "misplaced": 1182,
+        "falseDetach": 8,
+        "correctDetach": 25,
+        "phantom": 81
+       },
+       "quoteExact": {
+        "hit": 4030,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 104,
+        "phantom": 2
+       },
+       "quoteContext": {
+        "hit": 4028,
+        "misplaced": 0,
+        "falseDetach": 2,
+        "correctDetach": 104,
+        "phantom": 2
+       }
+      },
+      "span": {
+       "lineOrdinal": {
+        "hit": 0,
+        "misplaced": 1970,
+        "falseDetach": 2,
+        "correctDetach": 0,
+        "phantom": 66
+       },
+       "charOffset": {
+        "hit": 1355,
+        "misplaced": 615,
+        "falseDetach": 2,
+        "correctDetach": 10,
+        "phantom": 56
+       },
+       "quoteExact": {
+        "hit": 1972,
+        "misplaced": 0,
+        "falseDetach": 0,
+        "correctDetach": 64,
+        "phantom": 2
+       },
+       "quoteContext": {
+        "hit": 1956,
+        "misplaced": 0,
+        "falseDetach": 16,
+        "correctDetach": 64,
+        "phantom": 2
+       }
+      }
+     }
+    }
+   }
+  }
+ ]
+}

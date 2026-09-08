@@ -1,0 +1,20 @@
+{
+ "corpora": [
+  {
+   "corpus": "npm",
+   "pairs": 50,
+   "sectionsA": 1001,
+   "lost": 5,
+   "lostRecoveredByRankStrip": 0,
+   "allLostSameCount": 0
+  },
+  {
+   "corpus": "rust",
+   "pairs": 1102,
+   "sectionsA": 17639,
+   "lost": 8973,
+   "lostRecoveredByRankStrip": 8796,
+   "allLostSameCount": 611
+  }
+ ]
+}
