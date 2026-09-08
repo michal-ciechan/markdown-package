@@ -2,7 +2,7 @@
 
 Status: investigation complete; recommendation for decision and consolidation, not an implemented format. Evidence checked on 2026-09-06.
 
-**ZIP follow-up recommendation:** if opening the package in ordinary ZIP tools is a requirement, use **ZIP method 8 (independent raw DEFLATE), producer level 6, with method 0 (stored) when smaller**. Put the authoritative version in a well-known stored manifest, preferably first, and optionally mirror it in a short EOCD comment. Direct document browsing and selective section access cost real bytes compared with solid compression. One solid tar.gz inside ZIP retains solid compression, but exposes only the nested archive and fails the required section access boundary. These are measured findings below, not an implemented format or an approved change to CARD-0001.
+**ZIP follow-up recommendation:** if opening the package in ordinary ZIP tools is a requirement, use **ZIP method 8 (independent raw DEFLATE), producer level 6, with method 0 (stored) when smaller**. Put the authoritative version in a well-known stored manifest, preferably first, and optionally mirror it in a short EOCD comment. (The EOCD mirror was rejected in consolidation: spec.md C1 and §3.5 require a zero-length comment, in both the variable `MDPKG/1` and fixed binary forms measured below.) Direct document browsing and selective section access cost real bytes compared with solid compression. One solid tar.gz inside ZIP retains solid compression, but exposes only the nested archive and fails the required section access boundary. These are measured findings below, not an implemented format or an approved change to CARD-0001.
 
 The original **independent gzip / stored** recommendation remains the non-ZIP alternative. Its native browser argument still applies to DEFLATE, while ZIP supplies its own framing and CRC. The earlier codec, device and timing evidence is retained after the follow-up.
 
@@ -147,7 +147,7 @@ The Windows test uses the **actual built-in compressed-folder Shell namespace**,
 
 ### Version placement and archive rewrites
 
-**Recommend `.mdpkg/manifest.json` stored, unencrypted and first as the authoritative version; optionally mirror `MDPKG/<version>` in EOCD.** Keep standard leading PK for the proposed ZIP profile. This is an explicit proposed revision of CARD-0001's first-byte requirement, requiring the owner's decision in consolidation. If that requirement is retained, use corrected absolute ZIP offsets and also keep the manifest; the prefix can serve dispatch but should not be the sole recoverable version.
+**Recommend `.mdpkg/manifest.json` stored, unencrypted and first as the authoritative version; optionally mirror `MDPKG/<version>` in EOCD.** (The EOCD mirror was rejected: spec.md C1 and §3.5 require a zero-length comment. The manifest recommendation was adopted.) Keep standard leading PK for the proposed ZIP profile. This is an explicit proposed revision of CARD-0001's first-byte requirement, requiring the owner's decision in consolidation. If that requirement is retained, use corrected absolute ZIP offsets and also keep the manifest; the prefix can serve dispatch but should not be the sole recoverable version.
 
 | Candidate | Exactly how to find it | Rewrite consequence |
 | --- | --- | --- |
@@ -256,7 +256,7 @@ Built-in API evidence: [Node zlib](https://nodejs.org/api/zlib.html), [.NET comp
 
 ## Corpus and method
 
-All sizes are **bytes**, MiB means 1,048,576 bytes. Source data is real Markdown from git blobs, without line-ending normalization or generated/padded replicas. The primary workload is npm's small, templated command documentation. Rust RFCs supply a larger, less uniformly similar specification workload. Results are not an estimate of every possible markdown corpus.
+All sizes are **bytes**, MiB means 1,048,576 bytes. Source data is real Markdown from git blobs, taken without line-ending normalization and with no generated or padded replicas. That describes how this corpus was collected, not a rule about content: spec.md D-17 normalizes line endings to LF on write, and no blob in this corpus contains a CR byte, so the corpus never exercises it (spec.md §11.1 item 4). The primary workload is npm's small, templated command documentation. Rust RFCs supply a larger, less uniformly similar specification workload. Results are not an estimate of every possible markdown corpus.
 
 | Corpus | Pinned head | Base documents | Real diff entries from 32 first-parent commits | Base bytes | Diff bytes | Total input bytes | Median entry bytes |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |

@@ -2,9 +2,17 @@
 
 Status: investigation, sparse follow-up, and no-stored-table refinement complete; proposed semantics and executable evidence, not a production format implementation. Checked on 2026-09-07. The [ZIP container](compression.md) and [real packed `.git` history](history.md) are accepted inputs to this card.
 
+
+> **Superseded in part by `docs/spec.md`.** The specification is authoritative where it and this
+> document disagree. spec.md C5 records that the requester, having seen both results, reaffirmed the
+> sparse confirmed-exception design: confirmed exceptions are final (spec.md §6), and the
+> no-table refinement this document leads with is the rejected alternative in spec.md §9, listed
+> there with the measured failures below. Read the verdict in this section as the case against
+> that alternative, not as the adopted design.
+
 **Current verdict under the refined no-table requirement: zero identity/rename metadata supports best-effort read-time matching, not guaranteed entity continuity.** Walking retained Git history recovers some renames that endpoint comparison misses, but still makes false matches, costs work proportional to retained changes, and loses essential evidence after squash/truncation. Use an explicit **unmatched / unreviewed** fallback and preserve the external review; do not silently treat inference as confirmed identity. See the [primary no-table investigation](#refinement-zero-stored-identity-or-rename-metadata).
 
-The full-map and sparse-table sections below remain measured alternatives, not storage secretly added to the refined primary candidate. The refinement explicitly excludes even the sparse table previously recommended at `d0590d0`. Source scopes, changed-state semantics and coverage disclosures still matter; preserving discarded identity/change evidence now conflicts with the zero-identity-metadata constraint. **Git does have a native shallow marker, `.git/shallow`; synthetic snapshot roots still need an explicit truncation declaration.** [Git shallow repository documentation](https://git-scm.com/docs/shallow).
+The full-map and sparse-table sections below remain measured alternatives, not storage secretly added to the refined primary candidate. The refinement explicitly excludes even the sparse table previously recommended at `d0590d0` — the exclusion spec.md C5 reversed. Source scopes, changed-state semantics and coverage disclosures still matter; preserving discarded identity/change evidence now conflicts with the zero-identity-metadata constraint. **Git does have a native shallow marker, `.git/shallow`; synthetic snapshot roots still need an explicit truncation declaration.** [Git shallow repository documentation](https://git-scm.com/docs/shallow).
 
 ## Original full-map design: identity, review scope, and producer contract
 

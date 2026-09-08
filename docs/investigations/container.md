@@ -59,6 +59,8 @@ The document count is the **tip** snapshot after the 32 retained first-parent up
 
 `.mdpkg/manifest.json` is the first ZIP entry, **stored**, with no data descriptor, and its content is canonical UTF-8 JSON. The `mdpkg` key is written first so a fixed-offset read reaches it (§5). Every other key is emitted in sorted order.
 
+The `addressing` object below is the fixture as measured and is superseded: spec.md D-1 (C6) replaced `coverage: confirmed` with `complete | partial`, and D-2 (C7) added the required `anchor` and `digest` fields. spec.md §4 has the current shape; the byte figures in this document predate both.
+
 ```json
 {"mdpkg":"markdown-package/1","addressing":{"coverage":"confirmed","overrides":null},
  "current":"sha1-5c3e0ffdc40df11a74024b12ee97c9d15afad99b",
@@ -461,7 +463,7 @@ If the owner adopts it regardless — a defensible call, since the tail read is 
 
 ## Handoff
 
-1. **Owner decision, open:** [addressing.md](addressing.md#refinement-zero-stored-identity-or-rename-metadata)'s latest refinement supersedes the sparse-exception recommendation this brief described as settled, and leaves the choice between a confirmed-exception ledger and zero identity metadata with a best-effort contract. The envelope supports both without change: `addressing.coverage` selects the contract, and `addressing.overrides` is `null` in the zero-metadata mode. The measured override-ledger packages price the confirmed option; the ledger-free packages price the other.
+1. **Owner decision, since closed (spec.md C5: confirmed exceptions are final; the zero-metadata mode is rejected in spec.md §9).** [addressing.md](addressing.md#refinement-zero-stored-identity-or-rename-metadata)'s latest refinement supersedes the sparse-exception recommendation this brief described as settled, and leaves the choice between a confirmed-exception ledger and zero identity metadata with a best-effort contract. The envelope supports both without change: `addressing.coverage` selects the contract, and `addressing.overrides` is `null` in the zero-metadata mode. The measured override-ledger packages price the confirmed option; the ledger-free packages price the other.
 2. **CARD-0005:** the recommended manifest is 287 bytes, fixed. Its cost is negligible against the 288,637 / 6,664,426-byte packages; the material envelope costs are the current-file view and the central directory, both already visible in the region map.
 3. **Specify before implementation:** the ZIP64 policy, the media type and extension registration, the two-tier conforming/recoverable reader, and the producer's path-uniqueness check. None blocks the layout.
 4. **Owner decision, answered but reversible:** §7 measured the fixed-length EOCD comment the requester asked about and recommends against it — 37 bytes saved per cold read, survived by two of five archive rewrites, never authoritative. If it is adopted anyway, §7.1 carries the exact layout, with the escalation rule replaced by a plain `uint32` LE and a missing comment defined as a fall-through rather than a rejection.
