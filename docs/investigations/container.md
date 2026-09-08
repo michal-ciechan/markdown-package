@@ -192,7 +192,7 @@ The package's canonical path for a document is **the exact byte sequence Git rec
 
 `README.md` plus `readme.md` is a valid Git tree — `fsck` accepts it — but **every tested extractor, and Git's own checkout on NTFS, keeps only one of the two**, with no error. That is silent data loss inside a format whose whole point is stable references to document sections, so the constraint is a producer requirement, not a warning. The NFC/NFD pair survived on this Windows host; it is included because a normalization-insensitive filesystem would collide it exactly as the case pair collides here, and **no macOS run was available** — the NFC rule is adopted from that documented risk, not from a local failure. Neither corpus violates either rule: **0 collisions across 733 paths, all pure ASCII, all already NFC.**
 
-Nothing else is normalized at the container level: document *content* keeps its exact bytes, CRLF included. The one EOL rule in the format (spec.md D-17) lives in CARD-0004's `cm0312-source-lf-v1` digest profile, which normalizes CRLF and lone CR to LF before hashing; it is applied to content for that purpose only and is not a container concern.
+Nothing else is normalized at the container level beyond the one EOL rule the format defines (spec.md D-17): a conforming producer normalizes CRLF and lone CR to LF before storing content, so document *content* keeps the producer's exact bytes only in the sense that ZIP entry payloads and Git blobs alike hold that already-normalized, LF-only source. CARD-0004's `cm0312-source-lf-v1` digest profile then normalizes CRLF and lone CR to LF again when decoding for hashing (a no-op on conforming stored content), so the rule is applied at write time and not only at digest time.
 
 ### ZIP64
 

@@ -144,7 +144,7 @@ The canonical path of a document is the exact byte sequence Git records in the t
 - Entry names MUST be unique under Unicode NFC followed by simple case folding (D-16). This is stricter than Git and deliberately so: `README.md` plus `readme.md` is a valid Git tree, and every tested extractor and Git's own NTFS checkout silently keeps one of the two.
 - `.mdpkg/` and `.git/` are reserved. No tracked path may begin with either prefix after NFC and case folding, except the tracked addressing paths under `.mdpkg/address/` (§6.3). Git enforces `.git/` and `.GIT/` in `fsck` and checkout; it accepts `.mdpkg/x.json` without complaint, so the producer MUST enforce the `.mdpkg/` reservation itself. A producer importing a source tree that contains a real `.mdpkg/` directory MUST reject it or relocate the colliding paths and declare that it did.
 
-Document *content* is never normalized by the container; the source profile in §6.1 decides what a review covers.
+Document *content* is normalized to LF line endings on write (D-17); beyond that EOL rule, the container does not otherwise normalize content, and the source profile in §6.1 decides what a review covers.
 
 ### 3.7 Two-tier reader
 
@@ -273,7 +273,7 @@ A published hunk reference (§6.4) binds the SHA-256 of a complete patch. Becaus
 
 ### 6.1 Source digest profile `cm0312-source-lf-v1`
 
-1. Decode strict UTF-8; normalize CRLF and lone CR to LF (D-17). Do not normalize Unicode. A BOM, if present, is retained as source. Invalid UTF-8 is outside the profile.
+1. Decode strict UTF-8; normalize CRLF and lone CR to LF (D-17). This normalization already happened when the content was written, so it is a no-op here on any conforming package; it is applied again so the profile is well-defined over nonconforming input too. Do not normalize Unicode. A BOM, if present, is retained as source. Invalid UTF-8 is outside the profile.
 2. Parse CommonMark 0.31.2 without smart punctuation. Only headings that are direct children of the document open addressable sections; ATX and Setext both count. Heading-like text inside fenced code, HTML blocks, blockquotes or list items does not.
 3. A heading section runs from the start of its heading's source line to just before the next top-level heading of equal or lower rank, or to end of file. It includes the heading's exact markup and all descendant sections. A child edit therefore changes the child's and every ancestor's digest; a sibling edit does not. A rank change changes the digest.
 4. The preamble is everything before the first top-level heading, or the whole document when it has none. Its identity is permanent even when it is empty.
@@ -706,7 +706,7 @@ Where the investigations established what must be declared but not its exact sha
 - **D-14** Version 1 packages use SHA-1 object IDs. The `sha256-` prefix is reserved in the grammar because the investigations qualified every ID, but no SHA-256 repository was packaged or read; conformance for SHA-256 packages is open (§11.2).
 - **D-15** The manifest's `mdpkg` key is written first and every other key sorted, exactly as container.md measured.
 - **D-16** Entry names MUST be unique case-insensitively: Unicode NFC followed by simple case folding (§3.6). This is adopted from the documented collision risk and the measured NTFS `README.md` / `readme.md` collision (container.md), not from a measured NFC/NFD collision on a normalization-insensitive filesystem; that verification remains open (§11.1).
-- **D-17** Line endings are normalized to LF wherever this format defines normalization: the source digest profile `cm0312-source-lf-v1` normalizes CRLF and lone CR to LF before hashing (§6.1 rule 1). This is the format's only EOL rule. It does not touch stored bytes: ZIP entry payloads and Git blobs keep the producer's exact bytes, CRLF included; only the digest input is normalized.
+- **D-17** Line endings are normalized to LF on write. A conforming producer normalizes CRLF and lone CR to LF before storing content, so both ZIP entry payloads and Git blobs hold only LF-terminated text; the source digest profile `cm0312-source-lf-v1` normalizes CRLF and lone CR to LF again when decoding for hashing (§6.1 rule 1), which is a no-op on conforming stored content and a defensive fallback against nonconforming input. This is the format's only EOL rule, and it now governs stored bytes, not just the digest input.
 
 ---
 
