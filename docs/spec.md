@@ -38,7 +38,7 @@ Each of these is a real disagreement between two source documents. None was pape
 - **C6. `addressing.coverage` values.** container.md proposed `confirmed / best-effort / none` while the zero-metadata contract was still open. With that contract closed there is one resolution contract, and the field only needs to say whether confirmed correspondence covers the whole retained history. **Resolved: `complete | partial`** (§4), with per-range detail in `.mdpkg/history.json`.
 - **C7. Profile identifiers in the manifest.** addressing.md states the manifest "pays 34 fixed bytes to select the anchor profile"; container.md's 287-byte manifest has no such field. A reader cannot compute a default root without the anchor profile and the namespace, and cannot reject a foreign-profile reference without the digest profile. **Resolved: `addressing.anchor` and `addressing.digest` are required manifest fields** (§4).
 - **C8. Where range summaries and squash bindings are bound.** addressing.md says to "bind those member paths and hashes in the first manifest". container.md requires the manifest to be O(1) in package size. **Resolved: the manifest points at `.mdpkg/history.json` through `history.detail`, and that file lists every summary, patch and binding entry with its hash** (§5.3). The manifest stays fixed-size.
-- **C9. "DEFLATE every entry" versus "store the pack".** compression.md's rule is method 8 or stored-when-smaller; history.md measured that deflating the pack saves 2.44% on npm only by forcing whole-member inflation and makes Rust larger. **Resolved: manifest, `.pack` and `.idx` are always stored; every other entry follows the smaller-of rule** (§3.3).
+- **C9. "DEFLATE every entry" versus "store the pack".** compression.md's rule is method 8 or stored-when-smaller; history.md measured that deflating the pack saves 1.75% on npm (2,789 bytes of 159,296) only by forcing whole-member inflation and makes Rust larger. **Resolved: manifest, `.pack` and `.idx` are always stored; every other entry follows the smaller-of rule** (§3.3).
 - **C10. Reference grammar version.** addressing.md defines a `v1` UUID grammar and then a `v2` computed-root grammar for document and section references, leaving commit, diff and hunk references "exact as before". **Resolved (stated default D-6): one `v2` path segment for all five reference kinds; the commit, diff and hunk forms are carried over unchanged** (§6.4).
 - **C11. Allowed refs.** history.md asked for allowed refs and object format to be defined; container.md shipped only `refs/heads/main` and asserted `HEAD` equals `current` without stating it as a rule. **Resolved (D-7): exactly one branch ref, `HEAD` symbolic to it, and its target MUST equal `current`** (§5.2).
 - **C12. The pack reverse index.** container.md shipped the `.rev` file `git index-pack` produced and noted it is derivable. **Resolved (D-8): MAY be present, MUST NOT be required.** The worked example omits it.
@@ -203,7 +203,7 @@ The `.git/` entries are a real Git repository and nothing more than one:
 | Entry | Content |
 | --- | --- |
 | `.git/HEAD` | `ref: refs/heads/main\n` |
-| `.git/config` | `[core]\n\trepositoryformatversion = 0\n\tbare = false\n` (for SHA-256 repositories, additionally `repositoryformatversion = 1` and `[extensions]\n\tobjectFormat = sha256\n`; see D-14) |
+| `.git/config` | `[core]\n\trepositoryformatversion = 0\n\tbare = false\n` (for SHA-256 repositories, `repositoryformatversion = 1` instead, and `[extensions]\n\tobjectFormat = sha256\n`; see D-14) |
 | `.git/refs/heads/main` | the commit ID of `current`, followed by LF |
 | `.git/shallow` | present only when the retained graph is a genuine shallow clone; lists boundary commit IDs, one per line |
 | `.git/objects/pack/pack-<name>.pack` | exactly one pack containing every retained object, offset deltas permitted, stored in the ZIP |
@@ -267,7 +267,7 @@ The exact touched query over checkpoint positions `(from, to]` is: does the root
 
 ### 5.5 Archived patches
 
-A published hunk reference (§6.4) binds the SHA-256 of a complete patch. Because regeneration across Git versions and configurations is not byte-stable, a producer that promises hunk retention stores the exact patch bytes at `.mdpkg/history/patches/<sha256>.patch` and lists it in `history.json`. If regeneration disagrees with the bound hash, the archived artifact is used; if both are absent, the reference is unavailable. A patch is never relocated by line number, title or approximate text.
+A published hunk reference (§6.4) binds the SHA-256 of a complete patch. Because regeneration across Git versions and configurations is not byte-stable, a producer that promises hunk retention stores the exact patch bytes at `.mdpkg/history/patches/<sha256>.patch` and lists it in `history.json`. If regeneration disagrees with the bound hash, the archived artifact is used; if both are absent, the reference is `invalidated / history-unavailable` (§6.6). A patch is never relocated by line number, title or approximate text.
 
 ---
 
@@ -357,7 +357,7 @@ Given the manifest and central directory:
 3. Read the one document entry the target locator names, apply §6.1, and locate the entity by trail. If it is not there: `unconfirmed / possibly-renamed-moved-or-deleted`. Absence is never reported as deletion.
 4. Compute the scoped digest and compare with `expect`: equal → `survives / same-source`; different → `flagged-changed / source-changed`. Return the current locator and digest either way.
 
-This reads the manifest, the ledger (when present) and one document. It never reads the pack, never walks history and stores no digest. Measured on the corpora: 6 requests / 10,369 (npm) and 54,440 (Rust) bytes without a ledger, 8 / 12,312 and 85,447 with one, 0 pack bytes and 0 bytes of any other document in every case; a warm reader fetches 0 further bytes. Parsing and hashing one document took 0.87 / 0.56 ms.
+This reads the manifest, the ledger (when present) and one document. It never reads the pack, never walks history and stores no digest. Measured on the corpora: 6 requests / 10,369 (npm) and 54,440 (Rust) bytes without a ledger, 8 / 12,312 and 85,447 with one, 0 pack bytes and 0 bytes of any other document in every case; a warm reader fetches 0 further bytes. Parsing one document took 0.87 / 0.56 ms; the full in-memory resolution, parse plus hash plus compare, took 1.19 / 0.86 ms.
 
 With `at=A`: locate `A` in the pack index (absent → `invalidated / history-unavailable`, and `history.json` says whether it was collapsed or truncated); read `A`'s tree, its `.mdpkg/address/overrides.json` blob if any, and the document blob; then apply steps 2–4 against that snapshot.
 
@@ -494,9 +494,9 @@ The key is the default root of `["section","guide.md",[["# Guide",0],["## Setup"
 ```text
 000000  50 4b 03 04  14 00  00 00  00 00  00 00  21 00  de df 7a bd
         sig          need   flags  method time   date   crc32 = bd7adfde
-000010  78 01 00 00  78 01 00 00  14 00  00 00  2e 6d 64 70 6b 67 2f
+000012  78 01 00 00  78 01 00 00  14 00  00 00  2e 6d 64 70 6b 67 2f
         csize 376    usize 376    nlen20 elen0  ".mdpkg/
-000020  6d 61 6e 69 66 65 73 74 2e 6a 73 6f 6e              manifest.json"
+000025  6d 61 6e 69 66 65 73 74 2e 6a 73 6f 6e              manifest.json"
 000032  7b 22 6d 64 70 6b 67 22 3a 22 6d 61 72 6b 64 6f 77 6e 2d 70 61 63 6b 61 67 65 2f 31 22
         {"mdpkg":"markdown-package/1"
 ```
@@ -649,14 +649,14 @@ Every alternative any of the four investigations measured or argued against, in 
 | A directory as the exchange form | No central directory, order, atomic swap or single identity; it is the extraction, not a competitor |
 | Atomic in-place update | Not attempted; rewrite the file |
 | Whole-response HTTP `Content-Encoding` for range access | Changes the byte offsets ranges apply to; serve the file unchanged |
-| DEFLATE for `.pack` and `.idx` entries | 2.44% npm saving only by inflating the whole member before any access; Rust gets larger |
+| DEFLATE for `.pack` and `.idx` entries | 1.75% npm saving (2,789 bytes of 159,296) only by inflating the whole member before any access; Rust gets larger |
 
 **History**
 
 | Alternative | Why rejected |
 | --- | --- |
-| Git bundle (`history.bundle`) as the primary representation | 7.57% / 0.74% smaller than the packed repository but ships no index (an `indexPack` pass of 141–667 ms in the browser), needs an import before it is queryable, and a bundle made from a shallow source passes `bundle verify` yet fails to fetch |
-| Flat base plus ordered diffs with a commit-record file | 13.50% / 3.95% larger at 32 commits; arbitrary revisions need chain replay; no standard object identity or tooling |
+| Git bundle (`history.bundle`) as the primary representation | 7.04% / 0.73% smaller than the packed repository (equivalently, the packed repository costs 7.57% / 0.74% more than a bundle) but ships no index (an `indexPack` pass of 141–667 ms in the browser), needs an import before it is queryable, and a bundle made from a shallow source passes `bundle verify` yet fails to fetch |
+| Flat base plus ordered diffs with a commit-record file | 7.47% / 3.35% larger than the packed repository at 32 commits (171,192 vs 159,296; 3,423,817 vs 3,312,849); arbitrary revisions need chain replay; no standard object identity or tooling |
 | A bespoke "mini-git" object DAG | No measured size failure to justify it; surrenders interoperability; still needs every coverage and section rule in §5–§6 |
 | Reverse-diff flat layout, bundle plus shipped index | Different representations, superseded by adopting a real repository; the latter costs about the same as the packed repository |
 | Pack window 250 | 2.44% smaller on npm, 0 on Rust; does not approach solid |
