@@ -50,6 +50,7 @@ Each of these is a real disagreement between two source documents. None was pape
 - **Package**: one ZIP file conforming to §3. The working file extension is `.mdpkg` (registration is open, §11.1).
 - **Current view**: the plain ZIP entries that are the Git working tree of the commit named by the manifest's `current` field. Every Markdown document, and the override ledger, is here.
 - **Container-level entries**: the entries under `.mdpkg/` that are *not* tracked in Git, because they name commit identities that cannot appear inside the tree they describe: `.mdpkg/manifest.json`, `.mdpkg/history.json`, `.mdpkg/history/bindings.json`, `.mdpkg/history/ranges/*.json`, `.mdpkg/history/patches/*.patch`.
+- **Extractor**: any tool that writes a package's ZIP entries out as files. Unlike a producer, reader or validator it is not package-aware and the format cannot constrain it; where this document places a requirement on an extractor (§3.8, D-18) it is stating a property of a conforming extraction, and a tool that does otherwise (Info-ZIP `unzip -a`, for one) has not produced it.
 - **Curated repository**: the entries under `.git/`: `HEAD`, `config`, `refs/heads/main`, optionally `shallow`, one pack, its index, and optionally its reverse index. Nothing else.
 - **Namespace**: the lowercase UUID identifying a package lineage. All addressing roots are derived within it.
 - **Entity**: a document, a document's permanent preamble, or a heading section. Each has a **locator** (§6.2) and, at any snapshot, a **scoped digest** (§6.1).
@@ -112,7 +113,7 @@ Readers MUST NOT depend on any order beyond rule 1, because ordinary archive rew
 
 | Entry | Method |
 | --- | --- |
-| `.mdpkg/manifest.json` | `0` (stored) always: readable with no decoder |
+| `.mdpkg/manifest.json` | `0` (stored) always in the conforming tier (§3.7): readable with no decoder |
 | `.git/objects/pack/*.pack`, `*.idx`, `*.rev` | `0` (stored) always: internal offsets stay valid; the pack's own zlib streams and deltas are its compression |
 | Everything else | `8` (raw DEFLATE), producer level 6, or `0` when the DEFLATE output is not smaller than the input |
 
@@ -144,7 +145,7 @@ The canonical path of a document is the exact byte sequence Git records in the t
 - Entry names MUST be unique under Unicode NFC followed by simple case folding (D-16). This is stricter than Git and deliberately so: `README.md` plus `readme.md` is a valid Git tree, and every tested extractor and Git's own NTFS checkout silently keeps one of the two.
 - `.mdpkg/` and `.git/` are reserved. No tracked path may begin with either prefix after NFC and case folding, except the tracked addressing paths under `.mdpkg/address/` (§6.3). Git enforces `.git/` and `.GIT/` in `fsck` and checkout; it accepts `.mdpkg/x.json` without complaint, so the producer MUST enforce the `.mdpkg/` reservation itself. A producer importing a source tree that contains a real `.mdpkg/` directory MUST reject it or relocate the colliding paths and declare that it did.
 
-Document *content* is normalized to LF line endings on write (D-17); beyond that EOL rule, the container does not otherwise normalize content, and the source profile in §6.1 decides what a review covers.
+Entry content is normalized to LF line endings on write (D-17), for every entry except those under `.git/`; beyond that EOL rule, the container does not otherwise normalize content, and the source profile in §6.1 decides what a review covers.
 
 ### 3.7 Two-tier reader
 
@@ -192,6 +193,8 @@ Fields deliberately absent, with their measured cost on the npm / Rust corpora: 
 
 A validator MUST reject a package whose manifest disagrees with the archive: `current` not equal to the branch target, `overrides` naming an entry that is absent or absent when the tree contains the ledger, or a `transform` list inconsistent with `history.json`.
 
+A validator MUST also check the §3.6 producer requirements, which are otherwise stated with no addressee: entry-name uniqueness under NFC plus simple case folding (D-16), the reserved-prefix rule, and LF-only content in every entry outside `.git/` (D-17). Both are cheap from what a validator already holds — uniqueness from the central directory alone, the EOL rule from the payload bytes it decodes to verify CRCs — and both describe real damage a reader cannot detect for itself: a package carrying `README.md` and `readme.md` loses one of them silently in every tested extractor and in Git's own NTFS checkout (§3.6), and a package storing CRLF resolves identically to a conforming one because §6.1 rule 1 re-normalizes, so nothing else in the format would ever flag it. A reader is not required to make these checks; §3.7's two tiers are about typing and recovery, not content conformance, and a package that fails either check may still type as conforming at offset 0.
+
 ---
 
 ## 5. History
@@ -237,6 +240,8 @@ This is the unbounded part of the history declaration. It is container-level (un
 | `patches` | array | Each `{entry, sha256, from, to, document, profile}` for an archived patch under `.mdpkg/history/patches/`. |
 | `bindings` | entry name, optional | `.mdpkg/history/bindings.json`, required when any transformation carries a summary. |
 | `addressingCoverage` | array of `{from, to, coverage}` | Ranges of the retained path over which confirmed correspondence is `complete` or `partial`. When the manifest says `complete` this is one range spanning the whole path. |
+
+`history.json` carries no `version` field of its own, unlike the ledger, `bindings.json` and range summaries: it is reachable only through the manifest's `history.detail`, so the manifest's `mdpkg` token versions it. Adding one would be redundant and would change the worked example's bytes (§8).
 
 Coverage semantics, from the measured counterexamples: a squash commit is structurally identical to an ordinary one-parent commit (the same tree, parent, author, committer and message produce the identical object ID), so squash is declared, never inferred. The absence of `.git/shallow` proves nothing about completeness: a synthetic root repacks as a normal repository with `--is-shallow-repository=false`. A missing parent outside a declared shallow boundary is corruption, not an inferred truncation. "Complete" always names a scope and walk; it is a producer claim checked for internal consistency, not proof that no upstream history was omitted.
 
@@ -337,8 +342,9 @@ mdpkg://<namespace>/v2/hunk/<A>..<B>?document=<root>&profile=git-myers-u3-v1&pat
 ```
 
 - Preamble references use the `section` path with a locator whose `scopeKind` is `preamble`.
-- `loc` is a navigation and default-root hint, not identity; `root` is identity; `expect` is the reviewed state. Both `root` and `expect` are 64 lowercase hex characters.
+- `loc` is REQUIRED on `document` and `section` references: §6.5 step 2 needs it to compute a default root, and SHA-256 cannot be inverted to recover a locator without it. It is a navigation and default-root input, not identity; `root` is identity; `expect` is the reviewed state. Both `root` and `expect` are 64 lowercase hex characters.
 - Without `at`, a reference selects `current`. With `at`, it selects that exact snapshot and MUST NOT fall forward or redirect through a squash binding; an absent commit is `invalidated / history-unavailable`.
+- `profile` names two different things by reference kind. On `document` and `section` references it is the source digest profile and MUST equal the manifest's `addressing.digest`. On `diff` and `hunk` references it is the diff profile; the manifest declares no diff profile, so it is checked against the version-1 constant below and never against the manifest.
 - `git-myers-u3-v1` fixes Myers, three context lines, full blob IDs, no rename detection, no indent heuristic, no external diff, no colour.
 - Readers MUST reject unknown versions or profiles, duplicate or unknown parameters, malformed IDs and foreign namespaces. Navigation without `expect` is a UI feature and establishes no reviewed state.
 
@@ -348,7 +354,7 @@ The external review record that produces such a reference SHOULD also keep `obse
 
 Given the manifest and central directory:
 
-1. Reject if `namespace`, `anchor` or `profile` differ from the manifest. If `addressing.coverage` is `partial` and the review's `observedAt` (when supplied) lies in an uncovered range, return `unconfirmed / incomplete-correspondence`.
+1. Reject if `namespace`, `anchor` or the digest `profile` differ from the manifest (§6.4: the diff `profile` of a `diff` or `hunk` reference is not a manifest field and is not compared here). If `addressing.coverage` is `partial`, return `unconfirmed / incomplete-correspondence` when the review's `observedAt` lies in an uncovered range, and also when `observedAt` was not supplied — `observedAt` is not part of the reference (§6.4), so without it the resolver cannot establish which range the review was made in, and this document does not report an unestablished correspondence as `survives`.
 2. If `addressing.overrides` is non-null, read that one entry and look up `root`:
    - `dead` → `flagged-changed` with reason and successors.
    - `unknown` → `unconfirmed` with reason.
@@ -708,7 +714,7 @@ Where the investigations established what must be declared but not its exact sha
 - **D-14** Version 1 packages use SHA-1 object IDs. The `sha256-` prefix is reserved in the grammar because the investigations qualified every ID, but no SHA-256 repository was packaged or read; conformance for SHA-256 packages is open (§11.2).
 - **D-15** The manifest's `mdpkg` key is written first and every other key sorted, exactly as container.md measured.
 - **D-16** Entry names MUST be unique case-insensitively: Unicode NFC followed by simple case folding (§3.6). This is adopted from the documented collision risk and the measured NTFS `README.md` / `readme.md` collision (container.md), not from a measured NFC/NFD collision on a normalization-insensitive filesystem; that verification remains open (§11.1).
-- **D-17** Line endings are normalized to LF on write. A conforming producer normalizes CRLF and lone CR to LF before storing content, so both ZIP entry payloads and Git blobs hold only LF-terminated text; the source digest profile `cm0312-source-lf-v1` normalizes CRLF and lone CR to LF again when decoding for hashing (§6.1 rule 1), which is a no-op on conforming stored content and a defensive fallback against nonconforming input. This is the format's only EOL rule, and it now governs stored bytes, not just the digest input. Scope: this rule covers the content the current view is defined to hold — Markdown documents and the JSON control files under `.mdpkg/` (§2, §4, §6.3), all of which are UTF-8 text. Version 1 defines no mechanism for tracking an opaque or binary entry in the current view, so no binary-detection heuristic (Git's own NUL-in-a-prefix check, or otherwise) is needed or specified; a future version that admits tracked binary content would have to add one before D-17 could apply to it unmodified.
+- **D-17** Line endings are normalized to LF on write. A conforming producer normalizes CRLF and lone CR to LF before storing content, so both ZIP entry payloads and Git blobs hold only LF-terminated text; the source digest profile `cm0312-source-lf-v1` normalizes CRLF and lone CR to LF again when decoding for hashing (§6.1 rule 1), which is a no-op on conforming stored content and a defensive fallback against nonconforming input. This is the format's only EOL rule, and it now governs stored bytes, not just the digest input. It is not limited to the tip: every retained blob in the pack is LF too, so a projection whose source repository holds CRLF blobs rewrites those blobs and therefore their blob IDs, in addition to the commit and tree IDs a projection already rewrites. `sourceRepository`, `sourceBase` and `sourceTip` (§5.3) remain source-lineage identifiers and do not imply that any object in the pack is byte-identical to its source. Scope: this rule covers every ZIP entry except those under `.git/` — the Markdown documents and the tracked override ledger that make up the current view (§2, §6.3), and the container-level JSON control files (§2, §4, §5.3, §5.4), all of which are UTF-8 text. The curated repository is excluded: §5.1 fixes the exact bytes of `HEAD`, `config` and `refs/heads/main`, which are LF-terminated by that specification and not by this rule, and the pack, its index and its reverse index are binary artifacts a producer MUST store byte for byte as Git wrote them. Version 1 defines no mechanism for tracking an opaque or binary entry in the current view, so no binary-detection heuristic (Git's own NUL-in-a-prefix check, or otherwise) is needed or specified; a future version that admits tracked binary content would have to add one before D-17 could apply to it unmodified.
 - **D-18** Extraction never converts line endings; a conforming extractor emits the stored LF bytes unchanged on every platform (§3.8). D-17 normalizes on write and nothing normalizes on read, so this mirrors `core.autocrlf=input`, not `core.autocrlf=true`: there is no platform-native checkout, because the format ships no `.gitattributes` or filter configuration to drive one, and a byte-for-byte match between the extracted file and the tracked blob is what lets §6.1 hash the extracted file directly instead of reconstructing what checkout did to it.
 
 ---
