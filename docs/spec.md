@@ -33,7 +33,7 @@ Each of these is a real disagreement between two source documents. None was pape
 - **C1. EOCD comment.** compression.md recommended "optionally mirror `MDPKG/<version>` in EOCD". container.md measured that a comment defeats a reader's fixed 22-byte tail probe (57,797 npm / 14,715 Rust bytes of pack read for a query that needed none), survives only 2 of 5 archive rewrites, and saves at best 37 bytes per cold read. **Resolved: no comment.** If one is present it is a hint; disagreement with the manifest is a rejection; absence is never a rejection (§3.5).
 - **C2. Raw version byte before `PK`.** The original CARD-0001 brief required a first-byte version. compression.md showed it is viable only with corrected offsets and survives no rewrite; container.md replaced it with manifest-first typing. **Resolved: the file begins with `PK\x03\x04`; typing is the 79-byte check in §3.1.**
 - **C3. Bare versus non-bare `.git/config`.** history.md's option A shipped a portable bare config. container.md ships `core.bare = false` so that the extracted directory is an ordinary working tree. **Resolved: non-bare** (§5.1). This is part of the 1,004 / 1,020-byte difference between the two cards' package totals.
-- **C4. The duplicated current-file view.** history.md measured "A + current files" as a straightforward duplication and explicitly did not recommend it as an optimised final layout. container.md adopted it and proved it is the working tree of the manifest's commit. **Resolved: adopted.** The current view is the read path for documents and sections; the pack is the read path for history. The cost is the "current files alone" row: 128,359 npm / 3,350,579 Rust bytes on the corpora.
+- **C4. The duplicated current-file view.** history.md measured "A + current files" as a straightforward duplication and explicitly did not recommend it as an optimised final layout. container.md adopted it and proved it is the working tree of the manifest's commit. **Resolved: adopted.** The current view is the read path for documents and sections; the pack is the read path for history. The cost is the "current files alone" row: 128,359 npm / 3,350,579 Rust bytes on the corpora. This also answers *yes* to whether ordinary ZIP readers must be able to browse the current Markdown; the 64 KiB block hybrid in §9 remains the measured alternative if that answer is ever reversed.
 - **C5. Addressing's own headline.** The text of addressing.md at `381b874` calls the zero-metadata mechanism "the primary candidate" and says the refinement "explicitly excludes even the sparse table". The requester, having seen both results, reaffirmed the sparse confirmed-exception design. **Resolved: sparse confirmed exceptions are final** (§6). The zero-metadata mechanism is listed as rejected in §9 with its measured failures. addressing.md's header is therefore out of date relative to this decision; this specification is authoritative.
 - **C6. `addressing.coverage` values.** container.md proposed `confirmed / best-effort / none` while the zero-metadata contract was still open. With that contract closed there is one resolution contract, and the field only needs to say whether confirmed correspondence covers the whole retained history. **Resolved: `complete | partial`** (§4), with per-range detail in `.mdpkg/history.json`.
 - **C7. Profile identifiers in the manifest.** addressing.md states the manifest "pays 34 fixed bytes to select the anchor profile"; container.md's 287-byte manifest has no such field. A reader cannot compute a default root without the anchor profile and the namespace, and cannot reject a foreign-profile reference without the digest profile. **Resolved: `addressing.anchor` and `addressing.digest` are required manifest fields** (§4).
@@ -630,7 +630,7 @@ The script's ATX-only outline scanner is valid for this fixture (no fences, Sete
 
 ## 9. Rejected alternatives, collected
 
-Every alternative any of the four investigations measured or argued against, in one place. "Why" is the measured or demonstrated reason.
+Every alternative any of the four investigations, or the decisions in §10, measured or argued against, in one place. "Why" is the measured or demonstrated reason; where an alternative was rejected on argument rather than measurement, the row says so.
 
 **Container and compression**
 
@@ -670,6 +670,14 @@ Every alternative any of the four investigations measured or argued against, in 
 | Git notes or commit trailers as the sole carrier of summaries and provenance | Notes live on separate refs that rewrites and clones silently omit; trailers are editable prose unsuited to ordered per-entity data |
 | Inferring squash from parent count or message; inferring completeness from the absence of `.git/shallow` | Both demonstrated false with real Git: identical object IDs for squash and ordinary commits; synthetic roots report not-shallow |
 | Prerequisite (incremental) bundles as truncated packages | Prerequisites are not shallow boundaries; the bundle is not standalone |
+
+**EOL and paths**
+
+| Alternative | Why rejected |
+| --- | --- |
+| Platform-native checkout: `core.autocrlf=true` plus a shipped `.gitattributes` | Needs a filter mechanism this container does not define, and it breaks the property the current view exists to give a reader for free — that the extracted file *is* the tracked blob, so §6.1 can hash it without reconstructing what checkout did to it (§3.8, D-18). Not measured, because it does not exist for this container as specified |
+| EOL normalization at digest time only, leaving stored bytes as authored | The shape D-17 originally had, reversed before it landed: it makes two packages with identical digests differ byte for byte, so the ZIP CRCs, the blob IDs and the extraction all disagree while the addressing layer says nothing changed |
+| Case-sensitive entry names, i.e. Git's own rule | `README.md` plus `readme.md` is a valid Git tree that every tested extractor and Git's own NTFS checkout silently reduces to one file; D-16 tightens the rule rather than shipping a format whose extraction loses data on the most common desktop filesystem |
 
 **Addressing**
 
@@ -723,11 +731,12 @@ Where the investigations established what must be declared but not its exact sha
 
 ### 11.1 Explicitly carried forward, undecided
 
-These were deferred by container.md and are **not** decided here.
+The first three were deferred by container.md and are not decided here; the fourth is a decision this document did take, recorded here because the evidence behind it is open.
 
 1. **ZIP64 policy.** Behaviour past 4 GiB or 65,535 entries. Options are: permit ZIP64 with mandatory locator handling (readers must follow the 20-byte locator before the EOCD to the ZIP64 EOCD, and the small tail read no longer suffices), or exclude it from the profile with a hard producer limit. Today's only tested behaviour is rejection by the evidence reader. Nothing in the corpora approaches the limits.
 2. **Media type and file extension registration.** What a `.mdpkg` file is called and served as. A media type of the form `application/vnd.…+zip` is unregistered. Because the file must begin with `PK` for ordinary tools to work, extension- and sniffer-based dispatch will sometimes see a generic ZIP; that is accepted, but the names are not chosen.
 3. **Cross-platform normalization testing.** No macOS, APFS, HFS+ or other normalization-insensitive filesystem was reachable. The NFC-plus-case-fold uniqueness rule itself is decided (D-16); what remains open is verifying it against a real NFC/NFD collision, rather than the measured NTFS case collision it was adopted from. Windows 11, newer 7-Zip, macOS Archive Utility and Info-ZIP `zip` as a rewrite tool are untested.
+4. **EOL behaviour is unmeasured.** D-17 and D-18 were decided on argument alone. No corpus, fixture or worked example in this repository contains a single CR byte — compression.md's corpus is real Markdown from Git blobs taken without line-ending normalization, and `worked-example.py` forces `core.autocrlf=false` — so the write-time normalization has never been exercised against CRLF input, and no extractor was tested for checkout-time conversion (Info-ZIP `unzip -a` is the obvious probe, and container.md says outright that the platform-native alternative was not measured because it does not exist for this container as specified). The rules are decided; the evidence for them is argument, not measurement.
 
 ### 11.2 Raised by the investigations and never closed
 
@@ -745,4 +754,3 @@ These were deferred by container.md and are **not** decided here.
 12. **Fork and cross-namespace provenance.** A copy into an unrelated lineage gets a new namespace; whether and how a fork can declare shared lineage identities is undefined.
 13. **Reader versus validator obligations.** Whether an ordinary reader must verify that current-view entries hash to the tip tree's blobs, or may trust the manifest and leave that to validators, is a conformance-level question this document does not settle. §7.1 describes both paths.
 14. **HTTP range deployment.** The protocol conditions (strong validator, no whole-response content encoding, CORS exposure of `Content-Range` and `ETag`) were measured over loopback in Node, not in a cross-origin browser.
-15. **Whether ordinary ZIP readers must be able to browse current Markdown** was answered *yes* by adopting the working tree (C4); the 64 KiB block hybrid remains the measured alternative if that answer is ever reversed.
