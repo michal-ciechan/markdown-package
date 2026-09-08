@@ -11,6 +11,8 @@ Sources, all in `docs/investigations/`, each with its reproducible evidence dire
 | [addressing.md](investigations/addressing.md) (CARD-0004) | `4b12c42`, `d0590d0`, `381b874` | Section identity is a computed default anchor plus a sparse, Git-tracked table of producer-confirmed exceptions; digests are computed at read time; the zero-metadata read-time Git-walking alternative measured in `381b874` is closed and rejected (§9) |
 | [container.md](investigations/container.md) (CARD-0001) | `8d05889`, `d49793e` | One manifest-first ZIP; `.mdpkg/` and `.git/` reserved; two-tier reader (79-byte offset-0 typing, central-directory fallback); the EOCD comment is rejected as a version carrier in both its variable-length and fixed-length forms |
 
+Non-normative: [`docs/spec/generator-cli.md`](spec/generator-cli.md) is a tool reference for a CLI that generates conforming packages; it describes one producer, not the format, and this document governs wherever the two differ.
+
 The words MUST, MUST NOT, SHOULD and MAY are used in their usual normative sense. "Producer" means whatever writes a package; "reader" means whatever opens one; "validator" means a reader that additionally proves internal consistency.
 
 ---

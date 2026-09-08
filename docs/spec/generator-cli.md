@@ -244,6 +244,8 @@ The ledger is carried forward as an ordinary tree copy and survives the squash u
 
 Squash is declared, never inferred: a squash commit and an ordinary one-parent commit with the same tree, parent, author, committer and message have the identical object ID. The absence of `.git/shallow` likewise proves nothing about completeness — a synthetic root repacks as a normal repository (§5.3, §9).
 
+In-place update of an existing package is a possible future CLI affordance and is not yet designed. It is a tool question, not a format one: `update` today always writes a new file (§1, §2, §13), which is what spec §9 "atomic in-place update: not attempted; rewrite the file" leaves a producer with. Nothing above changes until such a design exists.
+
 ---
 
 ## 10. Generation path 3 — sparse addressing exception marking (`address`)
