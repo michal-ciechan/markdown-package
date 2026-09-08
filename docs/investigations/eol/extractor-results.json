@@ -1,0 +1,791 @@
+{
+ "platform": "Windows-10-10.0.19045-SP0",
+ "python": "3.10.2",
+ "git": "git version 2.50.1.windows.1",
+ "git_global_autocrlf": "",
+ "unzip": "UnZip 6.00 of 20 April 2009, by Info-ZIP.  Maintained by C. Spieler.  Send",
+ "unzip_path": "C:\\Program Files\\Git\\usr\\bin\\unzip.exe",
+ "seven_zip": "7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26",
+ "tar": "bsdtar 3.5.2 - libarchive 3.5.2 zlib/1.2.5.f-ipp",
+ "package": "C:\\src\\markdown-package\\.antiphon\\eol-work\\conforming-lf.mdpkg",
+ "package_sha256": "8e15967b32445c853e21eded4c5539badbdfc70dca0e04d4b55e91a6555d08ec",
+ "run_directory": "C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b",
+ "unpack": [
+  {
+   "regions": {
+    "container": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "document": {
+     "entries": 4,
+     "identical": 4,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-text": {
+     "entries": 3,
+     "identical": 3,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-binary": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    }
+   },
+   "changed": [],
+   "unexpected_files": [],
+   "identical": 11,
+   "entries": 11,
+   "cr_added": 0,
+   "cr_removed": 0,
+   "tool": "Python zipfile extractall",
+   "returncode": 0,
+   "output": "",
+   "directory": "C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u0",
+   "git_fsck": {
+    "returncode": 0,
+    "output": ""
+   }
+  },
+  {
+   "regions": {
+    "container": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "document": {
+     "entries": 4,
+     "identical": 4,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-text": {
+     "entries": 3,
+     "identical": 3,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-binary": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    }
+   },
+   "changed": [],
+   "unexpected_files": [],
+   "identical": 11,
+   "entries": 11,
+   "cr_added": 0,
+   "cr_removed": 0,
+   "tool": "Info-ZIP unzip -o",
+   "returncode": 0,
+   "output": "Archive:  C:\\src\\markdown-package\\.antiphon\\eol-work\\conforming-lf.mdpkg\n extracting: C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u1/.mdpkg/manifest.json  \n extracting: C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u1/control.md  \n  inflating: C:\\src\\markdown-pa",
+   "directory": "C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u1",
+   "git_fsck": {
+    "returncode": 0,
+    "output": ""
+   }
+  },
+  {
+   "regions": {
+    "container": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "document": {
+     "entries": 4,
+     "identical": 4,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-text": {
+     "entries": 3,
+     "identical": 3,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-binary": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    }
+   },
+   "changed": [],
+   "unexpected_files": [],
+   "identical": 11,
+   "entries": 11,
+   "cr_added": 0,
+   "cr_removed": 0,
+   "tool": "Info-ZIP unzip -a -o",
+   "returncode": 0,
+   "output": "Archive:  C:\\src\\markdown-package\\.antiphon\\eol-work\\conforming-lf.mdpkg\n extracting: C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u2/.mdpkg/manifest.json  [binary]\n extracting: C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u2/control.md  [binary]\n  inflating: C:",
+   "directory": "C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u2",
+   "git_fsck": {
+    "returncode": 0,
+    "output": ""
+   }
+  },
+  {
+   "regions": {
+    "container": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "document": {
+     "entries": 4,
+     "identical": 4,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-text": {
+     "entries": 3,
+     "identical": 3,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-binary": {
+     "entries": 2,
+     "identical": 0,
+     "cr_added": 0,
+     "cr_removed": 2
+    }
+   },
+   "changed": [
+    {
+     "name": ".git/objects/pack/pack-b3d5f3d7a2ed4925c10a591b725ea2736fccee8d.idx",
+     "region": "git-binary",
+     "present": true,
+     "stored_bytes": 1408,
+     "extracted_bytes": 1407,
+     "stored_cr": 1,
+     "extracted_cr": 0,
+     "became_crlf": false,
+     "became_lf": false
+    },
+    {
+     "name": ".git/objects/pack/pack-b3d5f3d7a2ed4925c10a591b725ea2736fccee8d.pack",
+     "region": "git-binary",
+     "present": true,
+     "stored_bytes": 1182,
+     "extracted_bytes": 1177,
+     "stored_cr": 1,
+     "extracted_cr": 0,
+     "became_crlf": false,
+     "became_lf": false
+    }
+   ],
+   "unexpected_files": [],
+   "identical": 9,
+   "entries": 11,
+   "cr_added": 0,
+   "cr_removed": 2,
+   "tool": "Info-ZIP unzip -aa -o",
+   "returncode": 0,
+   "output": "Archive:  C:\\src\\markdown-package\\.antiphon\\eol-work\\conforming-lf.mdpkg\n extracting: C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u3/.mdpkg/manifest.json  \n extracting: C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u3/control.md  \n  inflating: C:\\src\\markdown-pa",
+   "directory": "C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u3",
+   "git_fsck": {
+    "returncode": 70,
+    "output": "error: wrong index v2 file size in .git/objects/pack/pack-b3d5f3d7a2ed4925c10a591b725ea2736fccee8d.idx\nerror: packfile .git/objects/pack/pack-b3d5f3d7a2ed4925c10a591b725ea2736fccee8d.pack index not opened\nerror: wrong index v2 file size in .git/objects/pack/pack-b3d5f3d7a2ed4925c10a591b725ea2736fccee8d.idx\nerror: wrong index v2 file size in .git/objects/pack/pack-b3d5f3d7a2ed4925c10a591b725ea2736f"
+   }
+  },
+  {
+   "regions": {
+    "container": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "document": {
+     "entries": 4,
+     "identical": 4,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-text": {
+     "entries": 3,
+     "identical": 3,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-binary": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    }
+   },
+   "changed": [],
+   "unexpected_files": [],
+   "identical": 11,
+   "entries": 11,
+   "cr_added": 0,
+   "cr_removed": 0,
+   "tool": "7-Zip x",
+   "returncode": 0,
+   "output": "7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\r\n\r\nScanning the drive for archives:\r\n1 file, 4876 bytes (5 KiB)\r\n\r\nExtracting archive: C:\\src\\markdown-package\\.antiphon\\eol-work\\conforming-lf.mdpkg\r\n--\r\nPath = C:\\src\\markdown-package\\.antiphon\\eol-work\\conforming-lf.mdpkg\r\nType ",
+   "directory": "C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u4",
+   "git_fsck": {
+    "returncode": 0,
+    "output": ""
+   }
+  },
+  {
+   "regions": {
+    "container": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "document": {
+     "entries": 4,
+     "identical": 4,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-text": {
+     "entries": 3,
+     "identical": 3,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-binary": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    }
+   },
+   "changed": [],
+   "unexpected_files": [],
+   "identical": 11,
+   "entries": 11,
+   "cr_added": 0,
+   "cr_removed": 0,
+   "tool": "PowerShell Expand-Archive",
+   "returncode": 0,
+   "output": "",
+   "directory": "C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u5",
+   "git_fsck": {
+    "returncode": 0,
+    "output": ""
+   }
+  },
+  {
+   "regions": {
+    "container": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "document": {
+     "entries": 4,
+     "identical": 4,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-text": {
+     "entries": 3,
+     "identical": 3,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-binary": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    }
+   },
+   "changed": [],
+   "unexpected_files": [],
+   "identical": 11,
+   "entries": 11,
+   "cr_added": 0,
+   "cr_removed": 0,
+   "tool": "bsdtar -xf",
+   "returncode": 0,
+   "output": "",
+   "directory": "C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u6",
+   "git_fsck": {
+    "returncode": 0,
+    "output": ""
+   }
+  },
+  {
+   "regions": {
+    "container": {
+     "entries": 2,
+     "identical": 0,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "document": {
+     "entries": 4,
+     "identical": 0,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-text": {
+     "entries": 3,
+     "identical": 0,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-binary": {
+     "entries": 2,
+     "identical": 0,
+     "cr_added": 0,
+     "cr_removed": 0
+    }
+   },
+   "changed": [
+    {
+     "name": ".mdpkg/manifest.json",
+     "region": "container",
+     "present": false,
+     "stored_bytes": 339,
+     "extracted_bytes": null,
+     "stored_cr": 0,
+     "extracted_cr": null,
+     "became_crlf": false,
+     "became_lf": false
+    },
+    {
+     "name": "control.md",
+     "region": "document",
+     "present": false,
+     "stored_bytes": 66,
+     "extracted_bytes": null,
+     "stored_cr": 0,
+     "extracted_cr": null,
+     "became_crlf": false,
+     "became_lf": false
+    },
+    {
+     "name": "guide.md",
+     "region": "document",
+     "present": false,
+     "stored_bytes": 163,
+     "extracted_bytes": null,
+     "stored_cr": 0,
+     "extracted_cr": null,
+     "became_crlf": false,
+     "became_lf": false
+    },
+    {
+     "name": "mixed.md",
+     "region": "document",
+     "present": false,
+     "stored_bytes": 50,
+     "extracted_bytes": null,
+     "stored_cr": 0,
+     "extracted_cr": null,
+     "became_crlf": false,
+     "became_lf": false
+    },
+    {
+     "name": "notes.md",
+     "region": "document",
+     "present": false,
+     "stored_bytes": 36,
+     "extracted_bytes": null,
+     "stored_cr": 0,
+     "extracted_cr": null,
+     "became_crlf": false,
+     "became_lf": false
+    },
+    {
+     "name": ".mdpkg/history.json",
+     "region": "container",
+     "present": false,
+     "stored_bytes": 407,
+     "extracted_bytes": null,
+     "stored_cr": 0,
+     "extracted_cr": null,
+     "became_crlf": false,
+     "became_lf": false
+    },
+    {
+     "name": ".git/HEAD",
+     "region": "git-text",
+     "present": false,
+     "stored_bytes": 21,
+     "extracted_bytes": null,
+     "stored_cr": 0,
+     "extracted_cr": null,
+     "became_crlf": false,
+     "became_lf": false
+    },
+    {
+     "name": ".git/config",
+     "region": "git-text",
+     "present": false,
+     "stored_bytes": 50,
+     "extracted_bytes": null,
+     "stored_cr": 0,
+     "extracted_cr": null,
+     "became_crlf": false,
+     "became_lf": false
+    },
+    {
+     "name": ".git/refs/heads/main",
+     "region": "git-text",
+     "present": false,
+     "stored_bytes": 41,
+     "extracted_bytes": null,
+     "stored_cr": 0,
+     "extracted_cr": null,
+     "became_crlf": false,
+     "became_lf": false
+    },
+    {
+     "name": ".git/objects/pack/pack-b3d5f3d7a2ed4925c10a591b725ea2736fccee8d.idx",
+     "region": "git-binary",
+     "present": false,
+     "stored_bytes": 1408,
+     "extracted_bytes": null,
+     "stored_cr": 1,
+     "extracted_cr": null,
+     "became_crlf": false,
+     "became_lf": false
+    },
+    {
+     "name": ".git/objects/pack/pack-b3d5f3d7a2ed4925c10a591b725ea2736fccee8d.pack",
+     "region": "git-binary",
+     "present": false,
+     "stored_bytes": 1182,
+     "extracted_bytes": null,
+     "stored_cr": 1,
+     "extracted_cr": null,
+     "became_crlf": false,
+     "became_lf": false
+    }
+   ],
+   "unexpected_files": [],
+   "identical": 0,
+   "entries": 11,
+   "cr_added": 0,
+   "cr_removed": 0,
+   "tool": "Windows Explorer, .mdpkg extension",
+   "returncode": 1,
+   "output": "Error HRESULT E_FAIL has been returned from a call to a COM component.\r\nAt C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\shell-161126f1.ps1:3 char:1\r\n+ $zip = $s.NameSpace((Resolve-Path 'C:\\src\\markdown-package\\.antiphon\\ ...\r\n+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+   "directory": "C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u7",
+   "git_fsck": null
+  },
+  {
+   "regions": {
+    "container": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "document": {
+     "entries": 4,
+     "identical": 4,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-text": {
+     "entries": 3,
+     "identical": 3,
+     "cr_added": 0,
+     "cr_removed": 0
+    },
+    "git-binary": {
+     "entries": 2,
+     "identical": 2,
+     "cr_added": 0,
+     "cr_removed": 0
+    }
+   },
+   "changed": [],
+   "unexpected_files": [],
+   "identical": 11,
+   "entries": 11,
+   "cr_added": 0,
+   "cr_removed": 0,
+   "tool": "Windows Explorer, renamed .zip",
+   "returncode": 0,
+   "output": "",
+   "directory": "C:\\src\\markdown-package\\.antiphon\\eol-work\\extract-fc8f360d997b\\u8",
+   "git_fsck": {
+    "returncode": 0,
+    "output": ""
+   }
+  }
+ ],
+ "digests_after_extraction": [
+  {
+   "tool": "Python zipfile extractall",
+   "entities": 15,
+   "matches": 15,
+   "resolved": 15,
+   "all_match": true
+  },
+  {
+   "tool": "Info-ZIP unzip -o",
+   "entities": 15,
+   "matches": 15,
+   "resolved": 15,
+   "all_match": true
+  },
+  {
+   "tool": "Info-ZIP unzip -a -o",
+   "entities": 15,
+   "matches": 15,
+   "resolved": 15,
+   "all_match": true
+  },
+  {
+   "tool": "Info-ZIP unzip -aa -o",
+   "entities": 15,
+   "matches": 15,
+   "resolved": 15,
+   "all_match": true
+  },
+  {
+   "tool": "7-Zip x",
+   "entities": 15,
+   "matches": 15,
+   "resolved": 15,
+   "all_match": true
+  },
+  {
+   "tool": "PowerShell Expand-Archive",
+   "entities": 15,
+   "matches": 15,
+   "resolved": 15,
+   "all_match": true
+  },
+  {
+   "tool": "bsdtar -xf",
+   "entities": 15,
+   "matches": 15,
+   "resolved": 15,
+   "all_match": true
+  },
+  {
+   "tool": "Windows Explorer, .mdpkg extension",
+   "entities": 15,
+   "matches": 0,
+   "resolved": 0,
+   "all_match": false
+  },
+  {
+   "tool": "Windows Explorer, renamed .zip",
+   "entities": 15,
+   "matches": 15,
+   "resolved": 15,
+   "all_match": true
+  }
+ ],
+ "text_bit": {
+  "rows": [
+   {
+    "content": "LF (conforming)",
+    "internal_attr_text_bit": false,
+    "mode": "unzip -a",
+    "returncode": 0,
+    "documents": 4,
+    "documents_identical": 4,
+    "cr_removed": 0,
+    "cr_added": 0,
+    "converted": false
+   },
+   {
+    "content": "LF (conforming)",
+    "internal_attr_text_bit": true,
+    "mode": "unzip -a",
+    "returncode": 0,
+    "documents": 4,
+    "documents_identical": 4,
+    "cr_removed": 0,
+    "cr_added": 0,
+    "converted": false
+   },
+   {
+    "content": "CRLF (nonconforming)",
+    "internal_attr_text_bit": false,
+    "mode": "unzip -a",
+    "returncode": 0,
+    "documents": 4,
+    "documents_identical": 4,
+    "cr_removed": 0,
+    "cr_added": 0,
+    "converted": false
+   },
+   {
+    "content": "CRLF (nonconforming)",
+    "internal_attr_text_bit": true,
+    "mode": "unzip -a",
+    "returncode": 0,
+    "documents": 4,
+    "documents_identical": 1,
+    "cr_removed": 21,
+    "cr_added": 0,
+    "converted": true
+   }
+  ],
+  "internal_attr_as_produced": {
+   ".mdpkg/manifest.json": 0,
+   "control.md": 0,
+   "guide.md": 0,
+   "mixed.md": 0,
+   "notes.md": 0,
+   ".mdpkg/history.json": 0,
+   ".git/HEAD": 0,
+   ".git/config": 0,
+   ".git/refs/heads/main": 0,
+   ".git/objects/pack/pack-b3d5f3d7a2ed4925c10a591b725ea2736fccee8d.idx": 0,
+   ".git/objects/pack/pack-b3d5f3d7a2ed4925c10a591b725ea2736fccee8d.pack": 0
+  },
+  "all_entries_flagged_binary": true
+ },
+ "git_checkout": [
+  {
+   "autocrlf": "false",
+   "shipped_config_declares_autocrlf": false,
+   "read_tree_returncode": 0,
+   "modified_after_read_tree": 0,
+   "untracked_after_read_tree": [
+    ".mdpkg/history.json",
+    ".mdpkg/manifest.json"
+   ],
+   "ls_files_eol": [
+    "i/lf    w/lf    attr/                 \tcontrol.md",
+    "i/lf    w/lf    attr/                 \tguide.md",
+    "i/lf    w/lf    attr/                 \tmixed.md",
+    "i/lf    w/lf    attr/                 \tnotes.md"
+   ],
+   "documents": 4,
+   "identical_after_unpack": 4,
+   "identical_after_read_tree": 4,
+   "checkout_returncode": 0,
+   "identical_after_checkout": 4,
+   "cr_added_by_checkout": 0,
+   "all_became_crlf_on_checkout": false,
+   "clone_returncode": 0,
+   "identical_after_clone": 4,
+   "cr_added_by_clone": 0,
+   "fsck": {
+    "returncode": 0,
+    "output": ""
+   }
+  },
+  {
+   "autocrlf": "input",
+   "shipped_config_declares_autocrlf": false,
+   "read_tree_returncode": 0,
+   "modified_after_read_tree": 0,
+   "untracked_after_read_tree": [
+    ".mdpkg/history.json",
+    ".mdpkg/manifest.json"
+   ],
+   "ls_files_eol": [
+    "i/lf    w/lf    attr/                 \tcontrol.md",
+    "i/lf    w/lf    attr/                 \tguide.md",
+    "i/lf    w/lf    attr/                 \tmixed.md",
+    "i/lf    w/lf    attr/                 \tnotes.md"
+   ],
+   "documents": 4,
+   "identical_after_unpack": 4,
+   "identical_after_read_tree": 4,
+   "checkout_returncode": 0,
+   "identical_after_checkout": 4,
+   "cr_added_by_checkout": 0,
+   "all_became_crlf_on_checkout": false,
+   "clone_returncode": 0,
+   "identical_after_clone": 4,
+   "cr_added_by_clone": 0,
+   "fsck": {
+    "returncode": 0,
+    "output": ""
+   }
+  },
+  {
+   "autocrlf": "true",
+   "shipped_config_declares_autocrlf": false,
+   "read_tree_returncode": 0,
+   "modified_after_read_tree": 0,
+   "untracked_after_read_tree": [
+    ".mdpkg/history.json",
+    ".mdpkg/manifest.json"
+   ],
+   "ls_files_eol": [
+    "i/lf    w/lf    attr/                 \tcontrol.md",
+    "i/lf    w/lf    attr/                 \tguide.md",
+    "i/lf    w/lf    attr/                 \tmixed.md",
+    "i/lf    w/lf    attr/                 \tnotes.md"
+   ],
+   "documents": 4,
+   "identical_after_unpack": 4,
+   "identical_after_read_tree": 4,
+   "checkout_returncode": 0,
+   "identical_after_checkout": 0,
+   "cr_added_by_checkout": 25,
+   "all_became_crlf_on_checkout": true,
+   "clone_returncode": 0,
+   "identical_after_clone": 0,
+   "cr_added_by_clone": 25,
+   "fsck": {
+    "returncode": 0,
+    "output": ""
+   }
+  },
+  {
+   "autocrlf": "shipped-config-plus-false",
+   "shipped_config_declares_autocrlf": false,
+   "read_tree_returncode": 0,
+   "modified_after_read_tree": 0,
+   "untracked_after_read_tree": [
+    ".mdpkg/history.json",
+    ".mdpkg/manifest.json"
+   ],
+   "ls_files_eol": [
+    "i/lf    w/lf    attr/                 \tcontrol.md",
+    "i/lf    w/lf    attr/                 \tguide.md",
+    "i/lf    w/lf    attr/                 \tmixed.md",
+    "i/lf    w/lf    attr/                 \tnotes.md"
+   ],
+   "documents": 4,
+   "identical_after_unpack": 4,
+   "identical_after_read_tree": 4,
+   "checkout_returncode": 0,
+   "identical_after_checkout": 4,
+   "cr_added_by_checkout": 0,
+   "all_became_crlf_on_checkout": false,
+   "clone_returncode": 0,
+   "identical_after_clone": 4,
+   "cr_added_by_clone": 0,
+   "fsck": {
+    "returncode": 0,
+    "output": ""
+   }
+  }
+ ],
+ "checks": {
+  "unpack_probes": 9,
+  "entry_byte_comparisons": 247,
+  "digest_after_extraction": 9,
+  "text_bit_probes": 4,
+  "git_probes": 4
+ }
+}

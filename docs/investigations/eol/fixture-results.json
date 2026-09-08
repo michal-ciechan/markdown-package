@@ -1,0 +1,970 @@
+{
+ "git": "git version 2.50.1.windows.1",
+ "python": "3.10.2",
+ "work_directory": "C:\\src\\markdown-package\\.antiphon\\eol-work",
+ "source": {
+  "commits": [
+   "2bbac223cb781dce5e0af9591206782441419185",
+   "22c645c6c83dc3ede414eb65fb18bdfedefb0851",
+   "d5b7ad75806234d418bfef590b8302b30248e301"
+  ],
+  "trees": [
+   "9f9e9720b0b57a681e94d435cf78b8e2ebc016e8",
+   "365f0efd87e0f90725150bc8fed560b56a8b6800",
+   "109af15f9b06c1ac82b081999e11d1e95109ff54"
+  ],
+  "objects": [
+   {
+    "ordinal": 0,
+    "path": "control.md",
+    "bytes": 66,
+    "oid": "eea992088c0b3ffc2c4f8f65fb19c62244a58f8b",
+    "cr_bytes": 0,
+    "crlf": 0,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 0,
+    "path": "guide.md",
+    "bytes": 139,
+    "oid": "3f6c5d7b24caa2e219e00dce79ae0722097ffa45",
+    "cr_bytes": 11,
+    "crlf": 11,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 0,
+    "path": "notes.md",
+    "bytes": 41,
+    "oid": "4a485f235ab6c79d9bd8cfe8b6e1a3d8248427bd",
+    "cr_bytes": 5,
+    "crlf": 5,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 1,
+    "path": "control.md",
+    "bytes": 66,
+    "oid": "eea992088c0b3ffc2c4f8f65fb19c62244a58f8b",
+    "cr_bytes": 0,
+    "crlf": 0,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 1,
+    "path": "guide.md",
+    "bytes": 168,
+    "oid": "d590e8dfba37e98c667cccbbf6b25bae9c333068",
+    "cr_bytes": 12,
+    "crlf": 12,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 1,
+    "path": "notes.md",
+    "bytes": 41,
+    "oid": "4a485f235ab6c79d9bd8cfe8b6e1a3d8248427bd",
+    "cr_bytes": 5,
+    "crlf": 5,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 2,
+    "path": "control.md",
+    "bytes": 66,
+    "oid": "eea992088c0b3ffc2c4f8f65fb19c62244a58f8b",
+    "cr_bytes": 0,
+    "crlf": 0,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 2,
+    "path": "guide.md",
+    "bytes": 175,
+    "oid": "87276b440fdedba3a9a806f412572c7cab5db894",
+    "cr_bytes": 12,
+    "crlf": 12,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 2,
+    "path": "mixed.md",
+    "bytes": 52,
+    "oid": "426356ab1bb75968db29e406347a5badf5e8b952",
+    "cr_bytes": 4,
+    "crlf": 2,
+    "lone_cr": 2
+   },
+   {
+    "ordinal": 2,
+    "path": "notes.md",
+    "bytes": 41,
+    "oid": "4a485f235ab6c79d9bd8cfe8b6e1a3d8248427bd",
+    "cr_bytes": 5,
+    "crlf": 5,
+    "lone_cr": 0
+   }
+  ]
+ },
+ "projected": {
+  "commits": [
+   "60d3eba1a82aa504be9ed37b3875a9bfe07fd0f1",
+   "b76e72b469ad00fa1d6ae7255be9a1488bc58263",
+   "a315056f408a5d8792949ac3807ba53c65818bd3"
+  ],
+  "trees": [
+   "f0f9c64bf664a38c400c592faf9d8d140cbbcc79",
+   "7ae9a3afb9fa9d92d04df10db1f888e7a9d34d87",
+   "80121fe002f320c6ffa99873de2f32813af5d6f2"
+  ],
+  "objects": [
+   {
+    "ordinal": 0,
+    "path": "control.md",
+    "bytes": 66,
+    "oid": "eea992088c0b3ffc2c4f8f65fb19c62244a58f8b",
+    "cr_bytes": 0,
+    "crlf": 0,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 0,
+    "path": "guide.md",
+    "bytes": 128,
+    "oid": "baa7cf3536e81aca073609b58b215ec0f860a668",
+    "cr_bytes": 0,
+    "crlf": 0,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 0,
+    "path": "notes.md",
+    "bytes": 36,
+    "oid": "143227537cf0e613855eb072fc61269cf85387f5",
+    "cr_bytes": 0,
+    "crlf": 0,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 1,
+    "path": "control.md",
+    "bytes": 66,
+    "oid": "eea992088c0b3ffc2c4f8f65fb19c62244a58f8b",
+    "cr_bytes": 0,
+    "crlf": 0,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 1,
+    "path": "guide.md",
+    "bytes": 156,
+    "oid": "f9695ad813beb3d281dceed4dbf7f291bc9eb04c",
+    "cr_bytes": 0,
+    "crlf": 0,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 1,
+    "path": "notes.md",
+    "bytes": 36,
+    "oid": "143227537cf0e613855eb072fc61269cf85387f5",
+    "cr_bytes": 0,
+    "crlf": 0,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 2,
+    "path": "control.md",
+    "bytes": 66,
+    "oid": "eea992088c0b3ffc2c4f8f65fb19c62244a58f8b",
+    "cr_bytes": 0,
+    "crlf": 0,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 2,
+    "path": "guide.md",
+    "bytes": 163,
+    "oid": "7e5cdaf1d0796bd7280ba1fbee7f506ecf90dc64",
+    "cr_bytes": 0,
+    "crlf": 0,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 2,
+    "path": "mixed.md",
+    "bytes": 50,
+    "oid": "71ff17bce81bb98c5083f2cd243176737dadac64",
+    "cr_bytes": 0,
+    "crlf": 0,
+    "lone_cr": 0
+   },
+   {
+    "ordinal": 2,
+    "path": "notes.md",
+    "bytes": 36,
+    "oid": "143227537cf0e613855eb072fc61269cf85387f5",
+    "cr_bytes": 0,
+    "crlf": 0,
+    "lone_cr": 0
+   }
+  ]
+ },
+ "blob_rewrites": [
+  {
+   "ordinal": 0,
+   "path": "control.md",
+   "source_oid": "eea992088c0b3ffc2c4f8f65fb19c62244a58f8b",
+   "projected_oid": "eea992088c0b3ffc2c4f8f65fb19c62244a58f8b",
+   "source_bytes": 66,
+   "projected_bytes": 66,
+   "source_cr_bytes": 0,
+   "projected_cr_bytes": 0,
+   "rewritten": false
+  },
+  {
+   "ordinal": 0,
+   "path": "guide.md",
+   "source_oid": "3f6c5d7b24caa2e219e00dce79ae0722097ffa45",
+   "projected_oid": "baa7cf3536e81aca073609b58b215ec0f860a668",
+   "source_bytes": 139,
+   "projected_bytes": 128,
+   "source_cr_bytes": 11,
+   "projected_cr_bytes": 0,
+   "rewritten": true
+  },
+  {
+   "ordinal": 0,
+   "path": "notes.md",
+   "source_oid": "4a485f235ab6c79d9bd8cfe8b6e1a3d8248427bd",
+   "projected_oid": "143227537cf0e613855eb072fc61269cf85387f5",
+   "source_bytes": 41,
+   "projected_bytes": 36,
+   "source_cr_bytes": 5,
+   "projected_cr_bytes": 0,
+   "rewritten": true
+  },
+  {
+   "ordinal": 1,
+   "path": "control.md",
+   "source_oid": "eea992088c0b3ffc2c4f8f65fb19c62244a58f8b",
+   "projected_oid": "eea992088c0b3ffc2c4f8f65fb19c62244a58f8b",
+   "source_bytes": 66,
+   "projected_bytes": 66,
+   "source_cr_bytes": 0,
+   "projected_cr_bytes": 0,
+   "rewritten": false
+  },
+  {
+   "ordinal": 1,
+   "path": "guide.md",
+   "source_oid": "d590e8dfba37e98c667cccbbf6b25bae9c333068",
+   "projected_oid": "f9695ad813beb3d281dceed4dbf7f291bc9eb04c",
+   "source_bytes": 168,
+   "projected_bytes": 156,
+   "source_cr_bytes": 12,
+   "projected_cr_bytes": 0,
+   "rewritten": true
+  },
+  {
+   "ordinal": 1,
+   "path": "notes.md",
+   "source_oid": "4a485f235ab6c79d9bd8cfe8b6e1a3d8248427bd",
+   "projected_oid": "143227537cf0e613855eb072fc61269cf85387f5",
+   "source_bytes": 41,
+   "projected_bytes": 36,
+   "source_cr_bytes": 5,
+   "projected_cr_bytes": 0,
+   "rewritten": true
+  },
+  {
+   "ordinal": 2,
+   "path": "control.md",
+   "source_oid": "eea992088c0b3ffc2c4f8f65fb19c62244a58f8b",
+   "projected_oid": "eea992088c0b3ffc2c4f8f65fb19c62244a58f8b",
+   "source_bytes": 66,
+   "projected_bytes": 66,
+   "source_cr_bytes": 0,
+   "projected_cr_bytes": 0,
+   "rewritten": false
+  },
+  {
+   "ordinal": 2,
+   "path": "guide.md",
+   "source_oid": "87276b440fdedba3a9a806f412572c7cab5db894",
+   "projected_oid": "7e5cdaf1d0796bd7280ba1fbee7f506ecf90dc64",
+   "source_bytes": 175,
+   "projected_bytes": 163,
+   "source_cr_bytes": 12,
+   "projected_cr_bytes": 0,
+   "rewritten": true
+  },
+  {
+   "ordinal": 2,
+   "path": "mixed.md",
+   "source_oid": "426356ab1bb75968db29e406347a5badf5e8b952",
+   "projected_oid": "71ff17bce81bb98c5083f2cd243176737dadac64",
+   "source_bytes": 52,
+   "projected_bytes": 50,
+   "source_cr_bytes": 4,
+   "projected_cr_bytes": 0,
+   "rewritten": true
+  },
+  {
+   "ordinal": 2,
+   "path": "notes.md",
+   "source_oid": "4a485f235ab6c79d9bd8cfe8b6e1a3d8248427bd",
+   "projected_oid": "143227537cf0e613855eb072fc61269cf85387f5",
+   "source_bytes": 41,
+   "projected_bytes": 36,
+   "source_cr_bytes": 5,
+   "projected_cr_bytes": 0,
+   "rewritten": true
+  }
+ ],
+ "distinct_source_blobs": 6,
+ "distinct_projected_blobs": 6,
+ "blobs_rewritten": 7,
+ "tree_rewrites": [
+  {
+   "ordinal": 0,
+   "source": "9f9e9720b0b57a681e94d435cf78b8e2ebc016e8",
+   "projected": "f0f9c64bf664a38c400c592faf9d8d140cbbcc79",
+   "rewritten": true
+  },
+  {
+   "ordinal": 1,
+   "source": "365f0efd87e0f90725150bc8fed560b56a8b6800",
+   "projected": "7ae9a3afb9fa9d92d04df10db1f888e7a9d34d87",
+   "rewritten": true
+  },
+  {
+   "ordinal": 2,
+   "source": "109af15f9b06c1ac82b081999e11d1e95109ff54",
+   "projected": "80121fe002f320c6ffa99873de2f32813af5d6f2",
+   "rewritten": true
+  }
+ ],
+ "commit_rewrites": [
+  {
+   "ordinal": 0,
+   "source": "2bbac223cb781dce5e0af9591206782441419185",
+   "projected": "60d3eba1a82aa504be9ed37b3875a9bfe07fd0f1",
+   "rewritten": true
+  },
+  {
+   "ordinal": 1,
+   "source": "22c645c6c83dc3ede414eb65fb18bdfedefb0851",
+   "projected": "b76e72b469ad00fa1d6ae7255be9a1488bc58263",
+   "rewritten": true
+  },
+  {
+   "ordinal": 2,
+   "source": "d5b7ad75806234d418bfef590b8302b30248e301",
+   "projected": "a315056f408a5d8792949ac3807ba53c65818bd3",
+   "rewritten": true
+  }
+ ],
+ "identity_control": {
+  "trees": [
+   {
+    "ordinal": 0,
+    "source": "f0f9c64bf664a38c400c592faf9d8d140cbbcc79",
+    "projected": "f0f9c64bf664a38c400c592faf9d8d140cbbcc79",
+    "rewritten": false
+   },
+   {
+    "ordinal": 1,
+    "source": "7ae9a3afb9fa9d92d04df10db1f888e7a9d34d87",
+    "projected": "7ae9a3afb9fa9d92d04df10db1f888e7a9d34d87",
+    "rewritten": false
+   },
+   {
+    "ordinal": 2,
+    "source": "80121fe002f320c6ffa99873de2f32813af5d6f2",
+    "projected": "80121fe002f320c6ffa99873de2f32813af5d6f2",
+    "rewritten": false
+   }
+  ],
+  "commits": [
+   {
+    "ordinal": 0,
+    "source": "60d3eba1a82aa504be9ed37b3875a9bfe07fd0f1",
+    "projected": "60d3eba1a82aa504be9ed37b3875a9bfe07fd0f1",
+    "rewritten": false
+   },
+   {
+    "ordinal": 1,
+    "source": "b76e72b469ad00fa1d6ae7255be9a1488bc58263",
+    "projected": "b76e72b469ad00fa1d6ae7255be9a1488bc58263",
+    "rewritten": false
+   },
+   {
+    "ordinal": 2,
+    "source": "a315056f408a5d8792949ac3807ba53c65818bd3",
+    "projected": "a315056f408a5d8792949ac3807ba53c65818bd3",
+    "rewritten": false
+   }
+  ]
+ },
+ "packages": {
+  "conforming-lf": {
+   "label": "conforming-lf",
+   "path": "C:\\src\\markdown-package\\.antiphon\\eol-work\\conforming-lf.mdpkg",
+   "bytes": 4876,
+   "sha256": "8e15967b32445c853e21eded4c5539badbdfc70dca0e04d4b55e91a6555d08ec",
+   "head": "a315056f408a5d8792949ac3807ba53c65818bd3",
+   "entries": [
+    {
+     "name": ".mdpkg/manifest.json",
+     "local": 0,
+     "data": 50,
+     "method": 0,
+     "csize": 339,
+     "usize": 339,
+     "crc": "9f16bed9",
+     "end": 389,
+     "flags": 0
+    },
+    {
+     "name": "control.md",
+     "local": 389,
+     "data": 429,
+     "method": 0,
+     "csize": 66,
+     "usize": 66,
+     "crc": "73690314",
+     "end": 495,
+     "flags": 0
+    },
+    {
+     "name": "guide.md",
+     "local": 495,
+     "data": 533,
+     "method": 8,
+     "csize": 119,
+     "usize": 163,
+     "crc": "cf83f8e7",
+     "end": 652,
+     "flags": 0
+    },
+    {
+     "name": "mixed.md",
+     "local": 652,
+     "data": 690,
+     "method": 8,
+     "csize": 37,
+     "usize": 50,
+     "crc": "72140074",
+     "end": 727,
+     "flags": 0
+    },
+    {
+     "name": "notes.md",
+     "local": 727,
+     "data": 765,
+     "method": 0,
+     "csize": 36,
+     "usize": 36,
+     "crc": "ba3d4b41",
+     "end": 801,
+     "flags": 0
+    },
+    {
+     "name": ".mdpkg/history.json",
+     "local": 801,
+     "data": 850,
+     "method": 8,
+     "csize": 223,
+     "usize": 407,
+     "crc": "bff5c077",
+     "end": 1073,
+     "flags": 0
+    },
+    {
+     "name": ".git/HEAD",
+     "local": 1073,
+     "data": 1112,
+     "method": 0,
+     "csize": 21,
+     "usize": 21,
+     "crc": "576463b5",
+     "end": 1133,
+     "flags": 0
+    },
+    {
+     "name": ".git/config",
+     "local": 1133,
+     "data": 1174,
+     "method": 0,
+     "csize": 50,
+     "usize": 50,
+     "crc": "184bf63d",
+     "end": 1224,
+     "flags": 0
+    },
+    {
+     "name": ".git/refs/heads/main",
+     "local": 1224,
+     "data": 1274,
+     "method": 0,
+     "csize": 41,
+     "usize": 41,
+     "crc": "4378a80e",
+     "end": 1315,
+     "flags": 0
+    },
+    {
+     "name": ".git/objects/pack/pack-b3d5f3d7a2ed4925c10a591b725ea2736fccee8d.idx",
+     "local": 1315,
+     "data": 1412,
+     "method": 0,
+     "csize": 1408,
+     "usize": 1408,
+     "crc": "c040b7ca",
+     "end": 2820,
+     "flags": 0
+    },
+    {
+     "name": ".git/objects/pack/pack-b3d5f3d7a2ed4925c10a591b725ea2736fccee8d.pack",
+     "local": 2820,
+     "data": 2918,
+     "method": 0,
+     "csize": 1182,
+     "usize": 1182,
+     "crc": "3f2fab36",
+     "end": 4100,
+     "flags": 0
+    }
+   ],
+   "eocd": {
+    "eocd": 4854,
+    "count": 11,
+    "cd_size": 754,
+    "cd_offset": 4100,
+    "comment": 0
+   },
+   "tree": "100644 blob eea992088c0b3ffc2c4f8f65fb19c62244a58f8b\tcontrol.md\n100644 blob 7e5cdaf1d0796bd7280ba1fbee7f506ecf90dc64\tguide.md\n100644 blob 71ff17bce81bb98c5083f2cd243176737dadac64\tmixed.md\n100644 blob 143227537cf0e613855eb072fc61269cf85387f5\tnotes.md\n",
+   "eol_scan": {
+    "offending_entries": [],
+    "conforms": true,
+    "payload_bytes_scanned": 1061
+   }
+  },
+  "nonconforming-crlf": {
+   "label": "nonconforming-crlf",
+   "path": "C:\\src\\markdown-package\\.antiphon\\eol-work\\nonconforming-crlf.mdpkg",
+   "bytes": 4910,
+   "sha256": "32c0c0a68a40f36f98405750f5dc52ada805d00601871561f8d297d111f924b5",
+   "head": "d5b7ad75806234d418bfef590b8302b30248e301",
+   "entries": [
+    {
+     "name": ".mdpkg/manifest.json",
+     "local": 0,
+     "data": 50,
+     "method": 0,
+     "csize": 339,
+     "usize": 339,
+     "crc": "c4acf98c",
+     "end": 389,
+     "flags": 0
+    },
+    {
+     "name": "control.md",
+     "local": 389,
+     "data": 429,
+     "method": 0,
+     "csize": 66,
+     "usize": 66,
+     "crc": "73690314",
+     "end": 495,
+     "flags": 0
+    },
+    {
+     "name": "guide.md",
+     "local": 495,
+     "data": 533,
+     "method": 8,
+     "csize": 123,
+     "usize": 175,
+     "crc": "1b8efc89",
+     "end": 656,
+     "flags": 0
+    },
+    {
+     "name": "mixed.md",
+     "local": 656,
+     "data": 694,
+     "method": 8,
+     "csize": 43,
+     "usize": 52,
+     "crc": "4a69b5cd",
+     "end": 737,
+     "flags": 0
+    },
+    {
+     "name": "notes.md",
+     "local": 737,
+     "data": 775,
+     "method": 0,
+     "csize": 41,
+     "usize": 41,
+     "crc": "bb708759",
+     "end": 816,
+     "flags": 0
+    },
+    {
+     "name": ".mdpkg/history.json",
+     "local": 816,
+     "data": 865,
+     "method": 8,
+     "csize": 225,
+     "usize": 407,
+     "crc": "d84a4f51",
+     "end": 1090,
+     "flags": 0
+    },
+    {
+     "name": ".git/HEAD",
+     "local": 1090,
+     "data": 1129,
+     "method": 0,
+     "csize": 21,
+     "usize": 21,
+     "crc": "576463b5",
+     "end": 1150,
+     "flags": 0
+    },
+    {
+     "name": ".git/config",
+     "local": 1150,
+     "data": 1191,
+     "method": 0,
+     "csize": 50,
+     "usize": 50,
+     "crc": "184bf63d",
+     "end": 1241,
+     "flags": 0
+    },
+    {
+     "name": ".git/refs/heads/main",
+     "local": 1241,
+     "data": 1291,
+     "method": 0,
+     "csize": 41,
+     "usize": 41,
+     "crc": "5572b290",
+     "end": 1332,
+     "flags": 0
+    },
+    {
+     "name": ".git/objects/pack/pack-fa0c617033eca61ce2bcfca34827d18eb90916ed.idx",
+     "local": 1332,
+     "data": 1429,
+     "method": 0,
+     "csize": 1408,
+     "usize": 1408,
+     "crc": "98f703f2",
+     "end": 2837,
+     "flags": 0
+    },
+    {
+     "name": ".git/objects/pack/pack-fa0c617033eca61ce2bcfca34827d18eb90916ed.pack",
+     "local": 2837,
+     "data": 2935,
+     "method": 0,
+     "csize": 1199,
+     "usize": 1199,
+     "crc": "ad0fa517",
+     "end": 4134,
+     "flags": 0
+    }
+   ],
+   "eocd": {
+    "eocd": 4888,
+    "count": 11,
+    "cd_size": 754,
+    "cd_offset": 4134,
+    "comment": 0
+   },
+   "tree": "100644 blob eea992088c0b3ffc2c4f8f65fb19c62244a58f8b\tcontrol.md\n100644 blob 87276b440fdedba3a9a806f412572c7cab5db894\tguide.md\n100644 blob 426356ab1bb75968db29e406347a5badf5e8b952\tmixed.md\n100644 blob 4a485f235ab6c79d9bd8cfe8b6e1a3d8248427bd\tnotes.md\n",
+   "eol_scan": {
+    "offending_entries": [
+     {
+      "name": "guide.md",
+      "cr_bytes": 12,
+      "crlf": 12,
+      "lone_cr": 0
+     },
+     {
+      "name": "mixed.md",
+      "cr_bytes": 4,
+      "crlf": 2,
+      "lone_cr": 2
+     },
+     {
+      "name": "notes.md",
+      "cr_bytes": 5,
+      "crlf": 5,
+      "lone_cr": 0
+     }
+    ],
+    "conforms": false,
+    "payload_bytes_scanned": 1080
+   }
+  }
+ },
+ "digest_equivalence": [
+  {
+   "root": "074b1c8cbff0a00a397ccff1316eeedfd38a9aab195315f5ed527cd98eeff68c",
+   "locator": [
+    "document",
+    "notes.md",
+    []
+   ],
+   "lf_digest": "e99e9141449cb484ad702d32d8e032e030496c4c5233fb6ffa2f2851c2478c61",
+   "crlf_digest": "e99e9141449cb484ad702d32d8e032e030496c4c5233fb6ffa2f2851c2478c61",
+   "identical": true
+  },
+  {
+   "root": "1cee2a9e65a42b7a64ecc9bd3325b60e94d40e6b5064122e73381800ed580bca",
+   "locator": [
+    "preamble",
+    "guide.md",
+    []
+   ],
+   "lf_digest": "451c3844bf183a5e8cdf28e53ee32ae6fc71e3f371561995b106649f0a65c590",
+   "crlf_digest": "451c3844bf183a5e8cdf28e53ee32ae6fc71e3f371561995b106649f0a65c590",
+   "identical": true
+  },
+  {
+   "root": "343f1f30134deefb0259bc03f9e712667f28a4c29f965966363b94ff55a6918f",
+   "locator": [
+    "section",
+    "mixed.md",
+    [
+     [
+      "# Mixed",
+      0
+     ]
+    ]
+   ],
+   "lf_digest": "385f9581f008b15dc07ed197da3268f577d17b8fd1a288adf6ae8c4d5bee7db4",
+   "crlf_digest": "385f9581f008b15dc07ed197da3268f577d17b8fd1a288adf6ae8c4d5bee7db4",
+   "identical": true
+  },
+  {
+   "root": "347fae9fda2f52665f640943628386e10ae1bfb804b46687bfa6b89bd3edda4f",
+   "locator": [
+    "preamble",
+    "mixed.md",
+    []
+   ],
+   "lf_digest": "451c3844bf183a5e8cdf28e53ee32ae6fc71e3f371561995b106649f0a65c590",
+   "crlf_digest": "451c3844bf183a5e8cdf28e53ee32ae6fc71e3f371561995b106649f0a65c590",
+   "identical": true
+  },
+  {
+   "root": "42d3e69a999976849c751c41aa3c713fdbf803ff102e0de3b631fbd6af2fd6e4",
+   "locator": [
+    "document",
+    "control.md",
+    []
+   ],
+   "lf_digest": "57282d8501f3dfeeaef737eb0696e2d56cdbeefbf2a51b2ee9dd7f940bc53cba",
+   "crlf_digest": "57282d8501f3dfeeaef737eb0696e2d56cdbeefbf2a51b2ee9dd7f940bc53cba",
+   "identical": true
+  },
+  {
+   "root": "52f7f2741ea95e947ab04da60e3cb037562daf0374b657ba70a0d30f5a0b7f70",
+   "locator": [
+    "section",
+    "guide.md",
+    [
+     [
+      "# Guide",
+      0
+     ],
+     [
+      "## Usage",
+      0
+     ]
+    ]
+   ],
+   "lf_digest": "684ba2cde243d6593c183ee88ec27f5891eec436ba269e5bccfd0a514fc0f9fa",
+   "crlf_digest": "684ba2cde243d6593c183ee88ec27f5891eec436ba269e5bccfd0a514fc0f9fa",
+   "identical": true
+  },
+  {
+   "root": "53b3135dffbb8f1d168eef0009a3d13603a0d480d049f500c17bb846057524b0",
+   "locator": [
+    "section",
+    "control.md",
+    [
+     [
+      "# Control",
+      0
+     ]
+    ]
+   ],
+   "lf_digest": "85831614179b2c46884de9829f0f613f8b02690d925f885c3508c27fbd6da8fa",
+   "crlf_digest": "85831614179b2c46884de9829f0f613f8b02690d925f885c3508c27fbd6da8fa",
+   "identical": true
+  },
+  {
+   "root": "7a15eb59d1b317b559b039ee7e36e889c75c6254dec9c05147b96c253617e4e3",
+   "locator": [
+    "preamble",
+    "control.md",
+    []
+   ],
+   "lf_digest": "451c3844bf183a5e8cdf28e53ee32ae6fc71e3f371561995b106649f0a65c590",
+   "crlf_digest": "451c3844bf183a5e8cdf28e53ee32ae6fc71e3f371561995b106649f0a65c590",
+   "identical": true
+  },
+  {
+   "root": "90010a5eb5ab5df635f28145747119a5448368dd91d9c0ae0a27717bbfc1b319",
+   "locator": [
+    "document",
+    "mixed.md",
+    []
+   ],
+   "lf_digest": "e011ec08e858f9c39d57b238bd738c4e743940d174c63ec3dc19f1c9ae6a510e",
+   "crlf_digest": "e011ec08e858f9c39d57b238bd738c4e743940d174c63ec3dc19f1c9ae6a510e",
+   "identical": true
+  },
+  {
+   "root": "9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f",
+   "locator": [
+    "section",
+    "guide.md",
+    [
+     [
+      "# Guide",
+      0
+     ]
+    ]
+   ],
+   "lf_digest": "6747c5b9f53aedd9d4c77e90846d12982793eee81e044e8b091c60955248bda0",
+   "crlf_digest": "6747c5b9f53aedd9d4c77e90846d12982793eee81e044e8b091c60955248bda0",
+   "identical": true
+  },
+  {
+   "root": "9eb15fd9bde49742ffc9491831a2ee2db3b2ebf0fd5fb9ef243372cf87a7430d",
+   "locator": [
+    "section",
+    "notes.md",
+    [
+     [
+      "# Notes",
+      0
+     ]
+    ]
+   ],
+   "lf_digest": "accffe26cd40a8c3d5fe04db5a33af16ba6b441119f60406be87fa43ce204f8c",
+   "crlf_digest": "accffe26cd40a8c3d5fe04db5a33af16ba6b441119f60406be87fa43ce204f8c",
+   "identical": true
+  },
+  {
+   "root": "a859a7e3a78cebcc72622e85cd4dc6e101ec516a6eca6b497b2765a459e9dc57",
+   "locator": [
+    "document",
+    "guide.md",
+    []
+   ],
+   "lf_digest": "995f4e3eaefd2ea1e94950cecd2f719bd7617db926816dc9b49c9856c06185b3",
+   "crlf_digest": "995f4e3eaefd2ea1e94950cecd2f719bd7617db926816dc9b49c9856c06185b3",
+   "identical": true
+  },
+  {
+   "root": "c1fb83ff728d81247fe7c6b41f62897fa54fd9df3823247ee75fd65f5fc4692d",
+   "locator": [
+    "section",
+    "notes.md",
+    [
+     [
+      "# Notes",
+      0
+     ],
+     [
+      "## Todo",
+      0
+     ]
+    ]
+   ],
+   "lf_digest": "0e3cb80374f66eae7b4cae61f3753e3838b819ef5e42421f741fa4a8d7c0ee2e",
+   "crlf_digest": "0e3cb80374f66eae7b4cae61f3753e3838b819ef5e42421f741fa4a8d7c0ee2e",
+   "identical": true
+  },
+  {
+   "root": "cfd881b831ad4d4be68a3edc7b47d7ccec715cec480ee8b1804e29d574b7749d",
+   "locator": [
+    "preamble",
+    "notes.md",
+    []
+   ],
+   "lf_digest": "451c3844bf183a5e8cdf28e53ee32ae6fc71e3f371561995b106649f0a65c590",
+   "crlf_digest": "451c3844bf183a5e8cdf28e53ee32ae6fc71e3f371561995b106649f0a65c590",
+   "identical": true
+  },
+  {
+   "root": "fff44a68a1b5a2dcb69dfa9135adf85380f5dc5cb30932fead6954a9194c654b",
+   "locator": [
+    "section",
+    "guide.md",
+    [
+     [
+      "# Guide",
+      0
+     ],
+     [
+      "## Installation",
+      0
+     ]
+    ]
+   ],
+   "lf_digest": "29f1bb85c6f01fffb19ded47d9e0213372fdac79cb9785e6197ddbba46f629a9",
+   "crlf_digest": "29f1bb85c6f01fffb19ded47d9e0213372fdac79cb9785e6197ddbba46f629a9",
+   "identical": true
+  }
+ ],
+ "entry_crc": [
+  {
+   "name": "control.md",
+   "lf_crc": "73690314",
+   "crlf_crc": "73690314",
+   "lf_size": 66,
+   "crlf_size": 66
+  },
+  {
+   "name": "guide.md",
+   "lf_crc": "cf83f8e7",
+   "crlf_crc": "1b8efc89",
+   "lf_size": 163,
+   "crlf_size": 175
+  },
+  {
+   "name": "mixed.md",
+   "lf_crc": "72140074",
+   "crlf_crc": "4a69b5cd",
+   "lf_size": 50,
+   "crlf_size": 52
+  },
+  {
+   "name": "notes.md",
+   "lf_crc": "ba3d4b41",
+   "crlf_crc": "bb708759",
+   "lf_size": 36,
+   "crlf_size": 41
+  }
+ ],
+ "checks": {
+  "source_commits": 3,
+  "blob_identity_comparisons": 10,
+  "tree_identity_comparisons": 6,
+  "commit_identity_comparisons": 6,
+  "validator_scans": 2,
+  "digest_comparisons": 15,
+  "crc_comparisons": 4
+ }
+}
