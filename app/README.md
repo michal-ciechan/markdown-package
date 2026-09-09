@@ -25,15 +25,21 @@ also rebuilds the isolated Git reader using the investigation's ESM exports and
 Buffer shim, comparing its raw size, gzip size and SHA-256 with
 `bundle-results.json`. This calibration bundle is not published in `dist/`.
 
-V-2 defaults to **M2**, since this browse build includes identity. The plan's
-49,564-byte library baseline plus a fixed 16 KiB allowance for UI, CSS and reader
-hardening gives a **65,948-byte gzip ceiling**. Shared static chunks and CSS count
-toward it; Git, when shipped, also counts through its package-open import. The
+V-2 defaults to **M2**, since this browse build includes identity. The
+`commonmark-parse-render` baseline in `bundle-results.json` is 48,014 gzip bytes;
+the hardened reader is charged only to the app allowance. M2's 16 KiB app
+allowance gives a **64,398-byte gzip ceiling**. The app allowances are fixed per
+milestone at 12/16/24/32/40/48 KiB for M1–M6, with their library baselines, total
+ceilings and rationale in [plan §4](../docs/superpowers/plans/2026-09-09-card-0018-viewer-app-build-plan.md#4-milestones).
+The gate counts shared static chunks and CSS toward the total; Git, when shipped,
+also counts through its package-open import. The
 graph rejects Git in the initial static closure and requires exactly one dynamic
 Git import site in that closure. M3+ additionally requires the history descriptor
 and Git components, which are not yet shipped. Select a later milestone explicitly
 with `npm run build -- --milestone=M3` when implementing it; the ceiling does not
-grow automatically with the bundle. M4 uses M3's baseline; M6 uses M5's.
+grow automatically with the bundle. Changing an allowance requires amending
+plan §4 and `APP_BUDGETS` together with measured costs and the tradeoff; a gate
+failure alone does not justify a raise.
 
 `node app/build.mjs --report` from the repository root prints the full JSON report;
 all invocations save it as `app/dist/build-report.json`. A version, calibration,

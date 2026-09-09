@@ -201,17 +201,48 @@ exactly one exception, N4, which is small in lines and large in unknown.
 
 ## 4. Milestones
 
-Gz figures are library bytes on the always-loaded path; UI, styling and a diff renderer are on top,
-and the same caveat the investigation made about its own numbers applies here.
+Amended 2026-09-09 for CARD-0024 findings F1/F2: V-2 now has explicit library and
+app allowances for each milestone, in gzip bytes. The total ceiling is their sum,
+as implemented in `app/build.mjs` (`LIBRARY_BUDGETS` and `APP_BUDGETS`). These are
+fixed planning ceilings; the app allowances for future slices are not measured
+implementation costs.
 
-| M | Milestone | Ships | Eager gz | Retires |
-| --- | --- | --- | ---: | --- |
-| M1 | **Open and browse.** File picker → 79-byte typing → central directory → document list → one document rendered | slices 0, 1, 2 | ~1,565 | The largest external unknown: does the iOS picker actually hand over a `.mdpkg` |
-| M2 | **Identity.** Outline, heading trail, scoped digest, default root, cross-checked against the committed worked example | slice 3 | ~49,564 | That the identity layer is portable to the browser without re-derivation |
-| M3 | **History, eagerly.** `history.json` and summaries from the current view; isomorphic-git over the ZIP-mounted pack | slice 4 | ~103,337 | D-3's cost on a real device (M6 item 8) |
-| M4 | **Review capture.** Selection → source offset, selector minting, `comments.json` in canonical JSON | slices 5, 6 | no new libs | N4, the one piece with no prior art |
-| M5 | **Emit and share.** In-memory Git repo → pack → conforming ZIP → `navigator.share` / `<a download>` | slices 7, 8 | ≤156,618 upper bound; the shared-chunk figure gets measured here | That a page can emit something native Git accepts, on a phone |
-| M6 | **Round trip on real devices.** §6's checklist, end to end, B emits and A resolves | slices 9, 10, 11 | — | Investigation §7 item 1 — every iOS claim is currently source-derived, not device-measured |
+| M | Milestone | Ships | Library baseline, gz | App allowance, gz | Total ceiling, gz | Retires |
+| --- | --- | --- | ---: | ---: | ---: | --- |
+| M1 | **Open and browse.** File picker → 79-byte typing → central directory → document list → one document rendered | slices 0, 1, 2 | 48,014 | 12,288 (12 KiB) | 60,302 | The largest external unknown: does the iOS picker actually hand over a `.mdpkg` |
+| M2 | **Identity.** Outline, heading trail, scoped digest, default root, cross-checked against the committed worked example | slice 3 | 48,014 | 16,384 (16 KiB) | 64,398 | That the identity layer is portable to the browser without re-derivation |
+| M3 | **History, eagerly.** `history.json` and summaries from the current view; isomorphic-git over the ZIP-mounted pack | slice 4 | 101,787 | 24,576 (24 KiB) | 126,363 | D-3's cost on a real device (M6 item 8) |
+| M4 | **Review capture.** Selection → source offset, selector minting, `comments.json` in canonical JSON | slices 5, 6 | 101,787 | 32,768 (32 KiB) | 134,555 | N4, the one piece with no prior art |
+| M5 | **Emit and share.** In-memory Git repo → pack → conforming ZIP → `navigator.share` / `<a download>` | slices 7, 8 | 154,150 upper bound | 40,960 (40 KiB) | 195,110 | That a page can emit something native Git accepts, on a phone |
+| M6 | **Round trip on real devices.** §6's checklist, end to end, B emits and A resolves | slices 9, 10, 11 | 154,150 upper bound | 49,152 (48 KiB) | 203,302 | Investigation §7 item 1 — every iOS claim is currently source-derived, not device-measured |
+
+The library baselines cite the exact asset rows in
+[`bundle-results.json`](../../investigations/viewer-app/bundle-results.json):
+`commonmark-parse-render` is **48,014**, covering `Parser` and `HtmlRenderer`,
+which M1 rendering already needs under D-4. The 47,999-byte `commonmark-parse`
+row covers parsing alone. M3/M4 add `git-read` at **53,773**; M5/M6 additionally
+reserve `git-write-review` at **52,363**. The latter sum remains an upper bound
+until M5 measures the shared Git chunk. The investigation's 1,565-byte minimal
+reader and 918-byte minimal writer are probe implementations: the app's owned
+reader and writer are charged to the app allowance only. They do not also appear
+in the library baseline. This replaces the earlier assembled probe floors in
+this table without changing the investigation's historical measurements.
+
+The app allowance includes UI, styling, owned container code and addressing.
+M1 reserves 12 KiB for opening, hardening and reading; M2 adds 4 KiB for identity
+and references. CARD-0024 measured M2 app-only JS plus CSS at **15,139 gzip bytes**,
+so its 16 KiB allowance is retained. M3 adds 8 KiB for the ZIP mount, descriptors
+and history UI; M4 adds 8 KiB for selection mapping, selectors and review capture;
+M5 adds 8 KiB for the owned writer and share UI; M6 adds 8 KiB for resolution and
+persistence. These increments reserve room before those slices are implemented.
+
+V-2 sums the actual gzip sizes of the initial static closure, including shared
+chunks and CSS, plus Git's package-open closure when shipped, against the total
+ceiling. The current browse/identity build selects M2; later milestones require
+explicit selection. A ceiling change must amend this section and the matching
+build constants together, with measured costs, the cause of growth and the
+tradeoff recorded before accepting the change. A failing build alone is not a
+reason to increase an allowance.
 
 M1 and M6 are the two that produce evidence nobody in this repository has. M2–M5 are mostly the
 promotion of code that already agrees with an independent implementation.

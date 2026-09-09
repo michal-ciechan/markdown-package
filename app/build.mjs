@@ -16,11 +16,14 @@ const measure = bytes => ({bytes: bytes.length, gzip_bytes: gzipSync(bytes, {lev
   sha256: createHash('sha256').update(bytes).digest('hex')});
 const dependencies = ['buffer', 'commonmark', 'fflate', 'isomorphic-git', 'esbuild'];
 
-// Plan §4 contains library-only figures. Current browse includes M2 identity;
-// its UI, CSS and reader hardening have an explicit, fixed 16 KiB allowance.
+// Plan §4 fixes both components of each milestone's ceiling. Library baselines
+// use bundle-results.json's commonmark-parse-render (48,014), git-read (53,773)
+// and git-write-review (52,363) rows. Owned reader/writer code belongs solely
+// to the app allowance; M5/M6 retain the independent Git-slice upper bound.
 // Later milestones must be selected deliberately, not inferred from size.
-const LIBRARY_BUDGETS = {M1: 1565, M2: 49564, M3: 103337, M4: 103337, M5: 156618, M6: 156618};
-const APP_BUDGET = 16 * 1024;
+const LIBRARY_BUDGETS = {M1: 48014, M2: 48014, M3: 101787, M4: 101787, M5: 154150, M6: 154150};
+const APP_BUDGETS = {M1: 12 * 1024, M2: 16 * 1024, M3: 24 * 1024,
+  M4: 32 * 1024, M5: 40 * 1024, M6: 48 * 1024};
 const options = {milestone: 'M2', report: false};
 for (const arg of process.argv.slice(2)) {
   if (arg === '--report') options.report = true;
@@ -138,8 +141,12 @@ async function run() {
   if (historyRequired && (!components.historyDescriptor || !gitChunks.length)) {
     failures.push('V-2 M3+ requires an eager history descriptor and a separate Git chunk');
   }
-  if (gitChunks.length && (gitImportSites.length !== 1 || !bootInputs.has(gitImportSites[0]?.from))) {
-    failures.push(`V-2 / R-8 Git must have exactly one dynamic import site in the eager graph; found ${gitImportSites.length}`);
+  if (gitChunks.length) {
+    if (gitImportSites.length !== 1) {
+      failures.push(`V-2 / R-8 Git must have exactly one dynamic import site; found ${gitImportSites.length}`);
+    } else if (!bootInputs.has(gitImportSites[0].from)) {
+      failures.push(`V-2 / R-8 Git dynamic import site is outside the eager graph: ${gitImportSites[0].from} -> ${gitImportSites[0].to}`);
+    }
   }
 
   // Git remains a separate chunk, but D-3 requires loading it on package open.
@@ -151,7 +158,8 @@ async function run() {
   const eager = staticClosure([main.file, ...onOpenRoots], outputs);
   const eagerChunks = chunks.filter(chunk => eager.has(chunk.file));
   const eagerBytes = eagerChunks.reduce((total, chunk) => total + chunk.gzip_bytes, 0);
-  const libraryBudget = LIBRARY_BUDGETS[options.milestone], budget = libraryBudget + APP_BUDGET;
+  const libraryBudget = LIBRARY_BUDGETS[options.milestone], appBudget = APP_BUDGETS[options.milestone];
+  const budget = libraryBudget + appBudget;
   if (eagerBytes > budget) failures.push(`V-2 ${options.milestone} eager gzip ${eagerBytes} exceeds ${budget} bytes: ` +
     eagerChunks.map(chunk => `${chunk.file} (${chunk.gzip_bytes})`).join(', '));
 
@@ -161,7 +169,7 @@ async function run() {
       dependencies: versionChecks,
       gitRead: {name: 'git-read', ...actual, expected: {bytes: expected.bytes, gzip_bytes: expected.gzip_bytes, sha256: expected.sha256}, differences}},
     v2: {passed: !failures.some(failure => failure.startsWith('V-2')), milestone: options.milestone,
-      library_budget_gzip_bytes: libraryBudget, app_budget_gzip_bytes: APP_BUDGET,
+      library_budget_gzip_bytes: libraryBudget, app_budget_gzip_bytes: appBudget,
       budget_gzip_bytes: budget, eager_gzip_bytes: eagerBytes,
       bootChunks: [...boot], eagerOnOpenChunks: [...eager], components,
       gitChunks: gitChunks.map(chunk => chunk.file), gitImportSites,

@@ -25,7 +25,7 @@ summary { cursor: pointer; }
 #resolution { margin: .4rem 0; overflow-wrap: anywhere; font-size: .9rem; }
 .resolution { padding: .6rem .8rem; border: 1px solid; border-left-width: 4px; border-radius: 5px; }
 .resolution.survives { color: #236243; background: #eaf5ed; border-color: #548764; }
-.resolution.flagged-changed { color: #854214; background: #fff0df; border-color: #b5672a; }
+.resolution.flagged-changed { color: #854214; background: #fff0df; border-color: #b5672a; border-style: double; border-width: 3px; border-left-width: 4px; }
 .resolution.unconfirmed { color: #685113; background: #fff9dc; border-color: #9b842f; border-style: dashed; }
 .resolution.unsupported { color: #4f537e; background: #efeff8; border-color: #777da3; border-style: dotted; }
 .resolution.invalidated { color: #9c2531; background: #fcecee; border-color: #b84c5a; border-left-style: double; border-left-width: 6px; }
