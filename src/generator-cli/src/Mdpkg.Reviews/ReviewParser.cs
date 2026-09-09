@@ -15,9 +15,9 @@ internal static partial class ReviewParser
     private static int Integer(JsonNode node, string field) => node[field]?.GetValue<int>() ?? throw new JsonException("Missing integer: " + field);
     private static void Require(bool valid, string message) { if (!valid) throw new JsonException(message); }
     internal static bool Uuid(string s) => Guid.TryParseExact(s, "D", out _) && s == s.ToLowerInvariant();
-    private static IReadOnlyDictionary<string, JsonElement> Extensions(JsonObject node, params string[] known) =>
+    private static IReadOnlyDictionary<string, JsonElement> Extensions(JsonObject node, JsonSerializerOptions jsonOptions, params string[] known) =>
         new ReadOnlyDictionary<string, JsonElement>(node.Where(p => !known.Contains(p.Key, StringComparer.Ordinal))
-            .ToDictionary(p => p.Key, p => JsonSerializer.SerializeToElement(p.Value).Clone(), StringComparer.Ordinal));
+            .ToDictionary(p => p.Key, p => JsonSerializer.SerializeToElement(p.Value, jsonOptions).Clone(), StringComparer.Ordinal));
 
     internal static (ReviewShape Shape, ReviewedIdentity Of) Declaration(JsonElement declaration, PackageIdentity identity)
     {
@@ -39,9 +39,11 @@ internal static partial class ReviewParser
     }
 
     internal static (int Version, IReadOnlyList<ReviewThread> Threads, IReadOnlyDictionary<string, JsonElement> Extensions) Document(
-        JsonNode value, PackageIdentity reviewed, ReviewReadOptions options, CancellationToken ct)
+        JsonNode? value, PackageIdentity reviewed, ReviewReadOptions options, CancellationToken ct)
     {
-        var doc = value.AsObject(); var version = Integer(doc, "version");
+        if (value is not JsonObject doc) throw new JsonException("Comments document root must be a JSON object.");
+        var jsonOptions = new JsonSerializerOptions { MaxDepth = options.Limits.MaxJsonDepth };
+        var version = Integer(doc, "version");
         if (version is not (1 or 2)) throw new UnsupportedReviewException("Unsupported comments-document version: " + version);
         if (Text(doc, "anchor") != PackageProfiles.Anchor || Text(doc, "profile") != PackageProfiles.Digest || Text(doc, "selector") != PackageProfiles.Selector)
             throw new UnsupportedReviewException("Unsupported review anchor, digest or selector profile.");
@@ -61,7 +63,7 @@ internal static partial class ReviewParser
                 _ => throw new UnsupportedReviewException("Unknown thread state.") };
             var select = thread["select"]?.AsObject() ?? throw new JsonException("A thread requires an explicit selector.");
             var selector = new QuoteSelector(Integer(select, "start"), Integer(select, "end"), Text(select, "quote"), Integer(select, "occurrence"), Text(select, "prefix"), Text(select, "suffix"),
-                Extensions(select, "start", "end", "quote", "occurrence", "prefix", "suffix"));
+                Extensions(select, jsonOptions, "start", "end", "quote", "occurrence", "prefix", "suffix"));
             Require(selector.Start >= 0 && selector.End > selector.Start && selector.Occurrence >= 0 && selector.Quote.Length > 0 &&
                 selector.Quote.Length == (long)selector.End - selector.Start && selector.Prefix.Length <= 40 && selector.Suffix.Length <= 40,
                 "Invalid UTF-16 selector shape or lengths.");
@@ -91,7 +93,7 @@ internal static partial class ReviewParser
                 var reply = comment["inReplyTo"]?.GetValue<string>();
                 Require(!comment.ContainsKey("inReplyTo") || reply is not null, "inReplyTo must be omitted rather than null.");
                 rows.Add(new(commentId, at, author, body, reply, kind, version == 1 ? KindSource.LegacyV1 : KindSource.AuthoredV2,
-                    Extensions(comment, "id", "at", "author", "body", "inReplyTo", "kind")));
+                    Extensions(comment, jsonOptions, "id", "at", "author", "body", "inReplyTo", "kind")));
             }
             var siblings = rows.ToDictionary(c => c.Id, StringComparer.Ordinal);
             foreach (var row in rows)
@@ -110,9 +112,9 @@ internal static partial class ReviewParser
                 complete.UnionWith(path);
             }
             parsed.Add(new(id, state, new(reviewed, root, expect, loc, rawLoc, selector), Array.AsReadOnly(rows.ToArray()),
-                Extensions(thread, "id", "root", "loc", "expect", "state", "select", "comments")));
+                Extensions(thread, jsonOptions, "id", "root", "loc", "expect", "state", "select", "comments")));
         }
-        return (version, Array.AsReadOnly(parsed.ToArray()), Extensions(doc, "version", "anchor", "profile", "selector", "threads"));
+        return (version, Array.AsReadOnly(parsed.ToArray()), Extensions(doc, jsonOptions, "version", "anchor", "profile", "selector", "threads"));
     }
 
     private static bool Timestamp(string text)
