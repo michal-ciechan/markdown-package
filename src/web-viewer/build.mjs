@@ -9,7 +9,7 @@ import {build, version as esbuildVersion} from 'esbuild';
 
 const root = await fs.realpath(path.dirname(fileURLToPath(import.meta.url)));
 const outdir = path.join(root, 'dist');
-const evidenceDir = path.join(root, '../docs/investigations/viewer-app');
+const evidenceDir = path.join(root, '../../docs/investigations/viewer-app');
 const slash = value => value.replace(/\\/g, '/');
 const readJson = async file => JSON.parse(await fs.readFile(file, 'utf8'));
 const measure = bytes => ({bytes: bytes.length, gzip_bytes: gzipSync(bytes, {level: 9}).length,
@@ -33,7 +33,7 @@ for (const arg of process.argv.slice(2)) {
 
 async function cleanDist() {
   // Resolve and check the actual target before recursive deletion, including
-  // Windows junctions. Never follow a redirected dist directory out of app/.
+  // Windows junctions. Never follow a redirected dist directory out of src/web-viewer/.
   const stat = await fs.lstat(outdir).catch(error => {
     if (error.code !== 'ENOENT') throw error;
   });
@@ -165,7 +165,7 @@ async function run() {
 
   // dist/ is the deployable root on its own. A GitHub Pages project site is
   // served from /<repo>/, so the published page keeps every asset path
-  // relative and drops the ./dist/ prefix that only app/ as the root needs.
+  // relative and drops the ./dist/ prefix that only src/web-viewer/ as the root needs.
   const page = await fs.readFile(path.join(root, 'index.html'), 'utf8');
   const deployPage = page.replaceAll('"./dist/', '"./');
   const assetPaths = [...deployPage.matchAll(/\b(?:src|href)="([^"]*)"/g)].map(match => match[1]);

@@ -1,5 +1,5 @@
 # Publishes the viewer at https://michal-ciechan.github.io/markdown-package/.
-# A project site is served from a /<repo>/ subpath, so app/dist/ has to be the
+# A project site is served from a /<repo>/ subpath, so src/web-viewer/dist/ has to be the
 # deployable root: the build emits index.html there with relative asset paths.
 name: Deploy viewer to GitHub Pages
 
@@ -7,7 +7,7 @@ on:
   push:
     branches: [master]
     paths:
-      - 'app/**'
+      - 'src/web-viewer/**'
       # V-1 pins the app's dependencies and the Git calibration bundle against
       # this evidence, so a change here can turn the build red on its own.
       - 'docs/investigations/viewer-app/**'
@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: '24'
           cache: npm
-          cache-dependency-path: app/package-lock.json
+          cache-dependency-path: src/web-viewer/package-lock.json
       # No actions/configure-pages step: its enablement option needs rights the
       # workflow token does not have here ("Resource not accessible by
       # integration"), and every asset path is relative, so nothing needs the
@@ -42,16 +42,16 @@ jobs:
       # still runs as the check.
       - name: Install pinned dependencies
         run: npm ci
-        working-directory: app
+        working-directory: src/web-viewer
       # The build is the check: V-1 (dependency and calibration pins), V-2
       # (eager graph and gzip budget) and D-1 (relative asset paths) all exit
       # nonzero and withhold dist/ assets on failure. There is no test suite.
       - name: Build and run the slice gates
         run: npm run build
-        working-directory: app
+        working-directory: src/web-viewer
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: app/dist
+          path: src/web-viewer/dist
 
   deploy:
     needs: build

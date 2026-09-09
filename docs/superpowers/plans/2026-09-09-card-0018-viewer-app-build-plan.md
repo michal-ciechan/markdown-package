@@ -203,7 +203,7 @@ exactly one exception, N4, which is small in lines and large in unknown.
 
 Amended 2026-09-09 for CARD-0024 findings F1/F2: V-2 now has explicit library and
 app allowances for each milestone, in gzip bytes. The total ceiling is their sum,
-as implemented in `app/build.mjs` (`LIBRARY_BUDGETS` and `APP_BUDGETS`). These are
+as implemented in `src/web-viewer/build.mjs` (`LIBRARY_BUDGETS` and `APP_BUDGETS`). These are
 fixed planning ceilings; the app allowances for future slices are not measured
 implementation costs.
 
@@ -251,11 +251,11 @@ promotion of code that already agrees with an independent implementation.
 
 ## 5. Slices
 
-Each slice names its files and its tests. Paths are proposed; `app/` is new.
+Each slice names its files and its tests. Paths are proposed; `src/web-viewer/` is new.
 
 **Slice 0 — Skeleton and size gate.**
-Files: `app/package.json` (the five pins above), `app/index.html`, `app/src/main.js`,
-`app/build.mjs`. `build.mjs` reuses the method of
+Files: `src/web-viewer/package.json` (the five pins above), `src/web-viewer/index.html`, `src/web-viewer/src/main.js`,
+`src/web-viewer/build.mjs`. `build.mjs` reuses the method of
 [`docs/investigations/viewer-app/build_web.mjs`](../../investigations/viewer-app/build_web.mjs) —
 esbuild, minified, tree-shaken ESM, gzip level 9 — and emits a per-chunk report.
 Tests: the build fails when the always-loaded chunk exceeds its budget; the report's `git-read` slice
@@ -263,9 +263,9 @@ still reproduces 166,033 raw / 53,773 gz, which is the cross-check that the app'
 the same thing the investigation's did.
 
 **Slice 1 — Container read, hardened.**
-Files: `app/src/container/reader.js` (from `mdpkg_reader.mjs`), `app/src/container/source.js`
+Files: `src/web-viewer/src/container/reader.js` (from `mdpkg_reader.mjs`), `src/web-viewer/src/container/source.js`
 (Blob-backed and byte-backed sources that return **standalone buffers, never `subarray` views** — the
-half hour the investigation records losing), `app/src/container/conformance.js`.
+half hour the investigation records losing), `src/web-viewer/src/container/conformance.js`.
 Adds over the probe: ZIP64 sentinel detection with rejection (spec §3.5's only tested behaviour), the
 §3.7 recoverable tier, §3.6 name checks (forward slash, no `..`, NFC-plus-simple-case-fold uniqueness,
 reserved-prefix), and internal-attributes-`0` reported as nonconformance rather than ignored.
@@ -276,13 +276,13 @@ bad signature, first entry renamed) each in at most 79 bytes; a ZIP64-sentinel f
 re-zipped fixture types as recoverable, not conforming.
 
 **Slice 2 — Browse.**
-Files: `app/src/ui/documents.js`, `app/src/ui/reader-view.js`, `app/src/inbound/open.js` (the single
+Files: `src/web-viewer/src/ui/documents.js`, `src/web-viewer/src/ui/reader-view.js`, `src/web-viewer/src/inbound/open.js` (the single
 `openPackage(blob)` entry point of D-13, called by the file input, drag-drop and paste).
 Tests: opening `squashed.mdpkg` lists **two documents** out of **12 entries**, hiding the `.mdpkg/`
 and `.git/` reserved prefixes; `guide.md` renders and its source is the 163 bytes.
 
 **Slice 3 — Identity.**
-Files: `app/src/address/outline.js`, `app/src/address/digest.js`, `app/src/address/root.js` —
+Files: `src/web-viewer/src/address/outline.js`, `src/web-viewer/src/address/digest.js`, `src/web-viewer/src/address/root.js` —
 promoted from `review_probe.mjs`.
 Tests: **the golden cross-check.** For `## Usage` of `guide.md` in `full.mdpkg`, root
 `52f7f2741ea95e947ab04da60e3cb037562daf0374b657ba70a0d30f5a0b7f70` and expect
@@ -292,10 +292,10 @@ default root of `["section","guide.md",[["# Guide",0],["## Setup",0]]]` is `b656
 committed 195-byte ledger keys on.
 
 **Slice 4 — History, eagerly.**
-Files: `app/src/history/descriptor.js` (`history.json`, `bindings.json`, range summaries — current-view
-entries, no pack, no library), `app/src/history/gitfs.js` (N7, the ZIP-mounted filesystem),
-`app/src/history/git.js` (the separately-chunked isomorphic-git module, imported eagerly per D-3),
-`app/src/history/budget.js` (records bytes read and ms elapsed, for M6 item 8).
+Files: `src/web-viewer/src/history/descriptor.js` (`history.json`, `bindings.json`, range summaries — current-view
+entries, no pack, no library), `src/web-viewer/src/history/gitfs.js` (N7, the ZIP-mounted filesystem),
+`src/web-viewer/src/history/git.js` (the separately-chunked isomorphic-git module, imported eagerly per D-3),
+`src/web-viewer/src/history/budget.js` (records bytes read and ms elapsed, for M6 item 8).
 Tests: the descriptor parses on both fixtures and its `transform` list agrees with the manifest, which
 is the disagreement spec §4 makes a validator reject; a `log` walk on `full.mdpkg` returns
 `c0 → c1 → c2` and on `squashed.mdpkg` returns `c0 → s1`; `readBlob` of `guide.md` at `current`
@@ -303,8 +303,8 @@ returns bytes identical to the current-view ZIP entry, which is the current-view
 property checked from the reader's side; the budget recorder emits a number.
 
 **Slice 5 — Selection to source offset. (Spike first.)**
-Files: `app/src/render/annotate.js` (a commonmark renderer subclass carrying `sourcepos` onto block
-elements), `app/src/render/line-index.js`, `app/src/render/source-map.js`.
+Files: `src/web-viewer/src/render/annotate.js` (a commonmark renderer subclass carrying `sourcepos` onto block
+elements), `src/web-viewer/src/render/line-index.js`, `src/web-viewer/src/render/source-map.js`.
 Tests: a table of selections over `guide.md` whose expected offsets are computed from the source
 directly, including the investigation's own case — selecting `produce a package` in the 72-character
 `## Usage` scope yields `start 25, end 42`; a selection that begins in one block and ends in another;
@@ -314,7 +314,7 @@ section boundary, which §6.8 says is two anchors or one on the common ancestor 
 detected rather than silently clamped.
 
 **Slice 6 — Selector and `comments.json`.**
-Files: `app/src/review/selector.js` (from `makeSelector`), `app/src/review/comments.js`.
+Files: `src/web-viewer/src/review/selector.js` (from `makeSelector`), `src/web-viewer/src/review/comments.js`.
 Tests: the §4.1 selector reproduced field for field,
 
 ```json
@@ -329,7 +329,7 @@ identical bytes; the three profile names at the top of the file equal the review
 `addressing.anchor`, `addressing.digest` and this selector profile.
 
 **Slice 7 — Review-package emission.**
-Files: `app/src/review/emit.js`, `app/src/container/writer.js` (from `mdpkg_writer.mjs`).
+Files: `src/web-viewer/src/review/emit.js`, `src/web-viewer/src/container/writer.js` (from `mdpkg_writer.mjs`).
 Must get right, because the probe hit it and the fix was four lines: the manifest's `mdpkg` key is
 written **first** and everything else sorted, so the magic lands at byte 50 — plain canonical JSON puts
 `anchor` first and the package fails its own typing check.
@@ -343,13 +343,13 @@ nothing else. That last row is §7.4's safety rule checked mechanically and it i
 review package from quietly editing a document.
 
 **Slice 8 — Outbound.**
-Files: `app/src/share/out.js`.
+Files: `src/web-viewer/src/share/out.js`.
 Tests: with `canShare` stubbed true, `share` receives one `File` whose name ends `.mdpkg` and whose
 bytes are the emitter's exact output; with it false, an `<a download>` is created with the same name
 and the blob URL is revoked; neither path is reachable without a successful self-type first.
 
 **Slice 9 — Resolution.**
-Files: `app/src/review/resolve.js`.
+Files: `src/web-viewer/src/review/resolve.js`.
 Implements §6.5 root resolution, §6.6 statuses, and §6.8's four steps.
 Tests, one per branch, because a wrong branch here is a wrong review status: root `survives` → stored
 offsets used, no search; root `flagged-changed` with the quote present exactly once →
@@ -361,7 +361,7 @@ successor set**, which §6.8 calls the silent review transfer §6.3 forbids; a f
 rejected before anything resolves.
 
 **Slice 10 — Persistence.**
-Files: `app/src/store/opfs.js`, `app/src/store/sync-worker.js`, `app/src/ui/install-prompt.js`.
+Files: `src/web-viewer/src/store/opfs.js`, `src/web-viewer/src/store/sync-worker.js`, `src/web-viewer/src/ui/install-prompt.js`.
 Tests: store, reload, reopen — identical bytes; the `createSyncAccessHandle` path exercised in a
 worker; a browser with no OPFS degrades to in-memory with a visible statement that the package will
 not survive the tab.
@@ -527,9 +527,9 @@ can actually fail for the right reason.**
 Two consequences that are design decisions, not implementation details:
 
 - **N4 is split at the tier boundary, and the split is what makes it testable.**
-  `app/src/render/source-map.js` takes a resolved `(blockElementSourcepos, textOffsetWithinBlockText)`
+  `src/web-viewer/src/render/source-map.js` takes a resolved `(blockElementSourcepos, textOffsetWithinBlockText)`
   pair and returns a canonical-source character offset — pure arithmetic, T1, exhaustively testable.
-  `app/src/render/selection.js` takes a live `Selection` and reduces it to that pair — T2 only, and
+  `src/web-viewer/src/render/selection.js` takes a live `Selection` and reduces it to that pair — T2 only, and
   thin by construction. If the spike (§7) has to change strategy, it changes `selection.js`; the
   arithmetic and its test table survive. Building N4 as one function that takes a `Selection` would
   push its entire test surface into T2 and is rejected for that reason.
@@ -545,9 +545,9 @@ Suites and their names, used throughout: `app:build`, `app:unit` (T1), `app:brow
 **Source of truth.** `python docs/spec/worked-example.py <abs-out>` produces `full.mdpkg` (4,986 B,
 10 entries) and `squashed.mdpkg` (6,322 B, 12 entries) plus two bare repos, and rewrites
 `docs/spec/worked-example.json`. It is the only fixture generator that exists and it stays that way;
-nothing in `app/` regenerates the worked example.
+nothing in `src/web-viewer/` regenerates the worked example.
 
-**Decision F-1 — the two packages are committed under `app/test/fixtures/`, and CI separately proves
+**Decision F-1 — the two packages are committed under `src/web-viewer/test/fixtures/`, and CI separately proves
 they are still reproducible.** *Reason:* an oracle you regenerate on every run is not an oracle. The
 golden cross-check's whole strength (§1) is that a Python emitter produced those bytes independently
 and earlier; rebuilding them from the same script in the same job proves only that the script is
@@ -558,7 +558,7 @@ a real risk of silent re-baselining, which F-3 answers. *Rejected:* generating i
 probe, wrong for a suite that must detect the day the constants change.
 
 **Decision F-2 — derived fixtures are generated by a committed, seeded script, not by hand.**
-`app/test/fixtures/derive.mjs` reads `full.mdpkg` and writes, deterministically:
+`src/web-viewer/test/fixtures/derive.mjs` reads `full.mdpkg` and writes, deterministically:
 
 | Fixture | Derivation | Used by |
 | --- | --- | --- |
@@ -578,7 +578,7 @@ Each is ≤7 KB, all are committed, and `derive.mjs` re-emits them byte-identica
 so a reviewer can diff rather than trust.
 
 **Decision F-3 — a fixture manifest separates toolchain drift from an app regression.**
-`app/test/fixtures/fixture-manifest.json` records, for each committed fixture: byte length, SHA-256,
+`src/web-viewer/test/fixtures/fixture-manifest.json` records, for each committed fixture: byte length, SHA-256,
 entry names in order, and the toolchain that produced it (`git --version`, `python --version`,
 `zlib.ZLIB_VERSION`, and the blob OID of `worked-example.py`). Constants are then tiered, and the tier
 decides what an assertion may say:
@@ -600,7 +600,7 @@ that survives a fixture change: `totalAsked < 0.25 × packageSize`, and `totalAs
 fixture grown 10× must not grow. A bounded read is a property; 969 is a tripwire.
 
 **Decision F-5 — scale fixtures are generated on demand, never committed.**
-`app/test/fixtures/scale.mjs <repo> <commit>` curates a named public repository at a named commit into
+`src/web-viewer/test/fixtures/scale.mjs <repo> <commit>` curates a named public repository at a named commit into
 a package and records source repo, commit, resulting bytes and SHA-256 into `device-results.json`.
 Targets: an npm-scale package (~158 KB) and the Rust-scale package (~3.3 MB) that M6 items 8, 9 and 14
 require. *Reason:* 3.3 MB does not belong in this repository, and the D-3 reversal criterion needs a
@@ -649,9 +649,9 @@ something the current script does not check:
 | every thread's `quote` equals the reviewed package's canonical scope source at `[start, end)` | | §6.8's producer rule, checked by the oracle rather than by the producer |
 
 **The wiring itself.** `app:acceptance` is three processes and a file, deliberately:
-`node app/test/acceptance/emit.mjs --out $TMP/review.mdpkg` (the app's real emitter, no test double)
+`node src/web-viewer/test/acceptance/emit.mjs --out $TMP/review.mdpkg` (the app's real emitter, no test double)
 → `python docs/investigations/viewer-app/validate_review.py $TMP/review.mdpkg --reviewed
-app/test/fixtures/full.mdpkg --out $TMP/validation.json` → `node app/test/acceptance/assert.mjs
+src/web-viewer/test/fixtures/full.mdpkg --out $TMP/validation.json` → `node src/web-viewer/test/acceptance/assert.mjs
 $TMP/validation.json`, which fails unless `accepted === true`, the `toolchain` block is present and
 non-empty, and every row in its own expected-rows list appears in `assertions`. **The job must never
 skip.** If Git or Python is absent the job fails; a missing oracle reported as a pass is the single
@@ -663,7 +663,7 @@ Layer codes: **T1** Node, **T2** browser, **T3** oracle, **T4** device. Every ex
 *(golden)* is read from a committed file at test time, never retyped.
 
 **Slice 0 — skeleton and size gate**
-- V-1: the app's bundle harness measures what the investigation's did | T1 | `node app/build.mjs --report` | the `git-read` chunk is 166,033 raw / 53,773 gz, SHA-256 `b7beb8e1…` *(golden: `bundle-results.json`)*; all five dependency versions equal `docs/investigations/viewer-app/package.json`
+- V-1: the app's bundle harness measures what the investigation's did | T1 | `node src/web-viewer/build.mjs --report` | the `git-read` chunk is 166,033 raw / 53,773 gz, SHA-256 `b7beb8e1…` *(golden: `bundle-results.json`)*; all five dependency versions equal `docs/investigations/viewer-app/package.json`
 - V-2: the always-loaded chunk stays inside its budget and inside its import graph | T1 | `app:build` with the §4 budget table | non-zero exit naming the offending chunk when the eager gz total exceeds the milestone budget; the report shows `commonmark`, the minimal reader and the history *descriptor* in the eager chunk, and `isomorphic-git` in a separate chunk with exactly one import site
 
 **Slice 1 — container read, hardened**
@@ -766,7 +766,7 @@ evidence already paid for**, and the test that stops it.
 Every guard above that protects a safety-critical assertion — a wrong review status, a review package
 editing a document, a guessed anchor, an unbounded read, oracle acceptance, shared-output identity —
 gets a control. **Build runs each: break, see red, revert, see green, and reports all three**, into a
-`app/test/positive-controls.md` table alongside the suite.
+`src/web-viewer/test/positive-controls.md` table alongside the suite.
 
 - PC-1: break identity by constructing the parser as `new Parser({smart: true})`; expect **V-16 and V-17** red (guards R-6)
 - PC-2: break the bound by replacing the bounded entry read with `src.read(0, src.size)`; expect **V-4** red **and V-3 green** — the point being that only the ledger catches it (guards R-7)
@@ -779,7 +779,7 @@ gets a control. **Build runs each: break, see red, revert, see green, and report
 - PC-9: rename `python` out of `PATH` for one run; expect **`app:acceptance` red, not skipped**, and separately confirm that `python docs/investigations/viewer-app/validate_review.py` with no arguments still reproduces the investigation's own run (guards R-11 and investigation §8's reproduction line)
 - PC-10: set `accept="application/zip"` on the file input; expect **V-15** red (guards R-1)
 - PC-11: normalise CRLF→LF inside the container reader; expect **V-19's offset assertion red while its digest assertion stays green** — proving the offset half is what catches it (guards R-13)
-- PC-12: import `app/src/history/git.js` statically from `main.js`; expect **V-2's chunk-graph assertion** red (guards R-8)
+- PC-12: import `src/web-viewer/src/history/git.js` statically from `main.js`; expect **V-2's chunk-graph assertion** red (guards R-8)
 - PC-13: rebuild `full.mdpkg` under a different Git minor version; expect the **fixture-manifest check** red with a toolchain-drift message and **every Tier-A test still green** — the only control that proves the A/B tiering actually holds (guards R-12)
 - PC-14: shadow `createWritable` so the worker branch never runs; expect **V-53** red (guards D-8's two-branch write path)
 
@@ -788,7 +788,7 @@ gets a control. **Build runs each: break, see red, revert, see green, and report
 §6's 20 items are the only part of this design a machine cannot run, so the plan for them is a
 protocol, not a suite.
 
-**The instrument.** `app/device/checklist.html` — one page, served from the app's own origin, with 20
+**The instrument.** `src/web-viewer/device/checklist.html` — one page, served from the app's own origin, with 20
 numbered cards. Each card states the action, the expected result, the decision it can reverse, and a
 **Record** button. Recording captures automatically: `navigator.userAgent`, `canShare` and `share`
 presence, `DecompressionStream('deflate-raw')` presence, `createWritable` and `createSyncAccessHandle`
@@ -893,7 +893,7 @@ investigation §7 item 1 from open to closed, and what §5 slice 11 already prom
 | Suite | Filter / scope | Wall clock |
 | --- | --- | ---: |
 | `app:build` | esbuild, size report, chunk-graph assertions | ~15 s |
-| `app:unit` | `node --test app/test/unit/**` — fixture manifest, then slices 1, 3, 4, 5 (arithmetic), 6, 7 (emit), 9; ~200 assertions plus V-12's 10,000-case fuzz | ~25 s, fuzz dominating |
+| `app:unit` | `node --test src/web-viewer/test/unit/**` — fixture manifest, then slices 1, 3, 4, 5 (arithmetic), 6, 7 (emit), 9; ~200 assertions plus V-12's 10,000-case fuzz | ~25 s, fuzz dominating |
 | `app:acceptance` | emit → `validate_review.py` → assert; ubuntu and windows, windows also in `--autocrlf` mode | ~20 s × 3 |
 | `app:browser` | Playwright chromium + firefox + webkit — slices 2, 5 (selection), 8, 10; V-27 sweeps ~500 offsets × 3 engines | ~2 min, engines in parallel |
 

@@ -6,7 +6,7 @@ Documents stay on the device. The viewer lists the current view, renders it with
 CommonMark 0.31.2, offers normalized source and section navigation, and resolves
 current document/section references against the package's ledger and source.
 
-From `C:\src\markdown-package\app`:
+From `C:\src\markdown-package\src\web-viewer`:
 
 ```powershell
 npm ci
@@ -18,7 +18,7 @@ Open `http://localhost:8000/`. Production serving needs HTTPS for Web Crypto and
 clipboard access. The build emits JS, CSS, the optional inflater chunk,
 `build-report.json`, and a copy of `index.html` whose asset paths lose their
 `./dist/` prefix. `dist/` is therefore a complete deployable root on its own,
-while serving `app/` still works for development. Nothing is fetched from an
+while serving `src/web-viewer/` still works for development. Nothing is fetched from an
 origin the page did not come from, and every asset path stays relative so the
 app works under a `/<repo>/` subpath; gate D-1 fails the build if a published
 path turns absolute or keeps pointing into `dist/`. There is no test suite --
@@ -27,8 +27,8 @@ the build and its gates are the only check.
 ## Deployment
 
 `.github/workflows/pages.yml` runs `npm ci` and `npm run build` on every push
-touching `app/**` (or the `docs/investigations/viewer-app/` evidence that V-1
-pins against) and publishes `app/dist/` to GitHub Pages at
+touching `src/web-viewer/**` (or the `docs/investigations/viewer-app/` evidence that V-1
+pins against) and publishes `src/web-viewer/dist/` to GitHub Pages at
 <https://michal-ciechan.github.io/markdown-package/>. A failed gate withholds
 the assets, so a red build cannot deploy.
 
@@ -38,7 +38,7 @@ Actions". The workflow token cannot do it -- `actions/configure-pages` with
 integration". Until that setting is made, the build job still runs as the
 check and only the deploy job fails.
 
-Every build first cleans `app/dist/` and checks the five dependency pins against
+Every build first cleans `src/web-viewer/dist/` and checks the five dependency pins against
 `docs/investigations/viewer-app/package.json`, including installed versions. V-1
 also rebuilds the isolated Git reader using the investigation's ESM exports and
 Buffer shim, comparing its raw size, gzip size and SHA-256 with
@@ -49,7 +49,7 @@ V-2 defaults to **M2**, since this browse build includes identity. The
 the hardened reader is charged only to the app allowance. M2's 16 KiB app
 allowance gives a **64,398-byte gzip ceiling**. The app allowances are fixed per
 milestone at 12/16/24/32/40/48 KiB for M1–M6, with their library baselines, total
-ceilings and rationale in [plan §4](../docs/superpowers/plans/2026-09-09-card-0018-viewer-app-build-plan.md#4-milestones).
+ceilings and rationale in [plan §4](../../docs/superpowers/plans/2026-09-09-card-0018-viewer-app-build-plan.md#4-milestones).
 The gate counts shared static chunks and CSS toward the total; Git, when shipped,
 also counts through its package-open import. The
 graph rejects Git in the initial static closure and requires exactly one dynamic
@@ -60,8 +60,8 @@ grow automatically with the bundle. Changing an allowance requires amending
 plan §4 and `APP_BUDGETS` together with measured costs and the tradeoff; a gate
 failure alone does not justify a raise.
 
-`node app/build.mjs --report` from the repository root prints the full JSON report;
-all invocations save it as `app/dist/build-report.json`. A version, calibration,
+`node src/web-viewer/build.mjs --report` from the repository root prints the full JSON report;
+all invocations save it as `src/web-viewer/dist/build-report.json`. A version, calibration,
 budget or graph failure exits nonzero and leaves the diagnostic report without
 deployable assets. Redirected `dist/` directories are rejected before deletion.
 
