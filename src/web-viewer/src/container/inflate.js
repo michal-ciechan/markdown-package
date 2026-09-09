@@ -7,7 +7,7 @@ export function hasNativeInflate() {
   return nativeRaw;
 }
 
-export async function inflateRaw(raw, expected) {
+export async function inflateRaw(raw, expected, name) {
   const chunks = [];
   let size = 0;
   const accept = chunk => {
@@ -25,15 +25,18 @@ export async function inflateRaw(raw, expected) {
       }
     } catch (error) {
       await reader.cancel().catch(() => {});
-      throw error;
+      throw new Error('Corrupt DEFLATE stream for ' + name + (error.message ? ': ' + error.message : ''));
     } finally {
       reader.releaseLock();
     }
   } else {
     const {inflateFallback} = await import('./inflate-fallback.js');
-    inflateFallback(raw, accept);
+    try { inflateFallback(raw, accept); }
+    catch (error) {
+      throw new Error('Corrupt DEFLATE stream for ' + name + (error.message ? ': ' + error.message : ''));
+    }
   }
-  if (size !== expected) throw new Error('Decoded length disagrees with the directory');
+  if (size !== expected) throw new Error('Decoded length disagrees with the directory for ' + name);
   const out = new Uint8Array(size);
   let offset = 0;
   for (const chunk of chunks) { out.set(chunk, offset); offset += chunk.length; }

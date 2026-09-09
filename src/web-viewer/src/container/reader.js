@@ -147,7 +147,7 @@ export async function readEntry(source, entry, limits = DEFAULT_LIMITS) {
   // Apart from the lengths needed to find data and explicit ZIP64 markers,
   // local metadata is ignored. Descriptors may contain zeros or stale values.
   const raw = await readExact(source, dataOffset, entry.compressedSize);
-  const bytes = entry.method === 0 ? raw : await inflateRaw(raw, entry.uncompressedSize);
+  const bytes = entry.method === 0 ? raw : await inflateRaw(raw, entry.uncompressedSize, entry.name);
   if (bytes.length !== entry.uncompressedSize) throw new Error('Decoded size mismatch for ' + entry.name);
   if (crc32(bytes) !== entry.crc32) throw new Error('CRC32 mismatch for ' + entry.name);
   return {bytes, header, bytesRead: 30 + extraLength + entry.compressedSize};

@@ -95,7 +95,8 @@ async function receive(blob) {
     element('browser').hidden = false;
     element('reference-form').hidden = false;
     report(pkg.tier === 'recoverable' ? 'Package recovered. See the conformance findings below.' : 'Package opened.');
-    if (pkg.documents.length) await showDocument(pkg.documents[0].name);
+    const initialDocument = pkg.documents.find(entry => /\.(?:md|markdown)$/i.test(entry.name)) ?? pkg.documents[0];
+    if (initialDocument) await showDocument(initialDocument.name);
     else report(pkg.manifest.review ? 'Review package opened. It contains no ordinary documents; this viewer does not yet display review threads.' : 'Package opened; its current view has no documents.');
   } catch (error) {
     if (generation === openGeneration) report('Could not open package: ' + error.message, true);
@@ -133,12 +134,14 @@ async function resolve(value) {
   resolution.textContent = 'Resolving…';
   const result = await opened.resolve(value);
   if (opened !== pkg || generation !== navigationGeneration) return;
-  resolution.className = `resolution ${result.status}`;
+  resolution.className = result.navigation ? 'resolution' : `resolution ${result.status}`;
   if (result.status === 'unsupported') {
     resolution.textContent = 'Historical references are not available in this viewer yet. This reference has not been resolved.';
     return;
   }
-  resolution.textContent = `${result.status} / ${result.reason}${result.detail ? ': ' + result.detail : ''}`;
+  resolution.textContent = result.navigation ?
+    (result.detail ? 'Could not navigate: ' + result.detail : 'Navigation only; no reviewed state.') :
+    `${result.status} / ${result.reason}${result.detail ? ': ' + result.detail : ''}`;
   if (result.actualDigest) resolution.textContent += ' · Current digest ' + result.actualDigest;
   if (result.successors?.length) resolution.textContent += ' · Successor roots: ' + result.successors.join(', ');
   if (result.document) {

@@ -270,7 +270,8 @@ Adds over the probe: ZIP64 sentinel detection with rejection (spec §3.5's only 
 §3.7 recoverable tier, §3.6 name checks (forward slash, no `..`, NFC-plus-simple-case-fold uniqueness,
 reserved-prefix), and internal-attributes-`0` reported as nonconformance rather than ignored.
 Tests: both fixtures decode `guide.md` to SHA-256 `1cf920f3…`; a byte ledger asserts the recorded
-totals — **969** on `full.mdpkg` and **1,180** on `squashed.mdpkg` — so a regression that reads the
+opening totals — **1,216** on `full.mdpkg` and **1,437** on `squashed.mdpkg`, including the manifest.
+Reading `guide.md` adds 149 bytes, giving **1,365 / 1,586** end-to-end (F-4), so a regression that reads the
 whole archive fails loudly; the five recorded rejections (random bytes, empty, 78-byte truncation,
 bad signature, first entry renamed) each in at most 79 bytes; a ZIP64-sentinel fixture rejects; a
 re-zipped fixture types as recoverable, not conforming.
@@ -586,18 +587,22 @@ decides what an assertion may say:
 | Tier | Examples | Depends on | Assertion style |
 | --- | --- | --- | --- |
 | **A — toolchain-independent** | content digest `1cf920f3…`; roots `52f7f274…`, `b6564987…7984`; expect `684ba2cd…`; commits `28d8c71e / 08ae3497 / d038a205 / b414f39b`; trees `500c623d / 63cee821 / a15125f8`; summary name `ff2689cd…`; the 195-byte ledger; the selector's six fields; every canonical-JSON byte string | SHA-256, CommonMark 0.31.2, Git's object model — not Git's *packing* | exact equality, always, against `worked-example.json` |
-| **B — toolchain-dependent** | package bytes 4,986 / 6,322; package SHA-256; pack and idx bytes; per-entry deflate sizes; the read ledgers 969 / 1,180 | Git's pack encoder, zlib level 6, Python's `zipfile` | exact equality **only while** `fixture-manifest.json` matches the running toolchain; otherwise the bound below |
+| **B — toolchain-dependent** | package bytes 4,986 / 6,322; package SHA-256; pack and idx bytes; per-entry deflate sizes; opening read ledgers 1,216 / 1,437, or 1,365 / 1,586 including `guide.md` | Git's pack encoder, zlib level 6, Python's `zipfile` | exact equality **only while** `fixture-manifest.json` matches the running toolchain; otherwise the bound below |
 
 `app:unit` reads the manifest first. On a Tier-B mismatch it fails with `fixture toolchain drift:
 <field> expected X got Y` **before running a single app assertion**, so drift is never diagnosed as a
 reader bug. Tier-A assertions never downgrade and never gate on the manifest.
 
 **Decision F-4 — the byte ledger is asserted twice: exactly, and as a bound.** Exactly:
-`totalAsked` = 969 on `full.mdpkg` and 1,180 on `squashed.mdpkg`, decomposed as
-79 typing + 22 EOCD + 719/930 central directory + 149 entry. As a bound, and this is the assertion
-that survives a fixture change: `totalAsked < 0.25 × packageSize`, and `totalAsked` must be
+`openContainer` asks for 1,216 bytes on `full.mdpkg` and 1,437 on `squashed.mdpkg`:
+79 typing + 22 EOCD + 719/930 central directory + 30 manifest header + 366/376 manifest payload.
+Reading `guide.md` then adds 30 local-header + 119 compressed-payload bytes, so end-to-end
+`totalAsked` is **1,365 / 1,586**. The earlier 969 / 1,180 totals belonged to the minimal
+investigation probe, which did not read the manifest. The opening totals remain below
+`0.25 × packageSize`; the end-to-end totals do not. The corrected end-to-end bound is
+`totalAsked < 0.25 × packageSize + targetEntryBytes` (149 here), and `totalAsked` must be
 **invariant under padding the package with a second large document** — the ledger read against a
-fixture grown 10× must not grow. A bounded read is a property; 969 is a tripwire.
+fixture grown 10× must not grow. A bounded read is a property; 1,365 is a tripwire.
 
 **Decision F-5 — scale fixtures are generated on demand, never committed.**
 `src/web-viewer/test/fixtures/scale.mjs <repo> <commit>` curates a named public repository at a named commit into
@@ -668,7 +673,7 @@ Layer codes: **T1** Node, **T2** browser, **T3** oracle, **T4** device. Every ex
 
 **Slice 1 — container read, hardened**
 - V-3: both fixtures decode `guide.md` identically | T1 | reader over `full.mdpkg` and `squashed.mdpkg` | SHA-256 `1cf920f3e2f91322b12e08c6edd7c2532d429a42adb2bcf7b22a96b73172b4f8`, 163 bytes *(golden)*
-- V-4: the read is bounded | T1 | counting source, as in `read_probe.mjs` | `totalAsked` 969 / 1,180 exactly, `< 0.25 × packageSize`, and unchanged when the package is padded 10× (F-4)
+- V-4: the read is bounded | T1 | counting source through `openContainer` and `read('guide.md')` | opening 1,216 / 1,437 exactly and `< 0.25 × packageSize`; end-to-end `totalAsked` 1,365 / 1,586 exactly and `< 0.25 × packageSize + targetEntryBytes`, unchanged when the package is padded 10× (F-4)
 - V-5: the five recorded rejections | T1 | `typePackage` over the five derived fixtures | each rejects with the recorded reason string and asks for ≤79 bytes *(golden: `read-probe-results.json`)*
 - V-6: ZIP64 sentinels are rejected, the one tested behaviour | T1 | `zip64-sentinel.mdpkg` | rejected, with a reason naming ZIP64
 - V-7: a re-zipped package types recoverable, not conforming | T1 | `recoverable-pyrebuild.mdpkg`, `recoverable-fflate.mdpkg` | tier `recoverable`; manifest bytes recovered from the central directory; the reader reports that bounded-read guarantees no longer hold

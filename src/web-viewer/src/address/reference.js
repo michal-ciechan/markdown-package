@@ -51,7 +51,7 @@ export function parseReference(value) {
     ['document', 'profile', ...(kind === 'hunk' ? ['patch', 'ordinal'] : [])];
   for (const key of Object.keys(params)) if (!allowed.includes(key)) throw new Error('Unknown reference parameter: ' + key);
   if (current) {
-    if (!HASH.test(id) || !HASH.test(params.expect)) throw new Error('Invalid root or expected digest');
+    if (!HASH.test(id) || (hasOwn(params, 'expect') && !HASH.test(params.expect))) throw new Error('Invalid root or expected digest');
     if (params.anchor !== ANCHOR || params.profile !== DIGEST) throw new Error('Unsupported anchor or source digest profile');
     if (params.at !== undefined && !OID.test(params.at)) throw new Error('Invalid snapshot ID');
     const locator = validateLocator(decodeLocator(params.loc ?? ''), kind);

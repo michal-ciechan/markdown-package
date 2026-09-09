@@ -46,6 +46,22 @@ export async function resolveReference(pkg, value, {observedAt} = {}) {
   }
   if (ref.anchor !== manifest.addressing.anchor || ref.profile !== manifest.addressing.digest ||
       ref.anchor !== ANCHOR || ref.profile !== DIGEST) return {status: 'invalidated', reason: 'unsupported-profile'};
+  // Without reviewed state, loc is only a navigation target. Do not consult
+  // correspondence, the ledger, the root hash or scoped digests.
+  if (ref.expect === undefined) {
+    const locator = ref.locator;
+    try {
+      if (!pkg.documents.some(document => document.name === locator[1])) {
+        return {navigation: true, detail: 'Document not found: ' + locator[1]};
+      }
+      const document = await pkg.document(locator[1]);
+      const scope = document.find(locator);
+      if (!scope) return {navigation: true, detail: 'Section not found in ' + locator[1]};
+      return {navigation: true, locator, document, scope};
+    } catch (error) {
+      return {navigation: true, detail: error.message};
+    }
+  }
   if (observedAt !== undefined && !OID.test(observedAt)) return {status: 'invalidated', reason: 'malformed-observed-at'};
   // A loose reference has no observedAt. Establishing coverage of a historical
   // checkpoint requires the history slice; do not claim correspondence without
