@@ -163,11 +163,21 @@ async function run() {
   if (eagerBytes > budget) failures.push(`V-2 ${options.milestone} eager gzip ${eagerBytes} exceeds ${budget} bytes: ` +
     eagerChunks.map(chunk => `${chunk.file} (${chunk.gzip_bytes})`).join(', '));
 
+  // dist/ is the deployable root on its own. A GitHub Pages project site is
+  // served from /<repo>/, so the published page keeps every asset path
+  // relative and drops the ./dist/ prefix that only app/ as the root needs.
+  const page = await fs.readFile(path.join(root, 'index.html'), 'utf8');
+  const deployPage = page.replaceAll('"./dist/', '"./');
+  const assetPaths = [...deployPage.matchAll(/\b(?:src|href)="([^"]*)"/g)].map(match => match[1]);
+  const nonRelative = assetPaths.filter(value => value.startsWith('/') || value.includes('dist/'));
+  if (nonRelative.length) failures.push('D-1 published index.html needs subpath-safe relative asset paths: ' + nonRelative.join(', '));
+
   const report = {
     node: process.version, esbuild: esbuildVersion, versions, chunks,
     v1: {passed: versionChecks.every(check => check.passed) && !differences.length && esbuildVersion === versions.esbuild,
       dependencies: versionChecks,
       gitRead: {name: 'git-read', ...actual, expected: {bytes: expected.bytes, gzip_bytes: expected.gzip_bytes, sha256: expected.sha256}, differences}},
+    deploy: {passed: !nonRelative.length, page: 'index.html', assetPaths},
     v2: {passed: !failures.some(failure => failure.startsWith('V-2')), milestone: options.milestone,
       library_budget_gzip_bytes: libraryBudget, app_budget_gzip_bytes: appBudget,
       budget_gzip_bytes: budget, eager_gzip_bytes: eagerBytes,
@@ -179,7 +189,10 @@ async function run() {
   await fs.mkdir(outdir, {recursive: true});
   // A failed gate leaves its report but no deployable bundle, and never leaves
   // a previous build looking like the output of this failed invocation.
-  if (!failures.length) for (const file of result.outputFiles) await fs.writeFile(file.path, file.contents);
+  if (!failures.length) {
+    for (const file of result.outputFiles) await fs.writeFile(file.path, file.contents);
+    await fs.writeFile(path.join(outdir, 'index.html'), deployPage);
+  }
   await fs.writeFile(path.join(outdir, 'build-report.json'), JSON.stringify(report, null, 2) + '\n');
   if (options.report) console.log(JSON.stringify(report, null, 2));
   else {

@@ -1,0 +1,63 @@
+# Publishes the viewer at https://michal-ciechan.github.io/markdown-package/.
+# A project site is served from a /<repo>/ subpath, so app/dist/ has to be the
+# deployable root: the build emits index.html there with relative asset paths.
+name: Deploy viewer to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'app/**'
+      # V-1 pins the app's dependencies and the Git calibration bundle against
+      # this evidence, so a change here can turn the build red on its own.
+      - 'docs/investigations/viewer-app/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deployments race; queue instead of cancelling a live publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      # enablement turns Pages on with this workflow as its source when the
+      # repository has no site yet; it needs the pages: write permission above.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Install pinned dependencies
+        run: npm ci
+        working-directory: app
+      # The build is the check: V-1 (dependency and calibration pins), V-2
+      # (eager graph and gzip budget) and D-1 (relative asset paths) all exit
+      # nonzero and withhold dist/ assets on failure. There is no test suite.
+      - name: Build and run the slice gates
+        run: npm run build
+        working-directory: app
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

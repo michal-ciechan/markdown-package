@@ -15,9 +15,25 @@ python -m http.server 8000 --bind 127.0.0.1
 ```
 
 Open `http://localhost:8000/`. Production serving needs HTTPS for Web Crypto and
-clipboard access. Serve `index.html` alongside the complete `dist/` directory;
-the build emits JS, CSS, the optional inflater chunk, and `build-report.json`.
-No tests, CI or test harness are included in this slice.
+clipboard access. The build emits JS, CSS, the optional inflater chunk,
+`build-report.json`, and a copy of `index.html` whose asset paths lose their
+`./dist/` prefix. `dist/` is therefore a complete deployable root on its own,
+while serving `app/` still works for development. Nothing is fetched from an
+origin the page did not come from, and every asset path stays relative so the
+app works under a `/<repo>/` subpath; gate D-1 fails the build if a published
+path turns absolute or keeps pointing into `dist/`. There is no test suite --
+the build and its gates are the only check.
+
+## Deployment
+
+`.github/workflows/pages.yml` runs `npm ci` and `npm run build` on every push
+touching `app/**` (or the `docs/investigations/viewer-app/` evidence that V-1
+pins against) and publishes `app/dist/` to GitHub Pages at
+<https://michal-ciechan.github.io/markdown-package/>. A failed gate withholds
+the assets, so a red build cannot deploy. The workflow asks
+`actions/configure-pages` to enable the site; if the repository has never had
+Pages enabled and that request is refused, an admin must set
+Settings -> Pages -> Source to "GitHub Actions" once, by hand.
 
 Every build first cleans `app/dist/` and checks the five dependency pins against
 `docs/investigations/viewer-app/package.json`, including installed versions. V-1
