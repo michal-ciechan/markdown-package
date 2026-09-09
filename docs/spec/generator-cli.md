@@ -2,7 +2,7 @@
 
 A .NET global tool that emits and checks conforming `.mdpkg` packages. [`../spec.md`](../spec.md) is authoritative; every row below cites the section or decision it implements. Rows marked **G-*n*** are tool defaults filling a gap the spec leaves open (§11); they are the tool's choice, not a format rule.
 
-Audience: coding agents driving the tool non-interactively. Nothing here is implemented yet (spec status line, §8 aside).
+Audience: coding agents driving the tool non-interactively. Implementation: [`src/generator-cli/`](../../src/generator-cli/), a .NET global tool on System.CommandLine. As of 2026-09-09 it is a scaffold: the verb tree, options and exit codes below parse and validate, and every well-formed invocation exits 70 with `not implemented` instead of generating or checking a package (spec status line, §8 aside). Its tests read this file and fail when §1, §3, §4 or §10 change without the tool following.
 
 ---
 

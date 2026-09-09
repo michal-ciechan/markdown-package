@@ -1,0 +1,47 @@
+# Builds, tests and packs the mdpkg generator CLI. Nothing is published: the .nupkg is
+# uploaded as a workflow artifact only.
+name: Build generator CLI
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'src/generator-cli/**'
+      # SpecConsistencyTests reads the tool reference and fails when the verb tree, exit
+      # codes or diagnostic table drift from it, so a spec edit can turn this red on its own.
+      - 'docs/spec/generator-cli.md'
+      - '.github/workflows/generator-cli.yml'
+  pull_request:
+    paths:
+      - 'src/generator-cli/**'
+      - 'docs/spec/generator-cli.md'
+      - '.github/workflows/generator-cli.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/generator-cli
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: src/generator-cli/global.json
+      - name: Restore
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore -c Release
+      - name: Test
+        run: dotnet test --no-build -c Release
+      - name: Pack the tool
+        run: dotnet pack src/Mdpkg.Cli/Mdpkg.Cli.csproj --no-build -c Release -o artifacts/package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mdpkg-nupkg
+          path: src/generator-cli/artifacts/package/*.nupkg
+          if-no-files-found: error

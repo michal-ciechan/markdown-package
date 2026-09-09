@@ -22,7 +22,19 @@ that:
 
 ## Status
 
-Early — this repo exists to start shaping the design. Nothing is implemented yet.
+Early — this repo exists to start shaping the design. The format spec is drafted, the web
+viewer browses packages, and the generator CLI is a scaffold that parses its verb tree but
+does not yet produce a package.
+
+## Repository layout
+
+- [`docs/spec.md`](docs/spec.md) — the format specification;
+  [`docs/spec/generator-cli.md`](docs/spec/generator-cli.md) is the tool reference for the
+  generator CLI.
+- [`src/web-viewer/`](src/web-viewer/) — the browser viewer, published to GitHub Pages.
+- [`src/generator-cli/`](src/generator-cli/) — `mdpkg`, the .NET global tool that will emit
+  and validate packages (scaffold: verb tree, options and exit codes only).
+- [`examples/`](examples/) — sample markdown covering the addressing edge cases.
 
 ## Getting started
 
