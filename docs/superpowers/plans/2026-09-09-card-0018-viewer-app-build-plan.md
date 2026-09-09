@@ -459,3 +459,421 @@ and 6 together, which is exactly why it should not be discovered after the readi
 - **Test design.** This plan names the tests each slice owes; it does not design the harness, the
   fixture generation, the browser-versus-Node split, or how `validate_review.py` is driven from the
   app's output in CI. That is the next stage.
+
+---
+
+## Verification design
+
+Written 2026-09-09 against this plan at commit `75d7846`. §5 names the tests each slice owes; this
+section designs the machinery that runs them, the fixtures they run against, the CI that forces
+them, and the device session that closes §6. It changes no decision in §1–§8.
+
+Three facts shape everything below.
+
+1. **The strongest oracles are already committed and were produced by a different implementation.**
+   `docs/spec/worked-example.json` holds 9 roots with digests, 4 commit OIDs, 3 tree OIDs, 3 resolved
+   reviews with and without the ledger, the range summary and its content-addressed name — all emitted
+   by `worked-example.py` before any of this app existed. `read-probe-results.json` and
+   `review-probe-results.json` hold the browser-side counterparts. A test that asserts against a
+   hand-written constant where one of these files holds the same value is a weaker test for no saving.
+2. **Some committed constants are toolchain-stable and some are not**, and conflating the two is how
+   a golden suite rots. Tiered in "Fixture pipeline" below; the tiering is load-bearing, not tidiness.
+3. **The novel risk (N4) and the platform risk (§6) are the only two places where a Node test proves
+   nothing.** Everything else is bytes and strings and belongs in the fastest tier available.
+
+### Harness: the Node / browser / oracle split
+
+Four tiers. The rule that decides which tier a test goes in: **a test runs in the cheapest tier that
+can actually fail for the right reason.**
+
+| Tier | Runner | Covers | Why not cheaper | Why not dearer |
+| --- | --- | --- | --- | --- |
+| **T1 Node** | `node --test`, built in, no new dependency (Node 24.6.0 is already the pinned toolchain) | Container read/write, addressing, canonical JSON, selector minting, resolution, ZIP-mounted git fs, the offset **arithmetic** half of N4, fuzz | — | Node 24 has `Blob`, `File`, `CompressionStream`/`DecompressionStream('deflate-raw')`, `crypto.subtle` and `structuredClone`. Every byte-level claim in slices 1, 3, 4, 6, 7, 9 is decidable without a DOM |
+| **T2 Browser** | Playwright, three engines (chromium, firefox, webkit), headless | DOM `Selection`, rendering, OPFS with both write branches, the file input, share / `<a download>`, the single `openPackage` entry point, chunk-graph loading | Node has no `Selection`, no OPFS, no `navigator.share`; jsdom implements none of the three usefully | Playwright WebKit is WebCore + JavaScriptCore, **not Safari**: no `WKFileUploadPanel`, no share sheet, no Files app, no ITP. It pre-filters §6, it does not close it |
+| **T3 Oracle** | Python `zipfile` + native Git, driven from `validate_review.py` | Acceptance of anything the app **emits** | The whole claim of D-1/D-5 is "a page with no server produces something other tools accept". Checking that with our own reader is circular | — |
+| **T4 Device** | Human, on hardware, recorded | §6's 20 items | Nothing else has a `WKFileUploadPanel` or a share sheet | — |
+
+Two consequences that are design decisions, not implementation details:
+
+- **N4 is split at the tier boundary, and the split is what makes it testable.**
+  `app/src/render/source-map.js` takes a resolved `(blockElementSourcepos, textOffsetWithinBlockText)`
+  pair and returns a canonical-source character offset — pure arithmetic, T1, exhaustively testable.
+  `app/src/render/selection.js` takes a live `Selection` and reduces it to that pair — T2 only, and
+  thin by construction. If the spike (§7) has to change strategy, it changes `selection.js`; the
+  arithmetic and its test table survive. Building N4 as one function that takes a `Selection` would
+  push its entire test surface into T2 and is rejected for that reason.
+- **T3 never runs the app's own reader as its checker**, and T1 never checks anything whose failure
+  mode is browser-specific. The reader-checks-its-own-writer assertion (V-35) exists, but it is the
+  *cheap* gate before T3, never a substitute for it.
+
+Suites and their names, used throughout: `app:build`, `app:unit` (T1), `app:browser` (T2),
+`app:acceptance` (T3), `fixtures:repro`.
+
+### Fixture pipeline
+
+**Source of truth.** `python docs/spec/worked-example.py <abs-out>` produces `full.mdpkg` (4,986 B,
+10 entries) and `squashed.mdpkg` (6,322 B, 12 entries) plus two bare repos, and rewrites
+`docs/spec/worked-example.json`. It is the only fixture generator that exists and it stays that way;
+nothing in `app/` regenerates the worked example.
+
+**Decision F-1 — the two packages are committed under `app/test/fixtures/`, and CI separately proves
+they are still reproducible.** *Reason:* an oracle you regenerate on every run is not an oracle. The
+golden cross-check's whole strength (§1) is that a Python emitter produced those bytes independently
+and earlier; rebuilding them from the same script in the same job proves only that the script is
+deterministic. Committing also takes Git and Python off the critical path of `app:unit`, which is the
+suite that must stay fast enough to run on every save. *Cost:* 11 KB of binary in the repository, and
+a real risk of silent re-baselining, which F-3 answers. *Rejected:* generating into
+`.antiphon/viewer-work/fixture` per run, as §8 of the investigation does — correct for a one-shot
+probe, wrong for a suite that must detect the day the constants change.
+
+**Decision F-2 — derived fixtures are generated by a committed, seeded script, not by hand.**
+`app/test/fixtures/derive.mjs` reads `full.mdpkg` and writes, deterministically:
+
+| Fixture | Derivation | Used by |
+| --- | --- | --- |
+| `reject-random.bin` | 79 bytes from a fixed-seed PRNG (the seed is recorded in `fixture-manifest.json`) | V-5 |
+| `reject-empty.bin` | zero bytes | V-5 |
+| `reject-trunc78.bin` | `full.mdpkg[0..78]` | V-5 |
+| `reject-badsig.mdpkg` | `full.mdpkg` with bytes 0–3 set to `PK\x03\x05` | V-5 |
+| `reject-renamed.mdpkg` | `full.mdpkg` with the first entry's local **and** central name `.mdpkg/` → `xmdpkg/` | V-5 |
+| `zip64-sentinel.mdpkg` | `full.mdpkg` with one central record's uncompressed size set to `0xFFFFFFFF` and a ZIP64 extra field appended | V-6 |
+| `recoverable-pyrebuild.mdpkg` | every entry of `full.mdpkg` re-added through Python `zipfile` in name order | V-7 |
+| `recoverable-fflate.mdpkg` | `unzipSync` then `zipSync` round trip through fflate 0.8.2 | V-7 |
+| `name-backslash`, `name-dotdot`, `name-leadingslash`, `name-nfc-collision` (`café.md` NFC + NFD), `name-casefold-collision` (`README.md` + `readme.md`), `name-reserved` (`.mdpkg/notes.md`) | one entry name rewritten per fixture | V-8 |
+| `internal-attr-set.mdpkg` | one central record's internal file attributes set to `1` | V-9 |
+| `crlf-source.mdpkg` | `guide.md` re-stored with CRLF terminators, everything else identical | V-19, R-13 |
+
+Each is ≤7 KB, all are committed, and `derive.mjs` re-emits them byte-identically from `full.mdpkg`
+so a reviewer can diff rather than trust.
+
+**Decision F-3 — a fixture manifest separates toolchain drift from an app regression.**
+`app/test/fixtures/fixture-manifest.json` records, for each committed fixture: byte length, SHA-256,
+entry names in order, and the toolchain that produced it (`git --version`, `python --version`,
+`zlib.ZLIB_VERSION`, and the blob OID of `worked-example.py`). Constants are then tiered, and the tier
+decides what an assertion may say:
+
+| Tier | Examples | Depends on | Assertion style |
+| --- | --- | --- | --- |
+| **A — toolchain-independent** | content digest `1cf920f3…`; roots `52f7f274…`, `b6564987…7984`; expect `684ba2cd…`; commits `28d8c71e / 08ae3497 / d038a205 / b414f39b`; trees `500c623d / 63cee821 / a15125f8`; summary name `ff2689cd…`; the 195-byte ledger; the selector's six fields; every canonical-JSON byte string | SHA-256, CommonMark 0.31.2, Git's object model — not Git's *packing* | exact equality, always, against `worked-example.json` |
+| **B — toolchain-dependent** | package bytes 4,986 / 6,322; package SHA-256; pack and idx bytes; per-entry deflate sizes; the read ledgers 969 / 1,180 | Git's pack encoder, zlib level 6, Python's `zipfile` | exact equality **only while** `fixture-manifest.json` matches the running toolchain; otherwise the bound below |
+
+`app:unit` reads the manifest first. On a Tier-B mismatch it fails with `fixture toolchain drift:
+<field> expected X got Y` **before running a single app assertion**, so drift is never diagnosed as a
+reader bug. Tier-A assertions never downgrade and never gate on the manifest.
+
+**Decision F-4 — the byte ledger is asserted twice: exactly, and as a bound.** Exactly:
+`totalAsked` = 969 on `full.mdpkg` and 1,180 on `squashed.mdpkg`, decomposed as
+79 typing + 22 EOCD + 719/930 central directory + 149 entry. As a bound, and this is the assertion
+that survives a fixture change: `totalAsked < 0.25 × packageSize`, and `totalAsked` must be
+**invariant under padding the package with a second large document** — the ledger read against a
+fixture grown 10× must not grow. A bounded read is a property; 969 is a tripwire.
+
+**Decision F-5 — scale fixtures are generated on demand, never committed.**
+`app/test/fixtures/scale.mjs <repo> <commit>` curates a named public repository at a named commit into
+a package and records source repo, commit, resulting bytes and SHA-256 into `device-results.json`.
+Targets: an npm-scale package (~158 KB) and the Rust-scale package (~3.3 MB) that M6 items 8, 9 and 14
+require. *Reason:* 3.3 MB does not belong in this repository, and the D-3 reversal criterion needs a
+package of that size on a phone, not in CI.
+
+### CI wiring, and `validate_review.py` against app output
+
+There is no CI in this repository today. Five jobs, ordered to fail fast and cheap:
+
+| Job | Runs on | Depends on | Gate |
+| --- | --- | --- | --- |
+| `app:build` | ubuntu | — | esbuild build succeeds; per-chunk size report emitted; budgets not exceeded; chunk graph asserted (V-2, R-8) |
+| `app:unit` | ubuntu + windows | `app:build` | fixture manifest matches, then T1 |
+| `app:acceptance` | ubuntu + windows | `app:unit` | T3 |
+| `app:browser` | ubuntu | `app:build` | T2, three engines |
+| `fixtures:repro` | ubuntu, **nightly and on any change to `docs/spec/worked-example.py`**, not per PR | — | regenerate the worked example; Tier-A constants must match `worked-example.json` exactly; Tier-B differences are reported and open an issue, not failed |
+
+**Windows is not optional for `app:acceptance`.** D-17, D-18a and D-19 exist because of Windows, and
+spec §3.8 records the two extractor failures (`unzip -aa`, Explorer) on a Windows host. An acceptance
+suite that only runs on Linux cannot fail for the reason those decisions were taken.
+
+**Changes to `validate_review.py`, and the one that matters most.** The script is generalised in
+place rather than copied:
+
+1. Package path and results path become a positional argument and `--out`. **The existing defaults are
+   kept**, so investigation §8's reproduction line still runs verbatim — and PC-9 checks that.
+2. The results JSON gains a `toolchain` block (`git --version`, `python --version`, platform,
+   `GIT_CONFIG_GLOBAL` state) and an `assertions` array naming every row that was actually evaluated.
+3. `--reviewed <path>` supplies the reviewed package, so the corroboration rows below can be checked.
+4. A `--autocrlf` mode that does **not** neutralise `GIT_CONFIG_GLOBAL`, for the Windows run.
+
+Rows it checks today and keeps: `testzip() is None`, empty EOCD comment, internal attributes 0 on
+every record, methods ⊆ {0, 8}, first entry `.mdpkg/manifest.json` at header offset 0, bytes 50–78 the
+magic, `git read-tree HEAD` exit 0, `git fsck --full --strict` exit 0, `rev-parse HEAD` equal to the
+manifest's `current`, status lines all `?? `. Rows **added**, each because slice 7 or §6.8 requires
+something the current script does not check:
+
+| New row | Rule | Source |
+| --- | --- | --- |
+| `tracked_paths == ['.mdpkg/review/comments.json']` | exactly one, and that one | §7.4 / slice 7 — today's `only_review_paths` passes a package that also tracks `guide.md` |
+| the pack entry is last in the central directory | entry order | spec §3.2 |
+| general-purpose bit 11 set on every non-ASCII name | | spec §3.6 |
+| `comments.anchor` / `.profile` / `.selector` equal the reviewed package's `addressing.anchor`, `addressing.digest`, and `cm0312-quote-context-v1` | | §6.8 |
+| `review.of.namespace != manifest.namespace` for a `delta` package | | §6.8's delta rule |
+| `review.of.packageDigest` and `.packageBytes` equal the reviewed fixture's actual SHA-256 and length | | D-5 |
+| every thread's `quote` equals the reviewed package's canonical scope source at `[start, end)` | | §6.8's producer rule, checked by the oracle rather than by the producer |
+
+**The wiring itself.** `app:acceptance` is three processes and a file, deliberately:
+`node app/test/acceptance/emit.mjs --out $TMP/review.mdpkg` (the app's real emitter, no test double)
+→ `python docs/investigations/viewer-app/validate_review.py $TMP/review.mdpkg --reviewed
+app/test/fixtures/full.mdpkg --out $TMP/validation.json` → `node app/test/acceptance/assert.mjs
+$TMP/validation.json`, which fails unless `accepted === true`, the `toolchain` block is present and
+non-empty, and every row in its own expected-rows list appears in `assertions`. **The job must never
+skip.** If Git or Python is absent the job fails; a missing oracle reported as a pass is the single
+most likely way this whole design quietly stops working (R-11, PC-9).
+
+### Proves it works now
+
+Layer codes: **T1** Node, **T2** browser, **T3** oracle, **T4** device. Every expected value marked
+*(golden)* is read from a committed file at test time, never retyped.
+
+**Slice 0 — skeleton and size gate**
+- V-1: the app's bundle harness measures what the investigation's did | T1 | `node app/build.mjs --report` | the `git-read` chunk is 166,033 raw / 53,773 gz, SHA-256 `b7beb8e1…` *(golden: `bundle-results.json`)*; all five dependency versions equal `docs/investigations/viewer-app/package.json`
+- V-2: the always-loaded chunk stays inside its budget and inside its import graph | T1 | `app:build` with the §4 budget table | non-zero exit naming the offending chunk when the eager gz total exceeds the milestone budget; the report shows `commonmark`, the minimal reader and the history *descriptor* in the eager chunk, and `isomorphic-git` in a separate chunk with exactly one import site
+
+**Slice 1 — container read, hardened**
+- V-3: both fixtures decode `guide.md` identically | T1 | reader over `full.mdpkg` and `squashed.mdpkg` | SHA-256 `1cf920f3e2f91322b12e08c6edd7c2532d429a42adb2bcf7b22a96b73172b4f8`, 163 bytes *(golden)*
+- V-4: the read is bounded | T1 | counting source, as in `read_probe.mjs` | `totalAsked` 969 / 1,180 exactly, `< 0.25 × packageSize`, and unchanged when the package is padded 10× (F-4)
+- V-5: the five recorded rejections | T1 | `typePackage` over the five derived fixtures | each rejects with the recorded reason string and asks for ≤79 bytes *(golden: `read-probe-results.json`)*
+- V-6: ZIP64 sentinels are rejected, the one tested behaviour | T1 | `zip64-sentinel.mdpkg` | rejected, with a reason naming ZIP64
+- V-7: a re-zipped package types recoverable, not conforming | T1 | `recoverable-pyrebuild.mdpkg`, `recoverable-fflate.mdpkg` | tier `recoverable`; manifest bytes recovered from the central directory; the reader reports that bounded-read guarantees no longer hold
+- V-8: §3.6 name rules | T1 | the six name fixtures | backslash, `..`, leading slash, NFC collision, case-fold collision and reserved prefix each rejected, each with a distinct reason
+- V-9: internal attributes ≠ 0 is nonconformance, not silence | T1 | `internal-attr-set.mdpkg` | reported as nonconforming (D-19)
+- V-10: sources return standalone buffers, never views | T1 | read a range, mutate the backing `Uint8Array`, re-inspect the returned bytes | returned bytes unchanged — the half hour the investigation records losing, made mechanical
+- V-11: three implementations still agree | T1, dev dependency only | minimal reader vs fflate 0.8.2 vs zip.js 2.8.7 over both fixtures | identical `guide.md` bytes and SHA-256 `1cf920f3…`; zip.js and fflate stay `devDependencies` and are never shipped as the reader (D-6)
+- V-12: no malformed input escapes as an unhandled error | T1 | 10,000 seeded single-byte and truncation mutations of `full.mdpkg` through `typePackage` → `readEndOfCentralDirectory` → `readCentralDirectory` → `readEntry` | every case either rejects with a reason or reads successfully; zero unhandled throws; no allocation larger than the input; under 5 s
+
+**Slice 2 — browse**
+- V-13: the document list hides the reserved prefixes | T1 | listing over both fixtures | `full` 2 documents of 10 entries, `squashed` 2 of 12 *(golden: `read-probe-results.json`)*
+- V-14: one document renders from the exact source | T1 | render `guide.md` | source is the 163 bytes; block count and heading lines match `sections` in `read-probe-results.json` *(golden)*
+- V-15: one entry point, three gestures, no `accept` | T2 ×3 engines | file input `change`, `drop`, `paste` | all three reach `openPackage(blob)` exactly once; `input.hasAttribute('accept') === false` (D-2, R-1)
+
+**Slice 3 — identity**
+- V-16: the golden cross-check | T1 | root and scoped digest for `## Usage` of `guide.md` in `full.mdpkg` | root `52f7f2741ea95e947ab04da60e3cb037562daf0374b657ba70a0d30f5a0b7f70`, expect `684ba2cde243d6593c183ee88ec27f5891eec436ba269e5bccfd0a514fc0f9fa`, asserted against `docs/spec/worked-example.json` *(golden)*
+- V-17: the whole inventory, not one section | T1 | compute every root and digest at `c2` | equals `worked-example.json.inventories.c2` — all 9 roots, locators and digests *(golden)*. Nine assertions for the price of one, covering the trail, occurrence counting and the default-root rule together
+- V-18: the ledger key is derived, not typed | T1 | `defaultRoot(["section","guide.md",[["# Guide",0],["## Setup",0]]])` | equals the sole key of the fixture's 195-byte `.mdpkg/address/overrides.json`, namely `b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984`
+- V-19: canonical scope normalisation | T1 | `crlf-source.mdpkg` | every section's scoped digest equals the LF fixture's, **and** the selector offsets over the canonical scope are identical (§6.1 rule 1; R-13)
+
+**Slice 4 — history, eagerly**
+- V-20: the descriptor agrees with the manifest | T1 | parse `.mdpkg/history.json` on both fixtures | `transform` `[]` / `["squashed"]` matching each manifest — the disagreement spec §4 makes a validator reject
+- V-21: the pack walks | T1 | isomorphic-git `log` over the ZIP-mounted fs | `full` → `d038a205 → 08ae3497 → 28d8c71e`; `squashed` → `b414f39b → 28d8c71e` *(golden: `worked-example.json.commits`)*
+- V-22: the current view equals the tip tree, checked from the reader's side | T1 | `readBlob('guide.md', current)` against the current-view ZIP entry, both fixtures | byte-identical; `HEAD` equals the manifest's `current` minus `sha1-`
+- V-23: the range summary is content-addressed and intact | T1 | `squashed.mdpkg` | the summary entry name is `.mdpkg/history/ranges/<sha256 of its own bytes>.json` = `ff2689cd…` *(golden)*; `bindings.json` names it; `beforeStateDigest`, `afterStateDigest`, `contentTouched` and `changedAt` equal `worked-example.json.summary` *(golden)*
+- V-24: the budget recorder emits real numbers | T1 | open both fixtures | records bytes read and ms elapsed, both non-zero, in the shape M6 item 8 consumes
+
+**Slice 5 — selection to source offset (spike first)**
+- V-25: the investigation's own case | T1 | `source-map.js` over the 72-character `## Usage` scope | `start 25, end 42` for `produce a package` *(golden: `review-probe-results.json`)*
+- V-26: the three places block-level `sourcepos` is most likely to break | T1 | a table over emphasis, a code span and a list item, expected offsets computed from the source directly | exact offsets
+- V-27: **the exhaustive round trip** | T2 ×3 engines | for **every** character offset in `guide.md`, in `notes.md`, and in a synthetic document holding one instance of each CommonMark block type: offset → DOM position → offset | identity at every offset in every engine. This is the test that decides the spike; a table of hand-picked cases is not evidence that N4 works
+- V-28: a selection crossing a block boundary is detected | T2 | a real `Selection` spanning two paragraphs | reported as multi-block, never silently clamped
+- V-29: a selection crossing a section boundary is detected | T2 | selection spanning `## Setup` into `## Usage` | reported as two anchors or one on the common ancestor (§6.8), never one clamped anchor
+
+**Slice 6 — selector and `comments.json`**
+- V-30: the selector reproduced field for field | T1 | mint over the fixture scope | all six fields equal `review-probe-results.json.thread.select` *(golden)*, including `prefix` truncated at the scope start
+- V-31: occurrence counting | T1 | a synthetic scope holding the quote three times | `occurrence` 0, 1, 2 for the three selections, and the correct one recovered for each
+- V-32: a producer verifies its own quote | T1 | mint with a deliberately mismatched quote | refuses to emit; no `comments.json` produced
+- V-33: canonical JSON is byte-stable | T1 | serialise → parse → serialise | identical bytes; the probe's single thread serialises to 1,015 bytes *(golden)*
+- V-34: the three profile names are the reviewed package's | T1 | emit against `full.mdpkg` | `anchor` `cm0312-trail-source-v1`, `profile` `cm0312-source-lf-v1`, `selector` `cm0312-quote-context-v1`, each read from the reviewed manifest rather than from a constant
+
+**Slice 7 — review-package emission**
+- V-35: the app types its own output | T1 | slice 1's reader over slice 7's output | conforming at offset 0; bytes 50–78 are `{"mdpkg":"markdown-package/1"` — the four-line bug the probe hit, made a test
+- V-36: the emitted commit is reproducible | T1 | emit with author and timestamps fixed to the probe's | commit `6e338fb853597e685f40432bda34d6fdb546fbc7`, tree `4f37f3173390e4106755c6dc27dbd5263e602923` *(golden: `review-probe-results.json`)*. Package bytes are **not** compared: `CompressionStream` exposes no level, so structural equality is asserted instead — entry names in order, methods, and per-entry uncompressed bytes
+- V-37: native Git and Python accept it | T3 | the emit → validate → assert chain above | `accepted === true`, every row green including `git fsck --full --strict` exit 0 and `git read-tree HEAD` exit 0
+- V-38: a review package cannot edit a document | T3 | `git ls-tree -r --name-only HEAD` | exactly `['.mdpkg/review/comments.json']` — §7.4's safety rule checked mechanically
+- V-39: acceptance holds on Windows under a hostile Git config | T3, windows | the `--autocrlf` mode, `core.autocrlf=true` globally | `read-tree` exit 0, `fsck` exit 0, and every extracted document still hashes to its tracked blob (D-18a; the checkout half of D-18b is explicitly not asserted)
+
+**Slice 8 — outbound**
+- V-40: the share path | T2 | `canShare` stubbed true | `share` receives exactly one `File`, its name ends `.mdpkg`, its bytes are the emitter's exact output
+- V-41: the download path | T2 | `canShare` stubbed false | an `<a download>` with the same name; `URL.revokeObjectURL` called with the same URL
+- V-42: neither path is reachable without a successful self-type | T1 + T2 | emit a deliberately non-conforming package | both paths refuse; nothing is shared and nothing is downloaded
+
+**Slice 9 — resolution.** One per branch, because a wrong branch here is a wrong review status.
+- V-43: the three committed reviews, with and without the ledger | T1 | resolve `setup`, `usage`, `todo` recorded at `c1` against `squashed.mdpkg` | with ledger: `flagged-changed / source-changed`, `survives / same-source`, `survives / same-source`; without: `unconfirmed / possibly-renamed-moved-or-deleted`, `survives / same-source`, `survives / same-source` *(golden: `worked-example.json.reviews`)*. Three §6.5 branches from an independent implementation, free
+- V-44: root `survives` → stored offsets used, no search | T1 | spy on the quote search | search never called; offsets returned unchanged (§6.8 step 2)
+- V-45: `flagged-changed` with the quote present once → `target-relocated` | T1 | edited scope | status `flagged-changed`, sub-section outcome `target-relocated`, offset equal to the found position
+- V-46: quote absent → `target-detached`, the thread neither moved nor dropped | T1 | quote deleted from the scope | `target-detached`; the thread's `root` unchanged and the thread still listed
+- V-47: two occurrences with a strict prefix/suffix run winner → that one | T1 | duplicated quote with divergent context | the higher-scoring occurrence, with a non-zero score margin
+- V-48: a tie is refused, never guessed | T1 | two occurrences with identical prefix and suffix runs | `target-detached`; no offset returned
+- V-49: `dead: split` offers successors and does **not** run the selector | T1 | ledger entry with `dead: split` | `flagged-changed` with successors; the quote-search function never called (spy) — §6.3's forbidden silent transfer
+- V-50: a foreign namespace is rejected before anything resolves | T1 | a thread from another namespace | `invalidated`; neither the document entry nor the ledger is read (asserted on the counting source)
+- V-51: "touched since" is answered only from a range summary | T1 | `usage` and `setup` roots against `squashed.mdpkg` | `touched_after_review` `[]` and `[2]` respectively *(golden)*; with the summary entry removed, `unknown` — never "unchanged" (§6.7)
+
+**Slice 10 — persistence**
+- V-52: store, reload, reopen | T2 ×3 engines | write both fixtures to OPFS, reload the page, read back | byte-identical; the branch taken (`createWritable` vs `createSyncAccessHandle`) is recorded
+- V-53: the sync-access-handle branch is really exercised | T2 | force the fallback by shadowing `createWritable` as undefined | the worker path runs and produces identical bytes
+- V-54: no OPFS degrades visibly | T2 | delete `navigator.storage.getDirectory` | in-memory mode, and a visible statement that the package will not survive the tab
+
+**Slice 11 — device run**
+- V-55: §6's 20 items executed and recorded | T4 | the protocol below | `device-results.json` complete, and the appendix written back into this plan
+
+### Guards the regression
+
+There is no landed defect here; each row names a **future change that would reintroduce a failure the
+evidence already paid for**, and the test that stops it.
+
+- R-1: someone adds `accept=".mdpkg"` or `accept="application/zip"` to the file input "so the picker is tidier" | caught by **V-15** because it asserts `hasAttribute('accept') === false`, which is D-2's actual rule rather than its outcome
+- R-2: a byte source is optimised back to `bytes.subarray(o, o + n)` | caught by **V-10** because the returned buffer must not change when the backing array is mutated
+- R-3: the manifest is written with plain canonical JSON, putting `anchor` first | caught by **V-35** and **V-37** because the magic then lands past byte 50 and the package fails its own typing check
+- R-4: a resolver is "improved" to search the successor set of a `dead: split` | caught by **V-49** because the quote-search spy asserts zero calls
+- R-5: a tie is broken by taking the first match, or by offset proximity | caught by **V-48** because the expected result is a refusal, not a placement
+- R-6: a smaller Markdown parser is swapped in for display, or `smart` punctuation is enabled | caught by **V-16** and **V-17** because a different section boundary yields a different scoped digest for at least one of the 9 committed roots
+- R-7: a whole-archive read (`unzipSync`-shaped) creeps into the reader for convenience | caught by **V-4** because `totalAsked` then scales with package size and both the exact value and the bound fail
+- R-8: `isomorphic-git` is pulled into the always-loaded chunk, or D-3 is quietly reversed to lazy without amending this plan | caught by **V-2** because the chunk graph is asserted in both directions — a separate chunk **and** exactly one import site
+- R-9: an emitter starts setting the ZIP text flag, or drops the internal-attributes rule | caught by **V-37** (`internal_attr_all_zero`) and **V-9**
+- R-10: a review package starts tracking a document — the "just include the file being reviewed" refactor | caught by **V-38** because the tracked path list must be exactly one name
+- R-11: the acceptance job is made skippable when Python or Git is absent, or `fsck` loses `--full --strict` | caught by **V-37** because `assert.mjs` fails on a missing `toolchain` block and on any expected row absent from `assertions`
+- R-12: fixtures are regenerated under a different toolchain and the Tier-B constants are silently re-baselined | caught by the **fixture-manifest check (F-3)** because it runs before any app assertion and names the drifted field
+- R-13: line endings are normalised at read time instead of relying on D-17 | caught by **V-19** because the digests would still pass while the selector offsets shift by one per preceding line
+- R-14: `occurrence` is recomputed at resolve time instead of being read from the stored selector | caught by **V-47** because the recomputed index disagrees with the stored one in the duplicated case
+
+### Positive controls
+
+Every guard above that protects a safety-critical assertion — a wrong review status, a review package
+editing a document, a guessed anchor, an unbounded read, oracle acceptance, shared-output identity —
+gets a control. **Build runs each: break, see red, revert, see green, and reports all three**, into a
+`app/test/positive-controls.md` table alongside the suite.
+
+- PC-1: break identity by constructing the parser as `new Parser({smart: true})`; expect **V-16 and V-17** red (guards R-6)
+- PC-2: break the bound by replacing the bounded entry read with `src.read(0, src.size)`; expect **V-4** red **and V-3 green** — the point being that only the ledger catches it (guards R-7)
+- PC-3: return `bytes.subarray(o, o + n)` from `bytesSource`; expect **V-10** red (guards R-2)
+- PC-4: emit the manifest in plain canonical key order; expect **V-35 and V-37** red (guards R-3)
+- PC-5: add `guide.md` to the review package's tracked tree; expect **V-38** red **and V-37's `fsck` row still green** — proving `fsck` is not what catches this (guards R-10)
+- PC-6: take the first match on a tie in the quote search; expect **V-48** red (guards R-5)
+- PC-7: run the selector against the successor set on `dead: split`; expect **V-49** red (guards R-4)
+- PC-8: flip one byte inside the emitted pack before validation; expect **V-37** red *at the `fsck` row specifically* — proving the oracle is looking rather than merely running (guards R-11)
+- PC-9: rename `python` out of `PATH` for one run; expect **`app:acceptance` red, not skipped**, and separately confirm that `python docs/investigations/viewer-app/validate_review.py` with no arguments still reproduces the investigation's own run (guards R-11 and investigation §8's reproduction line)
+- PC-10: set `accept="application/zip"` on the file input; expect **V-15** red (guards R-1)
+- PC-11: normalise CRLF→LF inside the container reader; expect **V-19's offset assertion red while its digest assertion stays green** — proving the offset half is what catches it (guards R-13)
+- PC-12: import `app/src/history/git.js` statically from `main.js`; expect **V-2's chunk-graph assertion** red (guards R-8)
+- PC-13: rebuild `full.mdpkg` under a different Git minor version; expect the **fixture-manifest check** red with a toolchain-drift message and **every Tier-A test still green** — the only control that proves the A/B tiering actually holds (guards R-12)
+- PC-14: shadow `createWritable` so the worker branch never runs; expect **V-53** red (guards D-8's two-branch write path)
+
+### Device checklist: execution and recording
+
+§6's 20 items are the only part of this design a machine cannot run, so the plan for them is a
+protocol, not a suite.
+
+**The instrument.** `app/device/checklist.html` — one page, served from the app's own origin, with 20
+numbered cards. Each card states the action, the expected result, the decision it can reverse, and a
+**Record** button. Recording captures automatically: `navigator.userAgent`, `canShare` and `share`
+presence, `DecompressionStream('deflate-raw')` presence, `createWritable` and `createSyncAccessHandle`
+presence, `navigator.storage.estimate()`, viewport, and the relevant `performance` marks. The tester
+adds `pass | fail | n/a | deferred` and a free-text note. The log is exported through the app's own
+outbound path, which makes items 10 and 13 dogfood themselves.
+
+**Record schema**, one row per (item, device):
+
+```json
+{"item": 8, "device": "iphone-a", "os": "iOS 26.0", "engine": "Safari 26.0",
+ "result": "pass", "reverses": "D-3",
+ "auto": {"deflateRaw": true, "canShareFiles": true, "createWritable": true,
+          "msToFirstRender": 1840, "msToHistoryReady": 2960, "tabReloaded": false},
+ "note": "3.3 MB Rust-scale, cold", "evidence": ["photos/item08-a.jpg"],
+ "at": "2026-09-16T14:02:11Z"}
+```
+
+`reverses` is the field that makes a failure actionable: it carries the decision the item can
+overturn — item 1 → D-10, item 2 → D-2, items 8 and 9 → D-3, item 12 → D-10, item 14 → D-7 — so a
+`fail` mechanically names the plan amendment it forces rather than leaving that to a reader.
+
+**Devices and coverage.** Four targets: **A** an iPhone on Safari 26+ (`createWritable` exists),
+**B** an iPhone or iPad on 15.x — below the 16.4 `deflate-raw` floor, and the only device that
+exercises both the fflate fallback and the sync-access-handle branch, **C** an iPad, **D** a WKWebView
+host such as an in-app browser. Item 16 additionally needs a second device as machine A.
+
+| Items | Scope | Runs |
+| --- | --- | ---: |
+| 1, 2, 3, 4, 6, 7, 11, 17 | every device | 8 × 4 = **32** |
+| 5, 8, 10, 12, 13, 14, 15, 16, 18, 19 | once, on device A (16 needs two devices) | **10** |
+| 9 | once, on the lowest-memory device | **1** |
+| 20 | Chrome Android, Chrome desktop, Firefox desktop | **3** |
+
+46 recorded runs.
+
+**Order, because the items are not independent.** Gate first: **1 → 2 → 3 → 4 → 6 → 7**, then 5. A
+device that cannot receive a file cannot verify 6–19, so a failure at item 1 ends that device's
+session and is reported as such rather than leaving eighteen rows blank. Then the D-3 measurement
+(**8, 9**), then outbound (**10 → 11 → 12 → 13 → 14 → 15**), then round trip and storage
+(**16 → 17 → 19**), and **18** last, because it splits.
+
+**Item 18 splits and is recorded as two rows.** The exemption half — add to Home Screen, confirm the
+home-screen app's storage survives a Safari tab-data clear — is a session item. The seven-day cap
+itself cannot be observed inside a session; it is recorded `deferred` with a due date eight days out
+and a named owner, and closing it is a separate one-line commit. Recording it as a pass because the
+exemption passed would be exactly the dishonesty §6 item 18 was written to prevent.
+
+**Item 3 is a negative control and is reported as one.** A `pass` means the package is **greyed out**.
+If items 1 and 3 both succeed at selecting the file, the mechanism is not what §1 row 1 says it is and
+D-2's reasoning needs re-deriving even though the outcome looks fine.
+
+**What T2 pre-filters, and what it cannot touch.** Running the checklist page under Playwright WebKit
+before the device session catches page-level breakage cheaply, and covers, honestly, only item 7
+(`deflate-raw` detection and the fflate fallback), item 11 (`canShare` presence, not the sheet), item
+17 (an OPFS round trip, not force-quit survival) and item 20's engine matrix. **It cannot test items
+1–5, 8, 9, 12–16, 18 or 19 at all** — no `WKFileUploadPanel`, no Files app, no share sheet, no
+AirDrop, no ITP, and no phone-class memory. Fourteen of the twenty items require hardware.
+
+**Blocking dependency, stated plainly.** Investigation §7 item 1 is open because no iOS device was
+available, and this design does not change that. A real-device cloud (BrowserStack, Sauce) covers
+items 1–9, 11, 17 and 20, but **not** 12–15 (share-sheet destinations, the Files app, the saved
+filename), **not** 16 (a two-device AirDrop or Mail round trip) and **not** 18 (force-quit plus a
+calendar interval). The cloud is therefore a partial substitute worth using for the gate items, and
+slice 11 still needs physical hardware for the eight items that decide D-7 and D-10. Acquiring or
+borrowing devices A–D is a prerequisite of slice 11 and sits on the critical path of M6, not of M1–M5.
+
+**Where the results land.** `docs/investigations/viewer-app/device-results.json` for the raw rows and
+photograph paths, plus an appendix table appended to this plan by slice 11 — which is what turns
+investigation §7 item 1 from open to closed, and what §5 slice 11 already promises.
+
+### Out of scope
+
+- **Visual regression and screenshot diffing of the UI (N8).** There is no design specification to
+  diff against; a golden-screenshot suite written now would pin arbitrary choices and produce noise on
+  every layout change. Revisit once the reading view stabilises after M4.
+- **Accessibility auditing.** Real work, but not v1 verification work, and it needs criteria this plan
+  has not set.
+- **Desktop performance testing beyond the budget recorder.** Every number that changes a decision is
+  a mobile number (D-3's reversal criterion, D-7's large-share risk). A desktop benchmark suite would
+  measure precisely the thing nobody is deciding on.
+- **The `bundled` review shape.** Not built (D-5), so not tested. When it is built it needs V-37 and
+  V-38 equivalents plus a test that its `current`'s parent is literally `review.of.current`.
+- **Android `share_target`.** Deliberately out of v1 (D-13); only item 20's `navigator.share` check
+  touches Android.
+- **Corpus-scale byte economics.** Quoted from spec §3.2 rather than re-measured; the only scale
+  artefact this design builds is the device fixture (F-5), because scale matters here as a phone
+  measurement, not as a CI assertion.
+- **`HttpRangeReader` and remote packages.** D-6 adopts the shape for "when remote packages happen";
+  they do not happen in v1 and nothing tests them.
+- **Cross-engine Markdown rendering fidelity.** commonmark.js is the oracle and it is the same code in
+  every engine; V-27 tests the *offset* round trip per engine, which is the part that can differ.
+- **The seven-day ITP cap as an observation.** Only its documented exemption is testable in a session
+  (item 18); the cap itself is a calendar item, and this design says so rather than approximating it.
+- **Unpinned dependency versions.** The five pins are what make the goldens valid; a floating-version
+  matrix would test a configuration nobody ships.
+
+### Cost
+
+**Suites forced, per pull request:**
+
+| Suite | Filter / scope | Wall clock |
+| --- | --- | ---: |
+| `app:build` | esbuild, size report, chunk-graph assertions | ~15 s |
+| `app:unit` | `node --test app/test/unit/**` — fixture manifest, then slices 1, 3, 4, 5 (arithmetic), 6, 7 (emit), 9; ~200 assertions plus V-12's 10,000-case fuzz | ~25 s, fuzz dominating |
+| `app:acceptance` | emit → `validate_review.py` → assert; ubuntu and windows, windows also in `--autocrlf` mode | ~20 s × 3 |
+| `app:browser` | Playwright chromium + firefox + webkit — slices 2, 5 (selection), 8, 10; V-27 sweeps ~500 offsets × 3 engines | ~2 min, engines in parallel |
+
+**Verification floor ≈ 3 min** wall clock with the four jobs parallel (the browser suite is the long
+pole), **≈ 4 min serial**. A cold agent adds ~90 s for the Playwright browser download.
+
+**Not per pull request:** `fixtures:repro` nightly, ~40 s. The positive controls run as one sweep —
+14 × (break, run the named suite, revert, re-run) ≈ **12 min** — on demand and before each milestone
+sign-off, not per commit.
+
+**Device session:** 46 recorded runs across four iOS targets plus three non-iOS browsers, estimated
+**2.5 h** of tester time including photographs, plus ~15 min of a second device for item 16, plus one
+calendar follow-up eight days later for item 18's cap half. Blocked on hardware acquisition, which is
+the only cost in this design that is not developer time.
