@@ -6,7 +6,7 @@ namespace Mdpkg.Cli.Tests;
 
 /// <summary>
 /// The tool reference, docs/spec/generator-cli.md, is the contract. These tests read it so that a verb, exit code
-/// or diagnostic added or re-classified there fails here until the scaffold mirrors it.
+/// or diagnostic added or re-classified there fails here until the implementation mirrors it.
 /// </summary>
 public partial class SpecConsistencyTests
 {

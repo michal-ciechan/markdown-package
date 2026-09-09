@@ -5,7 +5,6 @@
     <!-- The executable and the `dotnet mdpkg` verb are both named mdpkg (spec §1). -->
     <AssemblyName>mdpkg</AssemblyName>
     <RootNamespace>Mdpkg.Cli</RootNamespace>
-    <InvariantGlobalization>true</InvariantGlobalization>
     <!-- A global tool should run on any newer runtime the host has. -->
     <RollForward>Major</RollForward>
   </PropertyGroup>
@@ -16,13 +15,15 @@
     <PackageId>mdpkg</PackageId>
     <Version>0.1.0-scaffold</Version>
     <Authors>markdown-package contributors</Authors>
-    <Description>Emits and checks conforming .mdpkg packages. Scaffold build: the verb tree, options and exit codes are wired; no verb generates or checks a package yet.</Description>
+    <Description>Creates and validates .mdpkg packages with Markdown addressing and curated Git history. Update and address editing are not yet implemented.</Description>
     <PackageProjectUrl>https://github.com/michal-ciechan/markdown-package</PackageProjectUrl>
     <RepositoryUrl>https://github.com/michal-ciechan/markdown-package</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Markdig" />
+    <PackageReference Include="SharpZipLib" />
     <PackageReference Include="System.CommandLine" />
   </ItemGroup>
 

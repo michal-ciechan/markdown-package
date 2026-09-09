@@ -2,7 +2,7 @@
 
 A .NET global tool that emits and checks conforming `.mdpkg` packages. [`../spec.md`](../spec.md) is authoritative; every row below cites the section or decision it implements. Rows marked **G-*n*** are tool defaults filling a gap the spec leaves open (§11); they are the tool's choice, not a format rule.
 
-Audience: coding agents driving the tool non-interactively. Implementation: [`src/generator-cli/`](../../src/generator-cli/), a .NET global tool on System.CommandLine. As of 2026-09-09 it is a scaffold: the verb tree, options and exit codes below parse and validate, and every well-formed invocation exits 70 with `not implemented` instead of generating or checking a package (spec status line, §8 aside). Its tests read this file and fail when §1, §3, §4 or §10 change without the tool following.
+Audience: coding agents driving the tool non-interactively. Implementation: [`src/generator-cli/`](../../src/generator-cli/), a .NET tool on System.CommandLine. `pack` and `validate` are implemented, including Git import, projection, depth, correspondence, controlled ZIP emission and shared post-write validation. `update` and `address` remain explicit `not implemented` actions (exit 70). Their sections below describe the intended contract. Tests read this file and fail when §1, §3, §4 or §10 change without the tool following. Distribution and publishing are separate work; run the project from source today.
 
 ---
 
@@ -78,18 +78,21 @@ Stable codes; `--format json` puts them in `diagnostics[]`. `sev` is the default
 | `MDPK1008` | error | A central-directory method other than `0` or `8` | §3.3 |
 | `MDPK1009` | warn | EOCD comment present. Any version token in it is a hint; disagreement with the manifest escalates to error, absence never does | §3.5, C1 |
 | `MDPK1010` | error | ZIP64 sentinels present or required (G-2) | §11.1 item 1 |
+| `MDPK1011` | error | Malformed ZIP structure, encrypted entry, CRC or decompression failure | §3.3–§3.5 |
 | `MDPK2001` | error | `current` differs from the target of `refs/heads/main` | §4, §5.2, D-7 |
 | `MDPK2002` | error | `addressing.overrides` names an absent entry, or is `null` while the tree carries a ledger, or names a ledger with zero entries | §4, §6.3, D-12 |
 | `MDPK2003` | error | `history.transform` inconsistent with `history.json`'s `transformations` | §4, §5.3, D-3 |
 | `MDPK2004` | error | `shallowBoundaries` differs from `.git/shallow`, or is non-empty while that file is absent | §5.3 |
 | `MDPK2005` | error | A transformation carries a `summary` but `bindings.json` is absent or lacks its `emitted` commit | §5.4 |
 | `MDPK2006` | error | An archived patch's bytes do not hash to the `sha256` that `history.json` binds | §5.5 |
+| `MDPK2007` | error | Malformed or inconsistent manifest, profile, history or review declaration | §4, §5.3 |
 | `MDPK3001` | warn, error under `--require-complete` | Correspondence over some range was not confirmed; `addressing.coverage` is written `partial` with the covered ranges | §4, §6.3 |
 | `MDPK3002` | info | A new entity was born into a default root still held by a retired or moved entity; a fresh random root was minted | §6.3 (reserved-slot births) |
 | `MDPK3003` | error | A rename candidate was supplied unconfirmed; heuristic guesses never become `to` entries | §6.3 (producer obligation) |
 | `MDPK4001` | error | SHA-256 object format requested | D-14 |
 | `MDPK4002` | error | The curated repository holds an entry §5.1 does not list: loose objects, an index, hooks, reflogs, remotes, `description`, `info/` or `packed-refs` | §5.1 |
 | `MDPK4003` | error | A tracked entry is not decodable as UTF-8. Version 1 defines no mechanism for tracked binary content, so no binary heuristic is applied and the entry is rejected | D-17 (scope) |
+| `MDPK5001` | error | Filesystem or native Git operation failed | CLI §3, exit 5 |
 
 ---
 
@@ -170,7 +173,7 @@ mdpkg pack ./docs --out ./docs.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d
 | 5 | Emit the ledger from `--correspondence` records only, or omit it and write `overrides: null` | §6.3, D-12 |
 | 6 | Build the curated repository: `git pack-objects --revs --delta-base-offset`, then `index-pack`, then strip everything §5.1 does not list | §5.1, §5.2 |
 | 7 | Assemble the ZIP under §8's invariants | §3.2–§3.6 |
-| 8 | Re-open the written file and run every §11 check against it; a failure deletes the output and exits 3 | §4 |
+| 8 | Re-open the staged file and run every §11 check, including deep Git checks; a failure deletes staging and exits 3, preserving an existing destination | §4 |
 
 Manifest written by `pack` with no history transform and no exceptions:
 
@@ -181,6 +184,8 @@ Manifest written by `pack` with no history transform and no exceptions:
 ### 7.1 `--correspondence` file
 
 Producer-confirmed records only. A similarity score is a candidate, never authority (§6.3; §9 rejects `git diff -M` and section-similarity as identity authority).
+
+The file is a JSON array of the records below. Supplying a record is the producer's confirmation; optional `"confirmed": true` is accepted and `false` is rejected with `MDPK3003`. Unknown fields, duplicate roots, malformed records and absent move targets are rejected. Records apply to the tip. An existing source ledger supplies historical confirmations; records are retained across imported commits. Unconfirmed removals create `unknown` records, reserve their former roots, and leave the corresponding retained transition `partial`. No similarity or Git rename score becomes confirmation. Exact default locators continue under §6.2; every removed live root must have a confirmed move or retirement for a transition to be complete. `--require-complete` fails with exit 4, and `--fail-on-warning` fails with exit 3, before publishing any output.
 
 | Record | Shape | Becomes | Spec |
 | --- | --- | --- | --- |
@@ -308,6 +313,11 @@ Writes no package. Every writing verb runs the same check set against its own ou
 | Curated repository holds nothing §5.1 omits | `MDPK4002` | central directory | §5.1 |
 | `git fsck --full --strict` on the extracted repository | `MDPK4002` | `--deep` only | §3.8, §8.4 |
 | Current view equals the tip tree, blob for blob | `MDPK2001` | `--deep` only | §7.1 |
+| Unsafe entry names and UTF-8 names | `MDPK1003` | central directory | §3.6 |
+| No ZIP64 sentinels, locator or extra field | `MDPK1010` | directory/local headers/EOCD | G-2 |
+| Entry extents, CRC32, complete DEFLATE streams, single disk and no encryption | `MDPK1011` | directory and payloads | §3.3–§3.5 |
+| Canonical JSON, supported profiles, history and coverage declarations | `MDPK2007` | JSON entries | §4, §5.3 |
+| Strict UTF-8 outside `.git/` and in retained blobs on deep validation | `MDPK4003` | decoded payloads | D-17 |
 
 The four content checks — uniqueness, reservation, LF, text flag — are validator obligations precisely because a reader cannot detect the damage itself: a `README.md` / `readme.md` pair loses one file in every tested extractor and in Git's own NTFS checkout, and a CRLF-storing package resolves to the same digests as its conforming twin because §6.1 rule 1 re-normalizes (§4).
 
@@ -319,12 +329,22 @@ Passing `validate` is not proof that no upstream history was omitted. "Complete"
 
 | Property | Guarantee | Spec |
 | --- | --- | --- |
-| Repeat runs | Byte-identical output for the same inputs, Git version and tool version; two runs of the worked example produced byte-identical packages | §8 |
+| Repeat runs | Byte-identical output for the same inputs, Git/runtime/tool versions, except fresh random reserved-slot births; two runs of the worked example produced byte-identical packages | §8 |
 | Pinned Git settings | `core.autocrlf=false`, `core.compression=6`, `pack.threads=1`, `pack.window=10`, `pack.depth=50` | §8, [`worked-example.py`](worked-example.py) line 45 |
+| Snapshot commit metadata | Fixed author/committer `mdpkg <mdpkg@example.invalid>`, timestamp `946684800 +0000` (2000-01-01); message from `--message`. Imported commits retain author, committer and message bytes. Signatures are removed when their signed tree/parents change | G-4 |
+| Reserved-slot births | Fresh random roots deliberately make such runs non-identical; persist the resulting tracked ledger to reuse those roots | §6.3 |
 | Not guaranteed | Byte identity across Git versions or across `--compression-level`. The pack is a storage choice and no format identity depends on its layout | §5.1 |
 | Not guaranteed | Byte identity with a package rewritten by an ordinary archive tool. Of five real rewrites, manifest-first order survived two and the manifest's bytes survived all five; a repack that preserves payload bytes is not a format-preserving package rewrite | §3.7 |
 
 This tool reproduces the output shape of [`worked-example.py`](worked-example.py), which is example machinery for §8 and not a format implementation: its ATX-only outline scanner is not the CommonMark 0.31.2 resolver §6.1 requires.
+
+The implementation uses Markdig's plain CommonMark pipeline, with source spans for multiline Setext headings and direct-document children only. It uses the viewer's Unicode 17.0.0 C+S folding table after NFC, with normal .NET globalization enabled. ZIP compression uses .NET's numeric zlib levels 0–9; decoding checks stream completion, declared sizes and CRCs. Canonical JSON preserves Unicode and orders keys by UTF-8 bytes.
+
+Source policy (G-5): snapshot input ignores the exact root `.git` entry and rejects symlinks/reparse points, including linked source ancestors. Output must be outside the source tree and its existing parent directories cannot be links/reparse points. A report must also be outside source and must not overwrite package or correspondence inputs or the package output. Names containing colons or control characters are rejected for portable staging. A snapshot may use `--scope`; selection uses native Git pathspecs over the staged tree. `--from-git` requires a repository root (or bare repository) and reads committed `HEAD` history, not dirty/untracked working-tree changes. Use `--scope` to select a subtree. Every retained tree is normalized and checked; Git links and submodules are rejected. Regular files are committed as mode `100644`, including executable source files, to agree with the fixed ZIP attributes; this can also rewrite imported tree/commit IDs. `--depth` and shallow-source imports produce a synthetic root and `truncated` coverage, without shipping `.git/shallow`. `--message` applies only to synthesized snapshots. Review-package authoring is outside `pack`; source `.mdpkg/review/` entries are rejected because they need a review manifest.
+
+Git runs through argument lists in isolated temporary repositories. System/global Git configuration, hooks, credential helpers, replace refs, lazy fetching and remote protocols are disabled. No source checkout, index write or fetch occurs. Cancellation kills active Git subprocesses and removes staging. Native Git on PATH and temporary disk space are required. Entry payloads are buffered in memory; an individual entry above `Int32.MaxValue` is refused as an environment/resource error. ZIP32 sentinel limits are checked separately (`MDPK1010`).
+
+Internal engine results carry outcomes and diagnostics; only the command adapter assigns process exit codes and writes stdout/stderr/reports. SHA-256 creation requests emit `MDPK4001` and exit 2. Invalid source text emits `MDPK4003` and exit 2. Malformed package content exits 3; missing files, failing Git or unwritable output exit 5. `--accept-recoverable` enables inspection and a `recoverable` result tier but still exits 3 for failed conformance. Shallow validation skips the two deep checks; `pack` always runs them before replacement.
 
 ---
 
@@ -358,3 +378,5 @@ This tool reproduces the output shape of [`worked-example.py`](worked-example.py
 | **G-1** | `--format text`; machine output only under `--format json` or `--report`; `--fail-on-warning` off | None — CLI surface, outside the format |
 | **G-2** | Refuse ZIP64 on read and write; hard producer limits of 4 GiB and 65,535 entries. The evidence reader's only tested behavior is rejection, and nothing in the corpora approaches the limits | §11.1 item 1 |
 | **G-3** | Fixed 1980-01-01 ZIP timestamps, matching the worked example | None — the format constrains no timestamp |
+| **G-4** | Fixed snapshot author/committer and timestamp; preserve imported metadata where possible | Deterministic commit metadata is producer policy |
+| **G-5** | Source containment/link policy and portable staging restrictions described in §12 | Filesystem traversal is producer policy |

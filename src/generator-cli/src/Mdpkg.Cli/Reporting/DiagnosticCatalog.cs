@@ -38,18 +38,21 @@ internal static class DiagnosticCatalog
         new("MDPK1008", Severity.Error, "A central-directory method other than 0 or 8", "§3.3"),
         new("MDPK1009", Severity.Warn, "EOCD comment present; a version token disagreeing with the manifest escalates to error", "§3.5, C1"),
         new("MDPK1010", Severity.Error, "ZIP64 sentinels present or required (G-2)", "§11.1 item 1"),
+        new("MDPK1011", Severity.Error, "Malformed ZIP structure, encrypted entry, CRC or decompression failure", "§3.3–§3.5"),
         new("MDPK2001", Severity.Error, "current differs from the target of refs/heads/main", "§4, §5.2, D-7"),
         new("MDPK2002", Severity.Error, "addressing.overrides names an absent entry, or is null while the tree carries a ledger, or names a ledger with zero entries", "§4, §6.3, D-12"),
         new("MDPK2003", Severity.Error, "history.transform inconsistent with history.json's transformations", "§4, §5.3, D-3"),
         new("MDPK2004", Severity.Error, "shallowBoundaries differs from .git/shallow, or is non-empty while that file is absent", "§5.3"),
         new("MDPK2005", Severity.Error, "A transformation carries a summary but bindings.json is absent or lacks its emitted commit", "§5.4"),
         new("MDPK2006", Severity.Error, "An archived patch's bytes do not hash to the sha256 that history.json binds", "§5.5"),
+        new("MDPK2007", Severity.Error, "Malformed or inconsistent manifest, profile, history or review declaration", "§4, §5.3"),
         new("MDPK3001", Severity.Warn, "Correspondence over some range was not confirmed; addressing.coverage is written partial", "§4, §6.3"),
         new("MDPK3002", Severity.Info, "A new entity was born into a default root still held by a retired or moved entity; a fresh random root was minted", "§6.3"),
         new("MDPK3003", Severity.Error, "A rename candidate was supplied unconfirmed; heuristic guesses never become to entries", "§6.3"),
         new("MDPK4001", Severity.Error, "SHA-256 object format requested", "D-14"),
         new("MDPK4002", Severity.Error, "The curated repository holds an entry §5.1 does not list", "§5.1"),
         new("MDPK4003", Severity.Error, "A tracked entry is not decodable as UTF-8", "D-17"),
+        new("MDPK5001", Severity.Error, "Filesystem or native Git operation failed", "CLI §3, exit 5"),
     ];
 
     public static IReadOnlyDictionary<string, DiagnosticInfo> Codes { get; } =

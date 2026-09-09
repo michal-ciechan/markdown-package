@@ -72,17 +72,13 @@ public class OptionValidationTests
     [InlineData("--digest", "cm0312-source-lf-v1")]
     public void WellFormedGlobalValuesParse(params string[] extra)
     {
-        var result = CliRunner.Run([.. Pack, .. extra]);
-
-        Assert.Equal((int)ExitCode.NotImplemented, result.Exit);
+        Assert.Empty(MdpkgCli.Build().Parse([.. Pack, .. extra]).Errors);
     }
 
     [Fact]
     public void BooleanFlagsDoNotSwallowTheNextPositionalToken()
     {
-        var result = CliRunner.Run("pack", "--data-descriptors", "./docs", "--out", "x.mdpkg", "--namespace", CliRunner.Namespace);
-
-        Assert.Equal((int)ExitCode.NotImplemented, result.Exit);
+        Assert.Empty(MdpkgCli.Build().Parse(["pack", "--data-descriptors", "./docs", "--out", "x.mdpkg", "--namespace", CliRunner.Namespace]).Errors);
     }
 
     [Theory]

@@ -54,6 +54,7 @@ internal sealed partial class GlobalOptions
             HelpName = "id",
             Recursive = true,
         };
+        Anchor.AcceptOnlyFromAmong("cm0312-trail-source-v1");
 
         Digest = new Option<string>("--digest")
         {
@@ -62,6 +63,7 @@ internal sealed partial class GlobalOptions
             HelpName = "id",
             Recursive = true,
         };
+        Digest.AcceptOnlyFromAmong("cm0312-source-lf-v1");
 
         ObjectFormat = new Option<string>("--object-format")
         {

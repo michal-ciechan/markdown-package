@@ -1,4 +1,5 @@
 using System.CommandLine;
+using Mdpkg.Cli.Engine.Validation;
 
 namespace Mdpkg.Cli.Commands;
 
@@ -13,10 +14,19 @@ internal static class ValidateCommand
         };
 
         var command = new Command("validate", "Run every §11 check against a package. Writes no package (§11).");
-        command.Arguments.Add(CommonOptions.InputPackage());
+        var input = CommonOptions.InputPackage();
+        command.Arguments.Add(input);
         command.Options.Add(deep);
-        command.Options.Add(CommonOptions.AcceptRecoverable());
-        command.SetAction(parseResult => Stub.Run(parseResult, globals, command.Name));
+        var recoverable = CommonOptions.AcceptRecoverable();
+        command.Options.Add(recoverable);
+        command.Validators.Add(result =>
+        {
+            if (result.GetValue(globals.Report)?.FullName is { } report && string.Equals(report, result.GetValue(input)?.FullName, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
+                result.AddError("--report must not overwrite the input package.");
+        });
+        command.SetAction(async (parse, ct) => EngineAction.Report(parse, globals, command.Name,
+            await new PackageValidator().ValidateAsync(new(parse.GetValue(input)!.FullName, parse.GetValue(deep),
+                parse.GetValue(recoverable), parse.GetValue(globals.Namespace), parse.GetValue(globals.ObjectFormat)!), ct)));
         return command;
     }
 }

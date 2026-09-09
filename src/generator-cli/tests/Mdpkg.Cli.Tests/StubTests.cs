@@ -7,7 +7,6 @@ public class StubTests
 {
     public static TheoryData<string, string[]> WellFormedInvocations => new()
     {
-        { "pack", ["pack", "./docs", "--out", "x.mdpkg", "--namespace", CliRunner.Namespace] },
         { "update", ["update", "in.mdpkg", "--out", "out.mdpkg", "--tree", "./docs", "--message", "m"] },
         { "update", ["update", "in.mdpkg", "--out", "out.mdpkg", "--squash", "a..b", "--no-summary"] },
         { "address move", ["address", "in.mdpkg", "--out", "o.mdpkg", "move", "--root", CliRunner.Root, "--to", "section:guide.md:# Guide/0"] },
@@ -15,7 +14,6 @@ public class StubTests
         { "address unknown", ["address", "in.mdpkg", "--out", "o.mdpkg", "unknown", "--root", CliRunner.Root, "--reason", "why"] },
         { "address mint", ["address", "in.mdpkg", "--out", "o.mdpkg", "mint", "--locator", "section:x.md:# X/0"] },
         { "address list", ["address", "in.mdpkg", "list"] },
-        { "validate", ["validate", "in.mdpkg", "--deep"] },
     };
 
     [Theory]
@@ -25,7 +23,7 @@ public class StubTests
         var result = CliRunner.Run(args);
 
         Assert.Equal((int)ExitCode.NotImplemented, result.Exit);
-        Assert.Equal($"mdpkg {verb}: not implemented. This build is the scaffold; see src/generator-cli/README.md.", result.Stderr.Trim());
+        Assert.Equal($"mdpkg {verb}: not implemented. Only pack and validate are implemented; see src/generator-cli/README.md.", result.Stderr.Trim());
         Assert.Equal(string.Empty, result.Stdout);
     }
 
@@ -51,7 +49,7 @@ public class StubTests
     [Fact]
     public void QuietStillEmitsTheDiagnostic()
     {
-        var result = CliRunner.Run("validate", "in.mdpkg", "--quiet");
+        var result = CliRunner.Run("address", "in.mdpkg", "list", "--quiet");
 
         Assert.Equal((int)ExitCode.NotImplemented, result.Exit);
         Assert.Contains("not implemented", result.Stderr, StringComparison.Ordinal);
@@ -60,10 +58,10 @@ public class StubTests
     [Fact]
     public void GlobalOptionsAreAcceptedBeforeTheVerb()
     {
-        var result = CliRunner.Run("--namespace", CliRunner.Namespace, "--format", "json", "pack", "./docs", "--out", "x.mdpkg");
+        var result = CliRunner.Run("--namespace", CliRunner.Namespace, "--format", "json", "address", "in.mdpkg", "list");
 
         Assert.Equal((int)ExitCode.NotImplemented, result.Exit);
-        Assert.StartsWith("{\"verb\":\"pack\"", result.Stdout, StringComparison.Ordinal);
+        Assert.StartsWith("{\"verb\":\"address list\"", result.Stdout, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -72,12 +70,12 @@ public class StubTests
         var path = Path.Combine(Path.GetTempPath(), $"mdpkg-{Guid.NewGuid():N}.json");
         try
         {
-            var result = CliRunner.Run("validate", "in.mdpkg", "--report", path);
+            var result = CliRunner.Run("address", "in.mdpkg", "list", "--report", path);
 
             Assert.Equal((int)ExitCode.NotImplemented, result.Exit);
             Assert.Equal(string.Empty, result.Stdout);
             using var json = JsonDocument.Parse(File.ReadAllText(path));
-            Assert.Equal("validate", json.RootElement.GetProperty("verb").GetString());
+            Assert.Equal("address list", json.RootElement.GetProperty("verb").GetString());
             Assert.Equal((int)ExitCode.NotImplemented, json.RootElement.GetProperty("exitCode").GetInt32());
         }
         finally
@@ -91,7 +89,7 @@ public class StubTests
     {
         var path = Path.Combine(Path.GetTempPath(), $"mdpkg-missing-{Guid.NewGuid():N}", "report.json");
 
-        var result = CliRunner.Run("validate", "in.mdpkg", "--report", path);
+        var result = CliRunner.Run("address", "in.mdpkg", "list", "--report", path);
 
         Assert.Equal((int)ExitCode.Environment, result.Exit);
         Assert.Contains("cannot write --report", result.Stderr, StringComparison.Ordinal);
@@ -103,13 +101,13 @@ public class StubTests
     {
         var path = Path.Combine(Path.GetTempPath(), $"mdpkg-missing-{Guid.NewGuid():N}", "report.json");
 
-        var result = CliRunner.Run("validate", "in.mdpkg", "--report", path, "--format", "json");
+        var result = CliRunner.Run("address", "in.mdpkg", "list", "--report", path, "--format", "json");
 
         Assert.Equal((int)ExitCode.Environment, result.Exit);
         Assert.Contains("cannot write --report", result.Stderr, StringComparison.Ordinal);
         var line = Assert.Single(result.Stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries));
         using var json = JsonDocument.Parse(line);
-        Assert.Equal("validate", json.RootElement.GetProperty("verb").GetString());
+        Assert.Equal("address list", json.RootElement.GetProperty("verb").GetString());
         Assert.Equal(result.Exit, json.RootElement.GetProperty("exitCode").GetInt32());
     }
 }

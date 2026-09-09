@@ -1,4 +1,5 @@
 using System.CommandLine;
+using Mdpkg.Cli.Engine;
 
 namespace Mdpkg.Cli.Commands;
 
@@ -35,13 +36,17 @@ internal static class PackCommand
 
         var command = new Command("pack", "Emit a fresh package from a source directory (§7).");
         command.Arguments.Add(sourceDir);
-        command.Options.Add(OutOption.Create(required: true));
+        var output = OutOption.Create(required: true);
+        command.Options.Add(output);
         command.Options.Add(fromGit);
         command.Options.Add(scope);
         command.Options.Add(depth);
-        command.Options.Add(CommonOptions.Message("Commit message for the synthesised root (§5.1).", "Initial package"));
-        command.Options.Add(CommonOptions.RequireComplete());
-        command.Options.Add(CommonOptions.Correspondence());
+        var message = CommonOptions.Message("Commit message for the synthesised root (§5.1).", "Initial package");
+        var requireComplete = CommonOptions.RequireComplete();
+        var correspondence = CommonOptions.Correspondence();
+        command.Options.Add(message);
+        command.Options.Add(requireComplete);
+        command.Options.Add(correspondence);
 
         // §2: --namespace is required for pack only; the other verbs read it from the input manifest.
         command.Validators.Add(result =>
@@ -50,9 +55,23 @@ internal static class PackCommand
             {
                 result.AddError("--namespace <uuid> is required for pack (§2).");
             }
+            if (result.GetValue(globals.Report)?.FullName is { } report)
+            {
+                var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+                if (string.Equals(report, result.GetValue(output)?.FullName, comparison)) result.AddError("--report must differ from --out.");
+                if (result.GetValue(sourceDir)?.FullName is { } source && report.StartsWith(source.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, comparison))
+                    result.AddError("--report must be outside the source directory.");
+                if (string.Equals(report, result.GetValue(correspondence)?.FullName, comparison)) result.AddError("--report must not overwrite correspondence input.");
+            }
         });
 
-        command.SetAction(parseResult => Stub.Run(parseResult, globals, command.Name));
+        command.SetAction(async (parse, ct) => EngineAction.Report(parse, globals, command.Name,
+            await new PackageBuilder().PackAsync(new(
+                parse.GetValue(sourceDir)!.FullName, parse.GetValue(output)!.FullName, parse.GetValue(globals.Namespace)!,
+                parse.GetValue(fromGit), parse.GetValue(scope), parse.GetValue(depth), parse.GetValue(message)!,
+                parse.GetValue(correspondence)?.FullName, parse.GetValue(requireComplete), parse.GetValue(globals.FailOnWarning),
+                parse.GetValue(globals.CompressionLevel), parse.GetValue(globals.DataDescriptors), parse.GetValue(globals.ReverseIndex),
+                parse.GetValue(globals.ObjectFormat)!, parse.GetValue(globals.Anchor)!, parse.GetValue(globals.Digest)!), ct)));
         return command;
     }
 }

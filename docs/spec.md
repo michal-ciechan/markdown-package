@@ -1,6 +1,6 @@
 # markdown-package format specification, version 1
 
-Status: consolidated specification, draft 1, written 2026-09-08. This document merges four closed investigations into one format description. It is a specification, not an implementation: nothing here has been built beyond the worked example in §8, and the numbers it quotes are the investigations' measurements, not promises about an implementation that does not yet exist.
+Status: consolidated specification, draft 1, written 2026-09-08. This document merges four closed investigations into one format description. The numbers it quotes are the investigations' measurements. The [generator CLI](spec/generator-cli.md) now implements `pack` and `validate`; its implementation and test status are documented separately from these format rules.
 
 Sources, all in `docs/investigations/`, each with its reproducible evidence directory beside it:
 

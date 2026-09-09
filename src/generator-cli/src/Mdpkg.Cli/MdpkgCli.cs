@@ -22,11 +22,11 @@ public static class MdpkgCli
             parseError.ShowTypoCorrections = false;
         }
 
-        var exit = parseResult.Invoke(new InvocationConfiguration
+        var exit = parseResult.InvokeAsync(new InvocationConfiguration
         {
             Output = stdout,
             Error = stderr,
-        });
+        }).GetAwaiter().GetResult();
         if (parseResult.Errors.Count > 0)
         {
             stderr.WriteLine("Run 'mdpkg --help' or 'mdpkg <verb> --help' for usage.");

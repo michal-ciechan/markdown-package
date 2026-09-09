@@ -10,11 +10,15 @@ on:
       # SpecConsistencyTests reads the tool reference and fails when the verb tree, exit
       # codes or diagnostic table drift from it, so a spec edit can turn this red on its own.
       - 'docs/spec/generator-cli.md'
+      - 'docs/spec.md'
+      - 'docs/spec/worked-example.json'
       - '.github/workflows/generator-cli.yml'
   pull_request:
     paths:
       - 'src/generator-cli/**'
       - 'docs/spec/generator-cli.md'
+      - 'docs/spec.md'
+      - 'docs/spec/worked-example.json'
       - '.github/workflows/generator-cli.yml'
   workflow_dispatch:
 
@@ -23,7 +27,10 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         working-directory: src/generator-cli
@@ -42,6 +49,6 @@ jobs:
         run: dotnet pack src/Mdpkg.Cli/Mdpkg.Cli.csproj --no-build -c Release -o artifacts/package
       - uses: actions/upload-artifact@v4
         with:
-          name: mdpkg-nupkg
+          name: mdpkg-nupkg-${{ matrix.os }}
           path: src/generator-cli/artifacts/package/*.nupkg
           if-no-files-found: error

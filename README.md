@@ -22,9 +22,10 @@ that:
 
 ## Status
 
-Early — this repo exists to start shaping the design. The format spec is drafted, the web
-viewer browses packages, and the generator CLI is a scaffold that parses its verb tree but
-does not yet produce a package.
+The format spec is drafted, the web viewer browses packages, and the .NET generator creates
+and validates real packages. `pack` supports snapshots, Git history, path projection, depth
+and confirmed addressing exceptions. `validate --deep` checks native Git integrity and
+current-view agreement. `update` and `address` remain explicit exit-70 placeholders.
 
 ## Repository layout
 
@@ -32,13 +33,20 @@ does not yet produce a package.
   [`docs/spec/generator-cli.md`](docs/spec/generator-cli.md) is the tool reference for the
   generator CLI.
 - [`src/web-viewer/`](src/web-viewer/) — the browser viewer, published to GitHub Pages.
-- [`src/generator-cli/`](src/generator-cli/) — `mdpkg`, the .NET global tool that will emit
-  and validate packages (scaffold: verb tree, options and exit codes only).
+- [`src/generator-cli/`](src/generator-cli/) — `mdpkg`, the .NET producer and validator.
 - [`examples/`](examples/) — sample markdown covering the addressing edge cases.
 
 ## Getting started
 
-Not yet — check back once the initial design lands.
+Requires .NET 10 and Git on PATH. From the repository root:
+
+```powershell
+dotnet run --project src/generator-cli/src/Mdpkg.Cli -- pack examples/guide-and-notes --out guide.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8
+dotnet run --project src/generator-cli/src/Mdpkg.Cli -- validate guide.mdpkg --deep
+```
+
+Use your own lowercase UUID for a new package lineage. See the [tool guide](src/generator-cli/README.md)
+for options, implementation limits and tests. Publication as an installable tool is separate work.
 
 ## Examples
 
