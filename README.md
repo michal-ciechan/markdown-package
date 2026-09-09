@@ -30,6 +30,13 @@ Git imports preserve legacy-encoded commit metadata. Report destinations are che
 filesystem aliases to protect inputs and package output. `update` and `address` remain
 explicit exit-70 placeholders.
 
+The .NET solution also provides [Mdpkg.Reader](src/generator-cli/src/Mdpkg.Reader/README.md)
+and [Mdpkg.Reviews](src/generator-cli/src/Mdpkg.Reviews/README.md): bounded read-only package
+access and typed v1/v2 review-feedback extraction/resolution. Structural extraction and
+current-view resolution require no native Git; full verification is an injected capability.
+The [external consumer](examples/review-consumer/) restores Reviews from local preview
+packages. Web comment authoring/export and public-feed publication remain separate work.
+
 ## Repository layout
 
 - [`docs/spec.md`](docs/spec.md) — the format specification;

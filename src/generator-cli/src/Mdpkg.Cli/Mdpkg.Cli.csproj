@@ -22,8 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" />
-    <PackageReference Include="SharpZipLib" />
+    <ProjectReference Include="../Mdpkg.Reader/Mdpkg.Reader.csproj" />
     <PackageReference Include="System.CommandLine" />
   </ItemGroup>
 

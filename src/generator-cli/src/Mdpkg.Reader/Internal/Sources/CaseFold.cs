@@ -1,7 +1,7 @@
 // Unicode 17.0.0 C + S mappings, ported from the viewer's generated table.
 // Copyright Unicode, Inc. See UNICODE-LICENSE.txt.
 using System.Text;
-namespace Mdpkg.Cli.Engine.Sources;
+namespace Mdpkg.Reader.Internal.Sources;
 internal static class CaseFold
 {
     private static readonly (int First, int Last, int Stride, int Delta)[] Ranges =

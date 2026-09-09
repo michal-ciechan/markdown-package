@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Mdpkg.Reviews</PackageId><Version>0.1.0-preview.1</Version>
+    <Description>Typed extraction and current-view resolution of Markdown package review feedback.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup><ProjectReference Include="../Mdpkg.Reader/Mdpkg.Reader.csproj" /></ItemGroup>
+  <ItemGroup><None Include="README.md" Pack="true" PackagePath="/" /></ItemGroup>
+</Project>

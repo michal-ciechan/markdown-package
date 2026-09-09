@@ -1,41 +1,41 @@
 # Build plan: Mdpkg.Core creation library and NuGet distribution
 
-CARD-0033. Written 2026-09-09 against commit `e244bd9` and the full card description
-(`8ae7cbc5-00ae-4fe9-940a-fc37645026d2`). Planning only: no library, tests, workflow,
-credentials, or publishing configuration are implemented by this document.
+CARD-0033. Refreshed 2026-09-09 after CARD-0035 (`e68d546`) and the CARD-0037
+Reader/Reviews extraction. Core creation-library extraction and public-feed publishing
+remain future work; the producer engine is already implemented and must be moved, not rewritten.
 
-## 1. Ground truth
+## 1. Current implementation inventory
 
-**This is primarily new implementation, not extraction of an existing writer.** The card
-says container, manifest, ledger and validation logic already live in the executable.
-Both READMEs correctly describe a scaffold; every action in `Commands/` calls `Stub.Run`.
-Successful parsing returns scaffold exit 70, not a package. The reusable material today is
-the diagnostic vocabulary and some result-data shapes. There is no production C# ZIP writer,
-Git adapter, CommonMark inventory, manifest serializer, ledger engine or validator to move.
+Paths are relative to `src/generator-cli/`. The accepted dependency boundary is
+`Mdpkg.Cli -> Mdpkg.Core -> Mdpkg.Reader` and `Mdpkg.Reviews -> Mdpkg.Reader`.
+Until Core lands, CLI owns creation and references Reader directly. Core must not depend
+on Reviews, and Reviews must not depend on Core, CLI or native Git.
 
-Paths below are relative to `src/generator-cli/` unless otherwise stated.
-
-| Evidence | Finding and consequence |
+| Current code | Ownership for CARD-0033 |
 | --- | --- |
-| `src/Mdpkg.Cli/Commands/*.cs` | All four verbs and five address operations are parser/validator scaffolding. Do not estimate this as a file-move exercise. |
-| `src/Mdpkg.Cli/Reporting/DiagnosticCatalog.cs` | 22 stable diagnostic definitions, with severity and format citations. This is the main existing domain vocabulary to extract. |
-| `src/Mdpkg.Cli/Reporting/ResultObject.cs` | CLI JSON envelope includes `Verb`, process `ExitCode`, output path and a mutable `JsonObject` manifest. Reuse concepts, not this as the public library contract. |
-| `Directory.Build.props`, `global.json` | `net10.0`, nullable, warnings as errors, deterministic compilation, central artifacts; SDK `10.0.100` with `latestFeature` roll-forward and Microsoft.Testing.Platform. The SDK is not pinned to an exact patch. |
-| `Directory.Packages.props` | System.CommandLine 2.0.12 and xunit.v3/runner 4.0.0. No producer dependencies exist. |
-| `src/Mdpkg.Cli/Mdpkg.Cli.csproj` | Tool id `mdpkg`, command/assembly `mdpkg`, version `0.1.0-scaffold`, package README and repository metadata; `InvariantGlobalization=true`. |
-| `tests/Mdpkg.Cli.Tests/` | Help, option validation, stub reporting, spec consistency; README reports 81 tests. That count was not rerun in this investigation. No writer tests exist to relocate. |
-| Repository version history | Local `git tag --list` and remote `git ls-remote --tags origin` return no tags. No tracked CHANGELOG or repository-wide license was found; the viewer's Unicode license is third-party data attribution. No shared package-version property exists. |
-| `.github/workflows/generator-cli.yml` | Ubuntu restore/build/test, pack only the tool, upload an artifact; never publish. `.github/workflows/pages.yml` separately deploys the viewer. |
-| Existing format evidence | `docs/spec/worked-example.py` and `.json`, investigation emitters, and the browser reader provide independent cross-checks. They are not drop-in .NET implementation. |
+| `src/Mdpkg.Cli/Engine/PackageBuilder.cs` | Existing snapshot/Git-import/projection/depth/correspondence implementation, deep self-validation and staged replacement: extract to Core. |
+| `src/Mdpkg.Cli/Engine/Git/` | Existing isolated native Git plumbing and byte-preserving commit rewrite: extract to Core. |
+| `src/Mdpkg.Cli/Engine/Container/ZipContainer.cs` | ZIP emission remains here; bounded reading already delegates to Reader. Extract writer to Core. |
+| `src/Mdpkg.Cli/Engine/Sources/SourceTree.cs` | Source enumeration, normalization and filesystem link policy remain creation concerns. Shared name/case-fold checks are Reader-owned. |
+| `src/Mdpkg.Cli/Engine/Addressing/LedgerEngine.cs` | Evolution, correspondence application and minted births remain creation concerns; syntax/target checks and live-root interpretation delegate to Reader. |
+| `src/Mdpkg.Cli/Engine/Validation/PackageValidator.cs` | Full/deep orchestration and native Git verification stay creator-side; canonical format checks, ZIP reads and CommonMark inventory already reside in Reader. |
+| `src/Mdpkg.Reader/` | Read-only ZIP32 indexing/selective decoding, bounded stream spooling, format diagnostics/canonical JSON/Unicode paths, typed identity/locator/current-view resolution. Markdig and SharpZipLib live here. Do not duplicate them in Core. |
+| `src/Mdpkg.Reviews/` | Schema, authored v2 kinds, legacy v1 intent, correlation, selectors and extraction results. Never pull this dependency into Core. |
+| `Commands/`, `Reporting/`, `Engine/Models.cs` | Commands/reports stay CLI; split creation request/result models when Core receives its public API. Report alias protection remains CLI policy. Shared diagnostic catalog is below CLI in Reader. |
+| `tests/Mdpkg.Cli.Tests/` | Real pack/validate, byte-preservation, Git, CommonMark/Unicode, report and fault regressions. Keep command-specific tests and migrate appropriate creator tests only after API extraction. |
+| `Mdpkg.Reader.Tests`, `Mdpkg.Reviews.Tests` | Independent review fixtures, bounded reading, schema/correlation/selector and assembly-boundary checks. Keep these independent of CLI/Core. |
+| Build and distribution | net10.0, nullable/warnings-as-errors, Markdig 1.3.2, SharpZipLib 1.4.2 and System.CommandLine 2.0.12. Reader/Reviews pack as local `0.1.0-preview.1` artifacts; no public feed, credentials or license grant was introduced. |
 
-Follow the existing viewer plan convention: evidence, numbered decisions, bounded slices,
-verification gates and doc updates. This plan does not introduce a second format specification.
+The rest of this plan remains the creation/release design. Its original S2–S4 *engine
+implementation* gates are now fulfilled by CARD-0035 and should be verified after extraction,
+not reimplemented. Public creation API, Core package, installed-tool packaging, release
+version alignment and publication remain CARD-0033 work.
 
 ## 2. Decisions and scope
 
 **D-1 — Keep one solution, add one library.** Add `src/Mdpkg.Core/Mdpkg.Core.csproj` and
 `tests/Mdpkg.Core.Tests/Mdpkg.Core.Tests.csproj` to `Mdpkg.slnx`. Reference Core from CLI;
-Core never references CLI or System.CommandLine. Keep the outer `generator-cli` directory
+Core references Reader, never Reviews, CLI or System.CommandLine. Keep the outer `generator-cli` directory
 for a small migration; describe it as the .NET producer solution in documentation.
 
 **D-2 — First usable release covers fresh-package creation.** Implement snapshot creation,
@@ -84,31 +84,18 @@ Expected IO/Git failures return an environment-failure result with an actionable
 
 ## 3. File ownership and dependency boundaries
 
-| Existing file/types | Destination / treatment |
-| --- | --- |
-| `Program.cs`, `MdpkgCli.cs`, `ExitCode.cs` | Stay in CLI: encoding, command tree, invocation, process-status mapping. Add async invocation when Core is wired. |
-| `GlobalOptions.cs`, `Commands/CommonOptions.cs`, `OutOption.cs` | Stay in CLI: tokens, required arguments, grammar and help. Core independently enforces semantic constraints for direct callers. |
-| `Commands/PackCommand.cs`, `ValidateCommand.cs` | Keep command declarations; replace actions with request mapping, one Core call and result reporting. |
-| `Commands/UpdateCommand.cs`, `AddressCommand.cs`, `Stub.cs` | Stay in CLI initially. Retain the shared stub only for unimplemented operations; remove exit 70 only with the final stub. |
-| `Reporting/DiagnosticCatalog.cs` | Move code/default-severity/meaning/spec definitions to Core's internal catalog; expose immutable emitted diagnostics and severity publicly. Keep lower-case severity formatting in CLI's DTO mapping. |
-| `Reporting/ResultObject.cs` | Keep CLI wire DTOs and their ordered envelope. Map new immutable Core package/manifest/history/addressing/check results into them; don't duplicate validation logic. |
-| `Reporting/ResultWriter.cs`, `MdpkgJsonContext` | Stay in CLI for report serialization. Core gets separate internal canonical package serializers; the CLI report serializer is not canonical manifest JSON. |
+The refreshed inventory in §1 is authoritative. CLI keeps command parsing, terminal output,
+exit mapping and report serialization. Core receives existing creation/source/Git/write/deep
+orchestration with a public BCL-based request/result API. Reader remains the sole owner of
+bounded ZIP reading, format parsing, canonical JSON, Unicode folding, inventory and ledger
+interpretation; its Unicode attribution travels with the package. Reviews owns annotation
+schema/selector processing and its injected verification contract. A future creator-side
+adapter may implement that contract without making Core depend on Reviews by default.
 
-New Core internals: `Sources/` for directory/input staging; `Git/` for repository construction
-and import; `Addressing/` for CommonMark inventory, roots/digests and sparse ledger;
-`Format/` for typed manifest/history models and canonical serialization; `Container/` for
-ZIP profile and reading; `Validation/` for shared conformance checks; `Diagnostics/` and
-`IO/` for results and staging/atomic file publication. These are internal organizational
-boundaries, not separate NuGet packages or public extension interfaces.
-
-Do not export ZIP headers, Git process abstractions, parser ASTs or mutable JSON nodes.
-Keep public dependencies to BCL types wherever possible. Any chosen parser/compressor stays
-an implementation dependency, centrally pinned; list actual transitive packages and notices
-in the package README once selected. Core must work with the consumer's normal globalization
-settings. Revisit the CLI's `InvariantGlobalization=true`: require proven NFC behavior on both
-test platforms and remove this setting if it defeats normalization. Use the Unicode 17.0.0
-C+S fold table required by spec D-16, not `OrdinalIgnoreCase` or `ToLowerInvariant` as a
-substitute; preserve the Unicode data license when porting the viewer table.
+Do not export native Git process abstractions, parser ASTs or mutable internal JSON nodes.
+Keep public data independent from CLI JSON envelopes and avoid a second CommonMark or ZIP
+implementation. The current internal friend-assembly bridges let CLI reuse Reader while Core
+is pending; public API stabilization belongs to the respective package release work.
 
 ## 4. Proposed public API and behavior
 

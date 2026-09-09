@@ -1,10 +1,12 @@
 using System.Text;
 using Mdpkg.Cli.Engine.Addressing;
+using Mdpkg.Reader.Internal.Addressing;
 using Mdpkg.Cli.Engine.Container;
-using Mdpkg.Cli.Engine.Format;
+using Mdpkg.Reader.Internal.Format;
 using Mdpkg.Cli.Engine.Git;
 using Mdpkg.Cli.Engine.IO;
 using Mdpkg.Cli.Engine.Sources;
+using Mdpkg.Reader.Internal.Sources;
 using Mdpkg.Cli.Engine.Validation;
 
 namespace Mdpkg.Cli.Engine;

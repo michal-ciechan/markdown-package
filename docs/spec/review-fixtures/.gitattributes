@@ -1,0 +1,3 @@
+# Canonical JSON includes exactly one LF terminator on every platform.
+*.json text eol=lf
+*.mdpkg binary

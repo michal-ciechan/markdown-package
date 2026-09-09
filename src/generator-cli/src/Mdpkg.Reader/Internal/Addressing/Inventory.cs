@@ -1,11 +1,11 @@
 using Markdig;
 using Markdig.Syntax;
 using System.Text.Json.Nodes;
-using Mdpkg.Cli.Engine.Format;
+using Mdpkg.Reader.Internal.Format;
 
-namespace Mdpkg.Cli.Engine.Addressing;
+namespace Mdpkg.Reader.Internal.Addressing;
 
-internal sealed record Entity(JsonArray Locator, string Root, string Digest);
+internal sealed record Entity(JsonArray Locator, string Root, string Digest, string Source, int SourceStart);
 internal static class Inventory
 {
     private sealed class Scope(string kind, int start, int end, int level, JsonArray trail)
@@ -24,7 +24,7 @@ internal static class Inventory
     }
     public static string Root(string ns, JsonArray locator) => Profile.Hash($"mdpkg-default\0{Profile.Anchor}\0{ns}\0{CanonicalJson.Text(locator)}");
     public static string Digest(string kind, string source) => Profile.Hash($"mdpkg\0{Profile.Digest}\0{kind}\0{CanonicalSource(source)}");
-    public static List<Entity> Document(byte[] bytes, string path, string ns)
+    public static List<Entity> Document(byte[] bytes, string path, string ns, CancellationToken ct = default)
     {
         var text = Profile.Utf8.GetString(bytes).Replace("\r\n", "\n", StringComparison.Ordinal).Replace('\r', '\n');
         var lines = text.Split('\n');
@@ -38,6 +38,7 @@ internal static class Inventory
         // Default pipeline: no extensions or smart punctuation. Direct children only.
         foreach (var heading in Markdown.Parse(text).OfType<HeadingBlock>())
         {
+            ct.ThrowIfCancellationRequested();
             // HeadingBlock.Line is the underline for Setext; Span.Start is the first source line.
             var start = LineAt(heading.Span.Start);
             if (scopes.Count == 2) preamble.End = start;
@@ -54,7 +55,9 @@ internal static class Inventory
         return scopes.Select(s =>
         {
             var locator = new JsonArray(s.Kind, path, s.Trail.DeepClone());
-            return new Entity(locator, Root(ns, locator), Digest(s.Kind, string.Join('\n', lines.Skip(s.Start).Take(s.End - s.Start))));
+            ct.ThrowIfCancellationRequested();
+            var source = CanonicalSource(string.Join('\n', lines.Skip(s.Start).Take(s.End - s.Start)));
+            return new Entity(locator, Root(ns, locator), Digest(s.Kind, source), source, offsets[Math.Min(s.Start, offsets.Count - 1)]);
         }).ToList();
     }
     public static Dictionary<string, Entity> Snapshot(IEnumerable<EntryData> entries, string ns, CancellationToken ct)
@@ -63,7 +66,7 @@ internal static class Inventory
         foreach (var entry in entries.Where(e => e.Name.EndsWith(".md", StringComparison.OrdinalIgnoreCase) || e.Name.EndsWith(".markdown", StringComparison.OrdinalIgnoreCase)))
         {
             ct.ThrowIfCancellationRequested();
-            foreach (var entity in Document(entry.Bytes, entry.Name, ns)) result.Add(entity.Root, entity);
+            foreach (var entity in Document(entry.Bytes, entry.Name, ns, ct)) result.Add(entity.Root, entity);
         }
         return result;
     }

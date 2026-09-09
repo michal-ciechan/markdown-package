@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/michal-ciechan/markdown-package/docs/spec/review-comments.schema.json",
+  "title": "Markdown package review comments versions 1 and 2",
+  "description": "Canonical JSON, duplicate-key rejection, document-wide ID uniqueness, reply graphs, calendar validity, locator decoding and UTF-16 selector constraints additionally follow spec section 6.8.",
+  "oneOf": [
+    {"allOf": [{"$ref": "#/$defs/document"}, {"properties": {"version": {"const": 1}, "threads": {"items": {"$ref": "#/$defs/threadV1"}}}}]},
+    {"allOf": [{"$ref": "#/$defs/document"}, {"properties": {"version": {"const": 2}, "threads": {"items": {"$ref": "#/$defs/threadV2"}}}}]}
+  ],
+  "$defs": {
+    "uuid": {"type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},
+    "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "document": {
+      "type": "object", "required": ["version", "anchor", "profile", "selector", "threads"],
+      "properties": {
+        "version": {"type": "integer"}, "anchor": {"const": "cm0312-trail-source-v1"},
+        "profile": {"const": "cm0312-source-lf-v1"}, "selector": {"const": "cm0312-quote-context-v1"},
+        "threads": {"type": "array"}
+      }
+    },
+    "selector": {
+      "type": "object", "required": ["start", "end", "quote", "occurrence", "prefix", "suffix"],
+      "properties": {
+        "start": {"type": "integer", "minimum": 0}, "end": {"type": "integer", "minimum": 1},
+        "quote": {"type": "string", "minLength": 1}, "occurrence": {"type": "integer", "minimum": 0},
+        "prefix": {"type": "string", "x-maxUtf16CodeUnits": 40}, "suffix": {"type": "string", "x-maxUtf16CodeUnits": 40}
+      },
+      "description": "end > start; quote UTF-16 length equals end-start. Bounds, surrogate boundaries and quote/context equality require the reviewed source. Occurrence never breaks a context tie."
+    },
+    "thread": {
+      "type": "object", "required": ["id", "root", "loc", "expect", "state", "select", "comments"],
+      "properties": {
+        "id": {"$ref": "#/$defs/uuid"}, "root": {"$ref": "#/$defs/hash"}, "expect": {"$ref": "#/$defs/hash"},
+        "loc": {"type": "string", "pattern": "^[A-Za-z0-9_-]+$"},
+        "state": {"enum": ["open", "resolved", "obsolete"]}, "select": {"$ref": "#/$defs/selector"}, "comments": {"type": "array"}
+      }
+    },
+    "comment": {
+      "type": "object", "required": ["id", "at", "author", "body"],
+      "properties": {
+        "id": {"$ref": "#/$defs/uuid"}, "inReplyTo": {"$ref": "#/$defs/uuid"},
+        "author": {"type": "string"}, "body": {"type": "string"},
+        "at": {"type": "string", "maxLength": 128, "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T(?:[01][0-9]|2[0-3]):[0-5][0-9]:(?:[0-5][0-9]|60)(?:\\.[0-9]+)?(?:Z|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])$"}
+      }
+    },
+    "commentV1": {"allOf": [{"$ref": "#/$defs/comment"}, {"not": {"required": ["kind"]}}]},
+    "commentV2": {"allOf": [{"$ref": "#/$defs/comment"}, {"required": ["kind"], "properties": {"kind": {"enum": ["comment", "change-request"]}, "body": {"minLength": 1}}}]},
+    "threadV1": {"allOf": [{"$ref": "#/$defs/thread"}, {"properties": {"comments": {"items": {"$ref": "#/$defs/commentV1"}}}}]},
+    "threadV2": {"allOf": [{"$ref": "#/$defs/thread"}, {"properties": {"comments": {"minItems": 1, "items": {"$ref": "#/$defs/commentV2"}}}}]}
+  }
+}

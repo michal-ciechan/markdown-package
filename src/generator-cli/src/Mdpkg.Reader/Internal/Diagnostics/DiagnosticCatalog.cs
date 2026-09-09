@@ -1,4 +1,4 @@
-namespace Mdpkg.Cli.Reporting;
+namespace Mdpkg.Reader.Internal.Diagnostics;
 
 /// <summary>Default severity of a diagnostic for the writing verbs; <c>validate</c> reports every one as <c>error</c> (§4).</summary>
 internal enum Severity

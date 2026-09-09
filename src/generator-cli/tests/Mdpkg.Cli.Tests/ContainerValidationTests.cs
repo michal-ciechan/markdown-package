@@ -2,7 +2,7 @@ using System.Buffers.Binary;
 using System.Text.Json.Nodes;
 using Mdpkg.Cli.Engine;
 using Mdpkg.Cli.Engine.Container;
-using Mdpkg.Cli.Engine.Format;
+using Mdpkg.Reader.Internal.Format;
 using Mdpkg.Cli.Engine.Validation;
 
 namespace Mdpkg.Cli.Tests;
@@ -78,9 +78,9 @@ public class ContainerValidationTests
         using var f = new EngineFixture(); f.Write("x.md", "# X\n");
         EngineFixture.Success(await new PackageBuilder().PackAsync(f.Request, TestContext.Current.CancellationToken));
         var entries = EngineFixture.Read(f.Output);
-        var manifest = CanonicalJson.Parse(entries[0].Bytes);
+        var manifest = CanonicalJson.Parse(entries[0].Bytes, ct: TestContext.Current.CancellationToken);
         var historyIndex = entries.FindIndex(e => e.Name == Profile.History);
-        var history = CanonicalJson.Parse(entries[historyIndex].Bytes);
+        var history = CanonicalJson.Parse(entries[historyIndex].Bytes, ct: TestContext.Current.CancellationToken);
         switch (mutation)
         {
             case "current": manifest["current"] = "sha1-" + new string('0', 40); break;

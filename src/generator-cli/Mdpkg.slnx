@@ -1,8 +1,12 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/Mdpkg.Cli/Mdpkg.Cli.csproj" />
+    <Project Path="src/Mdpkg.Reader/Mdpkg.Reader.csproj" />
+    <Project Path="src/Mdpkg.Reviews/Mdpkg.Reviews.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Mdpkg.Cli.Tests/Mdpkg.Cli.Tests.csproj" />
+    <Project Path="tests/Mdpkg.Reader.Tests/Mdpkg.Reader.Tests.csproj" />
+    <Project Path="tests/Mdpkg.Reviews.Tests/Mdpkg.Reviews.Tests.csproj" />
   </Folder>
 </Solution>

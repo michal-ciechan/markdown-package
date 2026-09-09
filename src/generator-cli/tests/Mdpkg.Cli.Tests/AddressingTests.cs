@@ -2,8 +2,10 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Mdpkg.Cli.Engine;
 using Mdpkg.Cli.Engine.Addressing;
-using Mdpkg.Cli.Engine.Format;
+using Mdpkg.Reader.Internal.Addressing;
+using Mdpkg.Reader.Internal.Format;
 using Mdpkg.Cli.Engine.Sources;
+using Mdpkg.Reader.Internal.Sources;
 
 namespace Mdpkg.Cli.Tests;
 
@@ -18,7 +20,7 @@ public class AddressingTests
     public void CommonMarkInventoryMatchesIndependentReferenceParser(int example, string markdown, string expectedJson)
     {
         var expected = JsonNode.Parse(expectedJson)!.AsArray();
-        var actual = Inventory.Document(Profile.Utf8.GetBytes(markdown), "spec.md", CliRunner.Namespace);
+        var actual = Inventory.Document(Profile.Utf8.GetBytes(markdown), "spec.md", CliRunner.Namespace, TestContext.Current.CancellationToken);
         Assert.True(expected.Count == actual.Count, $"Example {example}: expected {expected.Count} entities; got {actual.Count}.");
         for (var i = 0; i < actual.Count; i++)
         {
@@ -47,7 +49,7 @@ public class AddressingTests
     public void CommonMarkUsesDirectHeadingsAndExactMultilineSetextSource()
     {
         const string text = "preamble\n\n# Top ##  \n\n> # Quote\n\n- # List\n\n```\n# Fence\n```\n\n<div>\n# Html\n</div>\n\nMulti\nline *title*\n---\n\n## Same\ntext\n\n## Same\n";
-        var entities = Inventory.Document(Profile.Utf8.GetBytes(text), "x.md", CliRunner.Namespace);
+        var entities = Inventory.Document(Profile.Utf8.GetBytes(text), "x.md", CliRunner.Namespace, TestContext.Current.CancellationToken);
         Assert.Equal(6, entities.Count);
         Assert.Equal("preamble\n", Inventory.CanonicalSource("preamble\n\n \t\n"));
         Assert.Equal("# Top ##  ", entities[2].Locator[2]![0]![0]!.GetValue<string>());
@@ -59,17 +61,17 @@ public class AddressingTests
     [Fact]
     public void BomIsRetainedAndUnicodeIsNotNormalizedForAddressing()
     {
-        var bom = Inventory.Document(Profile.Utf8.GetBytes("\ufeff# Heading\r\nbody\r"), "x.md", CliRunner.Namespace);
+        var bom = Inventory.Document(Profile.Utf8.GetBytes("\ufeff# Heading\r\nbody\r"), "x.md", CliRunner.Namespace, TestContext.Current.CancellationToken);
         Assert.Equal(Inventory.Digest("document", "\ufeff# Heading\nbody\n"), bom[0].Digest);
         Assert.NotEqual(Inventory.Digest("document", "é"), Inventory.Digest("document", "e\u0301"));
-        Assert.Equal(2, Inventory.Document(Profile.Utf8.GetBytes("no headings"), "x.md", CliRunner.Namespace).Count);
+        Assert.Equal(2, Inventory.Document(Profile.Utf8.GetBytes("no headings"), "x.md", CliRunner.Namespace, TestContext.Current.CancellationToken).Count);
     }
     [Fact]
     public void CanonicalJsonSortsUtf8AndPreservesSupplementaryUnicode()
     {
         var value = new JsonObject { ["😀"] = "é < & 😀", ["\ue000"] = 1, ["a"] = "\t\n\u0001" };
         Assert.Equal("{\"a\":\"\\t\\n\\u0001\",\"\ue000\":1,\"😀\":\"é < & 😀\"}\n", CanonicalJson.Text(value));
-        Assert.Throws<JsonException>(() => CanonicalJson.Parse("{\"a\":1,\"a\":2}"u8.ToArray()));
+        Assert.Throws<JsonException>(() => CanonicalJson.Parse("{\"a\":1,\"a\":2}"u8.ToArray(), ct: TestContext.Current.CancellationToken));
     }
     [Theory]
     [InlineData("README.md", "readme.md")]

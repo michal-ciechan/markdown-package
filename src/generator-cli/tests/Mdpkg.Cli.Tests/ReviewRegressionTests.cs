@@ -5,7 +5,8 @@ using System.Text.Json.Nodes;
 using Mdpkg.Cli.Commands;
 using Mdpkg.Cli.Engine;
 using Mdpkg.Cli.Engine.Addressing;
-using Mdpkg.Cli.Engine.Format;
+using Mdpkg.Reader.Internal.Addressing;
+using Mdpkg.Reader.Internal.Format;
 using Mdpkg.Cli.Engine.Git;
 using Mdpkg.Cli.Engine.Validation;
 

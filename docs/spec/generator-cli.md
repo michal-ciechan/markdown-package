@@ -350,6 +350,8 @@ Git runs through argument lists in isolated temporary repositories. System/globa
 
 Internal engine results carry outcomes and diagnostics; only the command adapter assigns process exit codes and writes stdout/stderr/reports. SHA-256 creation requests emit `MDPK4001` and exit 2. Invalid source text emits `MDPK4003` and exit 2. Malformed package content exits 3; missing files, failing Git or unwritable output exit 5. `--accept-recoverable` enables inspection and a `recoverable` result tier but still exits 3 for failed conformance. Shallow validation skips the two deep checks; `pack` always runs them before replacement.
 
+Read-only format/ZIP/addressing code is shared with `Mdpkg.Reader`; creation and native Git orchestration remain in the CLI pending Core extraction. For review returns, this CLI checks the manifest declaration, canonical review JSON, and (with `--deep`) delta/bundled Git lineage restrictions. Thread/comment/selector schema validation and authored v2 kind extraction belong to `Mdpkg.Reviews`, which depends only on Reader. CLI validation alone is not a review-feedback schema check; full feedback assurance combines Reviews' schema checks with an explicitly supplied full-verification provider.
+
 ---
 
 ## 13. Non-goals

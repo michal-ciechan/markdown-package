@@ -66,9 +66,14 @@ disk space are prerequisites. See tool-reference §12 for complete policy detail
 
 ## Internal layout
 
-All implementation remains inside the existing executable project; there is no Core
-library or public library API yet. Engine components return typed outcomes and diagnostics
-without writing to a terminal. Command adapters map those results to the CLI contract.
+The solution contains the producer CLI plus two read-only libraries. `Mdpkg.Reader` owns
+bounded ZIP reading, canonical format/diagnostic definitions, Unicode paths, CommonMark
+scopes and ledger interpretation. `Mdpkg.Reviews` depends only on Reader and provides
+review extraction, correlation and selector resolution. Both pack as local preview NuGet
+artifacts; see their packed READMEs and `examples/review-consumer` for the external API.
+Creation/Git/ZIP writing and full validation orchestration remain inside the executable
+pending the separate Core extraction. CLI references Reader directly; it does not depend
+on Reviews. Engine results remain separate from command exit codes and terminal reporting.
 
 ```text
 src/Mdpkg.Cli/
@@ -77,9 +82,8 @@ src/Mdpkg.Cli/
   Engine/
     Sources/         strict source staging and Unicode path checks
     Git/             isolated subprocess adapter and repository plumbing
-    Addressing/      CommonMark inventory and sparse ledger
-    Format/          typed manifest/history models and canonical JSON
-    Container/       ZIP32 writer and bounded central-directory reader
+    Addressing/      writer-side sparse-ledger evolution
+    Container/       ZIP32 writer (reading delegates to Reader)
     Validation/      shared conformance and deep Git checks
     IO/              owned temporary directories
     PackageBuilder.cs

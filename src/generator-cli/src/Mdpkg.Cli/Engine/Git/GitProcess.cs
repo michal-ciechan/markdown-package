@@ -1,6 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
-using Mdpkg.Cli.Engine.Format;
+using Mdpkg.Reader.Internal.Format;
 
 namespace Mdpkg.Cli.Engine.Git;
 

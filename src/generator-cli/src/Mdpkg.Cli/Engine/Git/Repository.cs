@@ -1,5 +1,6 @@
-using Mdpkg.Cli.Engine.Format;
+using Mdpkg.Reader.Internal.Format;
 using Mdpkg.Cli.Engine.Sources;
+using Mdpkg.Reader.Internal.Sources;
 
 namespace Mdpkg.Cli.Engine.Git;
 

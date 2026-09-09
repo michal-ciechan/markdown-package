@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
-namespace Mdpkg.Cli.Engine.Format;
+namespace Mdpkg.Reader.Internal.Format;
 
 internal static class Profile
 {
@@ -80,20 +80,22 @@ internal static class CanonicalJson
             b.Append(c switch { '"' => "\\\"", '\\' => "\\\\", '\b' => "\\b", '\f' => "\\f", '\n' => "\\n", '\r' => "\\r", '\t' => "\\t", < ' ' => "\\u" + ((int)c).ToString("x4"), _ => c.ToString() });
         b.Append('"');
     }
-    public static JsonNode Parse(byte[] bytes)
+    public static JsonNode Parse(byte[] bytes, int maxDepth = 64, CancellationToken ct = default)
     {
-        using var doc = JsonDocument.Parse(Profile.Utf8.GetString(bytes));
-        Unique(doc.RootElement);
-        return JsonNode.Parse(doc.RootElement.GetRawText())!;
+        ct.ThrowIfCancellationRequested();
+        using var doc = JsonDocument.Parse(Profile.Utf8.GetString(bytes), new JsonDocumentOptions { MaxDepth = maxDepth });
+        Unique(doc.RootElement, ct);
+        return JsonNode.Parse(doc.RootElement.GetRawText(), documentOptions: new JsonDocumentOptions { MaxDepth = maxDepth })!;
     }
-    private static void Unique(JsonElement e)
+    private static void Unique(JsonElement e, CancellationToken ct)
     {
+        ct.ThrowIfCancellationRequested();
         if (e.ValueKind == JsonValueKind.Object)
         {
             var names = new HashSet<string>(StringComparer.Ordinal);
-            foreach (var p in e.EnumerateObject()) { if (!names.Add(p.Name)) throw new JsonException("Duplicate JSON key: " + p.Name); Unique(p.Value); }
+            foreach (var p in e.EnumerateObject()) { if (!names.Add(p.Name)) throw new JsonException("Duplicate JSON key: " + p.Name); Unique(p.Value, ct); }
         }
-        else if (e.ValueKind == JsonValueKind.Array) foreach (var item in e.EnumerateArray()) Unique(item);
+        else if (e.ValueKind == JsonValueKind.Array) foreach (var item in e.EnumerateArray()) Unique(item, ct);
     }
     public static T Read<T>(byte[] bytes) => Parse(bytes).Deserialize<T>(Options) ?? throw new JsonException("Expected JSON object.");
 }
