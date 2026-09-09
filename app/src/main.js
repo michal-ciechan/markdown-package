@@ -67,6 +67,7 @@ async function receive(blob) {
   clearGeneratedReference();
   for (const id of ['browser', 'package-details', 'conformance', 'reference-form', 'reference-tools']) element(id).hidden = true;
   element('reference').value = '';
+  resolution.className = '';
   resolution.textContent = '';
   report('Opening ' + (blob.name || 'package') + '…');
   try {
@@ -104,6 +105,7 @@ async function receive(blob) {
 async function showDocument(name, fragment) {
   if (!pkg) return;
   const opened = pkg, generation = ++navigationGeneration;
+  resolution.className = '';
   resolution.textContent = '';
   report('Reading ' + name + '…');
   try {
@@ -127,6 +129,7 @@ async function showDocument(name, fragment) {
 async function resolve(value) {
   if (!pkg) return;
   const opened = pkg, generation = ++navigationGeneration;
+  resolution.className = '';
   resolution.textContent = 'Resolving…';
   const result = await opened.resolve(value);
   if (opened !== pkg || generation !== navigationGeneration) return;

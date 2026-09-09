@@ -19,6 +19,27 @@ clipboard access. Serve `index.html` alongside the complete `dist/` directory;
 the build emits JS, CSS, the optional inflater chunk, and `build-report.json`.
 No tests, CI or test harness are included in this slice.
 
+Every build first cleans `app/dist/` and checks the five dependency pins against
+`docs/investigations/viewer-app/package.json`, including installed versions. V-1
+also rebuilds the isolated Git reader using the investigation's ESM exports and
+Buffer shim, comparing its raw size, gzip size and SHA-256 with
+`bundle-results.json`. This calibration bundle is not published in `dist/`.
+
+V-2 defaults to **M2**, since this browse build includes identity. The plan's
+49,564-byte library baseline plus a fixed 16 KiB allowance for UI, CSS and reader
+hardening gives a **65,948-byte gzip ceiling**. Shared static chunks and CSS count
+toward it; Git, when shipped, also counts through its package-open import. The
+graph rejects Git in the initial static closure and requires exactly one dynamic
+Git import site in that closure. M3+ additionally requires the history descriptor
+and Git components, which are not yet shipped. Select a later milestone explicitly
+with `npm run build -- --milestone=M3` when implementing it; the ceiling does not
+grow automatically with the bundle. M4 uses M3's baseline; M6 uses M5's.
+
+`node app/build.mjs --report` from the repository root prints the full JSON report;
+all invocations save it as `app/dist/build-report.json`. A version, calibration,
+budget or graph failure exits nonzero and leaves the diagnostic report without
+deployable assets. Redirected `dist/` directories are rejected before deletion.
+
 ## Reader contract
 
 - `src/container/source.js` provides Blob and byte sources with exact standalone
