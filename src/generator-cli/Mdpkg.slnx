@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Mdpkg.Cli/Mdpkg.Cli.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Mdpkg.Cli.Tests/Mdpkg.Cli.Tests.csproj" />
+  </Folder>
+</Solution>

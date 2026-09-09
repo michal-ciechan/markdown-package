@@ -1,0 +1,7 @@
+# UseArtifactsOutput puts every bin/obj under one directory
+artifacts/
+bin/
+obj/
+TestResults/
+*.user
+.vs/

@@ -1,0 +1,15 @@
+<Project>
+  <!-- Shared by every project under src/generator-cli/. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <Deterministic>true</Deterministic>
+    <!-- One artifacts/ tree instead of a bin/ and obj/ per project. -->
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <!-- System.CommandLine ships localized help resources; a CLI aimed at agents needs only English. -->
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+</Project>

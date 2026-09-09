@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- The executable and the `dotnet mdpkg` verb are both named mdpkg (spec §1). -->
+    <AssemblyName>mdpkg</AssemblyName>
+    <RootNamespace>Mdpkg.Cli</RootNamespace>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- A global tool should run on any newer runtime the host has. -->
+    <RollForward>Major</RollForward>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>mdpkg</ToolCommandName>
+    <PackageId>mdpkg</PackageId>
+    <Version>0.1.0-scaffold</Version>
+    <Authors>markdown-package contributors</Authors>
+    <Description>Emits and checks conforming .mdpkg packages. Scaffold build: the verb tree, options and exit codes are wired; no verb generates or checks a package yet.</Description>
+    <PackageProjectUrl>https://github.com/michal-ciechan/markdown-package</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/michal-ciechan/markdown-package</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <InternalsVisibleTo Include="Mdpkg.Cli.Tests" />
+  </ItemGroup>
+
+</Project>
