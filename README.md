@@ -27,3 +27,10 @@ Early — this repo exists to start shaping the design. Nothing is implemented y
 ## Getting started
 
 Not yet — check back once the initial design lands.
+
+## Examples
+
+[`examples/`](examples/) has sample markdown covering the addressing edge cases
+(nested headings, duplicate headings, Setext headings, headingless preambles)
+that [`docs/spec.md`](docs/spec.md) and
+[`docs/investigations/addressing.md`](docs/investigations/addressing.md) define.

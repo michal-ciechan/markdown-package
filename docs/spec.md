@@ -531,6 +531,10 @@ The two reader tiers of §3.7 change only how the manifest is found. In the reco
 
 Everything in this section is produced by [`docs/spec/worked-example.py`](spec/worked-example.py); its full output is [`docs/spec/worked-example.json`](spec/worked-example.json). Two runs produced byte-identical packages. Git 2.50.1, Python 3.10.2, one packing thread, level 6, window 10, depth 50, fixed author, committer and dates.
 
+[`examples/`](../examples/) has this fixture's plain markdown alongside other
+addressing edge cases (duplicate headings, Setext headings, headingless
+preambles) as unpackaged input, separate from the packaged `.mdpkg` output built here.
+
 ### 8.1 Fixture
 
 Namespace `c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8`. Two documents.
