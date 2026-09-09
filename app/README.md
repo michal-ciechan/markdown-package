@@ -30,10 +30,13 @@ the build and its gates are the only check.
 touching `app/**` (or the `docs/investigations/viewer-app/` evidence that V-1
 pins against) and publishes `app/dist/` to GitHub Pages at
 <https://michal-ciechan.github.io/markdown-package/>. A failed gate withholds
-the assets, so a red build cannot deploy. The workflow asks
-`actions/configure-pages` to enable the site; if the repository has never had
-Pages enabled and that request is refused, an admin must set
-Settings -> Pages -> Source to "GitHub Actions" once, by hand.
+the assets, so a red build cannot deploy.
+
+Pages must be enabled once by hand: Settings -> Pages -> Source -> "GitHub
+Actions". The workflow token cannot do it -- `actions/configure-pages` with
+`enablement: true` was tried and the API answered "Resource not accessible by
+integration". Until that setting is made, the build job still runs as the
+check and only the deploy job fails.
 
 Every build first cleans `app/dist/` and checks the five dependency pins against
 `docs/investigations/viewer-app/package.json`, including installed versions. V-1

@@ -34,11 +34,12 @@ jobs:
           node-version: '24'
           cache: npm
           cache-dependency-path: app/package-lock.json
-      # enablement turns Pages on with this workflow as its source when the
-      # repository has no site yet; it needs the pages: write permission above.
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
+      # No actions/configure-pages step: its enablement option needs rights the
+      # workflow token does not have here ("Resource not accessible by
+      # integration"), and every asset path is relative, so nothing needs the
+      # base_url it would otherwise supply. Enabling Pages is a one-time
+      # repository setting; until it is done the deploy job fails while build
+      # still runs as the check.
       - name: Install pinned dependencies
         run: npm ci
         working-directory: app
