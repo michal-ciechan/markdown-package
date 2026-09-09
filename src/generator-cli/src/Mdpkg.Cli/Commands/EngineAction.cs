@@ -8,7 +8,7 @@ namespace Mdpkg.Cli.Commands;
 
 internal static class EngineAction
 {
-    public static int Report(ParseResult parse, GlobalOptions globals, string verb, EngineResult engine)
+    public static int Report(ParseResult parse, GlobalOptions globals, string verb, EngineResult engine, string?[] protectedFiles, string? source = null)
     {
         var exit = engine.Outcome switch
         {
@@ -30,7 +30,11 @@ internal static class EngineAction
         if (engine.Error is not null) stderr.WriteLine($"mdpkg {verb}: {engine.Error}");
         if (parse.GetValue(globals.Report) is { } report)
         {
-            try { File.WriteAllText(report.FullName, ResultWriter.ToJson(result)); }
+            try
+            {
+                if (ReportDestination.Error(report.FullName, protectedFiles, source) is { } error) throw new IOException(error);
+                ReportDestination.Write(report.FullName, ResultWriter.ToJson(result));
+            }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             { stderr.WriteLine($"mdpkg {verb}: cannot write --report {report}: {ex.Message}"); result = result with { ExitCode = ExitCode.Environment }; }
         }

@@ -21,12 +21,13 @@ internal static class ValidateCommand
         command.Options.Add(recoverable);
         command.Validators.Add(result =>
         {
-            if (result.GetValue(globals.Report)?.FullName is { } report && string.Equals(report, result.GetValue(input)?.FullName, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
-                result.AddError("--report must not overwrite the input package.");
+            if (ReportDestination.Error(result.GetValue(globals.Report)?.FullName, [result.GetValue(input)?.FullName]) is { } error)
+                result.AddError(error);
         });
         command.SetAction(async (parse, ct) => EngineAction.Report(parse, globals, command.Name,
             await new PackageValidator().ValidateAsync(new(parse.GetValue(input)!.FullName, parse.GetValue(deep),
-                parse.GetValue(recoverable), parse.GetValue(globals.Namespace), parse.GetValue(globals.ObjectFormat)!), ct)));
+                parse.GetValue(recoverable), parse.GetValue(globals.Namespace), parse.GetValue(globals.ObjectFormat)!), ct),
+            [parse.GetValue(input)!.FullName]));
         return command;
     }
 }

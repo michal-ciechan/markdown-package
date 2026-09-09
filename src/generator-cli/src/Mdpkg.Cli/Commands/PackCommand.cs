@@ -55,14 +55,9 @@ internal static class PackCommand
             {
                 result.AddError("--namespace <uuid> is required for pack (§2).");
             }
-            if (result.GetValue(globals.Report)?.FullName is { } report)
-            {
-                var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-                if (string.Equals(report, result.GetValue(output)?.FullName, comparison)) result.AddError("--report must differ from --out.");
-                if (result.GetValue(sourceDir)?.FullName is { } source && report.StartsWith(source.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, comparison))
-                    result.AddError("--report must be outside the source directory.");
-                if (string.Equals(report, result.GetValue(correspondence)?.FullName, comparison)) result.AddError("--report must not overwrite correspondence input.");
-            }
+            if (ReportDestination.Error(result.GetValue(globals.Report)?.FullName,
+                [result.GetValue(output)?.FullName, result.GetValue(correspondence)?.FullName], result.GetValue(sourceDir)?.FullName) is { } error)
+                result.AddError(error);
         });
 
         command.SetAction(async (parse, ct) => EngineAction.Report(parse, globals, command.Name,
@@ -71,7 +66,8 @@ internal static class PackCommand
                 parse.GetValue(fromGit), parse.GetValue(scope), parse.GetValue(depth), parse.GetValue(message)!,
                 parse.GetValue(correspondence)?.FullName, parse.GetValue(requireComplete), parse.GetValue(globals.FailOnWarning),
                 parse.GetValue(globals.CompressionLevel), parse.GetValue(globals.DataDescriptors), parse.GetValue(globals.ReverseIndex),
-                parse.GetValue(globals.ObjectFormat)!, parse.GetValue(globals.Anchor)!, parse.GetValue(globals.Digest)!), ct)));
+                parse.GetValue(globals.ObjectFormat)!, parse.GetValue(globals.Anchor)!, parse.GetValue(globals.Digest)!), ct),
+            [parse.GetValue(output)!.FullName, parse.GetValue(correspondence)?.FullName], parse.GetValue(sourceDir)!.FullName));
         return command;
     }
 }

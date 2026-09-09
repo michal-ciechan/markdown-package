@@ -25,7 +25,10 @@ that:
 The format spec is drafted, the web viewer browses packages, and the .NET generator creates
 and validates real packages. `pack` supports snapshots, Git history, path projection, depth
 and confirmed addressing exceptions. `validate --deep` checks native Git integrity and
-current-view agreement. `update` and `address` remain explicit exit-70 placeholders.
+current-view agreement, and substantiates complete correspondence against retained history.
+Git imports preserve legacy-encoded commit metadata. Report destinations are checked for
+filesystem aliases to protect inputs and package output. `update` and `address` remain
+explicit exit-70 placeholders.
 
 ## Repository layout
 

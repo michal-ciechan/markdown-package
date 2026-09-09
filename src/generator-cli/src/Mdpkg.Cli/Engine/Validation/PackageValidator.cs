@@ -225,18 +225,28 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
         Reject(commits.Length != history.RetainedCommits, "Retained commit count disagrees with the pack.");
         var indexes = commits.Select((c, i) => (Id: "sha1-" + c, Index: i)).ToDictionary(x => x.Id, x => x.Index);
         var coverage = new bool[Math.Max(1, commits.Length - 1)];
+        var completeClaims = new bool[commits.Length];
+        completeClaims[0] = manifest.Addressing.Coverage == "complete";
         foreach (var range in history.AddressingCoverage)
         {
             Reject(!indexes.ContainsKey(range.From) || !indexes.ContainsKey(range.To) || indexes[range.From] > indexes[range.To], "Coverage endpoints are not in retained first-parent order.");
             for (var i = indexes[range.From]; i < indexes[range.To]; i++) coverage[i] = true;
+            if (range.Coverage == "complete")
+            {
+                // A range covers transitions after From, through To. A root-only
+                // range asserts the initial ledger; later confirmation cannot repair it.
+                for (var i = indexes[range.From] + 1; i <= indexes[range.To]; i++) completeClaims[i] = true;
+                if (indexes[range.From] == 0 && indexes[range.To] == 0) completeClaims[0] = true;
+            }
         }
         Reject(commits.Length > 1 && coverage.Any(c => !c), "Coverage ranges leave undeclared gaps.");
         if (manifest.Addressing.Coverage == "complete") Reject(history.AddressingCoverage[0].From != "sha1-" + commits[0], "Complete coverage does not start at retained root.");
         foreach (var t in history.Transformations) Reject(!indexes.ContainsKey(t.Emitted), "Transformation emitted commit is absent.", "MDPK2003");
-        foreach (var commit in commits)
+        var previousRoots = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var (commit, index) in commits.Select((commit, index) => (commit, index)))
         {
-            var rawCommit = Profile.Utf8.GetString(await repo.ReadObjectAsync("commit", commit, ct));
-            Reject(rawCommit.Split("\n\n", 2)[0].Split('\n').Count(l => l.StartsWith("parent ", StringComparison.Ordinal)) > 1, "Retained graph includes a merge second parent.");
+            var rawCommit = await repo.ReadObjectAsync("commit", commit, ct);
+            Reject(CountParents(rawCommit) > 1, "Retained graph includes a merge second parent.");
             var tree = await repo.ReadTreeAsync(commit, null, [], normalize: false, ct);
             foreach (var e in tree)
             {
@@ -244,12 +254,18 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
                 catch (DecoderFallbackException) { throw new EngineException(Outcome.Nonconforming, "MDPK4003", "Retained blob is not strict UTF-8.", e.Name); }
                 Reject(e.Bytes.Contains((byte)'\r'), "Retained blob contains CR: " + e.Name, "MDPK1004");
             }
+            var inventory = Inventory.Snapshot(tree, manifest.Namespace, ct);
+            var ledger = LedgerEngine.Empty();
             if (tree.FirstOrDefault(e => e.Name == Profile.Ledger) is { } historicalLedger)
             {
-                var ledger = LedgerEngine.Read(historicalLedger.Bytes, Outcome.Nonconforming);
+                ledger = LedgerEngine.Read(historicalLedger.Bytes, Outcome.Nonconforming);
                 Reject(ledger.Entries.Count == 0, "A retained tree carries an empty ledger.", "MDPK2002");
-                LedgerEngine.ValidateTargets(ledger, Inventory.Snapshot(tree, manifest.Namespace, ct), manifest.Namespace, Outcome.Nonconforming);
+                LedgerEngine.ValidateTargets(ledger, inventory, manifest.Namespace, Outcome.Nonconforming);
             }
+            var roots = LedgerEngine.LiveRoots(ledger, inventory, manifest.Namespace);
+            Reject(completeClaims[index] && !LedgerEngine.CompleteTransition(previousRoots, roots, ledger),
+                "Complete correspondence coverage contradicts retained history evidence at sha1-" + commit + ".");
+            previousRoots = roots;
             if (commit == head)
             {
                 var tip = tree.ToDictionary(e => e.Name, StringComparer.Ordinal);
@@ -266,5 +282,20 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
                 Reject(changed.Split('\0', StringSplitOptions.RemoveEmptyEntries).Any(p => !p.StartsWith(".mdpkg/review/", StringComparison.Ordinal)), "Bundled review changes non-review paths.");
             }
         }
+    }
+
+    private static int CountParents(ReadOnlySpan<byte> commit)
+    {
+        // Git metadata is verbatim binary storage: only ASCII structural header
+        // prefixes matter here. Author names and messages need not be UTF-8.
+        var count = 0;
+        while (!commit.IsEmpty)
+        {
+            var end = commit.IndexOf((byte)'\n');
+            if (end <= 0) break;
+            if (commit[..end].StartsWith("parent "u8)) count++;
+            commit = commit[(end + 1)..];
+        }
+        return count;
     }
 }

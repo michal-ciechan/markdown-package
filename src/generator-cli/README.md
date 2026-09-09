@@ -37,18 +37,26 @@ is required for these commands.
 - Isolated native Git plumbing, one packed repository and index, optional reverse
   index, controlled ZIP32 headers, real compression levels 0–9 and optional descriptors.
 - Shared structural/content validation, CRC and full DEFLATE checks, history/evidence
-  agreement, and optional deep Git/tree validation. `pack` runs deep validation before
+  agreement, and optional deep Git/tree validation, including complete correspondence
+  claims checked against retained inventories and ledgers. `pack` runs deep validation before
   replacing the destination with its staged sibling file.
 - Existing exit/JSON/report contracts. Warning promotion and `--require-complete`
   fail before output publication. Failures and cancellation clean staging and preserve
   an existing destination. `--accept-recoverable` reports tier 2 but still exits 3.
 
 Snapshot metadata is fixed for repeatability; imported author/committer/message bytes
-are retained, with signatures removed when their signed commits change. Outputs are
+are retained, including legacy non-UTF-8 encodings, with signatures removed when their
+signed commits change. UTF-8 requirements apply to document blobs and package JSON,
+not verbatim Git commit metadata. Outputs are
 repeatable for a fixed tool/runtime/Git version except when random birth roots are minted.
 Git source IDs are provenance and can change under LF normalization or projection.
 
-The source is read only. Output must be outside its directory. Snapshot mode ignores
+The source is read only. Output must be outside its directory. Reports must also be
+outside source and cannot alias source files, correspondence input, or package input/output.
+Windows and Linux checks resolve linked directories and compare file identities to detect
+hard links. Unsafe report destinations fail before execution (exit 1); safety is rechecked
+before report publication, which replaces the destination without truncating linked bytes.
+Snapshot mode ignores
 its exact root `.git` entry; Git mode reads committed HEAD, ignoring working-tree edits.
 Paths containing colons/control characters and symlinks/reparse points are rejected.
 Review-package authoring is outside `pack`; it needs a review manifest. SHA-256 object
