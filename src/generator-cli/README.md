@@ -87,6 +87,7 @@ src/generator-cli/
 | --- | --- |
 | Verbs `pack`, `update`, `address {move, retire, unknown, mint, list}`, `validate` | parse; `--help` per verb |
 | §2 global options, `--report` | parsed with the spec's defaults; `--format` and `--object-format` accept only their spec values; `--compression-level` is range-checked; `--namespace` must be a lowercase UUID; `--strict-paths false` is refused |
+| `--out <file.mdpkg>` | per writing verb, not global: an option of `pack`, `update` and `address`, so it must follow the verb; required for `pack`, `update` and every `address` operation except `list`; `validate --out` is a usage error (exit 1) |
 | Per-verb options of §7, §9, §10, §11 | parsed; `pack` requires `--namespace`; `update` enforces the `--tree` / `--message` / `--squash` / `--no-summary` rules; `address` operations require `--out` (except `list`), roots must be 64 lowercase hex digits, `retire --reason` accepts `split`, `merge` or `deleted` |
 | Exit 1 (usage) | any parse or validation error; stderr only, plus a `--help` hint |
 | Exit 5 (environment) | `--report` path unwritable |
@@ -102,7 +103,7 @@ implements the writing verbs.
 
 ## Tests
 
-`dotnet test` runs 80 tests in about two seconds. Besides the help tree, every validator
+`dotnet test` runs 81 tests in about two seconds. Besides the help tree, every validator
 and the stub's output contract, `SpecConsistencyTests` reads
 `docs/spec/generator-cli.md` from the repository and checks that the verb tree matches §1,
 the `address` operations match §10, the exit codes match §3, and the diagnostic catalog

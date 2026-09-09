@@ -97,4 +97,19 @@ public class StubTests
         Assert.Contains("cannot write --report", result.Stderr, StringComparison.Ordinal);
         Assert.False(File.Exists(path));
     }
+
+    [Fact]
+    public void UnwritableReportIsReflectedInTheStdoutObject()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"mdpkg-missing-{Guid.NewGuid():N}", "report.json");
+
+        var result = CliRunner.Run("validate", "in.mdpkg", "--report", path, "--format", "json");
+
+        Assert.Equal((int)ExitCode.Environment, result.Exit);
+        Assert.Contains("cannot write --report", result.Stderr, StringComparison.Ordinal);
+        var line = Assert.Single(result.Stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries));
+        using var json = JsonDocument.Parse(line);
+        Assert.Equal("validate", json.RootElement.GetProperty("verb").GetString());
+        Assert.Equal(result.Exit, json.RootElement.GetProperty("exitCode").GetInt32());
+    }
 }

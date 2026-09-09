@@ -18,11 +18,8 @@ internal static class Stub
         // A diagnostic, not progress: emitted regardless of --quiet (§2).
         stderr.WriteLine($"mdpkg {verb}: not implemented. This build is the scaffold; see src/generator-cli/README.md.");
 
-        if (parseResult.GetValue(globals.Format) == GlobalOptions.JsonFormat)
-        {
-            stdout.WriteLine(ResultWriter.ToJson(result));
-        }
-
+        // --report goes first: a failed write turns the run into an environment error (§3 exit 5), and the object
+        // printed on stdout must carry the exit code the process actually returns (§6 exitCode).
         if (parseResult.GetValue(globals.Report) is { } report)
         {
             try
@@ -32,8 +29,13 @@ internal static class Stub
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
                 stderr.WriteLine($"mdpkg {verb}: cannot write --report {report}: {ex.Message}");
-                return (int)ExitCode.Environment;
+                result = result with { ExitCode = ExitCode.Environment };
             }
+        }
+
+        if (parseResult.GetValue(globals.Format) == GlobalOptions.JsonFormat)
+        {
+            stdout.WriteLine(ResultWriter.ToJson(result));
         }
 
         return (int)result.ExitCode;

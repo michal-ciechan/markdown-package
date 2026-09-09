@@ -32,7 +32,7 @@ The extension is `.mdpkg` (D-13). No media type is emitted or assumed (§11.1 it
 
 | Option | Default | Behavior | Spec |
 | --- | --- | --- | --- |
-| `--out <path>` | required for writing verbs | Output package. Written to a temp sibling and renamed; a failed run leaves no partial file | §9 (rewrite the file) |
+| `--out <path>` | required for writing verbs | Output package. Written to a temp sibling and renamed; a failed run leaves no partial file. Per writing verb, not global: it is an option of `pack`, `update` and `address` and must follow the verb; `validate --out` is a usage error (exit 1) | §9 (rewrite the file) |
 | `--format text` / `--format json` | `text` | `json` prints one result object on stdout, nothing else; diagnostics move to stderr | G-1 |
 | `--quiet` | off | Suppresses progress on stderr; diagnostics still emitted | G-1 |
 | `--namespace <uuid>` | `pack`: required. Other verbs: taken from the input manifest | Lowercase UUID; a differing value on a non-`pack` verb is an error, never a rewrite | §4 `namespace`, §6.5 step 1 |
