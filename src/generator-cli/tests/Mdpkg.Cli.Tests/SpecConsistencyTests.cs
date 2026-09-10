@@ -56,22 +56,6 @@ public partial class SpecConsistencyTests
         Assert.DoesNotContain((int)ExitCode.NotImplemented, specCodes);
     }
 
-    [Fact]
-    public void DiagnosticCatalogMatchesSection4()
-    {
-        var specRows = Section(4)
-            .Select(line => DiagnosticRow().Match(line))
-            .Where(m => m.Success)
-            .ToDictionary(m => m.Groups["code"].Value, m => m.Groups["sev"].Value, StringComparer.Ordinal);
-        Assert.NotEmpty(specRows);
-
-        Assert.Equal(specRows.Keys.Order(StringComparer.Ordinal), DiagnosticCatalog.Codes.Keys.Order(StringComparer.Ordinal));
-        foreach (var (code, sev) in specRows)
-        {
-            Assert.Equal(sev, DiagnosticCatalog.Codes[code].Sev);
-        }
-    }
-
     /// <summary>The lines of the top-level section numbered <paramref name="number"/>, up to the next top-level heading.</summary>
     private static IEnumerable<string> Section(int number)
     {

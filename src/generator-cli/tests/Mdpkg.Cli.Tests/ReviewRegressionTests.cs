@@ -1,14 +1,9 @@
+using Mdpkg.Core;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json.Nodes;
 using Mdpkg.Cli.Commands;
-using Mdpkg.Cli.Engine;
-using Mdpkg.Cli.Engine.Addressing;
-using Mdpkg.Reader.Internal.Addressing;
-using Mdpkg.Reader.Internal.Format;
-using Mdpkg.Cli.Engine.Git;
-using Mdpkg.Cli.Engine.Validation;
 
 namespace Mdpkg.Cli.Tests;
 
@@ -18,14 +13,14 @@ public class ReviewRegressionTests
     public async Task ValidateRejectsHardLinkedReportAndPreservesPackageBytes()
     {
         using var f = new EngineFixture(); f.Write("x.md", "# X\n");
-        EngineFixture.Success(await new PackageBuilder().PackAsync(f.Request, TestContext.Current.CancellationToken));
+        EngineFixture.Success(await new PackageBuilder().CreateFromDirectoryAsync(f.Request, f.Output, TestContext.Current.CancellationToken));
         var original = File.ReadAllBytes(f.Output);
         var report = Path.Combine(f.Root, "report.json"); HardLink(report, f.Output);
         var result = CliRunner.Run("validate", f.Output, "--deep", "--report", report, "--format", "json");
         Assert.Equal(1, result.Exit); Assert.Contains("--report", result.Stderr, StringComparison.Ordinal);
         Assert.Contains("alias", result.Stderr, StringComparison.Ordinal);
         Assert.Equal(original, File.ReadAllBytes(f.Output)); Assert.Equal(original, File.ReadAllBytes(report));
-        EngineFixture.Success(await new PackageValidator().ValidateAsync(new(f.Output, Deep: true), TestContext.Current.CancellationToken));
+        EngineFixture.Success(await new PackageValidator().ValidateFileAsync(f.Output, new() { Deep = true }, TestContext.Current.CancellationToken));
     }
 
     [Theory]
@@ -83,88 +78,6 @@ public class ReviewRegressionTests
         ReportDestination.Write(report, "{}");
         Assert.Equal("protected bytes", File.ReadAllText(f.Output)); Assert.Equal("{}", File.ReadAllText(report));
         Assert.Empty(Directory.GetFiles(f.Root, "*.tmp"));
-    }
-
-    [Theory]
-    [InlineData(false)][InlineData(true)]
-    public async Task DeepValidationRejectsCompleteClaimsContradictedByIntermediateUnknownRecords(bool wholeHistory)
-    {
-        using var f = new EngineFixture(); var ct = TestContext.Current.CancellationToken;
-        var repo = new Repository(new GitProcess("git"), f.Source); await repo.InitializeAsync(ct);
-        string? head = null;
-        foreach (var text in new[] { "# Old\n", "# New\n", "# New\n" })
-            head = await repo.CommitAsync(await repo.TreeAsync([new("x.md", Profile.Utf8.GetBytes(text))], ct), head, "test", ct);
-        File.WriteAllText(Path.Combine(f.Source, "refs", "heads", "main"), head + "\n");
-        var root = Inventory.Root(CliRunner.Namespace, new JsonArray("section", "x.md", new JsonArray(new JsonArray("# Old", 0))));
-        var records = Path.Combine(f.Root, "records.json");
-        File.WriteAllBytes(records, CanonicalJson.Bytes(new JsonArray(new JsonObject { ["root"] = root, ["dead"] = "deleted" })));
-        var packed = await new PackageBuilder().PackAsync(f.Request with { FromGit = true, Correspondence = records }, ct);
-        EngineFixture.Success(packed); Assert.Equal("partial", packed.Manifest!.Addressing.Coverage);
-        EngineFixture.Success(await new PackageValidator().ValidateAsync(new(f.Output, Deep: true), ct));
-        var entries = EngineFixture.Read(f.Output);
-        var manifest = packed.Manifest; var history = packed.History!;
-        Assert.Equal("partial", history.AddressingCoverage[1].Coverage);
-        if (wholeHistory)
-        {
-            manifest = manifest with { Addressing = manifest.Addressing with { Coverage = "complete" } };
-            history = history with { AddressingCoverage = [new(history.AddressingCoverage[0].From, manifest.Current, "complete")] };
-        }
-        else
-        {
-            // Keep aggregate coverage partial but lie about the Old -> New transition.
-            history.AddressingCoverage[0] = history.AddressingCoverage[0] with { Coverage = "partial" };
-            history.AddressingCoverage[1] = history.AddressingCoverage[1] with { Coverage = "complete" };
-        }
-        entries[entries.FindIndex(e => e.Name == Profile.Manifest)] = new(Profile.Manifest, CanonicalJson.Bytes(manifest, true));
-        entries[entries.FindIndex(e => e.Name == Profile.History)] = new(Profile.History, CanonicalJson.Bytes(history));
-        EngineFixture.Rewrite(f.Output, entries);
-        EngineFixture.Success(await new PackageValidator().ValidateAsync(new(f.Output), ct));
-        var rejected = await new PackageValidator().ValidateAsync(new(f.Output, Deep: true), ct);
-        Assert.Equal(Outcome.Nonconforming, rejected.Outcome);
-        Assert.Contains(rejected.Diagnostics, d => d.Code == "MDPK2007" && d.Message.Contains("retained history evidence", StringComparison.Ordinal));
-    }
-
-    [Fact]
-    public async Task DeepValidationRequiresEvidenceForRemovedEntitiesEvenWithoutUnknownRecords()
-    {
-        using var f = new EngineFixture(); var ct = TestContext.Current.CancellationToken;
-        var repo = new Repository(new GitProcess("git"), f.Source); await repo.InitializeAsync(ct);
-        var first = await repo.CommitAsync(await repo.TreeAsync([new("x.md", "# Old\n"u8.ToArray())], ct), null, "first", ct);
-        var tree = new List<EntryData> { new("x.md", "# New\n"u8.ToArray()) };
-        var last = await repo.CommitAsync(await repo.TreeAsync(tree, ct), first, "last", ct);
-        var manifest = new Manifest(Profile.Magic, CliRunner.Namespace, "sha1-" + last,
-            new(Profile.Anchor, Profile.Digest, "complete", null), new("complete", [], Profile.History));
-        var history = new HistoryDetail("first-parent", "original", "sha1-" + first, "sha1-" + last, 2,
-            [], [], [], [], [new("sha1-" + first, "sha1-" + last, "complete")]);
-        var entries = new List<EntryData> { new(Profile.Manifest, CanonicalJson.Bytes(manifest, true)) };
-        entries.AddRange(tree); entries.Add(new(Profile.History, CanonicalJson.Bytes(history)));
-        entries.AddRange(await repo.CurateAsync(last, false, ct)); EngineFixture.Rewrite(f.Output, entries);
-        var rejected = await new PackageValidator().ValidateAsync(new(f.Output, Deep: true), ct);
-        Assert.Equal(Outcome.Nonconforming, rejected.Outcome);
-        Assert.Contains(rejected.Diagnostics, d => d.Code == "MDPK2007" && d.Message.Contains("retained history evidence", StringComparison.Ordinal));
-    }
-
-    [Theory]
-    [InlineData(false)][InlineData(true)]
-    public async Task LegacyGitMetadataSurvivesImportAndDeepValidation(bool normalize)
-    {
-        using var f = new EngineFixture(); var ct = TestContext.Current.CancellationToken;
-        var git = new GitProcess("git"); var repo = new Repository(git, f.Source); await repo.InitializeAsync(ct);
-        var tree = await repo.TreeAsync([new("x.md", Profile.Utf8.GetBytes(normalize ? "# X\r\n" : "# X\n"))], ct);
-        var metadata = Encoding.Latin1.GetBytes("author José <a@example.com> 946684800 +0000\ncommitter José <a@example.com> 946684800 +0000\nencoding ISO-8859-1\n\nCafé\nparent this is message text\n");
-        var original = Profile.Utf8.GetBytes("tree " + tree + "\n").Concat(metadata).ToArray();
-        var head = await repo.ObjectAsync("commit", original, ct);
-        File.WriteAllText(Path.Combine(f.Source, "refs", "heads", "main"), head + "\n");
-        await git.TextAsync(f.Source, ct, "fsck", "--full", "--strict");
-        var result = CliRunner.Run("pack", f.Source, "--from-git", "--out", f.Output, "--namespace", CliRunner.Namespace);
-        Assert.True(result.Exit == 0, result.Stderr);
-        var validated = await new PackageValidator().ValidateAsync(new(f.Output, Deep: true), ct); EngineFixture.Success(validated);
-        if (normalize) Assert.NotEqual("sha1-" + head, validated.Manifest!.Current);
-        else Assert.Equal("sha1-" + head, validated.Manifest!.Current);
-        var extracted = Path.Combine(f.Root, "extracted"); System.IO.Compression.ZipFile.ExtractToDirectory(f.Output, extracted);
-        var retained = await new Repository(git, extracted).ReadObjectAsync("commit", validated.Manifest.Current[5..], ct);
-        Assert.True(retained.AsSpan().EndsWith(metadata));
-        if (!normalize) Assert.Equal(original, retained);
     }
 
     private static void HardLink(string link, string target)

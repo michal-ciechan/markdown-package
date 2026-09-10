@@ -2,10 +2,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using Mdpkg.Reader.Internal.Format;
 
-namespace Mdpkg.Cli.Engine.Git;
+namespace Mdpkg.Core.Internal.Git;
 
 /// <summary>Plumbing only; never a shell, checkout, fetch, hook, or source write.</summary>
-internal sealed class GitProcess(string executable)
+internal sealed class GitProcess(string executable, long maximumOutputBytes = long.MaxValue)
 {
     public async Task<byte[]> RunAsync(string directory, IEnumerable<string> arguments, byte[]? input, CancellationToken ct)
     {
@@ -32,7 +32,7 @@ internal sealed class GitProcess(string executable)
         catch (Win32Exception ex) { throw new IOException("Cannot start Git ('" + executable + "'): " + ex.Message, ex); }
         using var cancel = ct.Register(() => { try { if (!process.HasExited) process.Kill(entireProcessTree: true); } catch (InvalidOperationException) { } });
         using var output = new MemoryStream();
-        var read = process.StandardOutput.BaseStream.CopyToAsync(output, ct);
+        var read = ResourceOptions.CopyAsync(process.StandardOutput.BaseStream, output, maximumOutputBytes, ct);
         var error = process.StandardError.ReadToEndAsync(ct);
         async Task Feed()
         {
@@ -40,10 +40,17 @@ internal sealed class GitProcess(string executable)
             catch (IOException) when (!ct.IsCancellationRequested) { /* Early Git failure; report its stderr below. */ }
             finally { process.StandardInput.Close(); }
         }
-        try { await Task.WhenAll(read, Feed(), process.WaitForExitAsync(ct)); }
+        var feed = Feed(); var wait = process.WaitForExitAsync(ct);
+        try
+        {
+            var first = await Task.WhenAny(read, wait);
+            await first;
+            await Task.WhenAll(read, feed, wait);
+        }
         finally
         {
             if (!process.HasExited) { process.Kill(entireProcessTree: true); await process.WaitForExitAsync(CancellationToken.None); }
+            try { await Task.WhenAll(read, feed, error); } catch (Exception) when (read.IsFaulted || ct.IsCancellationRequested) { }
         }
         var errors = await error;
         ct.ThrowIfCancellationRequested();

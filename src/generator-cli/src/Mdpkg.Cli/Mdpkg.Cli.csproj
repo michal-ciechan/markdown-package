@@ -22,12 +22,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Mdpkg.Reader/Mdpkg.Reader.csproj" />
+    <ProjectReference Include="../Mdpkg.Core/Mdpkg.Core.csproj" />
     <PackageReference Include="System.CommandLine" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <None Include="../Mdpkg.Reader/Internal/Sources/UNICODE-LICENSE.txt" Pack="true" PackagePath="/" />
     <InternalsVisibleTo Include="Mdpkg.Cli.Tests" />
   </ItemGroup>
 

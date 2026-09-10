@@ -1,10 +1,38 @@
-"""Restore fresh external consumers from packed artifacts; run with no Git on PATH."""
-import json, os, pathlib, shutil, subprocess, tempfile, xml.etree.ElementTree as ET
+"""Inspect local packages, restore isolated consumers, and smoke-test the installed tool."""
+import json, os, pathlib, re, shutil, subprocess, tempfile, zipfile, xml.etree.ElementTree as ET
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
 FEED = ROOT / 'src/generator-cli/artifacts/package'
 DOTNET = shutil.which('dotnet')
 assert DOTNET, 'dotnet is required to build the consumer'
+
+def package_info(package):
+    files = [p for p in FEED.glob('*.nupkg') if re.fullmatch(re.escape(package) + r'\.\d.*\.nupkg', p.name, re.I)]
+    # Reader/Core names do not overlap; require an unambiguous artifact set.
+    assert len(files) == 1, (package, files)
+    with zipfile.ZipFile(files[0]) as archive:
+        manifest = next(n for n in archive.namelist() if n.endswith('.nuspec'))
+        root = ET.fromstring(archive.read(manifest))
+        ns = {'n': root.tag.split('}')[0].removeprefix('{')}
+        metadata = root.find('n:metadata', ns)
+        assert metadata is not None
+        return files[0], metadata.find('n:version', ns).text, archive.namelist(), metadata, ns
+
+packages = {name: package_info(name) for name in ('Mdpkg.Reader', 'Mdpkg.Core', 'Mdpkg.Reviews', 'mdpkg')}
+_, core_version, core_files, core_metadata, ns = packages['Mdpkg.Core']
+reader_version = packages['Mdpkg.Reader'][1]
+dependencies = core_metadata.findall('.//n:dependency', ns)
+assert [(d.attrib['id'], d.attrib['version']) for d in dependencies] == [('Mdpkg.Reader', f'[{reader_version}]')]
+assert 'README.md' in core_files and 'lib/net10.0/Mdpkg.Core.xml' in core_files
+assert 'UNICODE-LICENSE.txt' in packages['Mdpkg.Reader'][2]
+assert 'UNICODE-LICENSE.txt' in packages['mdpkg'][2]
+assert list(FEED.glob('Mdpkg.Core.*.snupkg')), 'Core portable symbols absent'
+for field in ('authors', 'description', 'projectUrl', 'repository'):
+    assert core_metadata.find('n:' + field, ns) is not None, field
+runtime = packages['mdpkg'][2]
+for assembly in ('Mdpkg.Core.dll', 'Mdpkg.Reader.dll', 'Markdig.dll', 'ICSharpCode.SharpZipLib.dll', 'System.CommandLine.dll'):
+    assert any(n.endswith('/' + assembly) for n in runtime), assembly
+print('4 packages inspected; exact Core/Reader dependency, XML docs, symbols, Unicode notice and tool runtime verified.')
 
 def run(*args, cwd, expected=0, env=None):
     result = subprocess.run([DOTNET, *map(str,args)], cwd=cwd, env=env, capture_output=True, text=True)
@@ -16,21 +44,33 @@ with tempfile.TemporaryDirectory(prefix='mdpkg-external-consumers-') as temp:
     work = pathlib.Path(temp)
     config = ET.Element('configuration'); sources = ET.SubElement(config, 'packageSources'); ET.SubElement(sources,'clear')
     ET.SubElement(sources,'add',key='local',value=str(FEED)); ET.SubElement(sources,'add',key='nuget.org',value='https://api.nuget.org/v3/index.json')
+    mapping = ET.SubElement(config, 'packageSourceMapping')
+    local = ET.SubElement(mapping, 'packageSource', key='local')
+    ET.SubElement(local, 'package', pattern='Mdpkg.*'); ET.SubElement(local, 'package', pattern='mdpkg')
+    public = ET.SubElement(mapping, 'packageSource', key='nuget.org'); ET.SubElement(public, 'package', pattern='*')
     ET.ElementTree(config).write(work/'NuGet.Config',encoding='utf-8',xml_declaration=True)
-    for package in ('Mdpkg.Reviews','Mdpkg.Reader'):
+    for package in ('Mdpkg.Reviews','Mdpkg.Reader','Mdpkg.Core'):
         project = work/package; project.mkdir()
         csproj = project/'Consumer.csproj'
-        csproj.write_text(f'''<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><PackageReference Include="{package}" Version="0.1.0-preview.1" /></ItemGroup></Project>''', encoding='utf-8')
+        csproj.write_text(f'''<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><PackageReference Include="{package}" Version="{packages[package][1]}" /></ItemGroup></Project>''', encoding='utf-8')
         program = (ROOT/'examples/review-consumer/Program.cs').read_text(encoding='utf-8') if package.endswith('Reviews') else '''using Mdpkg.Reader;
 using var input = File.OpenRead(args[0]);
 using var archive = await PackageArchive.OpenAsync(input);
 Console.WriteLine(archive.Identity.Current);
 '''
+        if package == 'Mdpkg.Core':
+            examples = re.findall(r'```csharp\n(.*?)```', (ROOT/'src/generator-cli/src/Mdpkg.Core/README.md').read_text(encoding='utf-8'), re.S)
+            assert len(examples) == 2
+            program = examples[0]
         (project/'Program.cs').write_text(program, encoding='utf-8')
         run('restore',csproj,'--configfile',work/'NuGet.Config','--packages',work/'packages',cwd=work)
         assets=json.loads((project/'obj/project.assets.json').read_text(encoding='utf-8'))
         names={key.split('/')[0] for key in assets['libraries']}
-        assert not names.intersection({'Mdpkg.Core','System.CommandLine','mdpkg'}),names
+        assert not names.intersection({'System.CommandLine','mdpkg'}),names
+        if package != 'Mdpkg.Core': assert 'Mdpkg.Core' not in names
+        else:
+            assert 'Mdpkg.Reviews' not in names
+            assert {'Mdpkg.Core', 'Mdpkg.Reader', 'Markdig', 'SharpZipLib'}.issubset(names), names
         assert all(value['type']=='package' for value in assets['libraries'].values()),'ProjectReference leaked into consumer'
         if package=='Mdpkg.Reader': assert 'Mdpkg.Reviews' not in names
         else: assert 'Mdpkg.Reader' in names
@@ -42,6 +82,21 @@ Console.WriteLine(archive.Identity.Current);
             assert 'Correlation: Exact' in output and 'ChangeRequest' in output and output.count('TargetIntact')==2,output
             output=run(dll,fixtures/'delta-v2.mdpkg','--full',cwd=work,env=env,expected=2)
             assert 'VerificationUnavailable' in output,output
-        else: assert 'sha1-' in run(dll,fixtures/'original.mdpkg',cwd=work,env=env)
-        print(package+': isolated PackageReference restore and no-Git runtime passed; dependencies: '+', '.join(sorted(names)))
-print('2 external consumers passed; full-required without provider rejected as expected; 0 failures.')
+        elif package == 'Mdpkg.Reader': assert 'sha1-' in run(dll,fixtures/'original.mdpkg',cwd=work,env=env)
+        else:
+            source = work/'source'; source.mkdir(); (source/'guide.md').write_text('# Guide\n\nHello.\n', encoding='utf-8')
+            assert 'sha1-' in run(dll, source, work/'created.mdpkg', cwd=work)
+            (project/'Program.cs').write_text(examples[1], encoding='utf-8')
+            run('build',csproj,'--no-restore',cwd=work)
+            assert re.search(r'[a-f0-9]{64}', run(dll,cwd=work))
+        print(package+': isolated PackageReference consumer passed' + (' without Git' if package != 'Mdpkg.Core' else ' (both README examples)') + '; dependencies: '+', '.join(sorted(names)))
+    tool_env = dict(os.environ)
+    tool_env['NUGET_PACKAGES'] = str(work/'tool-cache')
+    tool_env['NUGET_HTTP_CACHE_PATH'] = str(work/'http-cache')
+    run('tool','install','mdpkg','--version',packages['mdpkg'][1],'--tool-path',work/'tools','--configfile',work/'NuGet.Config',cwd=work,env=tool_env)
+    exe = work/'tools'/('mdpkg.exe' if os.name == 'nt' else 'mdpkg')
+    for args in (['pack',str(work/'source'),'--out',str(work/'tool.mdpkg'),'--namespace','c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8'], ['validate',str(work/'tool.mdpkg'),'--deep']):
+        result = subprocess.run([str(exe), *args], cwd=work, env=tool_env, capture_output=True, text=True)
+        assert result.returncode == 0, (args,result.stdout,result.stderr)
+    print('Installed local tool: pack and deep validate passed.')
+print('3 external consumers, 2 Core README examples and installed-tool smoke passed; 0 failures.')

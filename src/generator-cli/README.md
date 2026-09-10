@@ -66,44 +66,59 @@ disk space are prerequisites. See tool-reference §12 for complete policy detail
 
 ## Internal layout
 
-The solution contains the producer CLI plus two read-only libraries. `Mdpkg.Reader` owns
-bounded ZIP reading, canonical format/diagnostic definitions, Unicode paths, CommonMark
-scopes and ledger interpretation. `Mdpkg.Reviews` depends only on Reader and provides
-review extraction, correlation and selector resolution. Both pack as local preview NuGet
-artifacts; see their packed READMEs and `examples/review-consumer` for the external API.
-Creation/Git/ZIP writing and full validation orchestration remain inside the executable
-pending the separate Core extraction. CLI references Reader directly; it does not depend
-on Reviews. Engine results remain separate from command exit codes and terminal reporting.
+The eight-project solution contains CLI, Core, Reader, Reviews and a test project for
+each. `Mdpkg.Cli -> Mdpkg.Core -> Mdpkg.Reader`; `Mdpkg.Reviews -> Mdpkg.Reader`.
+Core owns source staging, native Git, ZIP emission, ledger evolution and full/deep
+validation. CLI owns arguments, correspondence-file I/O, report alias checks,
+terminal output, JSON mapping and exit codes. It uses only the public Core API.
+Reader owns bounded ZIP access, canonical parsing, Unicode paths, inventories and
+ledger interpretation; Reviews owns review schemas, correlation and resolution.
+Reader/Reviews retain independent use without native Git.
 
 ```text
-src/Mdpkg.Cli/
-  Commands/          System.CommandLine verbs and engine/result adapters
-  Reporting/         CLI result JSON and diagnostic vocabulary
-  Engine/
-    Sources/         strict source staging and Unicode path checks
-    Git/             isolated subprocess adapter and repository plumbing
-    Addressing/      writer-side sparse-ledger evolution
-    Container/       ZIP32 writer (reading delegates to Reader)
-    Validation/      shared conformance and deep Git checks
-    IO/              owned temporary directories
-    PackageBuilder.cs
+src/Mdpkg.Cli/       Commands/ and Reporting/
+src/Mdpkg.Core/      public creation/validation API; Internal/{Sources,Git,Addressing,Container,Validation,IO}
+src/Mdpkg.Reader/    bounded reading, format and addressing
+src/Mdpkg.Reviews/   review extraction and resolution
+tests/              Mdpkg.Cli.Tests, Mdpkg.Core.Tests, Mdpkg.Reader.Tests, Mdpkg.Reviews.Tests
 ```
+
+See the [Core README](src/Mdpkg.Core/README.md) for compiled directory/memory examples,
+typed failures, stream ownership, resource limits and deterministic metadata. Core
+pins Reader's coordinated package version exactly because it uses Reader internals.
+CLI explicitly selects the producer compatibility resource profile; public Core APIs
+default to Reader service limits. Full validation uses indexed member reads while
+retaining current-view payloads for inventory checks; it is not constant-memory streaming.
 
 Dependencies are centrally pinned: System.CommandLine 2.0.12 (MIT), Markdig 1.3.2
 (BSD-2-Clause), and SharpZipLib 1.4.2 (MIT). The writer uses .NET's numeric zlib
 compression options; SharpZipLib's inflater exposes completion and remaining input
 so truncated/trailing DEFLATE payloads cannot silently pass. The Unicode table is
-ported from the viewer with its license in `Engine/Sources/UNICODE-LICENSE.txt`.
+ported from the viewer with its license in `src/Mdpkg.Reader/Internal/Sources/UNICODE-LICENSE.txt`.
 
 ## Tests and CI
 
-Tests run in `tests/Mdpkg.Cli.Tests/`. They cover recorded worked-example Git IDs,
-roots/digests and layout, real pack/import/deep-validation paths, CommonMark source
-boundaries, sparse ledger rules, Unicode paths, normalization, malformed containers,
-CRC/DEFLATE failures, history consistency, failure cleanup, and CLI reports/exits.
-`SpecConsistencyTests` checks the reference's verb, exit-code and diagnostic tables.
-The test runner prints the current counts; no count is hardcoded here.
+CLI tests cover verbs, options, reports/exits, hard-link safety and API parity. Core
+tests cover recorded Git IDs and ZIP layout, history/deep checks, source/stream
+creation, limits, immutable data, warning policy, copy failures and cleanup. Reader
+owns pure path/parser/ledger assertions and the independent CommonMark fixture;
+Reviews owns schemas, correlation and selectors. The runner prints current counts.
 
-The generator workflow restores, builds and tests on Windows and Linux. Its existing
-artifact packing remains separate from publication; this implementation adds no
-publishing workflow or registry changes.
+The Windows/Linux workflow restores, builds, tests and packs all four products. The
+isolated consumer verifier checks exact dependencies, notices, XML docs/symbols,
+Reader/Reviews without Git, both Core README examples and an installed-tool smoke.
+Run the local package gate from this directory:
+
+```powershell
+dotnet pack src/Mdpkg.Reader --no-build -c Release -o artifacts/package
+dotnet pack src/Mdpkg.Core --no-build -c Release -o artifacts/package
+dotnet pack src/Mdpkg.Reviews --no-build -c Release -o artifacts/package
+dotnet pack src/Mdpkg.Cli --no-build -c Release -o artifacts/package
+python tests/verify-consumers.py
+node ../../docs/spec/review-fixtures/verify-unicode.mjs
+```
+
+Core/Reader/Reviews use `0.1.0-preview.1` for local testing; the tool retains its
+existing `0.1.0-scaffold` packaging version pending CARD-0036. These are local artifacts,
+not published-version promises. Public-feed availability, release versions, MIT license
+foundation and publishing remain CARD-0036/CARD-0039; no publishing workflow is added.

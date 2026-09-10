@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><PackageId>Mdpkg.Reader</PackageId><Version>0.1.0-preview.1</Version><Description>Bounded read-only Markdown package access and current-view addressing.</Description><PackageReadmeFile>README.md</PackageReadmeFile></PropertyGroup>
   <ItemGroup><PackageReference Include="Markdig" /><PackageReference Include="SharpZipLib" /></ItemGroup>
-  <ItemGroup><InternalsVisibleTo Include="mdpkg" /><InternalsVisibleTo Include="Mdpkg.Cli.Tests" /><InternalsVisibleTo Include="Mdpkg.Reader.Tests" /><InternalsVisibleTo Include="Mdpkg.Reviews" /><InternalsVisibleTo Include="Mdpkg.Reviews.Tests" /></ItemGroup>
+  <ItemGroup><InternalsVisibleTo Include="Mdpkg.Core" /><InternalsVisibleTo Include="Mdpkg.Core.Tests" /><InternalsVisibleTo Include="Mdpkg.Reader.Tests" /><InternalsVisibleTo Include="Mdpkg.Reviews" /><InternalsVisibleTo Include="Mdpkg.Reviews.Tests" /></ItemGroup>
   <ItemGroup><None Include="README.md" Pack="true" PackagePath="/" /><None Include="Internal/Sources/UNICODE-LICENSE.txt" Pack="true" PackagePath="/" /></ItemGroup>
 </Project>

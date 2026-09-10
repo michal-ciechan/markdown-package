@@ -12,7 +12,7 @@ To regenerate, download `https://spec.commonmark.org/0.31.2/spec.json`, run `npm
 in `src/web-viewer`, then run:
 
 ```text
-node src/generator-cli/tests/Mdpkg.Cli.Tests/Fixtures/generate-commonmark.mjs <downloaded-spec.json>
+node src/generator-cli/tests/Mdpkg.Reader.Tests/Fixtures/generate-commonmark.mjs <downloaded-spec.json>
 ```
 
 Ordinary .NET tests read the checked-in fixture and require no Node, network or

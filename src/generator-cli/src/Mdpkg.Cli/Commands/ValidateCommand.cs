@@ -1,5 +1,5 @@
 using System.CommandLine;
-using Mdpkg.Cli.Engine.Validation;
+using Mdpkg.Core;
 
 namespace Mdpkg.Cli.Commands;
 
@@ -24,10 +24,13 @@ internal static class ValidateCommand
             if (ReportDestination.Error(result.GetValue(globals.Report)?.FullName, [result.GetValue(input)?.FullName]) is { } error)
                 result.AddError(error);
         });
-        command.SetAction(async (parse, ct) => EngineAction.Report(parse, globals, command.Name,
-            await new PackageValidator().ValidateAsync(new(parse.GetValue(input)!.FullName, parse.GetValue(deep),
-                parse.GetValue(recoverable), parse.GetValue(globals.Namespace), parse.GetValue(globals.ObjectFormat)!), ct),
-            [parse.GetValue(input)!.FullName]));
+        command.SetAction((parse, ct) => EngineAction.RunAsync(parse, globals, command.Name, async () =>
+            await new PackageValidator().ValidateFileAsync(parse.GetValue(input)!.FullName, new()
+            {
+                Deep = parse.GetValue(deep), AcceptRecoverable = parse.GetValue(recoverable),
+                ExpectedNamespace = parse.GetValue(globals.Namespace) is { } ns ? Guid.Parse(ns) : null,
+                ObjectFormat = parse.GetValue(globals.ObjectFormat)!, Resources = ResourceOptions.ProducerCompatibility
+            }, ct), [parse.GetValue(input)!.FullName]));
         return command;
     }
 }

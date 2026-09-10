@@ -103,3 +103,7 @@ are explicit configurable backend ceilings with rejection tests. Validate deploy
 budgets against real workloads. The accepted wire contract and fixtures are in
 `docs/spec.md` §6.8 and `docs/spec/review-fixtures/`. Web authoring/export and public-feed
 publishing are separate work; these are local preview packages.
+
+Creation and full/deep producer validation are available separately in [Mdpkg.Core](../Mdpkg.Core/README.md).
+This package remains independently usable without Core or native Git. Core requires its
+coordinated Reader build exactly; these local previews are not a public release train.

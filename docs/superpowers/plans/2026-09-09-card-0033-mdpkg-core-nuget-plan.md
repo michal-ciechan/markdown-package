@@ -5,6 +5,17 @@ CARD-0036's release decisions and [CARD-0034 §4](2026-09-09-card-0034-review-ex
 This is planning only. The engine and Reader/Reviews have landed; Core extraction, its
 public creation API and distribution remain future work.
 
+## Implementation scope update (2026-09-10)
+
+The current CARD-0033 description supersedes the original three-card prerequisite below:
+**S0-S4 are authorized before CARD-0036**, with local-feed packaging only. CARD-0035 and
+CARD-0037 are Done. S5 is CARD-0039 and still depends on CARD-0036's release foundation.
+Do not introduce license/versioning/publishing infrastructure for local extraction.
+Implementation starts from `b907bc9`; baseline: 958 Windows tests, zero failures.
+The remaining text records the refreshed design; see the
+[S0-S4 implementation report](../../investigations/2026-09-10-card-0033-core-extraction.md)
+for final ownership, API decisions and acceptance evidence.
+
 ## 1. Baseline and sequencing
 
 The solution at `src/generator-cli/Mdpkg.slnx` has six projects: CLI, Reader, Reviews and

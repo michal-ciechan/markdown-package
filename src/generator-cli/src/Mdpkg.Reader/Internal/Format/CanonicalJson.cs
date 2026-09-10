@@ -32,10 +32,12 @@ internal static class CanonicalJson
         RespectRequiredConstructorParameters = true,
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
     };
-    public static JsonNode Node<T>(T value) => JsonSerializer.SerializeToNode(value, Options)!;
-    public static byte[] Bytes<T>(T value, bool manifest = false)
+    public static JsonNode Node<T>(T value) => Node(value, 64);
+    public static JsonNode Node<T>(T value, int maxDepth) => JsonSerializer.SerializeToNode(value, DepthOptions(maxDepth))!;
+    public static byte[] Bytes<T>(T value, bool manifest = false) => Bytes(value, manifest, 64);
+    public static byte[] Bytes<T>(T value, bool manifest, int maxDepth)
     {
-        var node = value is JsonNode json ? json : Node(value);
+        var node = value is JsonNode json ? json : Node(value, maxDepth);
         // Null here is a positive declaration, not an optional field.
         if (value is Manifest m) node["addressing"]!["overrides"] = m.Addressing.Overrides;
         return Profile.Utf8.GetBytes(Text(node, manifest));
@@ -97,7 +99,9 @@ internal static class CanonicalJson
         }
         else if (e.ValueKind == JsonValueKind.Array) foreach (var item in e.EnumerateArray()) Unique(item, ct);
     }
-    public static T Read<T>(byte[] bytes) => Parse(bytes).Deserialize<T>(Options) ?? throw new JsonException("Expected JSON object.");
+    private static JsonSerializerOptions DepthOptions(int maxDepth) => maxDepth == 64 ? Options : new(Options) { MaxDepth = maxDepth };
+    public static T Read<T>(byte[] bytes) => Read<T>(bytes, 64);
+    public static T Read<T>(byte[] bytes, int maxDepth) => Parse(bytes, maxDepth).Deserialize<T>(DepthOptions(maxDepth)) ?? throw new JsonException("Expected JSON object.");
 }
 
 internal sealed class Utf8Comparer : IComparer<string>

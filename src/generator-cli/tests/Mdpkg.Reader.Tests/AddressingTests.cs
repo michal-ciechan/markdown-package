@@ -1,18 +1,16 @@
+using Mdpkg.Reader.Internal;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Mdpkg.Cli.Engine;
-using Mdpkg.Cli.Engine.Addressing;
 using Mdpkg.Reader.Internal.Addressing;
 using Mdpkg.Reader.Internal.Format;
-using Mdpkg.Cli.Engine.Sources;
 using Mdpkg.Reader.Internal.Sources;
 
-namespace Mdpkg.Cli.Tests;
+namespace Mdpkg.Reader.Tests;
 
 public class AddressingTests
 {
     public static IEnumerable<object[]> CommonMarkCases =>
-        JsonNode.Parse(File.ReadAllText(EngineFixture.RepoFile("src/generator-cli/tests/Mdpkg.Cli.Tests/Fixtures/commonmark-0.31.2.json")))!.AsArray()
+        JsonNode.Parse(File.ReadAllText(AddressingFixture.RepoFile("src/generator-cli/tests/Mdpkg.Reader.Tests/Fixtures/commonmark-0.31.2.json")))!.AsArray()
             .Select(c => new object[] { c!["example"]!.GetValue<int>(), c["markdown"]!.GetValue<string>(), c["entities"]!.ToJsonString() });
 
     [Theory]
@@ -20,7 +18,7 @@ public class AddressingTests
     public void CommonMarkInventoryMatchesIndependentReferenceParser(int example, string markdown, string expectedJson)
     {
         var expected = JsonNode.Parse(expectedJson)!.AsArray();
-        var actual = Inventory.Document(Profile.Utf8.GetBytes(markdown), "spec.md", CliRunner.Namespace, TestContext.Current.CancellationToken);
+        var actual = Inventory.Document(Profile.Utf8.GetBytes(markdown), "spec.md", AddressingFixture.Namespace, TestContext.Current.CancellationToken);
         Assert.True(expected.Count == actual.Count, $"Example {example}: expected {expected.Count} entities; got {actual.Count}.");
         for (var i = 0; i < actual.Count; i++)
         {
@@ -34,9 +32,9 @@ public class AddressingTests
     [InlineData("c2")]
     public void EveryRecordedWorkedExampleRootAndDigestMatches(string snapshot)
     {
-        var actual = Inventory.Snapshot([new("guide.md", Profile.Utf8.GetBytes(snapshot == "c1" ? EngineFixture.Guide1 : EngineFixture.Guide2)),
-            new("notes.md", Profile.Utf8.GetBytes(EngineFixture.Notes))], CliRunner.Namespace, TestContext.Current.CancellationToken);
-        var expected = EngineFixture.Recorded["inventories"]![snapshot]!.AsObject();
+        var actual = Inventory.Snapshot([new("guide.md", Profile.Utf8.GetBytes(snapshot == "c1" ? AddressingFixture.Guide1 : AddressingFixture.Guide2)),
+            new("notes.md", Profile.Utf8.GetBytes(AddressingFixture.Notes))], AddressingFixture.Namespace, TestContext.Current.CancellationToken);
+        var expected = AddressingFixture.Recorded["inventories"]![snapshot]!.AsObject();
         Assert.Equal(expected.Count, actual.Count);
         foreach (var (root, row) in expected)
         {
@@ -49,7 +47,7 @@ public class AddressingTests
     public void CommonMarkUsesDirectHeadingsAndExactMultilineSetextSource()
     {
         const string text = "preamble\n\n# Top ##  \n\n> # Quote\n\n- # List\n\n```\n# Fence\n```\n\n<div>\n# Html\n</div>\n\nMulti\nline *title*\n---\n\n## Same\ntext\n\n## Same\n";
-        var entities = Inventory.Document(Profile.Utf8.GetBytes(text), "x.md", CliRunner.Namespace, TestContext.Current.CancellationToken);
+        var entities = Inventory.Document(Profile.Utf8.GetBytes(text), "x.md", AddressingFixture.Namespace, TestContext.Current.CancellationToken);
         Assert.Equal(6, entities.Count);
         Assert.Equal("preamble\n", Inventory.CanonicalSource("preamble\n\n \t\n"));
         Assert.Equal("# Top ##  ", entities[2].Locator[2]![0]![0]!.GetValue<string>());
@@ -61,10 +59,10 @@ public class AddressingTests
     [Fact]
     public void BomIsRetainedAndUnicodeIsNotNormalizedForAddressing()
     {
-        var bom = Inventory.Document(Profile.Utf8.GetBytes("\ufeff# Heading\r\nbody\r"), "x.md", CliRunner.Namespace, TestContext.Current.CancellationToken);
+        var bom = Inventory.Document(Profile.Utf8.GetBytes("\ufeff# Heading\r\nbody\r"), "x.md", AddressingFixture.Namespace, TestContext.Current.CancellationToken);
         Assert.Equal(Inventory.Digest("document", "\ufeff# Heading\nbody\n"), bom[0].Digest);
         Assert.NotEqual(Inventory.Digest("document", "é"), Inventory.Digest("document", "e\u0301"));
-        Assert.Equal(2, Inventory.Document(Profile.Utf8.GetBytes("no headings"), "x.md", CliRunner.Namespace, TestContext.Current.CancellationToken).Count);
+        Assert.Equal(2, Inventory.Document(Profile.Utf8.GetBytes("no headings"), "x.md", AddressingFixture.Namespace, TestContext.Current.CancellationToken).Count);
     }
     [Fact]
     public void CanonicalJsonSortsUtf8AndPreservesSupplementaryUnicode()
@@ -82,23 +80,23 @@ public class AddressingTests
     [InlineData("K.md", "k.md")]
     public void Unicode17NfcSimpleFoldCollisionsAreRejected(string first, string second)
     {
-        var ex = Assert.Throws<EngineException>(() => SourceTree.ValidateNames([first, second]));
+        var ex = Assert.Throws<EngineException>(() => SourceRules.ValidateNames([first, second]));
         Assert.Equal("MDPK1001", ex.Code);
     }
     [Fact]
     public void SimpleFoldDoesNotPerformFullCaseFoldExpansion()
-    { SourceTree.ValidateNames(["ß.md", "ss.md", "İ.md", "i.md"]); }
+    { SourceRules.ValidateNames(["ß.md", "ss.md", "İ.md", "i.md"]); }
     [Theory]
     [InlineData("/a.md")][InlineData("a/../b.md")][InlineData("a/./b.md")]
     [InlineData("a\\b.md")][InlineData("C:/a.md")][InlineData("a//b.md")][InlineData("a\0b.md")]
-    public void UnsafeNamesAreRejected(string path) => Assert.Equal("MDPK1003", Assert.Throws<EngineException>(() => SourceTree.ValidateNames([path])).Code);
+    public void UnsafeNamesAreRejected(string path) => Assert.Equal("MDPK1003", Assert.Throws<EngineException>(() => SourceRules.ValidateNames([path])).Code);
     [Theory]
     [InlineData(".MDPKG/manifest.json")][InlineData(".Git/config")][InlineData(".mdpkg/history.json")]
-    public void ReservedNamesAreRejected(string path) => Assert.Equal("MDPK1002", Assert.Throws<EngineException>(() => SourceTree.ValidateNames([path])).Code);
+    public void ReservedNamesAreRejected(string path) => Assert.Equal("MDPK1002", Assert.Throws<EngineException>(() => SourceRules.ValidateNames([path])).Code);
     [Fact]
     public void FileDirectoryCollisionIsRejectedInEitherOrder()
     {
-        Assert.Throws<EngineException>(() => SourceTree.ValidateNames(["a", "A/b.md"]));
-        Assert.Throws<EngineException>(() => SourceTree.ValidateNames(["a/b.md", "A"]));
+        Assert.Throws<EngineException>(() => SourceRules.ValidateNames(["a", "A/b.md"]));
+        Assert.Throws<EngineException>(() => SourceRules.ValidateNames(["a/b.md", "A"]));
     }
 }

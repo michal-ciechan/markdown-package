@@ -1,4 +1,4 @@
-namespace Mdpkg.Cli.Engine.IO;
+namespace Mdpkg.Core.Internal.IO;
 
 internal sealed class TemporaryDirectory : IDisposable
 {

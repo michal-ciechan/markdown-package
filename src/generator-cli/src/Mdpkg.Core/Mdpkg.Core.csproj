@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Mdpkg.Core</PackageId>
+    <Version>0.1.0-preview.1</Version>
+    <Authors>markdown-package contributors</Authors>
+    <Description>Creates Markdown packages and performs full and native-Git deep validation.</Description>
+    <PackageProjectUrl>https://github.com/michal-ciechan/markdown-package</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/michal-ciechan/markdown-package</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <DebugType>portable</DebugType>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <EmbedAllSources>true</EmbedAllSources>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Reader internals are a coordinated, exact-version ABI. -->
+    <ProjectReference Include="../Mdpkg.Reader/Mdpkg.Reader.csproj" />
+    <InternalsVisibleTo Include="Mdpkg.Core.Tests" />
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+  <Target Name="PinReaderDependency" AfterTargets="_GetProjectReferenceVersions">
+    <ItemGroup>
+      <_ProjectReferencesWithVersions Update="@(_ProjectReferencesWithVersions)" Condition="'%(_ProjectReferencesWithVersions.Filename)' == 'Mdpkg.Reader'">
+        <ProjectVersion>[%(_ProjectReferencesWithVersions.ProjectVersion)]</ProjectVersion>
+      </_ProjectReferencesWithVersions>
+    </ItemGroup>
+  </Target>
+</Project>

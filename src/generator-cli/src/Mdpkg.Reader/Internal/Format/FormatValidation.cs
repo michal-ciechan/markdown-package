@@ -37,12 +37,13 @@ internal static class FormatValidation
         Reject(m.Addressing.Coverage == "complete" && (h.AddressingCoverage.Length != 1 || h.AddressingCoverage[0].Coverage != "complete" || h.AddressingCoverage[0].To != m.Current), "Complete correspondence needs one range through current.");
         Reject(m.Addressing.Coverage == "partial" && h.AddressingCoverage.All(r => r.Coverage == "complete"), "Partial correspondence has no uncovered range.");
     }
-    internal static void ValidateEvidence(Manifest m, HistoryDetail h, Dictionary<string, ZipMember> entries)
+    internal static void ValidateEvidence(Manifest m, HistoryDetail h, Dictionary<string, ZipMember> entries) => ValidateEvidence(m, h, entries, 64);
+    internal static void ValidateEvidence(Manifest m, HistoryDetail h, Dictionary<string, ZipMember> entries, int maxDepth)
     {
         JsonNode NeedJson(string name, string code)
         {
             Reject(!entries.ContainsKey(name), "Missing evidence: " + name, code);
-            var bytes = entries[name].Bytes; var node = CanonicalJson.Parse(bytes);
+            var bytes = entries[name].Bytes; var node = CanonicalJson.Parse(bytes, maxDepth);
             Reject(!bytes.AsSpan().SequenceEqual(Profile.Utf8.GetBytes(CanonicalJson.Text(node))), "Evidence is not canonical JSON: " + name, code);
             return node;
         }

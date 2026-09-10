@@ -3,15 +3,15 @@ using Mdpkg.Reader.Internal.Addressing;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Mdpkg.Reader.Internal.Format;
-using Mdpkg.Cli.Engine.Sources;
+using Mdpkg.Core.Internal.Sources;
 using Mdpkg.Reader.Internal.Sources;
 
-namespace Mdpkg.Cli.Engine.Addressing;
+namespace Mdpkg.Core.Internal.Addressing;
 
 internal static class LedgerEngine
 {
     public static Ledger Empty() => new(1, Profile.Anchor, new(StringComparer.Ordinal));
-    public static Ledger Read(byte[] bytes, Outcome outcome) => LedgerReader.Read(bytes, outcome);
+    public static Ledger Read(byte[] bytes, Outcome outcome, int maxDepth = 64) => LedgerReader.Read(bytes, outcome, maxDepth);
     private static void ValidateRecord(string root, LedgerRecord record) => LedgerReader.ValidateRecord(root, record);
     public static void ApplyCorrespondence(Ledger ledger, byte[] bytes)
     {

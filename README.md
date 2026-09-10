@@ -30,6 +30,11 @@ Git imports preserve legacy-encoded commit metadata. Report destinations are che
 filesystem aliases to protect inputs and package output. `update` and `address` remain
 explicit exit-70 placeholders.
 
+[Mdpkg.Core](src/generator-cli/src/Mdpkg.Core/README.md) exposes directory and in-memory
+creation, stream validation, typed correspondence and immutable results for .NET consumers.
+The CLI delegates engine work through Core's public API. The dependency graph is
+`Mdpkg.Cli -> Mdpkg.Core -> Mdpkg.Reader`, with `Mdpkg.Reviews -> Mdpkg.Reader`.
+
 The .NET solution also provides [Mdpkg.Reader](src/generator-cli/src/Mdpkg.Reader/README.md)
 and [Mdpkg.Reviews](src/generator-cli/src/Mdpkg.Reviews/README.md): bounded read-only package
 access and typed v1/v2 review-feedback extraction/resolution. Structural extraction and

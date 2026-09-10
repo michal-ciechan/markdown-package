@@ -41,3 +41,7 @@ use `PackageFormatException` with code/entry. Expected IO failures remain IO exc
 Unicode folding data retains its `UNICODE-LICENSE.txt`. Local preview packages are built
 with `dotnet pack`; public-feed release, repository licensing and Core/tool distribution
 are separate work.
+
+Creation and full/deep producer validation are available separately in [Mdpkg.Core](../Mdpkg.Core/README.md).
+This package remains independently usable without Core or native Git. Core requires its
+coordinated Reader build exactly; these local previews are not a public release train.

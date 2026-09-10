@@ -2,7 +2,7 @@ using System.Text;
 using Mdpkg.Reader.Internal.Sources;
 using Mdpkg.Reader.Internal.Format;
 
-namespace Mdpkg.Cli.Engine.Sources;
+namespace Mdpkg.Core.Internal.Sources;
 
 internal static class SourceTree
 {
@@ -24,8 +24,9 @@ internal static class SourceTree
         if ((File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0)
             throw new EngineException(Outcome.InvalidSource, "MDPK1003", "Symbolic links and reparse points are not accepted.", path);
     }
-    public static async Task<List<EntryData>> ReadAsync(string source, List<Finding> findings, CancellationToken ct)
+    public static async Task<List<EntryData>> ReadAsync(string source, List<Finding> findings, CancellationToken ct, ResourceOptions? resources = null)
     {
+        resources ??= ResourceOptions.ProducerCompatibility;
         if (!Directory.Exists(source)) throw new IOException("Source directory does not exist: " + source);
         for (var ancestor = new DirectoryInfo(Path.GetFullPath(source)); ancestor != null; ancestor = ancestor.Parent) RejectLink(ancestor.FullName);
         var paths = new List<string>();
@@ -46,18 +47,43 @@ internal static class SourceTree
                         throw new EngineException(Outcome.InvalidSource, "MDPK1002", "Empty reserved source directory.", relative);
                     Walk(path);
                 }
-                else paths.Add(relative);
+                else
+                {
+                    if (paths.Count >= resources.ReadLimits.MaxEntries) throw new Mdpkg.Reader.ResourceLimitException("Source entry count exceeds its limit.");
+                    paths.Add(relative);
+                }
             }
         }
         Walk(source);
         ValidateNames(paths);
         var entries = new List<EntryData>();
+        long total = 0;
         foreach (var path in paths.Order(Utf8Comparer.Instance))
         {
             var full = Path.Combine(source, path);
             RejectLink(full);
-            entries.Add(new(path, Normalize(await File.ReadAllBytesAsync(full, ct), path, findings)));
+            await using var input = File.OpenRead(full);
+            var priorTotal = total;
+            ResourceGuard.Source(path, input.Length, ref total, resources);
+            using var buffer = new MemoryStream();
+            await ResourceOptions.CopyAsync(input, buffer, Math.Min(resources.MemberLimit(path), resources.MaxSourceBytes - priorTotal), ct);
+            total = priorTotal + buffer.Length;
+            entries.Add(new(path, Normalize(buffer.ToArray(), path, findings)));
         }
         return entries;
+    }
+
+    public static List<EntryData> FromMemory(IReadOnlyList<PackageInputEntry> input, List<Finding> findings, CancellationToken ct, ResourceOptions resources)
+    {
+        if (input.Count > resources.ReadLimits.MaxEntries) throw new Mdpkg.Reader.ResourceLimitException("Source entry count exceeds its limit.");
+        ValidateNames(input.Select(e => e.Path));
+        var result = new List<EntryData>(); long total = 0;
+        foreach (var entry in input.OrderBy(e => e.Path, Utf8Comparer.Instance))
+        {
+            ct.ThrowIfCancellationRequested();
+            ResourceGuard.Source(entry.Path, entry.Content.Length, ref total, resources);
+            result.Add(new(entry.Path, Normalize(entry.Content.ToArray(), entry.Path, findings)));
+        }
+        return result;
     }
 }

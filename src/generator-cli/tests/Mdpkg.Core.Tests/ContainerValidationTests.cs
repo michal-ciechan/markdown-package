@@ -1,11 +1,11 @@
 using System.Buffers.Binary;
 using System.Text.Json.Nodes;
-using Mdpkg.Cli.Engine;
-using Mdpkg.Cli.Engine.Container;
+using Mdpkg.Core.Internal;
+using Mdpkg.Core.Internal.Container;
 using Mdpkg.Reader.Internal.Format;
-using Mdpkg.Cli.Engine.Validation;
+using Mdpkg.Core.Internal.Validation;
 
-namespace Mdpkg.Cli.Tests;
+namespace Mdpkg.EngineTests;
 
 public class ContainerValidationTests
 {

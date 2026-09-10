@@ -1,15 +1,15 @@
 using System.Text;
-using Mdpkg.Cli.Engine.Addressing;
+using Mdpkg.Core.Internal.Addressing;
 using Mdpkg.Reader.Internal.Addressing;
-using Mdpkg.Cli.Engine.Container;
+using Mdpkg.Core.Internal.Container;
 using Mdpkg.Reader.Internal.Format;
-using Mdpkg.Cli.Engine.Git;
-using Mdpkg.Cli.Engine.IO;
-using Mdpkg.Cli.Engine.Sources;
+using Mdpkg.Core.Internal.Git;
+using Mdpkg.Core.Internal.IO;
+using Mdpkg.Core.Internal.Sources;
 using Mdpkg.Reader.Internal.Sources;
-using Mdpkg.Cli.Engine.Validation;
+using Mdpkg.Core.Internal.Validation;
 
-namespace Mdpkg.Cli.Engine;
+namespace Mdpkg.Core.Internal;
 
 internal sealed class PackageBuilder(EngineSettings? settings = null)
 {
@@ -17,6 +17,7 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
     public async Task<EngineResult> PackAsync(PackRequest request, CancellationToken ct = default)
     {
         var findings = new List<Finding>();
+        var resources = request.Resources ?? ResourceOptions.ProducerCompatibility;
         string? stagedOutput = null;
         try
         {
@@ -32,11 +33,11 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
             var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             if (destination.StartsWith(sourcePath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, comparison))
                 throw new EngineException(Outcome.InvalidSource, "MDPK1003", "Output must be outside the source directory to avoid packaging prior output.", destination);
-            var correspondence = request.Correspondence is null ? null : await File.ReadAllBytesAsync(request.Correspondence, ct);
+            var correspondence = request.CorrespondenceBytes ?? (request.Correspondence is null ? null : await File.ReadAllBytesAsync(request.Correspondence, ct));
             using var temp = new TemporaryDirectory(settings.TemporaryDirectory);
-            var git = new GitProcess(settings.GitExecutable);
+            var git = new GitProcess(settings.GitExecutable, resources.MaxSpoolBytes);
             var work = Path.Combine(temp.Path, "repository.git"); Directory.CreateDirectory(work);
-            var repo = new Repository(git, work);
+            var repo = new Repository(git, work, resources);
             await repo.InitializeAsync(ct);
             string[] sourceCommits = [];
             Repository? sourceRepo = null;
@@ -56,13 +57,13 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
                 sourceCommits = (await git.TextAsync(sourcePath, ct, "rev-list", "--first-parent", "--reverse", "HEAD")).Split('\n', StringSplitOptions.RemoveEmptyEntries);
                 if (sourceCommits.Length == 0) throw new IOException("Source repository has no commits.");
                 if (request.Depth is { } depth) sourceCommits = sourceCommits.TakeLast(depth).ToArray();
-                sourceRepo = new(git, sourcePath);
+                sourceRepo = new(git, sourcePath, resources);
             }
             var snapshots = request.FromGit ? sourceCommits.Length : 1;
             var retained = new List<string>(); var ranges = new List<CoverageRange>();
             var ledger = LedgerEngine.Empty(); var previousRoots = new HashSet<string>(StringComparer.Ordinal);
             List<EntryData> currentEntries = [];
-            string? head = null; var minted = 0;
+            string? head = null; var minted = 0; long sourceBytes = 0;
             for (var i = 0; i < snapshots; i++)
             {
                 ct.ThrowIfCancellationRequested();
@@ -70,19 +71,21 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
                 if (sourceRepo is not null) entries = await sourceRepo.ReadTreeAsync(sourceCommits[i], request.Scope, findings, normalize: true, ct);
                 else
                 {
-                    entries = await SourceTree.ReadAsync(sourcePath, findings, ct);
+                    entries = request.InputEntries is null ? await SourceTree.ReadAsync(sourcePath, findings, ct, resources)
+                        : SourceTree.FromMemory(request.InputEntries, findings, ct, resources);
                     if (request.Scope is not null)
                     {
                         var unprojected = await repo.TreeAsync(entries, ct);
                         entries = await repo.ReadTreeAsync(unprojected, request.Scope, findings, normalize: true, ct);
                     }
                 }
+                foreach (var entry in entries) ResourceGuard.Source(entry.Name, entry.Bytes.LongLength, ref sourceBytes, resources);
                 if (entries.Any(e => e.Name.StartsWith(".mdpkg/review/", StringComparison.Ordinal)))
                     throw new EngineException(Outcome.InvalidSource, "MDPK1002", "Review-package authoring is not supported by pack; review paths require a review manifest.");
                 var suppliedRoots = new HashSet<string>(StringComparer.Ordinal);
                 if (entries.FirstOrDefault(e => e.Name == Profile.Ledger) is { } inputLedger)
                 {
-                    var incoming = LedgerEngine.Read(inputLedger.Bytes, Outcome.InvalidSource);
+                    var incoming = LedgerEngine.Read(inputLedger.Bytes, Outcome.InvalidSource, resources.ReadLimits.MaxJsonDepth);
                     foreach (var record in incoming.Entries) { ledger.Entries[record.Key] = record.Value; suppliedRoots.Add(record.Key); }
                 }
                 if (i == snapshots - 1 && correspondence is not null) LedgerEngine.ApplyCorrespondence(ledger, correspondence);
@@ -106,7 +109,7 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
                 LedgerEngine.Store(entries, ledger);
                 var tree = await repo.TreeAsync(entries, ct);
                 string commit;
-                if (sourceRepo is null) commit = await repo.CommitAsync(tree, null, request.Message, ct);
+                if (sourceRepo is null) commit = await repo.CommitAsync(tree, null, request.Message, ct, request.Metadata);
                 else
                 {
                     var original = await sourceRepo.ReadObjectAsync("commit", sourceCommits[i], ct);
@@ -140,11 +143,15 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
             stagedOutput = Path.Combine(Path.GetDirectoryName(destination)!, "." + Path.GetFileName(destination) + "." + Guid.NewGuid().ToString("N") + ".tmp");
             await using (var file = new FileStream(stagedOutput, FileMode.CreateNew, FileAccess.Write, FileShare.None))
             {
-                ZipContainer.Write(file, items, request.CompressionLevel, request.DataDescriptors, ct);
+                ResourceGuard.Entries(items, resources);
+                ZipContainer.Write(file, items, request.CompressionLevel, request.DataDescriptors, ct,
+                    Math.Min(resources.MaxSpoolBytes, resources.ReadLimits.MaxInputBytes), resources.ReadLimits.MaxDirectoryBytes);
+                if (file.Length > resources.MaxSpoolBytes || file.Length > resources.ReadLimits.MaxInputBytes)
+                    throw new Mdpkg.Reader.ResourceLimitException("Created archive exceeds its byte limit.");
                 await file.FlushAsync(ct);
                 file.Flush(flushToDisk: true);
             }
-            var validated = await new PackageValidator(settings).ValidateAsync(new(stagedOutput, Deep: true), ct);
+            var validated = await new Validation.PackageValidator(settings).ValidateAsync(new(stagedOutput, Deep: true, Resources: resources), ct);
             findings.AddRange(validated.Diagnostics);
             if (validated.Outcome != Outcome.Success) return validated with { Diagnostics = findings, Package = null };
             ct.ThrowIfCancellationRequested();
@@ -152,6 +159,7 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
             stagedOutput = null;
             return validated with { Package = validated.Package! with { Path = destination }, Diagnostics = findings, MintedRoots = minted };
         }
+        catch (Mdpkg.Reader.ResourceLimitException ex) { return ApiSupport.Failure(ex); }
         catch (EngineException ex) { findings.Add(Findings.Create(ex.Code, ex.Message, ex.Entry, "error")); return Failed(ex.Outcome, findings); }
         catch (DecoderFallbackException ex)
         { findings.Add(Findings.Create("MDPK1003", "Git returned a non-UTF-8 path: " + ex.Message, severity: "error")); return Failed(Outcome.InvalidSource, findings); }

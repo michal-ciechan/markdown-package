@@ -5,7 +5,12 @@ using Mdpkg.Reader.Internal.Format;
 using Mdpkg.Reader.Internal.Sources;
 namespace Mdpkg.Reader.Internal.Container;
 internal sealed record ZipMember(string Name, ushort Method, ushort Flags, uint Crc, uint CompressedSize,
-    uint Size, uint Offset, ushort InternalAttributes, byte[] Bytes, long DataOffset);
+    uint Size, uint Offset, ushort InternalAttributes, byte[] Bytes, long DataOffset)
+{
+    private byte[] payload = Bytes;
+    internal Func<byte[]>? ReadPayload { get; init; }
+    public byte[] Bytes { get => ReadPayload is null ? payload : ReadPayload(); init => payload = value; }
+}
 internal sealed record ZipContents(IReadOnlyList<ZipMember> Members, IReadOnlyList<Finding> Findings, bool Typed, string Comment);
 
 internal sealed record ZipEntry(string Name, ushort Method, ushort Flags, uint Crc, uint CompressedSize,

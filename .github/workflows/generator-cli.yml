@@ -15,6 +15,7 @@ on:
       - 'docs/spec/review-comments.schema.json'
       - 'docs/spec/review-fixtures/**'
       - 'examples/review-consumer/**'
+      - 'README.md'
       - '.github/workflows/generator-cli.yml'
   pull_request:
     paths:
@@ -25,6 +26,7 @@ on:
       - 'docs/spec/review-comments.schema.json'
       - 'docs/spec/review-fixtures/**'
       - 'examples/review-consumer/**'
+      - 'README.md'
       - '.github/workflows/generator-cli.yml'
   workflow_dispatch:
 
@@ -57,11 +59,13 @@ jobs:
         run: |
           dotnet pack src/Mdpkg.Reader/Mdpkg.Reader.csproj --no-build -c Release -o artifacts/package
           dotnet pack src/Mdpkg.Reviews/Mdpkg.Reviews.csproj --no-build -c Release -o artifacts/package
+      - name: Pack Core
+        run: dotnet pack src/Mdpkg.Core/Mdpkg.Core.csproj --no-build -c Release -o artifacts/package
       - name: Restore external review consumer
         run: dotnet restore ../../examples/review-consumer --configfile ../../examples/review-consumer/NuGet.Config
       - name: Run external review consumer
         run: dotnet run --no-restore --project ../../examples/review-consumer -- ../../docs/spec/review-fixtures/delta-v2.mdpkg ../../docs/spec/review-fixtures/original.mdpkg
-      - name: Verify isolated package consumers without Git
+      - name: Verify isolated consumers and installed tool
         run: python tests/verify-consumers.py
       - name: Verify cross-language selector vectors
         run: node ../../docs/spec/review-fixtures/verify-unicode.mjs

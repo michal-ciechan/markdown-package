@@ -1,5 +1,5 @@
 using System.CommandLine;
-using Mdpkg.Cli.Engine;
+using Mdpkg.Core;
 
 namespace Mdpkg.Cli.Commands;
 
@@ -60,14 +60,25 @@ internal static class PackCommand
                 result.AddError(error);
         });
 
-        command.SetAction(async (parse, ct) => EngineAction.Report(parse, globals, command.Name,
-            await new PackageBuilder().PackAsync(new(
-                parse.GetValue(sourceDir)!.FullName, parse.GetValue(output)!.FullName, parse.GetValue(globals.Namespace)!,
-                parse.GetValue(fromGit), parse.GetValue(scope), parse.GetValue(depth), parse.GetValue(message)!,
-                parse.GetValue(correspondence)?.FullName, parse.GetValue(requireComplete), parse.GetValue(globals.FailOnWarning),
-                parse.GetValue(globals.CompressionLevel), parse.GetValue(globals.DataDescriptors), parse.GetValue(globals.ReverseIndex),
-                parse.GetValue(globals.ObjectFormat)!, parse.GetValue(globals.Anchor)!, parse.GetValue(globals.Digest)!), ct),
-            [parse.GetValue(output)!.FullName, parse.GetValue(correspondence)?.FullName], parse.GetValue(sourceDir)!.FullName));
+        command.SetAction((parse, ct) => EngineAction.RunAsync(parse, globals, command.Name, async () =>
+        {
+            var records = parse.GetValue(correspondence) is { } file
+                ? CorrespondenceCodec.Decode(await File.ReadAllBytesAsync(file.FullName, ct)) : null;
+            var request = new DirectoryPackageRequest(parse.GetValue(sourceDir)!.FullName, Guid.Parse(parse.GetValue(globals.Namespace)!))
+            {
+                Mode = parse.GetValue(fromGit) ? CreationMode.GitImport : CreationMode.Snapshot,
+                Scope = parse.GetValue(scope), Depth = parse.GetValue(depth), Correspondence = records,
+                Metadata = SnapshotMetadata.CliDefault with { Message = parse.GetValue(message)! },
+                Options = new()
+                {
+                    RequireComplete = parse.GetValue(requireComplete), Warnings = parse.GetValue(globals.FailOnWarning) ? WarningPolicy.Fail : WarningPolicy.Report,
+                    CompressionLevel = parse.GetValue(globals.CompressionLevel), DataDescriptors = parse.GetValue(globals.DataDescriptors),
+                    ReverseIndex = parse.GetValue(globals.ReverseIndex), ObjectFormat = parse.GetValue(globals.ObjectFormat)!,
+                    Anchor = parse.GetValue(globals.Anchor)!, Digest = parse.GetValue(globals.Digest)!, Resources = ResourceOptions.ProducerCompatibility
+                }
+            };
+            return await new PackageBuilder().CreateFromDirectoryAsync(request, parse.GetValue(output)!.FullName, ct);
+        }, [parse.GetValue(output)!.FullName, parse.GetValue(correspondence)?.FullName], parse.GetValue(sourceDir)!.FullName));
         return command;
     }
 }

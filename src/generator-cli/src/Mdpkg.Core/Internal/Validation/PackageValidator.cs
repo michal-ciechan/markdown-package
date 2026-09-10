@@ -3,16 +3,16 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Mdpkg.Cli.Engine.Addressing;
+using Mdpkg.Core.Internal.Addressing;
 using Mdpkg.Reader.Internal.Addressing;
-using Mdpkg.Cli.Engine.Container;
+using Mdpkg.Core.Internal.Container;
 using Mdpkg.Reader.Internal.Format;
-using Mdpkg.Cli.Engine.Git;
-using Mdpkg.Cli.Engine.IO;
-using Mdpkg.Cli.Engine.Sources;
+using Mdpkg.Core.Internal.Git;
+using Mdpkg.Core.Internal.IO;
+using Mdpkg.Core.Internal.Sources;
 using Mdpkg.Reader.Internal.Sources;
 
-namespace Mdpkg.Cli.Engine.Validation;
+namespace Mdpkg.Core.Internal.Validation;
 
 internal sealed class PackageValidator(EngineSettings? settings = null)
 {
@@ -29,7 +29,8 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
             ct.ThrowIfCancellationRequested();
             if (request.ObjectFormat != "sha1") throw new EngineException(Outcome.Nonconforming, "MDPK4001", "SHA-256 object format is unsupported.");
             await using var file = new FileStream(request.Path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var archive = ZipContainer.Read(file, ct);
+            var resources = request.Resources ?? ResourceOptions.ProducerCompatibility;
+            var archive = ResourceGuard.Read(file, resources, ct);
             completed.UnionWith(["MDPK1001", "MDPK1003", "MDPK1005", "MDPK1006", "MDPK1008", "MDPK1009", "MDPK1010", "MDPK1011"]);
             findings.AddRange(archive.Findings);
             var entries = archive.Members.ToDictionary(m => m.Name, StringComparer.Ordinal);
@@ -40,14 +41,14 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
             }
             void Fail(string code, string message, string? name = null) => findings.Add(Findings.Create(code, message, name, "error"));
             var manifestBytes = Need(Profile.Manifest, "MDPK1006");
-            manifest = CanonicalJson.Read<Manifest>(manifestBytes);
+            manifest = CanonicalJson.Read<Manifest>(manifestBytes, resources.ReadLimits.MaxJsonDepth);
             FormatValidation.ValidateManifest(manifest, request.Namespace);
             if (Profile.Utf8.GetString(Need(".git/refs/heads/main", "MDPK2001")) != manifest.Current[5..] + "\n") Fail("MDPK2001", "Manifest current differs from refs/heads/main.");
             completed.Add("MDPK2001");
-            if (!manifestBytes.AsSpan().SequenceEqual(CanonicalJson.Bytes(manifest, manifest: true))) Fail("MDPK2007", "Manifest is not canonical JSON.", Profile.Manifest);
+            if (!manifestBytes.AsSpan().SequenceEqual(CanonicalJson.Bytes(manifest, manifest: true, maxDepth: resources.ReadLimits.MaxJsonDepth))) Fail("MDPK2007", "Manifest is not canonical JSON.", Profile.Manifest);
             if (!archive.Typed && !request.AcceptRecoverable) Fail("MDPK1006", "Use --accept-recoverable to inspect a tier-2 package.", Profile.Manifest);
             var historyBytes = Need(manifest.History.Detail, "MDPK2003");
-            history = CanonicalJson.Read<HistoryDetail>(historyBytes);
+            history = CanonicalJson.Read<HistoryDetail>(historyBytes, resources.ReadLimits.MaxJsonDepth);
             FormatValidation.ValidateHistory(manifest, history);
             completed.Add("MDPK2003");
             if (!historyBytes.AsSpan().SequenceEqual(CanonicalJson.Bytes(history))) Fail("MDPK2007", "History descriptor is not canonical JSON.", manifest.History.Detail);
@@ -98,7 +99,7 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
             var ledger = LedgerEngine.Empty();
             if (manifest.Addressing.Overrides is not null)
             {
-                ledger = LedgerEngine.Read(Need(manifest.Addressing.Overrides, "MDPK2002"), Outcome.Nonconforming);
+                ledger = LedgerEngine.Read(Need(manifest.Addressing.Overrides, "MDPK2002"), Outcome.Nonconforming, resources.ReadLimits.MaxJsonDepth);
                 overrideCount = ledger.Entries.Count;
                 if (overrideCount == 0) Fail("MDPK2002", "Empty ledger must be absent.");
                 if (!entries[Profile.Ledger].Bytes.AsSpan().SequenceEqual(CanonicalJson.Bytes(ledger))) Fail("MDPK2002", "Ledger is not canonical JSON.");
@@ -113,12 +114,12 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
                 var targets = ledger.Entries.Values.Where(r => r.To is not null).Select(r => Inventory.Root(manifest.Namespace, r.To!)).ToHashSet(StringComparer.Ordinal);
                 if (inventory.Keys.Any(root => ledger.Entries.ContainsKey(root) && !targets.Contains(root))) Fail("MDPK2002", "Reserved-slot birth lacks a fresh binding.");
             }
-            FormatValidation.ValidateEvidence(manifest, history, entries);
+            FormatValidation.ValidateEvidence(manifest, history, entries, resources.ReadLimits.MaxJsonDepth);
             completed.UnionWith(["MDPK2002", "MDPK2005", "MDPK2006", "MDPK2007"]);
             if (request.Deep && !findings.Any(f => f.Code is "MDPK4002" or "MDPK1002" or "MDPK2001"))
             {
                 deepRun = true;
-                await DeepAsync(manifest, history, gitEntries, view, ct);
+                await DeepAsync(manifest, history, gitEntries, view, resources, ct);
                 deepSucceeded = true;
             }
             file.Position = 0;
@@ -127,6 +128,7 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
                 package = new(System.IO.Path.GetFullPath(request.Path), file.Length, Convert.ToHexStringLower(hashBytes), entries.Count, archive.Typed ? "conforming" : "recoverable");
             outcome = findings.Count == 0 ? Outcome.Success : Outcome.Nonconforming;
         }
+        catch (Mdpkg.Reader.ResourceLimitException ex) { return ApiSupport.Failure(ex); }
         catch (EngineException ex) { findings.Add(Findings.Create(ex.Code, ex.Message, ex.Entry, "error")); outcome = ex.Outcome; }
         catch (Exception ex) when (ex is JsonException or DecoderFallbackException or InvalidOperationException or ArgumentException or IndexOutOfRangeException or FormatException or OverflowException)
         { findings.Add(Findings.Create("MDPK2007", "Malformed package: " + ex.Message, severity: "error")); }
@@ -139,19 +141,22 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
     }
     private static void Reject(bool invalid, string message, string code = "MDPK2007")
     { if (invalid) throw new EngineException(Outcome.Nonconforming, code, message); }
-    private async Task DeepAsync(Manifest manifest, HistoryDetail history, ZipMember[] gitEntries, List<EntryData> view, CancellationToken ct)
+    private async Task DeepAsync(Manifest manifest, HistoryDetail history, ZipMember[] gitEntries, List<EntryData> view, ResourceOptions resources, CancellationToken ct)
     {
         using var temp = new TemporaryDirectory(settings.TemporaryDirectory);
+        long spooled = 0;
         foreach (var entry in gitEntries)
         {
+            if (entry.Size > resources.MaxSpoolBytes - spooled) throw new Mdpkg.Reader.ResourceLimitException("Deep Git staging exceeds its byte limit.");
+            spooled += entry.Size;
             var dest = System.IO.Path.Combine(temp.Path, entry.Name);
             Directory.CreateDirectory(System.IO.Path.GetDirectoryName(dest)!);
             await File.WriteAllBytesAsync(dest, entry.Bytes, ct);
         }
-        var git = new GitProcess(settings.GitExecutable);
-        var repo = new Repository(git, temp.Path);
+        var git = new GitProcess(settings.GitExecutable, resources.MaxSpoolBytes);
+        var repo = new Repository(git, temp.Path, resources);
         try { await git.TextAsync(temp.Path, ct, "fsck", "--full", "--strict"); }
-        catch (IOException ex) when (ex.InnerException is not System.ComponentModel.Win32Exception)
+        catch (IOException ex) when (ex is not Mdpkg.Reader.ResourceLimitException && ex.InnerException is not System.ComponentModel.Win32Exception)
         { throw new EngineException(Outcome.Nonconforming, "MDPK4002", ex.Message); }
         var head = manifest.Current[5..];
         var commits = (await git.TextAsync(temp.Path, ct, "rev-list", "--first-parent", "--reverse", head)).Split('\n');
@@ -191,7 +196,7 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
             var ledger = LedgerEngine.Empty();
             if (tree.FirstOrDefault(e => e.Name == Profile.Ledger) is { } historicalLedger)
             {
-                ledger = LedgerEngine.Read(historicalLedger.Bytes, Outcome.Nonconforming);
+                ledger = LedgerEngine.Read(historicalLedger.Bytes, Outcome.Nonconforming, resources.ReadLimits.MaxJsonDepth);
                 Reject(ledger.Entries.Count == 0, "A retained tree carries an empty ledger.", "MDPK2002");
                 LedgerEngine.ValidateTargets(ledger, inventory, manifest.Namespace, Outcome.Nonconforming);
             }

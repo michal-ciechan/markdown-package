@@ -1,10 +1,10 @@
 using Mdpkg.Reader.Internal.Format;
-using Mdpkg.Cli.Engine.Sources;
+using Mdpkg.Core.Internal.Sources;
 using Mdpkg.Reader.Internal.Sources;
 
-namespace Mdpkg.Cli.Engine.Git;
+namespace Mdpkg.Core.Internal.Git;
 
-internal sealed class Repository(GitProcess git, string path)
+internal sealed class Repository(GitProcess git, string path, ResourceOptions? resources = null)
 {
     public string Path { get; } = path;
     public Task<string> InitializeAsync(CancellationToken ct) => git.TextAsync(Path, ct, "init", "--bare", "--object-format=sha1", "--initial-branch=main", "--template=");
@@ -31,11 +31,16 @@ internal sealed class Repository(GitProcess git, string path)
         }
         return await Build(blobs);
     }
-    public Task<string> CommitAsync(string tree, string? parent, string message, CancellationToken ct)
+    public Task<string> CommitAsync(string tree, string? parent, string message, CancellationToken ct, SnapshotMetadata? metadata = null)
     {
-        const string identity = "mdpkg <mdpkg@example.invalid> 946684800 +0000";
+        metadata ??= SnapshotMetadata.CliDefault with { Message = message };
+        static string Identity(CommitIdentity identity)
+        {
+            var offset = identity.Time.Offset;
+            return $"{identity.Name} <{identity.Email}> {identity.Time.ToUnixTimeSeconds().ToString(System.Globalization.CultureInfo.InvariantCulture)} {(offset < TimeSpan.Zero ? "-" : "+")}{Math.Abs(offset.Hours):00}{Math.Abs(offset.Minutes):00}";
+        }
         return ObjectAsync("commit", Profile.Utf8.GetBytes($"tree {tree}\n" + (parent is null ? "" : $"parent {parent}\n") +
-            $"author {identity}\ncommitter {identity}\n\n{message.TrimEnd('\n')}\n"), ct);
+            $"author {Identity(metadata.Author)}\ncommitter {Identity(metadata.Committer)}\n\n{message.TrimEnd('\n')}\n"), ct);
     }
     public Task<byte[]> ReadObjectAsync(string kind, string id, CancellationToken ct) => git.RunAsync(Path, ["cat-file", kind, id], null, ct);
     public async Task<List<EntryData>> ReadTreeAsync(string commit, string? scope, List<Finding> findings, bool normalize, CancellationToken ct)
@@ -57,12 +62,17 @@ internal sealed class Repository(GitProcess git, string path)
             selected = Profile.Utf8.GetString(selectedBytes).Split('\0', StringSplitOptions.RemoveEmptyEntries).ToHashSet(StringComparer.Ordinal);
         }
         var included = rows.Where(r => selected is null || selected.Contains(r.Name)).ToArray();
+        if (included.Length > (resources ?? ResourceOptions.ProducerCompatibility).ReadLimits.MaxEntries) throw new Mdpkg.Reader.ResourceLimitException("Source entry count exceeds its limit.");
         SourceTree.ValidateNames(included.Select(r => r.Name), outcome: normalize ? Outcome.InvalidSource : Outcome.Nonconforming);
         var result = new List<EntryData>();
+        long total = 0;
         foreach (var r in included)
         {
             if (r.Kind != "blob" || r.Mode is not ("100644" or "100755"))
                 throw new EngineException(normalize ? Outcome.InvalidSource : Outcome.Nonconforming, "MDPK1003", "Git links and submodules are not current-view text files.", r.Name);
+            var policy = resources ?? ResourceOptions.ProducerCompatibility;
+            var size = long.Parse(await git.TextAsync(Path, ct, "cat-file", "-s", r.Id), System.Globalization.CultureInfo.InvariantCulture);
+            ResourceGuard.Source(r.Name, size, ref total, policy);
             var bytes = await ReadObjectAsync("blob", r.Id, ct);
             // The CLI emits fixed 100644 ZIP attributes (§8). Its Git trees must agree,
             // otherwise extraction + read-tree would show a mode change on Unix.

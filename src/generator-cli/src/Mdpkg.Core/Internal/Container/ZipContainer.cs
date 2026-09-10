@@ -1,13 +1,14 @@
 using Mdpkg.Reader.Internal.Container;
 using System.IO.Compression;
-using Mdpkg.Cli.Engine.Sources;
-namespace Mdpkg.Cli.Engine.Container;
+using Mdpkg.Core.Internal.Sources;
+namespace Mdpkg.Core.Internal.Container;
 internal static class ZipContainer
 {
     public static uint Crc(byte[] bytes) => ZipReader.Crc(bytes);
     public static void CheckLimits(long size, long count) => ZipReader.CheckLimits(size, count);
     public static ZipContents Read(Stream stream, CancellationToken ct) => ZipReader.Read(stream, ct);
-    public static void Write(Stream stream, IReadOnlyList<EntryData> entries, int level, bool descriptors, CancellationToken ct)
+    public static void Write(Stream stream, IReadOnlyList<EntryData> entries, int level, bool descriptors, CancellationToken ct,
+        long maximumBytes = long.MaxValue, long maximumDirectoryBytes = long.MaxValue)
     {
         ct.ThrowIfCancellationRequested();
         CheckLimits(0, entries.Count);
@@ -29,6 +30,8 @@ internal static class ZipContainer
                 if (compressed.Length < entry.Bytes.Length) { encoded = compressed.ToArray(); method = 8; }
             }
             CheckLimits(stream.Position + 30L + name.Length + encoded.Length + 16, entries.Count);
+            var localBytes = 30L + name.Length + encoded.Length + (descriptors && entry.Name != Profile.Manifest ? 16 : 0);
+            if (localBytes > maximumBytes - stream.Position) throw new Mdpkg.Reader.ResourceLimitException("Created archive exceeds its byte limit.");
             var flags = (ushort)((name.Any(b => b > 127) ? 0x800 : 0) | (descriptors && entry.Name != Profile.Manifest ? 8 : 0));
             var crc = Crc(entry.Bytes);
             var offset = (uint)stream.Position;
@@ -45,6 +48,9 @@ internal static class ZipContainer
         foreach (var e in directory)
         {
             ct.ThrowIfCancellationRequested();
+            var rowBytes = 46L + e.Name.Length;
+            if (rowBytes > maximumBytes - stream.Position || rowBytes > maximumDirectoryBytes - (stream.Position - cd))
+                throw new Mdpkg.Reader.ResourceLimitException("Created ZIP directory exceeds its byte limit.");
             writer.Write(0x02014b50u); writer.Write((ushort)0x314); writer.Write((ushort)20);
             writer.Write(e.Flags); writer.Write(e.Method); writer.Write((ushort)0); writer.Write((ushort)33);
             writer.Write(e.Crc); writer.Write(e.Size); writer.Write((uint)e.Entry.Bytes.Length);
@@ -52,6 +58,7 @@ internal static class ZipContainer
             writer.Write((ushort)0); writer.Write(0x81a40000u); writer.Write(e.Offset); writer.Write(e.Name);
         }
         CheckLimits(stream.Position + 22, entries.Count);
+        if (22 > maximumBytes - stream.Position) throw new Mdpkg.Reader.ResourceLimitException("Created archive exceeds its byte limit.");
         var cdSize = stream.Position - cd;
         writer.Write(0x06054b50u); writer.Write((ushort)0); writer.Write((ushort)0);
         writer.Write((ushort)entries.Count); writer.Write((ushort)entries.Count);

@@ -5,11 +5,12 @@ using Mdpkg.Reader.Internal.Sources;
 namespace Mdpkg.Reader.Internal.Addressing;
 internal static class LedgerReader
 {
-    public static Ledger Read(byte[] bytes, Outcome outcome)
+    public static Ledger Read(byte[] bytes, Outcome outcome) => Read(bytes, outcome, 64);
+    public static Ledger Read(byte[] bytes, Outcome outcome, int maxDepth)
     {
         try
         {
-            var ledger = CanonicalJson.Read<Ledger>(bytes);
+            var ledger = CanonicalJson.Read<Ledger>(bytes, maxDepth);
             if (ledger.Version != 1 || ledger.Anchor != Profile.Anchor || ledger.Entries is null)
                 throw new JsonException("Unknown ledger version or anchor.");
             foreach (var (root, record) in ledger.Entries) ValidateRecord(root, record);
