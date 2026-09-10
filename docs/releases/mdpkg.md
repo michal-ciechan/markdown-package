@@ -34,8 +34,13 @@ does not establish NuGet.org availability. Library publication is CARD-0039.
 
    **The policy pins the owner, repository and workflow filename. Renaming
    `.github/workflows/publish-nuget.yml` breaks authentication until the policy is
-   updated.** Keep the environment name synchronized too. If NuGet shows a pending
-   activation window, publish while active or reactivate it before retrying.
+   updated.** Keep the environment name synchronized too.
+
+   A newly created policy may show **Pending** with a message such as "Use within
+   7 days to keep it permanently active." It can authenticate and publish during
+   this window; a successful push makes the policy permanently active. This worked
+   for `mdpkg`'s first publish. If the window expires, use **Activate for 7 days**
+   to restart it, then publish within that window.
 4. Run the workflow on master:
 
    ```powershell
