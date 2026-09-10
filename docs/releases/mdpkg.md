@@ -1,23 +1,21 @@
 # Coordinated mdpkg, Reader and Core releases (CARD-0036/CARD-0039)
 
-`mdpkg` 0.1.0-preview.1 passed the public install gate in
-[run 34513663424](https://github.com/michal-ciechan/markdown-package/actions/runs/34513663424).
-The next coordinated version is **0.1.0-preview.2**: `Mdpkg.Reader`, `Mdpkg.Core`,
-then `mdpkg`. Library availability requires the owner policy extension below and
-both `prove-nuget-org` matrix entries to pass. `Mdpkg.Reviews` is built and checked
-locally but is not pushed.
+**Published and verified (2026-09-10):** `mdpkg`, `Mdpkg.Reader` and `Mdpkg.Core`
+are live on nuget.org at **0.1.0-preview.2**. After the NuGet Trusted Publishing
+policy was extended, [run 34516104021](https://github.com/michal-ciechan/markdown-package/actions/runs/34516104021)
+was rerun and all five jobs passed: `verify (ubuntu-latest)`,
+`verify (windows-latest)`, `publish`, `prove-nuget-org (libraries)` and
+`prove-nuget-org (tool)`. Both public-feed proofs confirm the release works.
+The policy explicitly authorizes `mdpkg`, `Mdpkg.Reader` and `Mdpkg.Core`;
+it deliberately uses no wildcard, keeping `Mdpkg.Reviews` unauthorized.
+Reviews shares the coordinated version and is built and checked locally but is not pushed.
 
-**Current blocker (2026-09-10):** [run 34516104021](https://github.com/michal-ciechan/markdown-package/actions/runs/34516104021)
-passed Windows/Linux gates, all artifact checksums and NuGet login, but the first
-Reader push returned **HTTP 403** (key invalid, expired, or lacking package access).
-Core/tool pushes were not attempted and the public proof was skipped. The owner
-must confirm package ownership and extend the policy scopes in step 3. After that,
-retry the same verified release without changing its version or artifacts:
-
-```powershell
-gh run rerun 34516104021 --failed
-gh run watch 34516104021 --exit-status
-```
+**Historical first attempt:** Windows/Linux gates, artifact checksums and NuGet
+login passed, but the first Reader push returned **HTTP 403** (key invalid,
+expired, or lacking package access). In that attempt only, Core/tool pushes were
+not reached and the public proofs were skipped. The policy extension resolved
+the authorization failure; the successful rerun above supersedes that result.
+See step 3 for the misleading API-key error and policy-editing troubleshooting.
 
 ## One-time owner setup
 
@@ -32,7 +30,8 @@ gh run watch 34516104021 --exit-status
    secret **`NUGET_USER`** containing the NuGet **profile name**, not the email address.
    A repository secret of that name also works, but the environment secret keeps
    the release setup together. No long-lived `NUGET_API_KEY` secret is needed.
-3. On NuGet.org, extend the GitHub Trusted Publishing policy with these values:
+3. The GitHub Trusted Publishing policy was extended on NuGet.org for this release.
+   When recreating it, use these values:
 
    | Field | Value |
    | --- | --- |
@@ -45,7 +44,7 @@ gh run watch 34516104021 --exit-status
    | Package globs | **`mdpkg`**, **`Mdpkg.Reader`**, **`Mdpkg.Core`** |
    | Scopes | Push new packages and new versions, including the initial package |
 
-   Extend the existing policy to authorize all three exact IDs, including initial
+   Configure the policy to authorize all three exact IDs, including initial
    creation of Reader/Core. If the UI exposes one glob per policy, add matching
    policies for `Mdpkg.Reader` and `Mdpkg.Core` with the same identity fields. Do not
    authorize Reviews or an unrestricted `*` as part of this release. Keep the

@@ -40,8 +40,8 @@ and [Mdpkg.Reviews](src/generator-cli/src/Mdpkg.Reviews/README.md): bounded read
 access and typed v1/v2 review-feedback extraction/resolution. Structural extraction and
 current-view resolution require no native Git; full verification is an injected capability.
 The [external consumer](examples/review-consumer/) restores Reviews from local preview
-packages. Reader and Core now use the coordinated [NuGet release workflow](docs/releases/mdpkg.md);
-the public consumer gate must pass before a release is considered available. Reviews
+packages. Reader and Core are published on nuget.org at **0.1.0-preview.2**, with both
+public consumer gates passing in the coordinated [NuGet release workflow](docs/releases/mdpkg.md). Reviews
 is still distributed as a local preview.
 
 ```powershell
@@ -63,7 +63,7 @@ dotnet add package Mdpkg.Core --version 0.1.0-preview.2 --source https://api.nug
 Install the published preview global tool (.NET 10 and Git required):
 
 ```powershell
-dotnet tool install -g mdpkg --version 0.1.0-preview.1 --source https://api.nuget.org/v3/index.json
+dotnet tool install -g mdpkg --version 0.1.0-preview.2 --source https://api.nuget.org/v3/index.json
 mdpkg --version
 mdpkg pack ./my-docs --out ./my-docs.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8
 mdpkg validate ./my-docs.mdpkg --deep

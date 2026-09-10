@@ -1,14 +1,23 @@
 # CARD-0039: Reader/Core NuGet release integration
 
-Implementation is committed and pushed at `cf6568a`; publication is blocked by
-NuGet authorization. The first `Mdpkg.Reader` 0.1.0-preview.2 push returned HTTP 403
-after successful OIDC login. No packages from this release were pushed; Core and
-mdpkg pushes were not reached. The public proof job was skipped.
+Implementation is committed and pushed at `cf6568a`; publication is complete.
+`mdpkg`, `Mdpkg.Reader` and `Mdpkg.Core` are live on nuget.org at **0.1.0-preview.2**
+and both public-feed proofs passed. The NuGet Trusted Publishing policy was
+extended to explicitly authorize `mdpkg`, `Mdpkg.Reader` and `Mdpkg.Core`, then
+workflow run 34516104021 was rerun successfully. No wildcard was used, deliberately
+keeping `Mdpkg.Reviews` unauthorized and local-only.
+
+The first attempt's Reader push returned HTTP 403 after successful OIDC login.
+In that attempt only, no packages were pushed, Core/tool pushes were not reached,
+and the public proofs were skipped. The policy extension resolved that historical
+authorization failure; publication is now working.
 
 ## Evidence
 
 - [Release run 34516104021](https://github.com/michal-ciechan/markdown-package/actions/runs/34516104021):
-  Windows and Linux verification succeeded; publishing failed at Reader push.
+  after the policy extension and rerun, all five jobs passed: `verify (ubuntu-latest)`,
+  `verify (windows-latest)`, `publish`, `prove-nuget-org (libraries)` and
+  `prove-nuget-org (tool)`.
 - [Ordinary CI run 34516104083](https://github.com/michal-ciechan/markdown-package/actions/runs/34516104083):
   Windows and Linux succeeded.
 - Release tests: **1,064 passed per OS; 0 failed, 0 skipped**. Both builds had
@@ -20,8 +29,9 @@ mdpkg pushes were not reached. The public proof job was skipped.
   Five SHA-256 checksums generated per OS and verified again before Linux publication.
 - actionlint 1.7.12: both changed workflows, 0 findings. `git diff --check`: 0 errors.
 - Prepublication public-only library proof: 2 fresh-cache attempts, both failed with
-  NU1101 for missing Reader/Core, as expected. No local fallback occurred. Public
-  availability and successful public-feed smoke remain unproven.
+  NU1101 for missing Reader/Core, as expected. No local fallback occurred. These
+  historical prepublication results are superseded by the successful public-feed
+  library and tool proofs in the rerun, confirming availability and working consumers.
 - Development harness issues (duplicate solution project names and exact-range string
   formatting) were corrected before all final local/CI gates passed. Existing local
   artifacts with older versions prompted exact shared-version selection in the
@@ -57,14 +67,13 @@ API baseline review for Reader/Core/Reviews. No public API signatures changed he
 automated API compatibility enforcement is not claimed. Rationale and follow-up
 requirements are in the release guide.
 
-## Owner action and retry
+## Completed policy correction and rerun
 
-CARD-0039 scope item 3 explicitly says the agent cannot provision the actual NuGet
-account/policy. The existing GitHub environment is already restricted to master,
-and OIDC token exchange succeeded. This is a NuGet authorization failure, not an
-indexing delay. Confirm ownership/permission for the two new IDs and extend the
-existing publishing policy to **mdpkg**, **Mdpkg.Reader**, **Mdpkg.Core**, including
-initial-package and new-version pushes. Retain these identity constraints:
+The first attempt exposed missing package authorization despite successful OIDC
+token exchange. The policy was subsequently extended to the exact globs **mdpkg**,
+**Mdpkg.Reader**, **Mdpkg.Core**, including initial-package and new-version pushes.
+No unrestricted wildcard was added, so Reviews remains unauthorized. The existing
+GitHub environment remains restricted to master, with these identity constraints:
 
 | Field | Value |
 | --- | --- |
@@ -73,20 +82,14 @@ initial-package and new-version pushes. Retain these identity constraints:
 | Workflow filename | `publish-nuget.yml` |
 | Environment | `nuget` |
 | GitHub deployment branch | `master` |
-| NuGet profile/owner | Existing successful mdpkg publisher; confirm new-ID access |
+| NuGet profile/owner | Existing successful mdpkg publisher; Reader/Core access confirmed by publication |
 
 Both library flat-container indexes returned 404 before release. This does not
 prove package-ID ownership or reserve either ID. Do not silently rename packages.
 Do not provision another persistent API key or authorize Reviews for this task.
 
-After the owner corrects NuGet permissions, from `C:\src\markdown-package`:
-
-```powershell
-gh run rerun 34516104021 --failed
-gh run watch 34516104021 --exit-status
-```
-
-Require both `prove-nuget-org` matrix entries to pass before closing CARD-0039.
+After the policy correction, run 34516104021 was rerun and all five jobs passed.
+Both `prove-nuget-org` matrix entries passed, satisfying the release-completion gate.
 For a separate cold public-only verification from the repository root:
 
 ```powershell
@@ -94,4 +97,6 @@ python src/generator-cli/tests/prove-libraries.py --attempts 20 --retry-delay 18
 python src/generator-cli/tests/prove-tool.py --attempts 20 --retry-delay 180
 ```
 
-No account/policy mutation was attempted. No approval-review rejection occurred.
+The implementation agent did not provision the account/policy; the subsequent
+policy extension and successful rerun completed publication. No approval-review
+rejection occurred.

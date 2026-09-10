@@ -8,11 +8,11 @@ The [format specification](https://github.com/michal-ciechan/markdown-package/bl
 
 ## Install from NuGet.org
 
-The first release awaits owner account/policy setup and a successful public-feed proof.
-Once published, install the preview with .NET 10 SDK and Git on PATH:
+Version **0.1.0-preview.2** is published on nuget.org and passed the public-feed proof.
+Install the preview with .NET 10 SDK and Git on PATH:
 
 ```powershell
-dotnet tool install -g mdpkg --version 0.1.0-preview.1 --source https://api.nuget.org/v3/index.json
+dotnet tool install -g mdpkg --version 0.1.0-preview.2 --source https://api.nuget.org/v3/index.json
 mdpkg --version
 mdpkg pack ./my-docs --out ./my-docs.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8
 mdpkg validate ./my-docs.mdpkg --deep --format json
