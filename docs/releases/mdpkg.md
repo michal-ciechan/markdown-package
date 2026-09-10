@@ -51,6 +51,28 @@ gh run watch 34516104021 --exit-status
    authorize Reviews or an unrestricted `*` as part of this release. Keep the
    existing `NUGET_USER` secret; no new persistent API key is needed.
 
+   When editing this Trusted Publishing policy, watch for three NuGet.org traps:
+
+   - **A push HTTP 403 can misleadingly point to an API key.** If a new package ID
+     is missing from the policy's authorized glob list, an otherwise correctly
+     configured setup fails with "The specified API key is invalid, has expired,
+     or does not have permission to access the specified package". In this case,
+     read the message as "this package ID is not authorized by the policy's glob
+     list"; check the globs before hunting for an expired or invalid persistent
+     API key. Trusted Publishing requires no manually configured API key; the
+     workflow obtains a temporary key through NuGet login.
+   - **The edit form's glob textarea loads empty, and Save replaces the entire
+     glob list.** Existing globs appear only in the read-only summary; they are
+     never pre-filled into the edit box. Always re-enter the complete intended
+     set: `mdpkg`, `Mdpkg.Reader` and `Mdpkg.Core` for this release. Entering only
+     `Mdpkg.Reader`, for example, silently removes `mdpkg`'s authorization, which
+     may only become apparent when its next release returns HTTP 403. Save does
+     not merge new entries with existing globs.
+   - **The summary can remain stale immediately after Save.** The server may
+     already have saved the new globs while the summary still shows the old list.
+     Reload the page to verify the current state before concluding that the save
+     failed or making another edit.
+
    **The policy pins the owner, repository and workflow filename. Renaming
    `.github/workflows/publish-nuget.yml` breaks authentication until the policy is
    updated.** Keep the environment name synchronized too.
@@ -65,6 +87,10 @@ gh run watch 34516104021 --exit-status
    GitHub owner and repository IDs; deleting and recreating the repository under
    the same name breaks authentication and requires reconfiguring the policy for
    the new repository ID.
+
+   Once bound after the first successful push, the policy's owner and repository
+   fields are read-only. Editing the glob list does not unlock these fields or
+   reopen the 7-day pending window.
 
    NuGet's indexes become available in order: the gallery page
    (`https://www.nuget.org/packages/<id>`) returns HTTP 200 within about a minute
