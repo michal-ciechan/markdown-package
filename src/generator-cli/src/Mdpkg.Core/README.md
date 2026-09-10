@@ -4,17 +4,17 @@ Create `.mdpkg` packages and run full or native-Git deep validation from .NET 10
 Windows and Linux. `Mdpkg.Cli -> Mdpkg.Core -> Mdpkg.Reader`; Reviews depends only on
 Reader. Core does not reference Reviews, the CLI, or System.CommandLine.
 
-This is a **local preview**, not a NuGet.org release. Pack Reader and Core from the
-same checkout, then restore from that feed:
+Install the coordinated preview from NuGet.org after the [public release gate](https://github.com/michal-ciechan/markdown-package/actions/workflows/publish-nuget.yml) succeeds:
 
 ```sh
-dotnet add package Mdpkg.Core --version 0.1.0-preview.1 --source /absolute/path/to/local/feed
+dotnet add package Mdpkg.Core --version 0.1.0-preview.2 --source https://api.nuget.org/v3/index.json
 ```
 
-Core uses Reader internals and carries an **exact** Reader dependency. The local
-Reader package must include Core friendship. Do not substitute a previously packed
-Reader with the same preview number. Released version selection, license metadata,
-publishing and public-feed availability belong to CARD-0036/CARD-0039.
+Core uses Reader internals and carries an **exact** `Mdpkg.Reader` dependency on
+`0.1.0-preview.2`. NuGet restores Reader automatically. Reader is published first
+from the same verified release; never substitute different bytes under that version.
+See the [release guide](https://github.com/michal-ciechan/markdown-package/blob/master/docs/releases/mdpkg.md)
+for policy setup, publication status and local-feed verification.
 
 The following examples are compiled and executed by `tests/verify-consumers.py`
 using only package references. Native `git` must be installed for creation and deep
@@ -113,5 +113,5 @@ Input/output ownership and resources:
   smaller service defaults. A caller may select or customize either resource profile.
 
 Reader retains the Unicode attribution and parser/compression dependency notices in
-its package. No release publishing, account setup, workflow or license foundation is
-introduced by this local extraction.
+its MIT-licensed package. The shared release workflow publishes Reader before Core
+and verifies fresh consumers against nuget.org alone.

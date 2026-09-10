@@ -1,22 +1,24 @@
 """Inspect local packages, restore isolated consumers, and smoke-test the installed tool."""
-import json, os, pathlib, re, shutil, subprocess, tempfile, zipfile, xml.etree.ElementTree as ET
+import argparse, json, os, pathlib, re, shutil, subprocess, tempfile, zipfile, xml.etree.ElementTree as ET
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
-FEED = ROOT / 'src/generator-cli/artifacts/package'
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--local-feed', type=pathlib.Path, default=ROOT / 'src/generator-cli/artifacts/package')
+FEED = parser.parse_args().local_feed.resolve()
+VERSION = ET.parse(ROOT / 'src/generator-cli/Mdpkg.Pack.props').findtext('./PropertyGroup/Version')
 DOTNET = shutil.which('dotnet')
 assert DOTNET, 'dotnet is required to build the consumer'
 
 def package_info(package):
-    files = [p for p in FEED.glob('*.nupkg') if re.fullmatch(re.escape(package) + r'\.\d.*\.nupkg', p.name, re.I)]
-    # Reader/Core names do not overlap; require an unambiguous artifact set.
-    assert len(files) == 1, (package, files)
-    with zipfile.ZipFile(files[0]) as archive:
+    path = FEED / f'{package}.{VERSION}.nupkg'
+    with zipfile.ZipFile(path) as archive:
         manifest = next(n for n in archive.namelist() if n.endswith('.nuspec'))
         root = ET.fromstring(archive.read(manifest))
         ns = {'n': root.tag.split('}')[0].removeprefix('{')}
         metadata = root.find('n:metadata', ns)
         assert metadata is not None
-        return files[0], metadata.find('n:version', ns).text, archive.namelist(), metadata, ns
+        assert metadata.find('n:version', ns).text == VERSION
+        return path, VERSION, archive.namelist(), metadata, ns
 
 packages = {name: package_info(name) for name in ('Mdpkg.Reader', 'Mdpkg.Core', 'Mdpkg.Reviews', 'mdpkg')}
 _, core_version, core_files, core_metadata, ns = packages['Mdpkg.Core']

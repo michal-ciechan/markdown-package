@@ -53,6 +53,9 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: src/generator-cli/global.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
       - name: Restore
         run: dotnet restore
       - name: Build
@@ -75,10 +78,17 @@ jobs:
         run: dotnet run --no-restore --project ../../examples/review-consumer -- ../../docs/spec/review-fixtures/delta-v2.mdpkg ../../docs/spec/review-fixtures/original.mdpkg
       - name: Verify isolated consumers and installed tool
         run: python tests/verify-consumers.py
+      - name: Prove coordinated library consumers
+        run: python tests/prove-libraries.py --local-feed artifacts/package
+      - name: Inspect release metadata and checksum artifacts
+        run: python tests/inspect-release.py artifacts/package --commit "${{ github.sha }}"
       - name: Verify cross-language selector vectors
         run: node ../../docs/spec/review-fixtures/verify-unicode.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: mdpkg-nupkg-${{ matrix.os }}
-          path: src/generator-cli/artifacts/package/*.nupkg
+          path: |
+            src/generator-cli/artifacts/package/*.nupkg
+            src/generator-cli/artifacts/package/*.snupkg
+            src/generator-cli/artifacts/package/SHA256SUMS
           if-no-files-found: error

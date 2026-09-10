@@ -8,6 +8,11 @@ on:
     branches: [master]
     paths:
       - 'src/generator-cli/**'
+      # Includes Core/Reader projects, packed READMEs and shared Mdpkg.Pack.props.
+      - 'examples/review-consumer/**'
+      - 'docs/spec/**'
+      - 'docs/spec.md'
+      - 'src/web-viewer/tests/fixtures/browser-v2.mdpkg'
       - 'LICENSE'
       - '.github/workflows/publish-nuget.yml'
   workflow_dispatch:
@@ -43,14 +48,26 @@ jobs:
           dotnet restore
           dotnet build --no-restore -c Release -p:ContinuousIntegrationBuild=true
           dotnet test --no-build -c Release
-      - name: Pack the tool
-        run: dotnet pack src/Mdpkg.Cli --no-build -c Release -p:ContinuousIntegrationBuild=true -o artifacts/release
+      - name: Pack coordinated packages
+        run: |
+          set -euo pipefail
+          for PROJECT in Mdpkg.Reader Mdpkg.Core Mdpkg.Reviews Mdpkg.Cli; do
+            dotnet pack "src/$PROJECT" --no-build -c Release -p:ContinuousIntegrationBuild=true -o artifacts/release
+          done
+      - name: Inspect packages and prove all local consumers
+        run: |
+          python tests/verify-consumers.py --local-feed artifacts/release
+          python tests/prove-libraries.py --local-feed artifacts/release
+          python tests/inspect-release.py artifacts/release --commit "$GITHUB_SHA"
       - name: Prove local global installation
         run: python tests/prove-tool.py --local-feed artifacts/release
       - uses: actions/upload-artifact@v4
         with:
           name: mdpkg-release-${{ matrix.os }}
-          path: src/generator-cli/artifacts/release/mdpkg.*.nupkg
+          path: |
+            src/generator-cli/artifacts/release/*.nupkg
+            src/generator-cli/artifacts/release/*.snupkg
+            src/generator-cli/artifacts/release/SHA256SUMS
           if-no-files-found: error
 
   publish:
@@ -71,6 +88,9 @@ jobs:
         with:
           name: mdpkg-release-ubuntu-latest
           path: out
+      - name: Verify artifact checksums
+        working-directory: out
+        run: sha256sum --check SHA256SUMS
       - name: Check account configuration
         env:
           NUGET_USER: ${{ secrets.NUGET_USER }}
@@ -85,19 +105,27 @@ jobs:
         id: nuget-login
         with:
           user: ${{ secrets.NUGET_USER }}
-      - name: Push only mdpkg to NuGet.org
+      - name: Push Reader, Core, then mdpkg to NuGet.org
         env:
           NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: |
           set -euo pipefail
           VERSION=$(grep -oPm1 '(?<=<Version>)[0-9][^<]*' src/generator-cli/Mdpkg.Pack.props)
-          dotnet nuget push "out/mdpkg.$VERSION.nupkg" \
-            --source https://api.nuget.org/v3/index.json \
-            --api-key "$NUGET_API_KEY" --skip-duplicate
+          # Reader's exact internal ABI must be published before its Core consumer.
+          # Reviews is inspected and retained, but is not a public release yet.
+          for PACKAGE in Mdpkg.Reader Mdpkg.Core mdpkg; do
+            dotnet nuget push "out/$PACKAGE.$VERSION.nupkg" \
+              --source https://api.nuget.org/v3/index.json \
+              --api-key "$NUGET_API_KEY" --skip-duplicate
+          done
 
   prove-nuget-org:
     needs: publish
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        product: [tool, libraries]
     timeout-minutes: 105
     steps:
       - uses: actions/checkout@v4
@@ -107,7 +135,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      # No artifact download, local source, build, or push credentials in this job.
-      # Up to 57 minutes of indexing waits plus bounded install/command time.
+      # No artifact download, local feed, repository build, or push credentials.
+      # Only the temporary external library consumers are built.
       - name: Install globally from nuget.org alone and prove pack/deep validate
+        if: matrix.product == 'tool'
         run: python src/generator-cli/tests/prove-tool.py --attempts 20 --retry-delay 180
+      - name: Restore libraries from nuget.org alone and prove create/deep validate/read
+        if: matrix.product == 'libraries'
+        run: python src/generator-cli/tests/prove-libraries.py --attempts 20 --retry-delay 180

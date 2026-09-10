@@ -141,17 +141,23 @@ node ../../docs/spec/review-fixtures/verify-unicode.mjs
 ```
 
 All four packages take their coordinated version and MIT metadata from `Mdpkg.Pack.props`.
-Only `mdpkg` is published by `publish-nuget.yml`; separate library publication remains
-CARD-0039. The tool bundles Core/Reader and runtime dependencies, so it does not need
+`publish-nuget.yml` publishes Reader, Core, then `mdpkg`; Reviews stays local.
+The tool bundles Core/Reader and runtime dependencies, so it does not need
 those libraries published separately. No invariant-globalization setting is enabled.
 
-For the release-specific local gate (an actual global install in a temporary CLI home):
+For the release-specific local gates (isolated consumers and a temporary global install):
 
 ```powershell
+dotnet pack src/Mdpkg.Reader -c Release -o artifacts/release
+dotnet pack src/Mdpkg.Core -c Release -o artifacts/release
 dotnet pack src/Mdpkg.Cli -c Release -o artifacts/release
+python tests/prove-libraries.py --local-feed artifacts/release
 python tests/prove-tool.py --local-feed artifacts/release
 ```
 
 The public proof uses `python tests/prove-tool.py --attempts 20 --retry-delay 180`:
 nuget.org alone, fresh caches, exact version, installed global shim, real pack and
-deep validate. Only that passing job establishes public availability.
+deep validate. The library matrix entry runs `python tests/prove-libraries.py
+--attempts 20 --retry-delay 180` to restore the exact Core/Reader versions, create,
+deep-validate with Git, and read without Git. Both passing entries establish release
+completion; see the [release guide](../../docs/releases/mdpkg.md).

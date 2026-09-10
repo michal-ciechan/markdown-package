@@ -1,19 +1,19 @@
-# mdpkg releases (CARD-0036)
+# Coordinated mdpkg, Reader and Core releases (CARD-0036/CARD-0039)
 
-The tool release pipeline is implemented. The first public release still requires
-the owner setup below and a successful `prove-nuget-org` job. Local installation
-does not establish NuGet.org availability. Library publication is CARD-0039.
+`mdpkg` 0.1.0-preview.1 passed the public install gate in
+[run 34513663424](https://github.com/michal-ciechan/markdown-package/actions/runs/34513663424).
+The next coordinated version is **0.1.0-preview.2**: `Mdpkg.Reader`, `Mdpkg.Core`,
+then `mdpkg`. Library availability requires the owner policy extension below and
+both `prove-nuget-org` matrix entries to pass. `Mdpkg.Reviews` is built and checked
+locally but is not pushed.
 
 ## One-time owner setup
 
-1. Sign in to or create the NuGet.org account that will own `mdpkg`. Choose that
-   individual or an organization you administer as the policy/package owner.
-   The existing Antiphon workflow uses profile `MichalCiechan`; use it here only
-   if that is the intended publishing account. Confirm the package ID is available
-   or already owned by that account. Both the `mdpkg` package page and flat-container
-   version index returned HTTP 404 on 2026-09-10; this finds no public conflict but
-   does not reserve the ID or rule out a reservation/unlisted ownership conflict.
-   If the first push reports a conflict, stop and resolve ownership; do not rename silently.
+1. Use the existing `mdpkg` owner/profile and confirm it may publish **Mdpkg.Reader**
+   and **Mdpkg.Core**. Their public v3 version indexes returned HTTP 404 on
+   2026-09-10 before this release; this does not reserve the IDs or prove they are
+   free of ownership restrictions. Resolve any conflict without silently renaming.
+   The task explicitly reserves NuGet account/policy provisioning for the human.
 2. In GitHub repository `michal-ciechan/markdown-package`, create the environment
    **`nuget`**, restrict its deployment branches to **`master`**, and add environment
    secret **`NUGET_USER`** containing the NuGet **profile name**, not the email address.
@@ -29,8 +29,14 @@ does not establish NuGet.org availability. Library publication is CARD-0039.
    | Repository | `markdown-package` |
    | Workflow file | **`publish-nuget.yml`** (filename only) |
    | Environment | **`nuget`** |
-   | Package glob | **`mdpkg`** |
+   | Package globs | **`mdpkg`**, **`Mdpkg.Reader`**, **`Mdpkg.Core`** |
    | Scopes | Push new packages and new versions, including the initial package |
+
+   Extend the existing policy to authorize all three exact IDs, including initial
+   creation of Reader/Core. If the UI exposes one glob per policy, add matching
+   policies for `Mdpkg.Reader` and `Mdpkg.Core` with the same identity fields. Do not
+   authorize Reviews or an unrestricted `*` as part of this release. Keep the
+   existing `NUGET_USER` secret; no new persistent API key is needed.
 
    **The policy pins the owner, repository and workflow filename. Renaming
    `.github/workflows/publish-nuget.yml` breaks authentication until the policy is
@@ -73,33 +79,47 @@ Ordinary CI, local verification and the public proof have `contents: read` only.
 ## Releasing and recovering
 
 Change the single `<Version>` in `src/generator-cli/Mdpkg.Pack.props`, commit and
-push to master. The initial version is `0.1.0-preview.1`. The tool and local libraries
-share this version; only the **mdpkg** nupkg is pushed. Source/props changes under
-`src/generator-cli/**`, the root LICENSE and the workflow itself trigger the release
-workflow. It also supports manual dispatch. No tags, CHANGELOG or GitHub Packages
-mirror are involved. This supersedes the tag/CHANGELOG/API-key-fallback proposal
-in the older CARD-0033 plan, sections 5–6.
+push to master. Tool, Reader, Core and local Reviews share that version. Core's
+NuGet dependency is **exactly** `[ReaderVersion]` because it uses Reader internals.
+Never publish a new Core against different Reader bytes bearing the same version.
 
-Windows and Linux restore, build, test, pack, and globally install the local tool.
-The publish job downloads the verified Linux artifact from that same run; it does
-not repack different bytes. Both packages are retained as workflow artifacts.
-`--skip-duplicate` allows retrying an already published version. A source change
-without a version bump cannot replace that immutable package: bump the version
-when changed behavior should reach users.
+The workflow triggers on `src/generator-cli/**` (including Reader/Core and shared
+props), LICENSE, its own workflow, and external consumer/spec fixtures used by its
+gates. Manual dispatch remains available. No tags, CHANGELOG or GitHub Packages
+mirror are involved. This supersedes the older CARD-0033 tag proposal.
 
-The separate **`prove-nuget-org`** job is the release-complete signal. It downloads
-no build artifact and does not build a project. It installs the exact props version
-globally in a new `DOTNET_CLI_HOME`, with a config containing only nuget.org and
-new package/HTTP caches on each attempt. It checks the global registration and
-version/help, packs a UTF-8 Markdown document, checks its archived bytes, and runs
-deep validation through the installed shim. It retries failed installs up to 20
-times, 180 seconds apart (57 minutes of waits plus command time). Smoke failures
-after installation fail immediately.
+Windows and Linux build/test, pack all four products, inspect manifests, and run
+all local consumer gates plus global tool installation. `inspect-release.py` checks
+shared versions, IDs, license/README, source commit, dependency boundaries, the
+exact Core-to-Reader pin, Core XML documentation/symbols and Unicode notices. Each
+platform uploads its packages, Core symbols and `SHA256SUMS`. The publish job
+verifies the Linux checksums and pushes those same bytes, Reader first, then Core,
+then mdpkg. Core's adjacent snupkg is pushed by `dotnet nuget push` automatically.
+Reviews remains an inspected artifact only. Only the publish job has OIDC permission.
 
-If login fails, check the profile secret, policy owner, filename and environment.
-If push succeeds but proof fails to install, check NuGet validation/indexing status
-and retry the workflow once the package is available. If installed-tool checks fail,
-fix the issue and bump the version. A green push alone does not close publication.
+`--skip-duplicate` supports recovery from partial publication. If Reader succeeded
+and Core failed, correct policy/ownership and rerun the same commit/version. Never
+change source and use a successful duplicate skip as evidence that those new bytes
+were released. Any change intended for consumers requires a new shared version.
+
+The **`prove-nuget-org` matrix** is the release-complete signal:
+
+- `tool`: installs the exact props version globally in a temporary CLI home; checks
+  registration/version/help, packs UTF-8 Markdown, checks content and deep-validates.
+- `libraries`: creates external Core-only and Reader-only PackageReference projects
+  outside the checkout. Each retry has new projects, CLI home, package/HTTP caches,
+  an explicit nuget.org-only config and no fallback folders. It verifies package
+  provenance, exact resolved versions and the Core/Reader dependency. The dependency
+  graph must contain only Core (for that consumer), Reader, Markdig and SharpZipLib.
+  It builds only these consumers, creates with Core, deep-validates with native Git,
+  checks Reader identity/content and runs standalone Reader without Git on PATH.
+
+Neither public entry downloads build artifacts or receives publishing credentials.
+Each retries install/restore up to 20 times, 180 seconds apart, with a 120-second
+command timeout. Smoke/assertion failures after restore fail immediately. Check
+flat-container indexes, not search, for indexing progress. A successful push alone
+is insufficient. Policy failures need the owner; indexing failures need a retry;
+installed behavior failures need a fix and new shared version.
 
 ## Local verification
 
@@ -109,15 +129,28 @@ From `src/generator-cli` with .NET 10 SDK, Git and Python 3 on PATH:
 dotnet restore
 dotnet build --no-restore -c Release
 dotnet test --no-build -c Release
+dotnet pack src/Mdpkg.Reader --no-build -c Release -o artifacts/release
+dotnet pack src/Mdpkg.Core --no-build -c Release -o artifacts/release
+dotnet pack src/Mdpkg.Reviews --no-build -c Release -o artifacts/release
 dotnet pack src/Mdpkg.Cli --no-build -c Release -o artifacts/release
+python tests/verify-consumers.py --local-feed artifacts/release
+python tests/prove-libraries.py --local-feed artifacts/release
 python tests/prove-tool.py --local-feed artifacts/release
+python tests/inspect-release.py artifacts/release --commit (git rev-parse HEAD)
 ```
 
-The temporary global installation leaves the developer's existing tools untouched.
-To rerun the public proof after release, omit `--local-feed` and use
-`--attempts 20 --retry-delay 180`. The package includes README, MIT LICENSE and
-the existing Unicode notice; no invariant-globalization setting is introduced.
+For the public proofs, omit `--local-feed` and use `--attempts 20 --retry-delay 180`
+with both `prove-libraries.py` and `prove-tool.py`. No invariant-globalization
+setting is introduced.
 
-For CARD-0039, extend this workflow and the policy scopes for the separate libraries
-and their public consumers. Consider Public API analyzers there; they are not part
-of this tool-only release.
+## Public API analyzer decision
+
+CARD-0039's optional analyzer suggestion was considered against Antiphon's
+`Messaging.Pack.props` pattern (`Microsoft.CodeAnalysis.PublicApiAnalyzers`,
+`PrivateAssets=all`, shipped/unshipped baselines, RS0016/RS0017 build errors).
+Defer baseline adoption to a dedicated API review covering Reader, Core and Reviews:
+this release changes packaging and consumer proof, not public signatures, and Reviews
+is not yet published. Before the next API change, establish reviewed nullable-aware
+baselines for all three libraries, fail additions/removals without an explicit
+baseline update, and keep analyzer assets out of consumer dependencies. This release
+does **not** claim automated public API compatibility enforcement.

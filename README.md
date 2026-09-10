@@ -40,7 +40,14 @@ and [Mdpkg.Reviews](src/generator-cli/src/Mdpkg.Reviews/README.md): bounded read
 access and typed v1/v2 review-feedback extraction/resolution. Structural extraction and
 current-view resolution require no native Git; full verification is an injected capability.
 The [external consumer](examples/review-consumer/) restores Reviews from local preview
-packages. Public publication of the separate libraries remains CARD-0039.
+packages. Reader and Core now use the coordinated [NuGet release workflow](docs/releases/mdpkg.md);
+the public consumer gate must pass before a release is considered available. Reviews
+is still distributed as a local preview.
+
+```powershell
+dotnet add package Mdpkg.Core --version 0.1.0-preview.2 --source https://api.nuget.org/v3/index.json
+# For read-only consumers, install Mdpkg.Reader instead.
+```
 
 ## Repository layout
 
@@ -53,8 +60,7 @@ packages. Public publication of the separate libraries remains CARD-0039.
 
 ## Getting started
 
-Install the preview global tool once the first [NuGet release gate](docs/releases/mdpkg.md)
-has completed (initial account/policy setup is still required):
+Install the published preview global tool (.NET 10 and Git required):
 
 ```powershell
 dotnet tool install -g mdpkg --version 0.1.0-preview.1 --source https://api.nuget.org/v3/index.json

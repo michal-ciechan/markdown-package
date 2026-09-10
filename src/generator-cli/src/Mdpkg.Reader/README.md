@@ -6,7 +6,13 @@ locators; CommonMark source scopes, digests and current-view ledger resolution.
 
 The package depends on Markdig and SharpZipLib. It has no CLI, package writer, native Git
 process, network operation or review-schema dependency. `Mdpkg.Reviews` builds on it.
-Creation/full Git validation remain in the CLI pending the separate Core extraction.
+Creation and full/deep validation are available through `Mdpkg.Core`.
+
+Install after the [public release gate](https://github.com/michal-ciechan/markdown-package/actions/workflows/publish-nuget.yml) succeeds:
+
+```sh
+dotnet add package Mdpkg.Reader --version 0.1.0-preview.2 --source https://api.nuget.org/v3/index.json
+```
 
 ```csharp
 using Mdpkg.Reader;
@@ -38,10 +44,11 @@ Repeated entry reads consume the aggregate budget. These are configurable servic
 `ResourceLimitException` rejects excess data rather than truncating it. Package errors
 use `PackageFormatException` with code/entry. Expected IO failures remain IO exceptions.
 
-Unicode folding data retains its `UNICODE-LICENSE.txt`. Local preview packages are built
-with `dotnet pack`; public-feed release, repository licensing and Core/tool distribution
-are separate work.
+Unicode folding data retains its `UNICODE-LICENSE.txt`; the package includes MIT
+license metadata, README and repository provenance. See the
+[release guide](https://github.com/michal-ciechan/markdown-package/blob/master/docs/releases/mdpkg.md)
+for the coordinated version, policy setup and public-feed acceptance gate.
 
-Creation and full/deep producer validation are available separately in [Mdpkg.Core](../Mdpkg.Core/README.md).
-This package remains independently usable without Core or native Git. Core requires its
-coordinated Reader build exactly; these local previews are not a public release train.
+Creation and full/deep producer validation are available separately in [Mdpkg.Core](https://github.com/michal-ciechan/markdown-package/blob/master/src/generator-cli/src/Mdpkg.Core/README.md).
+Reader remains independently usable without Core or native Git. Core requires its
+coordinated Reader version exactly; update them together.
