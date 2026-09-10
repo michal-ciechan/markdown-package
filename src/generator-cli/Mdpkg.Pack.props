@@ -1,0 +1,18 @@
+<Project>
+  <!-- Bump this one version by hand for a release. Only mdpkg is published today;
+       the coordinated library packages remain local until CARD-0039. -->
+  <PropertyGroup>
+    <Version>0.1.0-preview.1</Version>
+    <Authors>markdown-package contributors</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/michal-ciechan/markdown-package</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/michal-ciechan/markdown-package</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageTags>mdpkg;markdown;git;documents;review</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)../../LICENSE" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>

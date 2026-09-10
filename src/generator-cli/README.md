@@ -3,8 +3,31 @@
 `pack` creates real `.mdpkg` packages. `validate` checks them, and `validate --deep`
 verifies the curated repository with native Git and compares every current-view file
 with its tip-tree blob. `update` and `address` remain explicit exit-70 placeholders.
-The [format specification](../../docs/spec.md) governs the bytes; the
-[tool reference](../../docs/spec/generator-cli.md) documents commands and diagnostics.
+The [format specification](https://github.com/michal-ciechan/markdown-package/blob/master/docs/spec.md) governs the bytes; the
+[tool reference](https://github.com/michal-ciechan/markdown-package/blob/master/docs/spec/generator-cli.md) documents commands and diagnostics.
+
+## Install from NuGet.org
+
+The first release awaits owner account/policy setup and a successful public-feed proof.
+Once published, install the preview with .NET 10 SDK and Git on PATH:
+
+```powershell
+dotnet tool install -g mdpkg --version 0.1.0-preview.1 --source https://api.nuget.org/v3/index.json
+mdpkg --version
+mdpkg pack ./my-docs --out ./my-docs.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8
+mdpkg validate ./my-docs.mdpkg --deep --format json
+```
+
+Create `my-docs` with your Markdown files first; output must be outside that directory.
+Choose a new lowercase UUID for your own lineage. Add the global tool directory to
+PATH if needed: `$HOME/.dotnet/tools` on Linux/macOS or `%USERPROFILE%\.dotnet\tools`
+on Windows. To update previews, use `dotnet tool update -g mdpkg --prerelease`;
+to uninstall, `dotnet tool uninstall -g mdpkg`. `dotnet tool install -g mdpkg`
+selects the latest stable release when one exists.
+
+The package is MIT licensed and includes the Unicode data notice. Maintainers:
+see the [release guide](https://github.com/michal-ciechan/markdown-package/blob/master/docs/releases/mdpkg.md)
+for the shared version, Trusted Publishing policy and public-feed acceptance gate.
 
 ## Build and run
 
@@ -20,8 +43,7 @@ dotnet run --project src/Mdpkg.Cli -- validate guide.mdpkg --deep --format json
 
 Build output goes under the ignored `artifacts/` directory. The executable is
 `artifacts/bin/Mdpkg.Cli/release/mdpkg.exe` on Windows, or `mdpkg` on Linux.
-Distribution, versioning and publishing are separate work; no public-feed installation
-is required for these commands.
+These source commands also work before the first public release.
 
 ## Implemented behavior
 
@@ -118,7 +140,18 @@ python tests/verify-consumers.py
 node ../../docs/spec/review-fixtures/verify-unicode.mjs
 ```
 
-Core/Reader/Reviews use `0.1.0-preview.1` for local testing; the tool retains its
-existing `0.1.0-scaffold` packaging version pending CARD-0036. These are local artifacts,
-not published-version promises. Public-feed availability, release versions, MIT license
-foundation and publishing remain CARD-0036/CARD-0039; no publishing workflow is added.
+All four packages take their coordinated version and MIT metadata from `Mdpkg.Pack.props`.
+Only `mdpkg` is published by `publish-nuget.yml`; separate library publication remains
+CARD-0039. The tool bundles Core/Reader and runtime dependencies, so it does not need
+those libraries published separately. No invariant-globalization setting is enabled.
+
+For the release-specific local gate (an actual global install in a temporary CLI home):
+
+```powershell
+dotnet pack src/Mdpkg.Cli -c Release -o artifacts/release
+python tests/prove-tool.py --local-feed artifacts/release
+```
+
+The public proof uses `python tests/prove-tool.py --attempts 20 --retry-delay 180`:
+nuget.org alone, fresh caches, exact version, installed global shim, real pack and
+deep validate. Only that passing job establishes public availability.

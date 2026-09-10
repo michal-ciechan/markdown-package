@@ -1,13 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>Mdpkg.Core</PackageId>
-    <Version>0.1.0-preview.1</Version>
-    <Authors>markdown-package contributors</Authors>
     <Description>Creates Markdown packages and performs full and native-Git deep validation.</Description>
-    <PackageProjectUrl>https://github.com/michal-ciechan/markdown-package</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/michal-ciechan/markdown-package</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <DebugType>portable</DebugType>

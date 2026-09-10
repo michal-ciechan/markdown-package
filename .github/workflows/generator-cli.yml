@@ -17,6 +17,8 @@ on:
       - 'src/web-viewer/tests/fixtures/browser-v2.mdpkg'
       - 'examples/review-consumer/**'
       - 'README.md'
+      - 'LICENSE'
+      - '.github/workflows/publish-nuget.yml'
       - '.github/workflows/generator-cli.yml'
   pull_request:
     paths:
@@ -29,6 +31,8 @@ on:
       - 'src/web-viewer/tests/fixtures/browser-v2.mdpkg'
       - 'examples/review-consumer/**'
       - 'README.md'
+      - 'LICENSE'
+      - '.github/workflows/publish-nuget.yml'
       - '.github/workflows/generator-cli.yml'
   workflow_dispatch:
 
@@ -57,6 +61,8 @@ jobs:
         run: dotnet test --no-build -c Release
       - name: Pack the tool
         run: dotnet pack src/Mdpkg.Cli/Mdpkg.Cli.csproj --no-build -c Release -o artifacts/package
+      - name: Prove global tool installation
+        run: python tests/prove-tool.py --local-feed artifacts/package
       - name: Pack read-only libraries
         run: |
           dotnet pack src/Mdpkg.Reader/Mdpkg.Reader.csproj --no-build -c Release -o artifacts/package

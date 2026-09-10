@@ -13,12 +13,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>mdpkg</ToolCommandName>
     <PackageId>mdpkg</PackageId>
-    <Version>0.1.0-scaffold</Version>
-    <Authors>markdown-package contributors</Authors>
-    <Description>Creates and validates .mdpkg packages with Markdown addressing and curated Git history. Update and address editing are not yet implemented.</Description>
-    <PackageProjectUrl>https://github.com/michal-ciechan/markdown-package</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/michal-ciechan/markdown-package</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Description>Package Markdown snapshots and curated Git history as .mdpkg archives with stable addressing, and validate their content and repository integrity.</Description>
   </PropertyGroup>
 
   <ItemGroup>

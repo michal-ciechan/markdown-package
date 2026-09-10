@@ -40,7 +40,7 @@ and [Mdpkg.Reviews](src/generator-cli/src/Mdpkg.Reviews/README.md): bounded read
 access and typed v1/v2 review-feedback extraction/resolution. Structural extraction and
 current-view resolution require no native Git; full verification is an injected capability.
 The [external consumer](examples/review-consumer/) restores Reviews from local preview
-packages. Web comment authoring/export and public-feed publication remain separate work.
+packages. Public publication of the separate libraries remains CARD-0039.
 
 ## Repository layout
 
@@ -53,6 +53,22 @@ packages. Web comment authoring/export and public-feed publication remain separa
 
 ## Getting started
 
+Install the preview global tool once the first [NuGet release gate](docs/releases/mdpkg.md)
+has completed (initial account/policy setup is still required):
+
+```powershell
+dotnet tool install -g mdpkg --version 0.1.0-preview.1 --source https://api.nuget.org/v3/index.json
+mdpkg --version
+mdpkg pack ./my-docs --out ./my-docs.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8
+mdpkg validate ./my-docs.mdpkg --deep
+```
+
+Install .NET 10 SDK and Git first, and put the global tools directory on PATH
+(`$HOME/.dotnet/tools` on Linux/macOS, `%USERPROFILE%\.dotnet\tools` on Windows).
+`my-docs` must be an existing directory of Markdown files; keep output outside it.
+Use `dotnet tool update -g mdpkg --prerelease` for newer previews. After a stable
+release exists, `dotnet tool install -g mdpkg` selects the latest stable version.
+
 Requires .NET 10 and Git on PATH. From the repository root:
 
 ```powershell
@@ -61,7 +77,8 @@ dotnet run --project src/generator-cli/src/Mdpkg.Cli -- validate guide.mdpkg --d
 ```
 
 Use your own lowercase UUID for a new package lineage. See the [tool guide](src/generator-cli/README.md)
-for options, implementation limits and tests. Publication as an installable tool is separate work.
+for options, implementation limits and tests, and the [release guide](docs/releases/mdpkg.md)
+for publishing setup and verification. This repository is [MIT licensed](LICENSE).
 
 ## Examples
 
