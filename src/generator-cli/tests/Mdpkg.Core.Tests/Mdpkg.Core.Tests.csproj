@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Mdpkg.Core/Mdpkg.Core.csproj" />
+    <Compile Include="../MalformedHistoryFixture.cs" Link="MalformedHistoryFixture.cs" />
   </ItemGroup>
 
 </Project>

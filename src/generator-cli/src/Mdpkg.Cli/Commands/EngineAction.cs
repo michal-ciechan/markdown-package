@@ -35,7 +35,7 @@ internal static class EngineAction
             m is null ? null : Manifest(m), m?.Current,
             m is null ? null : new(m.Addressing.Coverage, engine.OverrideCount, engine.MintedRoots,
                 h?.AddressingCoverage.Where(r => r.Coverage == "partial").Select(r => r.From + ".." + r.To).ToArray() ?? []),
-            h is null || m is null ? null : new(m.History.Coverage, m.History.Transform, h.RetainedCommits, h.Ranges.Count, h.Patches.Count),
+            h is null || m is null ? null : new(m.History.Coverage, m.History.Transform, h.RetainedCommits, h.DeclaredRangeCount, h.DeclaredPatchCount),
             engine.Checks.Select(c => new CheckResult(c.Code, c.Status switch { CheckStatus.Passed => "pass", CheckStatus.Failed => "fail", _ => "skipped" })).ToArray(),
             engine.Diagnostics.Select(d => new Reporting.Diagnostic(d.Code, d.Severity switch
             { DiagnosticSeverity.Warning => "warn", DiagnosticSeverity.Error => "error", _ => "info" }, d.Entry, d.Message, d.Spec)).ToArray());

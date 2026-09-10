@@ -21,7 +21,13 @@ public sealed record PatchBindingMetadata(string Entry, string Sha256, string Fr
 public sealed record HistoryMetadata(string Walk, string Root, string SourceBase, string SourceTip, int RetainedCommits,
     IReadOnlyList<string> ShallowBoundaries, IReadOnlyList<TransformationMetadata> Transformations, IReadOnlyList<string> Ranges,
     IReadOnlyList<PatchBindingMetadata> Patches, IReadOnlyList<CoverageRangeMetadata> AddressingCoverage,
-    string? SourceRepository, string? Scope, string? Bindings);
+    string? SourceRepository, string? Scope, string? Bindings)
+{
+    /// <summary>Declared count, including null entries omitted from rejected partial metadata.</summary>
+    public int DeclaredRangeCount { get; init; } = Ranges.Count;
+    /// <summary>Declared count, including null entries omitted from rejected partial metadata.</summary>
+    public int DeclaredPatchCount { get; init; } = Patches.Count;
+}
 
 /// <summary>Independently owned results; no archive handles or mutable engine models escape.</summary>
 public abstract class PackageResult
@@ -51,10 +57,15 @@ public abstract class PackageResult
             new(m.Addressing.Anchor, m.Addressing.Digest, m.Addressing.Coverage, m.Addressing.Overrides),
             new(m.History.Coverage, Freeze(m.History.Transform), m.History.Detail),
             m.Review is null ? null : JsonSerializer.SerializeToElement(m.Review, new JsonSerializerOptions { MaxDepth = 256 }));
+        // Validation can reject a parsed history containing null collection entries. Preserve
+        // its failure and all safely representable metadata without dereferencing rejected records.
         if (result.History is { } h) History = new(h.Walk, h.Root, h.SourceBase, h.SourceTip, h.RetainedCommits,
-            Freeze(h.ShallowBoundaries), Freeze(h.Transformations.Select(t => new TransformationMetadata(t.Kind, t.SourceBase, t.SourceTip, t.Emitted, t.Summary))),
-            Freeze(h.Ranges), Freeze(h.Patches.Select(p => new PatchBindingMetadata(p.Entry, p.Sha256, p.From, p.To, p.Document, p.Profile))),
-            Freeze(h.AddressingCoverage.Select(r => new CoverageRangeMetadata(r.From, r.To, r.Coverage))), h.SourceRepository, h.Scope, h.Bindings);
+            Freeze(h.ShallowBoundaries.Where(s => s is not null)),
+            Freeze(h.Transformations.Where(t => t is not null).Select(t => new TransformationMetadata(t.Kind, t.SourceBase, t.SourceTip, t.Emitted, t.Summary))),
+            Freeze(h.Ranges.Where(r => r is not null)),
+            Freeze(h.Patches.Where(p => p is not null).Select(p => new PatchBindingMetadata(p.Entry, p.Sha256, p.From, p.To, p.Document, p.Profile))),
+            Freeze(h.AddressingCoverage.Where(r => r is not null).Select(r => new CoverageRangeMetadata(r.From, r.To, r.Coverage))), h.SourceRepository, h.Scope, h.Bindings)
+        { DeclaredRangeCount = h.Ranges.Length, DeclaredPatchCount = h.Patches.Length };
         OverrideCount = result.OverrideCount; MintedRoots = result.MintedRoots; Error = result.Error;
         Checks = Freeze(result.Checks.Select(c => new ValidationCheck(c.Code, c.Status switch
         { "pass" => CheckStatus.Passed, "fail" => CheckStatus.Failed, _ => CheckStatus.Skipped })));
