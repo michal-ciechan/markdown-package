@@ -1,6 +1,7 @@
 import {openPackage} from './inbound/open.js';
 import {documentList} from './ui/documents.js';
 import {readerView} from './ui/reader-view.js';
+import {reviewView} from './ui/review-view.js';
 import {referenceFor} from './address/resolve.js';
 import './styles.css';
 
@@ -28,6 +29,7 @@ app.innerHTML = `
           <label id="generated-label" hidden>Reference <textarea id="generated-reference" rows="3" readonly spellcheck="false"></textarea></label>
           <button id="copy-reference" type="button" hidden>Copy reference</button>
         </div>
+        <section id="review" aria-label="Review authoring"></section>
       </section>
     </div>
   </main>`;
@@ -39,6 +41,14 @@ const documents = documentList(element('documents'), name => showDocument(name))
 const reader = readerView(element('reader'), href => navigate(href), scope => {
   currentScope = scope;
   clearGeneratedReference();
+});
+const reviews = reviewView(element('review'), whole => ({model: currentDocument, anchor: reader.anchor(whole)}), async locator => {
+  await showDocument(locator[1]);
+  const scope = currentDocument?.path === locator[1] && currentDocument.find(locator);
+  if (scope) reader.select(scope);
+});
+window.addEventListener('beforeunload', event => {
+  if (reviews.hasUnsaved()) { event.preventDefault(); event.returnValue = ''; }
 });
 
 function report(message, error = false) {
@@ -58,9 +68,11 @@ function displayDocument(model, scope) {
 }
 
 async function receive(blob) {
+  if (reviews.hasUnsaved() && !window.confirm('This tab has review feedback that has not been downloaded. Discard it and open another package?')) return;
   const generation = ++openGeneration;
   navigationGeneration++;
   pkg = undefined;
+  reviews.setPackage(undefined);
   currentDocument = undefined;
   currentScope = undefined;
   reader.clear();
@@ -74,6 +86,7 @@ async function receive(blob) {
     const opened = await openPackage(blob);
     if (generation !== openGeneration) return;
     pkg = opened;
+    reviews.setPackage(pkg);
     const detail = element('package-details');
     detail.replaceChildren();
     const name = document.createElement('strong'), metadata = document.createElement('span');

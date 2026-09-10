@@ -25,7 +25,7 @@ export function encodeLocator(locator) {
   return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-function decodeLocator(value) {
+export function decodeLocator(value) {
   if (!/^[A-Za-z0-9_-]+$/.test(value) || value.length % 4 === 1) throw new Error('Invalid base64url locator');
   const binary = atob(value.replace(/-/g, '+').replace(/_/g, '/'));
   const locator = parseCanonicalJson(Uint8Array.from(binary, char => char.charCodeAt(0)));

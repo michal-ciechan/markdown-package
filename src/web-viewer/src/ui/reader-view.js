@@ -1,15 +1,6 @@
-import {HtmlRenderer} from 'commonmark';
-
-function markdownRenderer() {
-  const renderer = new HtmlRenderer({safe: true, sourcepos: true});
-  // Version 1 has no binary current-view assets. Render alt text without
-  // initiating network requests to image URLs embedded in an opened document.
-  renderer.image = function (_node, entering) {
-    if (entering) { this.out('[Image: '); this.disableTags++; }
-    else { this.disableTags--; this.out(']'); }
-  };
-  return renderer;
-}
+import {markdownRenderer} from './markdown-renderer.js';
+import {selectionAnchor} from '../review/selection.js';
+import {makeSelector} from '../review/selector.js';
 
 export function readerView(host, onNavigate, onScope) {
   const title = document.createElement('h2');
@@ -30,10 +21,17 @@ export function readerView(host, onNavigate, onScope) {
   content.tabIndex = -1;
   controls.append(label, toggle);
   host.append(title, controls, content);
-  let model, sourceMode = false, selected;
+  let model, sourceMode = false, selected, selection;
+  document.addEventListener('selectionchange', () => {
+    const value = document.getSelection();
+    if (value?.rangeCount && !value.isCollapsed && content.contains(value.anchorNode) && content.contains(value.focusNode)) {
+      selection = value.getRangeAt(0).cloneRange();
+    } else if (value?.anchorNode && content.contains(value.anchorNode)) selection = undefined;
+  });
   const scopeElements = new Map(), fragments = new Map();
 
   function draw() {
+    selection = undefined;
     content.replaceChildren();
     scopeElements.clear();
     fragments.clear();
@@ -99,6 +97,11 @@ export function readerView(host, onNavigate, onScope) {
     if (selected) select(selected, false);
   });
   return {
+    anchor(wholeScope = false) {
+      if (!model) throw new Error('Open a document first.');
+      return wholeScope ? {scope: selected, select: makeSelector(model.source(selected), 0, model.source(selected).length)} :
+        selectionAnchor(model, content, selection, sourceMode);
+    },
     show(value, scope = value.scopes[0]) {
       model = value;
       title.textContent = value.path;

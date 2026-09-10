@@ -21,14 +21,16 @@ const dependencies = ['buffer', 'commonmark', 'fflate', 'isomorphic-git', 'esbui
 // and git-write-review (52,363) rows. Owned reader/writer code belongs solely
 // to the app allowance; M5/M6 retain the independent Git-slice upper bound.
 // Later milestones must be selected deliberately, not inferred from size.
-const LIBRARY_BUDGETS = {M1: 48014, M2: 48014, M3: 101787, M4: 101787, M5: 154150, M6: 154150};
-const APP_BUDGETS = {M1: 12 * 1024, M2: 16 * 1024, M3: 24 * 1024,
+const LIBRARY_BUDGETS = {Review: 100377, M1: 48014, M2: 48014, M3: 101787, M4: 101787, M5: 154150, M6: 154150};
+const APP_BUDGETS = {Review: 32 * 1024, M1: 12 * 1024, M2: 16 * 1024, M3: 24 * 1024,
   M4: 32 * 1024, M5: 40 * 1024, M6: 48 * 1024};
-const options = {milestone: 'M2', report: false};
+// CARD-0038 ships authoring independently of the deferred history milestone.
+// Review = CommonMark + Git writer baselines, plus 16 KiB browse / 16 KiB review.
+const options = {milestone: 'Review', report: false};
 for (const arg of process.argv.slice(2)) {
   if (arg === '--report') options.report = true;
-  else if (/^--milestone=M[1-6]$/.test(arg)) options.milestone = arg.slice('--milestone='.length);
-  else throw new Error(`Unknown build option: ${arg}. Use --report or --milestone=M1…M6.`);
+  else if (/^--milestone=(?:M[1-6]|Review)$/.test(arg)) options.milestone = arg.slice('--milestone='.length);
+  else throw new Error(`Unknown build option: ${arg}. Use --report or --milestone=Review or M1…M6.`);
 }
 
 async function cleanDist() {
@@ -84,7 +86,7 @@ async function run() {
   const common = {absWorkingDir: root, bundle: true, minify: true, format: 'esm',
     platform: 'browser', target: 'es2020', metafile: true, write: false};
 
-  const result = await build({...common, entryPoints: ['src/main.js'], outdir, splitting: true});
+  const result = await build({...common, entryPoints: ['src/main.js'], outdir, splitting: true, inject: ['src/review/buffer-shim.js']});
   // V-1: same exports, direct ESM input and Buffer injection as build_web.mjs.
   // A virtual shim keeps all calibration artifacts out of dist and the source tree.
   const calibration = await build({...common,
@@ -138,6 +140,9 @@ async function run() {
   };
   if (!components.commonmark || !components.reader) failures.push('V-2 eager graph must include CommonMark and the container reader');
   const historyRequired = Number(options.milestone.slice(1)) >= 3;
+  if (options.milestone === 'Review' && (!gitChunks.length || !bootInputs.has('src/review/emit.js') || !bootInputs.has('src/review/selection.js'))) {
+    failures.push('V-2 Review requires selection, emission and a separate Git writer chunk');
+  }
   if (historyRequired && (!components.historyDescriptor || !gitChunks.length)) {
     failures.push('V-2 M3+ requires an eager history descriptor and a separate Git chunk');
   }
@@ -149,8 +154,8 @@ async function run() {
     }
   }
 
-  // Git remains a separate chunk, but D-3 requires loading it on package open.
-  // Include that closure in the transfer budget whenever it is shipped.
+  // Count the entire Git closure even for Review's on-export writer. History
+  // milestones retain D-3's on-open loading policy; this card ships no history.
   const onOpenRoots = chunks.flatMap(chunk => chunk.imports.filter(imported =>
     !imported.external && imported.kind === 'dynamic-import' &&
     [...staticClosure([imported.path], outputs)].some(file => gitChunks.some(git => git.file === file)))

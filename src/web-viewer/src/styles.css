@@ -70,3 +70,16 @@ article.selected-section { box-shadow: none; }
   .reference-row { flex-wrap: wrap; }
   .reference-row input { min-width: 70%; }
 }
+/* Review capture sits alongside the existing reader and remains usable on phones. */
+.review-panel { margin-top: 2rem; border-top: 2px solid #ccd5df; padding-top: 1rem; }
+.review-actions { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1rem 0; }
+.review-editor { padding: 1rem; background: #f0f5fa; border-radius: .4rem; }
+.review-editor label { display: block; margin: .8rem 0; }
+.review-editor input, .review-editor textarea, .review-editor select { display: block; width: 100%; box-sizing: border-box; padding: .6rem; }
+.review-quote { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 12rem; overflow: auto; padding: .8rem; background: #f3f5f7; border-left: 3px solid #637e99; }
+.review-thread { border: 1px solid #ccd5df; border-radius: .4rem; padding: 1rem; margin: 1rem 0; }
+.review-thread > button { max-width: 100%; overflow-wrap: anywhere; text-align: left; }
+.review-comment { border-top: 1px solid #dde3e9; margin-top: 1rem; padding-top: .5rem; }
+.review-comment > p:first-child, .review-memory { color: #526172; font-size: .9rem; }
+.review-body { white-space: pre-wrap; overflow-wrap: anywhere; }
+button:disabled { opacity: .6; cursor: default; }

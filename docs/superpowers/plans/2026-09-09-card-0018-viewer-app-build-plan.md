@@ -1,5 +1,49 @@
 # Build plan: the web-first `.mdpkg` viewer and reviewer
 
+## Implementation update — CARD-0038, 2026-09-10
+
+The production viewer now ships slices 5–8 alongside CARD-0021's current browse
+and addressing components: text/section capture, canonical UTF-16 selectors,
+v2 per-comment kind, replies, thread state, delta snapshots, structural
+self-validation, download and feature-detected file sharing. The concrete file
+layout is `src/web-viewer/src/review/`, `src/ui/review-view.js`, and
+`src/container/writer.js`; the older slice filenames below remain planning names.
+
+D-9's block-position strategy is implemented conservatively. A complete DOM text
+node must occur uniquely within its block source; a source perturbation and
+re-render must then prove each endpoint's exact DOM position. Emphasis, ordinary
+code spans and list text are covered by browser tests. Transformed/ambiguous
+endpoints explicitly fall back to selecting normalized source; no global quote
+guessing occurs. Crossing child sections chooses the deepest common canonical
+scope and previews its exact source quote. Two extra parses per rendered
+selection trade speed for checked mapping; large-document device performance is
+still unmeasured.
+
+Exports use v2 kinds and the finalized CARD-0037 contract, superseding the v1
+probe's exact commit expectations in V-36. One tab owns a fresh review namespace
+and stable thread/comment IDs; every export is a parentless one-commit delta
+snapshot. Bundled writing is deferred. No reviewed documents or original Git
+data are copied or modified. Preparation reopens the generated ZIP and checks
+payload CRCs, schema/graph, source evidence, declarations and refs before making
+download/share available. Deep Git checks remain outside the browser.
+
+The `Review` build profile below is deliberately independent of retained-history
+M3. Its Git writer loads on **Prepare review file**, while the budget still
+counts all writer chunks. This does not change D-3 for a future history reader.
+It allocates M2's 16 KiB app cost plus 8 KiB for capture and 8 KiB for emission/UI,
+and counts only the existing CommonMark and Git-write library baselines. It does
+not borrow the unshipped Git-read baseline or declare M3–M6 complete. Existing
+milestone ceilings and dependency-calibration checks remain unchanged.
+
+Slice 9's imported-review display/relocation, slice 10's durable drafts and slice
+11's real-device acceptance remain deferred. Authored threads display in this
+tab; drafts warn on departure but are not persisted. The automated browser
+download is accepted by Mdpkg.Reviews against the original, independent ZIP/Git
+checks and the CLI deep validator. This is an automated browser-to-backend file
+round trip, not a human iOS transport measurement. See
+[CARD-0038 evidence](../../investigations/2026-09-10-card-0038-web-authoring.md)
+and the [viewer README](../../../src/web-viewer/README.md) for rerun commands.
+
 Card 0018. Written 2026-09-09 against
 [docs/investigations/viewer-app.md](../../investigations/viewer-app.md) at commit `ccf3869`, and
 against [spec.md](../../spec.md) as it stands at that commit.
@@ -209,6 +253,7 @@ implementation costs.
 
 | M | Milestone | Ships | Library baseline, gz | App allowance, gz | Total ceiling, gz | Retires |
 | --- | --- | --- | ---: | ---: | ---: | --- |
+| Review | **CARD-0038 authoring branch.** Browse/identity plus v2 capture, delta emission and export; history remains deferred | slices 1–3, 5–8 | 100,377 | 32,768 (32 KiB) | 133,145 | Automated browser export accepted by the backend; real-device gates remain open |
 | M1 | **Open and browse.** File picker → 79-byte typing → central directory → document list → one document rendered | slices 0, 1, 2 | 48,014 | 12,288 (12 KiB) | 60,302 | The largest external unknown: does the iOS picker actually hand over a `.mdpkg` |
 | M2 | **Identity.** Outline, heading trail, scoped digest, default root, cross-checked against the committed worked example | slice 3 | 48,014 | 16,384 (16 KiB) | 64,398 | That the identity layer is portable to the browser without re-derivation |
 | M3 | **History, eagerly.** `history.json` and summaries from the current view; isomorphic-git over the ZIP-mounted pack | slice 4 | 101,787 | 24,576 (24 KiB) | 126,363 | D-3's cost on a real device (M6 item 8) |
