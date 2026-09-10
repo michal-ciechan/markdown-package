@@ -7,6 +7,18 @@ then `mdpkg`. Library availability requires the owner policy extension below and
 both `prove-nuget-org` matrix entries to pass. `Mdpkg.Reviews` is built and checked
 locally but is not pushed.
 
+**Current blocker (2026-09-10):** [run 34516104021](https://github.com/michal-ciechan/markdown-package/actions/runs/34516104021)
+passed Windows/Linux gates, all artifact checksums and NuGet login, but the first
+Reader push returned **HTTP 403** (key invalid, expired, or lacking package access).
+Core/tool pushes were not attempted and the public proof was skipped. The owner
+must confirm package ownership and extend the policy scopes in step 3. After that,
+retry the same verified release without changing its version or artifacts:
+
+```powershell
+gh run rerun 34516104021 --failed
+gh run watch 34516104021 --exit-status
+```
+
 ## One-time owner setup
 
 1. Use the existing `mdpkg` owner/profile and confirm it may publish **Mdpkg.Reader**
@@ -14,12 +26,13 @@ locally but is not pushed.
    2026-09-10 before this release; this does not reserve the IDs or prove they are
    free of ownership restrictions. Resolve any conflict without silently renaming.
    The task explicitly reserves NuGet account/policy provisioning for the human.
-2. In GitHub repository `michal-ciechan/markdown-package`, create the environment
-   **`nuget`**, restrict its deployment branches to **`master`**, and add environment
+2. GitHub repository `michal-ciechan/markdown-package` already has environment
+   **`nuget`** restricted to **`master`**, with working login configuration (verified
+   2026-09-10). When recreating this setup, add environment
    secret **`NUGET_USER`** containing the NuGet **profile name**, not the email address.
    A repository secret of that name also works, but the environment secret keeps
    the release setup together. No long-lived `NUGET_API_KEY` secret is needed.
-3. On NuGet.org, create a GitHub Trusted Publishing policy with these exact values:
+3. On NuGet.org, extend the GitHub Trusted Publishing policy with these values:
 
    | Field | Value |
    | --- | --- |
