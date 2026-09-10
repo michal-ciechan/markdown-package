@@ -41,6 +41,22 @@ does not establish NuGet.org availability. Library publication is CARD-0039.
    this window; a successful push makes the policy permanently active. This worked
    for `mdpkg`'s first publish. If the window expires, use **Activate for 7 days**
    to restart it, then publish within that window.
+
+   After successful authentication, the policy binds to the permanent numeric
+   GitHub owner and repository IDs; deleting and recreating the repository under
+   the same name breaks authentication and requires reconfiguring the policy for
+   the new repository ID.
+
+   NuGet's indexes become available in order: the gallery page
+   (`https://www.nuget.org/packages/<id>`) returns HTTP 200 within about a minute
+   of a successful push, then the v3 flat-container version index
+   (`https://api.nuget.org/v3-flatcontainer/<id>/index.json`) follows a few minutes
+   later. The flat-container index is what `dotnet restore` and `dotnet tool install`
+   read. The search index, used by NuGet.org's search box and some tooling, lags
+   both and can still return zero hits after installation already works. For
+   availability checks, poll the v3 flat-container index for the published version,
+   not the gallery page or search index: a cold search index is not evidence of a
+   failed or incomplete publish.
 4. Run the workflow on master:
 
    ```powershell
