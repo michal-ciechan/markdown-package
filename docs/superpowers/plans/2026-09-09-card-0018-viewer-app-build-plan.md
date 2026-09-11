@@ -259,9 +259,18 @@ leaving 1,398 bytes of headroom. The 6,855-byte increase goes to the app allowan
 All unconditional startup code continues to count. See the
 [measurement and validation report](../../investigations/2026-09-11-card-0046-restore-race-budget-fix.md).
 
+Amended 2026-09-11 by explicit user approval for CARD-0049: raise Review's total
+ceiling from 140,000 to 145,000 gzip bytes for the inline-comment display. The
+complete counted graph measures 143,357 bytes, an increase of 4,748 over the
+138,609-byte CARD-0048 checkpoint, leaving 1,643 bytes of headroom. The 5,000-byte
+allowance increase belongs to app code (44,623 total); library baselines, other
+milestones and graph accounting remain unchanged. This retains the selected
+Mockup B interactions at their measured transfer cost. See the
+[implementation and validation report](../../investigations/2026-09-11-card-0049-inline-comments.md).
+
 | M | Milestone | Ships | Library baseline, gz | App allowance, gz | Total ceiling, gz | Retires |
 | --- | --- | --- | ---: | ---: | ---: | --- |
-| Review | **CARD-0038 authoring branch, extended by CARD-0046.** Browse/identity plus v2 capture, delta emission, export and browser-local persistence; Git history remains deferred | slices 1–3, 5–8 | 100,377 | 39,623 | 140,000 | Automated browser export accepted by the backend; real-device gates remain open |
+| Review | **CARD-0038 authoring branch, extended by CARD-0046 and CARD-0049.** Browse/identity plus v2 capture, delta emission, export, browser-local persistence and inline comments; Git history remains deferred | slices 1–3, 5–8 | 100,377 | 44,623 | 145,000 | Automated browser export accepted by the backend; real-device gates remain open |
 | M1 | **Open and browse.** File picker → 79-byte typing → central directory → document list → one document rendered | slices 0, 1, 2 | 48,014 | 12,288 (12 KiB) | 60,302 | The largest external unknown: does the iOS picker actually hand over a `.mdpkg` |
 | M2 | **Identity.** Outline, heading trail, scoped digest, default root, cross-checked against the committed worked example | slice 3 | 48,014 | 16,384 (16 KiB) | 64,398 | That the identity layer is portable to the browser without re-derivation |
 | M3 | **History, eagerly.** `history.json` and summaries from the current view; isomorphic-git over the ZIP-mounted pack | slice 4 | 101,787 | 24,576 (24 KiB) | 126,363 | D-3's cost on a real device (M6 item 8) |

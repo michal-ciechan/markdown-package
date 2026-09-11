@@ -1,9 +1,10 @@
 # CARD-0049: real inline review conversations
 
 Implemented the selected Mockup B interaction in the web viewer using the
-existing authored/restored v2 review. The production build is currently blocked
-by V-2: 143,357 counted gzip bytes against the approved 140,000-byte ceiling.
-No budget or accounting exemption has been changed.
+existing authored/restored v2 review. The user approved a 145,000-byte V-2 ceiling
+for the measured 143,357-byte graph, leaving 1,643 gzip bytes of headroom.
+The build constant, plan §4 and README now record that decision. Graph accounting
+and library baselines remain unchanged.
 
 ## Implementation
 
@@ -55,6 +56,10 @@ simulation data or claim to resolve imported feedback against changed originals.
 
 ## Verification
 
+- After budget approval, `npm run build` passes V-1, V-2 and deployment-path
+  checks with zero failures: 143,357 / 145,000 gzip bytes. Production assets are
+  emitted normally. This follow-up changes only the ceiling and documentation;
+  the prior behavioral test results below remain the recorded feature validation.
 - Node suite: 120 tests passed, zero failures, including two new exact-interval
   tests for repeated text, UTF-16 offsets, corrupted evidence and foreign paths.
 - Eight new Chromium acceptance cases pass: authoring/reflow/text isolation;
@@ -77,41 +82,22 @@ simulation data or claim to resolve imported feedback against changed originals.
   at 200% CSS zoom; this is not a claim about native zoom or a 195px viewport.
 - `git diff --check`: passed.
 
-Behavioral tests use a local esbuild harness with production bundling options
-because the unchanged production gate intentionally emits no deployable assets
-when it fails. They do not establish a passing production build.
-
-To reproduce behavioral verification before the budget decision, from
-`src/web-viewer` in PowerShell, emit temporary test assets explicitly:
-
-```powershell
-@'
-import {build} from 'esbuild';
-import fs from 'node:fs/promises';
-await build({entryPoints:['src/main.js'],outdir:'dist',bundle:true,minify:true,format:'esm',splitting:true,platform:'browser',target:'es2020',inject:['src/review/buffer-shim.js']});
-await fs.writeFile('dist/index.html',(await fs.readFile('index.html','utf8')).replaceAll('"./dist/','"./'));
-'@ | node --input-type=module
-npx playwright test
-python tests/validate-export.py test-results/browser-review.mdpkg
-```
-
-These assets are for local tests only. `npm run build` remains the production
-gate and clears them on its size failure.
+The behavioral runs above used a local esbuild harness with production bundling
+options while the former 140,000-byte gate blocked asset emission. Following
+budget approval, use the normal production build to reproduce verification.
 
 ## Bundle decision
 
-The prior CARD-0048 build was 138,609 gzip bytes. This candidate adds 4,748 bytes
+The prior CARD-0048 build was 138,609 gzip bytes. This implementation adds 4,748 bytes
 of fully counted app/display code and CSS, totaling 143,357. V-1 calibration and
-the deployment-path checks pass; V-2 fails solely on size, 3,357 bytes over its
-ceiling. Git remains behind the existing on-export boundary, and the conditional
+the deployment-path checks pass. The former 140,000-byte ceiling was exceeded
+by 3,357 bytes. Git remains behind the existing on-export boundary, and the conditional
 DEFLATE fallback is still the only excluded entry point.
 
-A proposed 145,000-byte ceiling would leave 1,643 bytes of headroom and retain
-the selected interaction. It needs an explicit user decision and matching edits
-to `build.mjs`, build-plan §4 and README before claiming a passing build. Keeping
-140,000 instead requires reducing scope or separately authorizing broader bundle
-work; the implementation does not silently remove requested interactions.
+The user explicitly approved 145,000 bytes for this feature. The resulting
+1,643-byte headroom retains the selected interaction, with the additional 5,000
+bytes allocated entirely to owned app code. `build.mjs`, build-plan §4 and README
+record the measured cost and approval.
 
-From `src/web-viewer`, rerun `npm test`, `npm run build`, then (after a passing
-build) `npx playwright test` and
+From `src/web-viewer`, rerun `npm test`, `npm run build`, then `npx playwright test` and
 `python tests/validate-export.py test-results/browser-review.mdpkg`.

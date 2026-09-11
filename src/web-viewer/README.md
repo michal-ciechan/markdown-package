@@ -365,10 +365,11 @@ Buffer shim, comparing its raw size, gzip size and SHA-256 with
 `bundle-results.json`. This calibration bundle is not published in `dist/`.
 
 V-2 defaults to **Review**, the CARD-0038 branch of the milestone plan. Its
-48,014-byte CommonMark plus 52,363-byte Git writer library baselines and 39,623-byte
-app allowance give a **140,000-byte gzip ceiling**. The user approved the increase
-from 133,145 for CARD-0046's measured browser-persistence cost after startup
-consolidation. The gate conservatively counts
+48,014-byte CommonMark plus 52,363-byte Git writer library baselines and 44,623-byte
+app allowance give a **145,000-byte gzip ceiling**. The user approved increases
+from 133,145 to 140,000 for CARD-0046's measured browser-persistence cost after
+startup consolidation, then to 145,000 for CARD-0049's inline-comment display.
+The gate conservatively counts
 the writer's complete graph, although Git is only loaded on preparation. The
 older milestone app allowances are fixed per
 milestone at 12/16/24/32/40/48 KiB for M1–M6, with their library baselines, total
@@ -389,9 +390,10 @@ Browser persistence is bundled with the startup entry to reduce transfer overhea
 initialization failures still leave in-memory reading/authoring available. All of
 its startup cost counts in V-2. The CARD-0046 checkpoint measured **138,602 gzip bytes**,
 leaving **1,398 bytes of headroom** under the approved 140,000-byte ceiling.
-CARD-0049's inline-comment candidate measures **143,357 gzip bytes**, exceeding
-that ceiling by **3,357 bytes**. Its display and CSS remain fully counted; a
-budget decision is required before the production build can ship this candidate.
+CARD-0049's inline-comment implementation measures **143,357 gzip bytes**, an
+increase of **4,748 bytes** over CARD-0048's 138,609-byte checkpoint. Its display
+and CSS remain fully counted, with **1,643 bytes of headroom** under the approved
+145,000-byte ceiling.
 `build-report.json` also reports total gzip cost including the conditional inflater.
 
 `node src/web-viewer/build.mjs --report` from the repository root prints the full JSON report;
