@@ -41,7 +41,7 @@ const documents = documentList(element('documents'), name => showDocument(name))
 const reader = readerView(element('reader'), href => navigate(href), scope => {
   currentScope = scope;
   clearGeneratedReference();
-});
+}, () => element('review').querySelector('[data-action="text"]').click());
 const reviews = reviewView(element('review'), whole => ({model: currentDocument, anchor: reader.anchor(whole)}), async locator => {
   await showDocument(locator[1]);
   const scope = currentDocument?.path === locator[1] && currentDocument.find(locator);

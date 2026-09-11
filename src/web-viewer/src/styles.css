@@ -83,3 +83,8 @@ article.selected-section { box-shadow: none; }
 .review-comment > p:first-child, .review-memory { color: #526172; font-size: .9rem; }
 .review-body { white-space: pre-wrap; overflow-wrap: anywhere; }
 button:disabled { opacity: .6; cursor: default; }
+.selection-toolbar { position: fixed; z-index: 20; display: flex; align-items: center; gap: .25rem; flex-wrap: wrap; padding: .35rem; border: 1px solid #adc1d3; border-radius: .65rem; background: #fff; box-shadow: 0 3px 16px #172b3f33; }
+.selection-toolbar button { min-width: 44px; min-height: 44px; touch-action: manipulation; }
+.selection-toolbar button span { display: inline-block; width: 1rem; font-size: 1.1rem; line-height: 1; }
+.selection-toolbar [data-selection="comment"] { background: #174568; border-color: #174568; color: white; }
+.selection-level { font-size: .8rem; color: #526172; padding: 0 .35rem; }

@@ -1,8 +1,9 @@
 import {markdownRenderer} from './markdown-renderer.js';
 import {selectionAnchor} from '../review/selection.js';
 import {makeSelector} from '../review/selector.js';
+import {selectionToolbar} from './selection-toolbar.js';
 
-export function readerView(host, onNavigate, onScope) {
+export function readerView(host, onNavigate, onScope, onComment) {
   const title = document.createElement('h2');
   title.className = 'document-title';
   const controls = document.createElement('div');
@@ -22,6 +23,10 @@ export function readerView(host, onNavigate, onScope) {
   controls.append(label, toggle);
   host.append(title, controls, content);
   let model, sourceMode = false, selected, selection;
+  const toolbar = onComment ? selectionToolbar(content, {
+    getModel: () => model, isSource: () => sourceMode,
+    onRange: range => { selection = range; }, onComment,
+  }) : undefined;
   document.addEventListener('selectionchange', () => {
     const value = document.getSelection();
     if (value?.rangeCount && !value.isCollapsed && content.contains(value.anchorNode) && content.contains(value.focusNode)) {
@@ -31,6 +36,7 @@ export function readerView(host, onNavigate, onScope) {
   const scopeElements = new Map(), fragments = new Map();
 
   function draw() {
+    toolbar?.reset();
     selection = undefined;
     content.replaceChildren();
     scopeElements.clear();
@@ -82,6 +88,7 @@ export function readerView(host, onNavigate, onScope) {
   }
 
   function select(scope, scroll = true) {
+    toolbar?.reset();
     selected = scope;
     sections.value = String(model.scopes.indexOf(scope));
     for (const element of content.querySelectorAll('.selected-section')) element.classList.remove('selected-section');

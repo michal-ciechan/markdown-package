@@ -41,6 +41,33 @@ path turns absolute or keeps pointing into `dist/`.
    file sharing is supported; cancelling or failing share retains the download.
    Preparation is separate so the share gesture keeps browser user activation.
 
+### Click selection (CARD-0040)
+
+Click or tap a word in the rendered document to select the entire word, including
+words split across inline formatting. A floating toolbar offers **Expand selection**
+(＋), **Collapse selection** (−), and **Leave comment**, with at least 44 × 44 px
+button targets. Expand snaps outward through word, sentence, paragraph and the
+containing outline section, including its child sections. Identical boundaries
+are skipped. Collapse restores each visited range exactly, including a manual
+range; adjusting the selection starts a new history. The section menu remains
+independent of this text selection.
+
+Sentence boundaries use punctuation and whitespace, preserving closing quotes
+and common abbreviations such as `e.g.` and `Dr.`. Paragraph boundaries follow
+rendered blocks, including list items, blockquotes and code blocks. These are
+prose heuristics; manual forward/backward dragging, double-click selection,
+**Review selected text**, and **Review selected section** remain available.
+Links retain their normal navigation behavior. In **View source**, select text
+manually and use **Leave comment** or **Review selected text**; automatic expansion
+is available only in rendered mode.
+
+**Leave comment** opens the existing review editor with the exact source quote
+from the existing anchor checks. Ambiguous/transformed selections still request
+**View source**. The toolbar follows the visible selection on scroll/resize and
+hides when selection clears, navigation changes the view, or focus moves to the
+comment editor. Tab reaches its buttons, Left/Right arrows move between enabled
+buttons, Enter/Space activate them, and Escape dismisses the toolbar.
+
 Selection uses UTF-16 offsets, exact canonical source, occurrence and up to 40
 units of context without splitting surrogate pairs. Rendered endpoints use
 CommonMark block positions and a unique complete text-node match, then re-render
@@ -88,10 +115,12 @@ npm run test:browser
 python tests/validate-export.py test-results/browser-review.mdpkg
 ```
 
-The Node suite covers Unicode/source selectors, v2 validation, ledger roots,
-writer round trips, corruption and compression fallback. Playwright exercises
+The Node suite covers word/sentence boundaries, Unicode/source selectors, v2 validation,
+ledger roots, writer round trips, corruption and compression fallback. Playwright exercises
 actual DOM selections and the author/reply/state/download flow, unsafe-body
-rendering, share cancellation, unsaved navigation and stale-export protection.
+rendering, share cancellation, unsaved navigation and stale-export protection,
+plus click/tap selection, exact expansion/collapse, manual selection, source
+fallback, toolbar lifecycle, keyboard controls and mobile viewport positioning.
 The Python acceptance test uses independent ZIP and native Git checks. Pages CI
 runs these tests before publishing. The browser fixture and .NET rerun commands
 are in [tests/fixtures/README.md](tests/fixtures/README.md).
