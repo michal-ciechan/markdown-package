@@ -37,6 +37,39 @@ async function post(page) {
   await page.evaluate(() => getSelection().removeAllRanges());
 }
 
+test('same-anchor re-entry restarts a cancelled preview and cancels visible dismissal', async ({page}) => {
+  const start = Date.now();
+  await page.clock.install({time: start});
+  await open(page); await compose(page, 'target', 'Re-entry feedback'); await post(page);
+  await expect(page.locator('.local-save-status')).toHaveText('Saved in this browser');
+  await page.getByRole('button', {name: 'Collapse folds'}).click();
+  await page.locator('#reader article > p').first().scrollIntoViewIfNeeded();
+  await page.clock.pauseAt(start + 60_000);
+  await page.clock.runFor(300);
+  const anchor = await point(page, 'target'), neutral = await point(page, 'before');
+  const outside = await page.locator('#reader').evaluate((r, y) => ({x: r.getBoundingClientRect().left - 10, y}), anchor.y);
+  expect(await page.evaluate(p => !document.querySelector('#reader').contains(document.elementFromPoint(p.x, p.y)), outside)).toBe(true);
+  const peek = page.locator('.comment-peek');
+  // Clock control makes the exit/re-entry happen inside both timer windows,
+  // regardless of test-machine speed; pointer events still come from the mouse.
+  for (const away of [outside, neutral]) {
+    await page.mouse.move(outside.x, outside.y); await page.clock.runFor(300);
+    await page.mouse.move(anchor.x, anchor.y); await page.clock.runFor(50);
+    await expect(peek).toBeHidden();
+    await page.mouse.move(away.x, away.y); await page.clock.runFor(50);
+    await page.mouse.move(anchor.x, anchor.y);
+    await page.clock.runFor(200); await expect(peek).toBeHidden();
+    // No additional pointer movement: the restarted preview must open itself.
+    await page.clock.runFor(100); await expect(peek).toBeVisible();
+    await expect(peek).toContainText('Re-entry feedback');
+  }
+  await page.mouse.move(outside.x, outside.y); await page.clock.runFor(50);
+  await page.mouse.move(anchor.x, anchor.y); await page.clock.runFor(200);
+  await expect(peek).toBeVisible();
+  await page.mouse.move(outside.x, outside.y); await page.clock.runFor(200);
+  await expect(peek).toBeHidden();
+});
+
 test('source hover follows adjacent and overlapping hit sets within one paragraph', async ({page}) => {
   await open(page);
   for (const text of ['target', 'words']) { await compose(page, text, `Feedback for ${text}`); await post(page); }

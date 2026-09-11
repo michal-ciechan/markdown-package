@@ -24,7 +24,7 @@ export function inlineComments(host, reader, reviews) {
   // Keep inline button gestures together; keyboard focus remains native.
   layer.addEventListener('mousedown', e => { if (e.button === 0 && e.target.closest('button')) e.preventDefault(); });
   const peek = document.createElement('div'); peek.className = 'comment-peek'; peek.id = 'comment-peek'; peek.hidden = true; peek.setAttribute('role', 'tooltip'); document.body.append(peek);
-  let surface, groups = [], marks = [], reading = false, frame, hoverTimer, hoverTarget, hoverIds, gesture, reopen = new Set();
+  let surface, groups = [], marks = [], reading = false, frame, hoverTimer, dismissTimer, hoverTarget, hoverIds, gesture, reopen = new Set();
   const active = new Map(), known = new Set(), cache = new Map();
   const highlightNames = ['comment', 'change', 'resolved', 'obsolete', 'mixed', 'linked', 'draft'];
   const ro = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(schedule);
@@ -56,8 +56,13 @@ export function inlineComments(host, reader, reviews) {
     }
   }
   function hidePeek() {
-    clearTimeout(hoverTimer); peek.hidden = true;
+    clearTimeout(hoverTimer); clearTimeout(dismissTimer); peek.hidden = true;
     hoverTarget?.removeAttribute('aria-describedby'); hoverTarget = hoverIds = undefined; paint();
+  }
+  function leavePeek() {
+    // Cancel pending identity immediately; only visible previews need a crossing grace period.
+    if (peek.hidden) { hidePeek(); return; }
+    clearTimeout(dismissTimer); dismissTimer = setTimeout(hidePeek, 150);
   }
   function preview(items, target, rect) {
     hidePeek(); if (reading || !items.length || !document.getSelection()?.isCollapsed) return;
@@ -76,7 +81,7 @@ export function inlineComments(host, reader, reviews) {
       peek.style.top = Math.max(8, Math.min(rect.bottom + 8, innerHeight - box.height - 8)) / scale + 'px';
     }, 250);
   }
-  peek.addEventListener('pointerenter', () => clearTimeout(hoverTimer));
+  peek.addEventListener('pointerenter', () => clearTimeout(dismissTimer));
   peek.addEventListener('pointerleave', hidePeek);
   function clear() {
     hidePeek();
@@ -140,7 +145,7 @@ export function inlineComments(host, reader, reviews) {
         tab.dataset.threadId = thread.id;
         tab.setAttribute('aria-expanded', String(active.get(g.key) === thread.id)); tab.setAttribute('aria-controls', article.id);
         tab.addEventListener('pointerenter', () => preview([item], tab, tab.getBoundingClientRect()));
-        tab.addEventListener('pointerleave', () => { clearTimeout(hoverTimer); hoverTimer = setTimeout(hidePeek, 150); });
+        tab.addEventListener('pointerleave', leavePeek);
         tab.addEventListener('focus', () => requestAnimationFrame(() => {
           if (document.activeElement === tab) preview([item], tab, tab.getBoundingClientRect());
         })); tab.addEventListener('blur', hidePeek);
@@ -197,11 +202,12 @@ export function inlineComments(host, reader, reviews) {
     if (e.buttons) return;
     const items = hits(e);
     if (items.length) {
+      clearTimeout(dismissTimer);
       if (hoverTarget !== e.target || hoverIds !== items.map(i => i.thread.id).join(','))
         preview(items, e.target, items[0].anchor.range.getBoundingClientRect());
     } else if (surface?.content.contains(e.target)) hidePeek();
   });
-  host.addEventListener('pointerleave', () => { clearTimeout(hoverTimer); hoverTimer = setTimeout(hidePeek, 150); });
+  host.addEventListener('pointerleave', leavePeek);
   document.addEventListener('pointerdown', e => { if (!peek.contains(e.target)) hidePeek(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') hidePeek(); });
   document.addEventListener('scroll', () => { hidePeek(); schedule(); }, {capture: true, passive: true});
