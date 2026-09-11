@@ -51,6 +51,8 @@ containing outline section, including its child sections. Identical boundaries
 are skipped. Collapse restores each visited range exactly, including a manual
 range; adjusting the selection starts a new history. The section menu remains
 independent of this text selection.
+Touch interaction has been tested only with Chromium emulation; physical devices
+remain untested.
 
 Sentence boundaries use punctuation and whitespace, preserving closing quotes
 and common abbreviations such as `e.g.` and `Dr.`. Paragraph boundaries follow
@@ -121,6 +123,8 @@ actual DOM selections and the author/reply/state/download flow, unsafe-body
 rendering, share cancellation, unsaved navigation and stale-export protection,
 plus click/tap selection, exact expansion/collapse, manual selection, source
 fallback, toolbar lifecycle, keyboard controls and mobile viewport positioning.
+Mobile viewport and touch coverage uses Chromium emulation only; physical devices
+remain untested.
 The Python acceptance test uses independent ZIP and native Git checks. Pages CI
 runs these tests before publishing. The browser fixture and .NET rerun commands
 are in [tests/fixtures/README.md](tests/fixtures/README.md).

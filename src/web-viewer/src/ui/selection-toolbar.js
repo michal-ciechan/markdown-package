@@ -1,5 +1,35 @@
 import {nextExpansion, sameRange, wordAtPoint} from './selection-ranges.js';
 
+function visibleSelectionRect(range, viewport) {
+  // A range can span several blocks with different clipping ancestors. Inspect
+  // its text fragments so a clipped code block does not hide later visible prose.
+  const root = range.commonAncestorContainer;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  for (let node = root.nodeType === 3 ? root : walker.nextNode(); node; node = walker.nextNode()) {
+    if (!range.intersectsNode(node)) continue;
+    const fragment = document.createRange(); fragment.selectNodeContents(node);
+    if (range.compareBoundaryPoints(Range.START_TO_START, fragment) > 0) fragment.setStart(range.startContainer, range.startOffset);
+    if (range.compareBoundaryPoints(Range.END_TO_END, fragment) < 0) fragment.setEnd(range.endContainer, range.endOffset);
+    const clip = {...viewport};
+    for (let ancestor = node.parentElement; ancestor; ancestor = ancestor.parentElement) {
+      const style = getComputedStyle(ancestor);
+      const clipsX = /^(auto|scroll|hidden|clip)$/.test(style.overflowX);
+      const clipsY = /^(auto|scroll|hidden|clip)$/.test(style.overflowY);
+      if (!clipsX && !clipsY) continue;
+      const box = ancestor.getBoundingClientRect();
+      // Client bounds exclude borders and scrollbars from the visible scrollport.
+      const left = box.left + ancestor.clientLeft, top = box.top + ancestor.clientTop;
+      if (clipsX) { clip.left = Math.max(clip.left, left); clip.right = Math.min(clip.right, left + ancestor.clientWidth); }
+      if (clipsY) { clip.top = Math.max(clip.top, top); clip.bottom = Math.min(clip.bottom, top + ancestor.clientHeight); }
+    }
+    for (const rect of fragment.getClientRects()) {
+      const visible = {left: Math.max(rect.left, clip.left), right: Math.min(rect.right, clip.right),
+        top: Math.max(rect.top, clip.top), bottom: Math.min(rect.bottom, clip.bottom)};
+      if (visible.right > visible.left && visible.bottom > visible.top) return visible;
+    }
+  }
+}
+
 export function selectionToolbar(host, {getModel, isSource, onRange, onComment}) {
   const toolbar = document.createElement('div');
   toolbar.className = 'selection-toolbar'; toolbar.hidden = true;
@@ -18,8 +48,7 @@ export function selectionToolbar(host, {getModel, isSource, onRange, onComment})
     const viewport = window.visualViewport;
     const left = viewport?.offsetLeft ?? 0, top = viewport?.offsetTop ?? 0;
     const width = viewport?.width ?? innerWidth, height = viewport?.height ?? innerHeight;
-    const rect = [...active.getClientRects()].find(rect => rect.width && rect.height &&
-      rect.bottom > top && rect.top < top + height && rect.right > left && rect.left < left + width);
+    const rect = visibleSelectionRect(active, {left, top, right: left + width, bottom: top + height});
     if (!rect) { toolbar.hidden = true; return; }
     toolbar.hidden = false;
     toolbar.style.maxWidth = `${Math.max(0, width - 16)}px`;

@@ -250,6 +250,85 @@ test('Tab reaches the toolbar and keyboard focus remains usable at expansion lim
   expect(await page.evaluate(() => window.commentQuote)).toBe('target');
 });
 
+test('code-block horizontal scrolling hides clipped selections and anchors to visible portions', async ({page}) => {
+  await mount(page, '# T\n\n```\n' + 'padding '.repeat(20) + 'target ' + 'tail '.repeat(40) + '\n```\n');
+  const pre = page.locator('.markdown pre');
+  await pre.evaluate(pre => { pre.scrollLeft = 800; });
+  await clickWord(page, '.markdown pre', 'target');
+  expect(await selected(page)).toBe('target');
+  await expect(toolbar(page)).toBeVisible();
+  // Review 44adf290: the word is outside the code block, but inside the viewport.
+  const clipped = await pre.evaluate(pre => {
+    const range = getSelection().getRangeAt(0), edge = pre.getBoundingClientRect().right;
+    pre.scrollLeft -= edge + 15 - range.getBoundingClientRect().left;
+    return {edge, selectionLeft: range.getBoundingClientRect().left, viewport: innerWidth};
+  });
+  expect(clipped.selectionLeft).toBeGreaterThan(clipped.edge);
+  expect(clipped.selectionLeft).toBeLessThan(clipped.viewport);
+  await expect(toolbar(page)).toBeHidden();
+  expect(await selected(page)).toBe('target');
+
+  // Part of the word reappears at the right edge; then at the left edge.
+  for (const side of ['right', 'left']) {
+    await pre.evaluate((pre, side) => {
+      const range = getSelection().getRangeAt(0), box = pre.getBoundingClientRect();
+      const left = box.left + pre.clientLeft, right = left + pre.clientWidth;
+      pre.scrollLeft += side === 'right' ? range.getBoundingClientRect().left - (right - 15) :
+        range.getBoundingClientRect().right - (left + 15);
+    }, side);
+    await expect(toolbar(page)).toBeVisible();
+    await expect.poll(() => page.evaluate(side => {
+      const pre = document.querySelector('.markdown pre'), box = pre.getBoundingClientRect();
+      const selection = getSelection().getRangeAt(0).getBoundingClientRect();
+      const left = Math.max(selection.left, box.left + pre.clientLeft);
+      const right = Math.min(selection.right, box.left + pre.clientLeft + pre.clientWidth);
+      const toolbar = document.querySelector('#test-reader .selection-toolbar').getBoundingClientRect();
+      return toolbar.right >= left && toolbar.left <= right && (side === 'right' || toolbar.left >= left - 1);
+    }, side)).toBe(true);
+  }
+  await pre.evaluate(pre => { pre.scrollLeft += 40; });
+  await expect(toolbar(page)).toBeHidden();
+  await pre.evaluate(pre => { pre.scrollLeft = 800; });
+  await expect(toolbar(page)).toBeVisible();
+});
+
+test('nested scroll clipping keeps later visible text in a multi-block selection available', async ({page}) => {
+  await mount(page, '# T\n\n```\ntarget words\n```\n\nVisible paragraph.\n');
+  await page.locator('.markdown pre').evaluate(pre => {
+    const wrapper = document.createElement('div'); wrapper.id = 'clip-wrapper';
+    wrapper.style.cssText = 'height:120px; overflow:auto; border:7px solid black';
+    const before = document.createElement('div'), after = document.createElement('div');
+    before.style.height = '100px'; after.style.height = '300px';
+    pre.before(wrapper); wrapper.append(before, pre, after);
+    pre.style.cssText = 'height:70px; margin:0; overflow:auto';
+    wrapper.scrollTop = 100;
+  });
+  await clickWord(page, '.markdown pre', 'target');
+  await expect(toolbar(page)).toBeVisible();
+  await page.locator('#clip-wrapper').evaluate(wrapper => { wrapper.scrollTop = 200; });
+  expect(await page.evaluate(() => {
+    const rect = getSelection().getRangeAt(0).getBoundingClientRect();
+    return rect.top > 0 && rect.bottom < innerHeight;
+  })).toBe(true);
+  await expect(toolbar(page)).toBeHidden();
+  await page.locator('#clip-wrapper').evaluate(wrapper => { wrapper.scrollTop = 100; });
+  await expect(toolbar(page)).toBeVisible();
+  await page.locator('#clip-wrapper').evaluate(wrapper => { wrapper.scrollTop = 200; });
+  await expect(toolbar(page)).toBeHidden();
+  await page.evaluate(() => {
+    const range = getSelection().getRangeAt(0).cloneRange();
+    range.setEnd(document.querySelector('.markdown > p').firstChild, 7);
+    getSelection().removeAllRanges(); getSelection().addRange(range);
+  });
+  await expect(toolbar(page)).toBeVisible();
+  await expect.poll(() => page.evaluate(() => {
+    const range = document.createRange(); range.selectNodeContents(document.querySelector('.markdown > p'));
+    const paragraph = range.getBoundingClientRect();
+    const toolbar = document.querySelector('#test-reader .selection-toolbar').getBoundingClientRect();
+    return Math.abs(toolbar.bottom + 8 - paragraph.top) < 1;
+  })).toBe(true);
+});
+
 test('touch toolbar has generous targets and stays within the viewport during resize and scroll', async ({browser}) => {
   const context = await browser.newContext({viewport: {width: 390, height: 844}, hasTouch: true, isMobile: true});
   const page = await context.newPage();
