@@ -1,4 +1,12 @@
 export function tableControls(host, states, model, signal) {
+  const containers = [...host.querySelectorAll('.table-container')];
+  function updateGutter(container) {
+    // The positioned markdown surface owns the column even for tables in
+    // lists/quotes; their indentation must not move controls into the text.
+    if (container?.offsetParent?.classList.contains('markdown')) {
+      container.style.setProperty('--gutter-offset', `${container.offsetLeft}px`);
+    }
+  }
   // One observer per rendered surface, shared by its tables. The owner aborts
   // before replacing the surface so detached rows are never retained.
   const rows = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(entries => {
@@ -6,19 +14,22 @@ export function tableControls(host, states, model, signal) {
       const container = entry.target.closest('.table-container');
       // Use CSS pixels, including under browser/CSS zoom.
       container?.style.setProperty('--first-row', `${entry.borderBoxSize[0].blockSize}px`);
-      // The positioned markdown surface owns the column even for tables in
-      // lists/quotes; their indentation must not move controls into the text.
-      if (container?.offsetParent?.classList.contains('markdown')) {
-        container.style.setProperty('--gutter-offset', `${container.offsetLeft}px`);
-      }
+      updateGutter(container);
     }
   });
   signal?.addEventListener('abort', () => rows?.disconnect(), {once: true});
+  if (rows && containers.length && !signal?.aborted) {
+    // Match the CSS gutter breakpoint: an unwrapped row can keep its size
+    // while its container moves. The surface signal also releases this listener.
+    matchMedia('(width < 700px)').addEventListener('change', () => {
+      containers.forEach(updateGutter);
+    }, {signal});
+  }
   // The reader clears these preferences on package changes. Keep only paths and
   // positions, so visiting documents does not retain their full source or DOM.
   let tables = states.get(model.path);
   if (!tables) states.set(model.path, tables = new Map());
-  for (const [index, container] of [...host.querySelectorAll('.table-container')].entries()) {
+  for (const [index, container] of containers.entries()) {
     const key = container.dataset.sourcepos;
     const toolbar = document.createElement('div');
     toolbar.className = 'table-toolbar';

@@ -103,6 +103,41 @@ for (const width of [1280, 700, 699, 390]) {
   });
 }
 
+for (const observer of [true, false]) {
+  test(`nowrap gutter follows breakpoint transitions with ResizeObserver ${observer ? 'enabled' : 'unavailable'}`, async ({page}) => {
+    if (!observer) await page.addInitScript(() => { window.ResizeObserver = undefined; });
+    await page.setViewportSize({width: 699, height: 844});
+    await mount(page, '| ' + 'wide'.repeat(150) + ' | second |\n| --- | --- |\n| normal | row |\n');
+    await wrap(page).click();
+    await expect(wrap(page)).toHaveAttribute('aria-pressed', 'false');
+    const container = page.locator('.table-container');
+    if (observer) await expect.poll(() => container.evaluate(element =>
+      element.style.getPropertyValue('--gutter-offset'))).toBe('0px');
+    const rowSize = () => container.locator('tr').first().evaluate(row => {
+      const {width, height} = row.getBoundingClientRect();
+      return {width, height};
+    });
+    const initialSize = await rowSize();
+    for (const width of [700, 701, 900, 699, 700]) {
+      await page.setViewportSize({width, height: 844});
+      await expect.poll(() => container.evaluate((element, observer) => {
+        const button = element.querySelector('button').getBoundingClientRect();
+        const table = element.querySelector('.table-scroll').getBoundingClientRect();
+        const row = element.querySelector('tr').getBoundingClientRect();
+        if (innerWidth < 700) return button.bottom < table.top;
+        const aligned = observer
+          ? Math.abs(button.y + button.height / 2 - row.y - row.height / 2) <= 1
+          : button.top === table.top;
+        return button.right < table.left && aligned;
+      }, observer)).toBe(true);
+      expect(await rowSize()).toEqual(initialSize);
+      if (observer) await expect.poll(() => container.evaluate(element =>
+        element.style.getPropertyValue('--gutter-offset') === `${element.offsetLeft}px`)).toBe(true);
+      else expect(await container.evaluate(element => element.style.getPropertyValue('--gutter-offset'))).toBe('');
+    }
+  });
+}
+
 test('header alignment follows wrapping, resizing and zoom', async ({page}) => {
   await mount(page, '| ' + 'Long heading '.repeat(8) + '| Short |\n| --- | --- |\n| cell | value |\n');
   const alignment = () => page.locator('.table-container').evaluate(container => {
