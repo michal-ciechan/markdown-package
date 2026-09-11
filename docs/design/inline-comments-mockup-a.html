@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inline comments mockup A: margin rail</title>
+<style>
+/* ---------- host app chrome, copied from src/web-viewer/src/styles.css so the design is judged in context ---------- */
+:root { color-scheme: light; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #202b38; background: #f5f6f8; line-height: 1.55;
+  --comment: #2f7fb8; --comment-bg: rgba(47, 127, 184, .16); --comment-soft: #eaf2f9;
+  --change: #c2691e; --change-bg: rgba(214, 124, 44, .18); --change-soft: #fbf0e4;
+  --resolved: #3f8460; --muted: #62707f; --line: #dbe1e8; --ink: #202b38; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+button, input, select, textarea { font: inherit; }
+button, .open-button { cursor: pointer; border: 1px solid #b7c4d2; border-radius: 6px; background: white; color: #174568; padding: .55rem .8rem; }
+button:hover { background: #eef4f8; }
+button:disabled { opacity: .6; cursor: default; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible, [tabindex]:focus-visible { outline: 3px solid #197fba; outline-offset: 3px; }
+input, select, textarea { border: 1px solid #b7c4d2; border-radius: 5px; background: white; color: #202b38; padding: .55rem; min-width: 0; }
+.app-header { background: #172b3f; color: white; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.6rem max(1.2rem, calc((100vw - 1440px) / 2)); }
+h1 { font-size: 1.45rem; letter-spacing: -.03em; margin: 0; }
+.app-header p { margin: .3rem 0 0; color: #c3d4e4; }
+.open-button { background: #f8fbff; white-space: nowrap; flex-shrink: 0; }
+main { max-width: 1480px; margin: auto; padding: 1.2rem; }
+#package-details { display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; padding: 1rem; background: white; border: 1px solid var(--line); border-radius: 7px; overflow-wrap: anywhere; margin-bottom: 1.2rem; }
+#package-details small { width: 100%; color: #5c6976; }
+.browser { display: grid; grid-template-columns: minmax(190px, 240px) minmax(0, 1fr); gap: 1.2rem; align-items: start; }
+#documents { position: sticky; top: 1rem; max-height: calc(100vh - 2rem); overflow: auto; padding: .3rem; }
+#documents > label { font-weight: 650; }
+#documents input { width: 100%; margin-top: .5rem; }
+.muted { color: var(--muted); }
+.document-count { font-size: .85rem; }
+.document-list { list-style: none; padding: 0; margin: 0; }
+.document-list button { text-align: left; width: 100%; background: transparent; border-color: transparent; overflow-wrap: anywhere; }
+.document-list button[aria-current] { background: #e2ecf5; border-color: #b0c7d9; color: #153f61; font-weight: 600; }
+.reader-panel { background: white; border: 1px solid var(--line); border-radius: 8px; padding: clamp(1rem, 3vw, 2.4rem); min-width: 0; }
+.document-title { margin: 0; font-size: 1.25rem; overflow-wrap: anywhere; }
+.reader-controls { display: flex; gap: .8rem; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e7eb; padding: 1rem 0; margin-bottom: 1.7rem; }
+.reader-controls label { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+.reader-controls button { flex-shrink: 0; }
+.markdown { max-width: 84ch; overflow-wrap: anywhere; }
+.markdown h2 { font-size: 1.55rem; }
+.markdown h3 { font-size: 1.25rem; }
+.markdown :is(h1, h2, h3, h4) { line-height: 1.3; margin: 1.5em 0 .7em; scroll-margin-top: 1rem; }
+.markdown > section:first-child > :first-child { margin-top: 0; }
+.markdown a { color: #176fa5; text-decoration-thickness: .08em; }
+.markdown pre { background: #f2f5f8; padding: 1rem; border-radius: 5px; overflow-x: auto; white-space: pre; font-size: .9rem; }
+.markdown code { font-family: ui-monospace, Consolas, monospace; }
+.markdown :not(pre) > code { background: #f1f4f7; padding: .1rem .25rem; border-radius: 3px; }
+.markdown table { border-collapse: collapse; width: 100%; font-size: .92rem; overflow-wrap: break-word; }
+.markdown th, .markdown td { border: 1px solid var(--line); padding: .45rem .6rem; vertical-align: top; text-align: left; }
+.markdown th { background: #f7f9fb; }
+.markdown li { margin: .3em 0; }
+.selection-toolbar { position: fixed; z-index: 20; display: flex; align-items: center; gap: .25rem; flex-wrap: wrap; padding: .35rem; border: 1px solid #adc1d3; border-radius: .65rem; background: #fff; box-shadow: 0 3px 16px #172b3f33; }
+.selection-toolbar button { min-width: 44px; min-height: 44px; touch-action: manipulation; }
+.selection-toolbar button span { display: inline-block; width: 1rem; font-size: 1.1rem; line-height: 1; }
+.selection-toolbar [data-selection="comment"] { background: #174568; border-color: #174568; color: white; }
+.selection-level { font-size: .8rem; color: #526172; padding: 0 .35rem; }
+
+/* ---------- mockup guide ---------- */
+.mockup-guide { background: #fffbea; border: 1px solid #e6d693; border-radius: 7px; padding: .8rem 1rem; margin-bottom: 1.2rem; font-size: .92rem; }
+.mockup-guide summary { cursor: pointer; font-weight: 650; }
+.mockup-guide ul { margin: .6rem 0 0; padding-left: 1.2rem; }
+.mockup-guide li { margin: .25rem 0; }
+
+/* ---------- the design: reader column + margin rail ---------- */
+.review-layout { position: relative; display: grid; grid-template-columns: minmax(0, 84ch) minmax(240px, 300px); gap: 0 2.6rem; align-items: start; }
+.connectors { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.connectors path { fill: none; stroke-width: 1.5; }
+.connectors circle { stroke: white; stroke-width: 1.5; }
+.rail { position: relative; min-width: 0; }
+.rail-head { font-size: .85rem; color: var(--muted); display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem .9rem; padding-bottom: .6rem; border-bottom: 1px solid var(--line); margin-bottom: .6rem; }
+.rail-head strong { color: var(--ink); font-size: .95rem; }
+.rail-head label { display: inline-flex; align-items: center; gap: .35rem; cursor: pointer; margin-left: auto; }
+.rail-status { width: 100%; margin: 0; min-height: 1.3em; color: #2f5f8a; }
+.rail-cards { position: relative; min-height: 4rem; }
+.rail-add { position: absolute; left: 0; display: inline-flex; align-items: center; gap: .4rem; padding: .4rem .7rem; border-radius: 999px; border: 1px dashed #7f9bb5; background: #f8fbff; color: #174568; font-size: .85rem; z-index: 3; }
+.rail-add:hover { background: #e2ecf5; border-style: solid; }
+.rail-add svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+/* text-level highlights: translucent so overlaps darken by themselves */
+mark { color: inherit; }
+mark.hl { --edge: var(--comment); --bg: var(--comment-bg); background: var(--bg); border-bottom: 2px solid var(--edge); padding: 1px 0; border-radius: 2px; cursor: pointer; box-decoration-break: clone; -webkit-box-decoration-break: clone; transition: background-color .15s, box-shadow .15s; }
+mark.hl[data-kind="change-request"] { --edge: var(--change); --bg: var(--change-bg); }
+mark.hl.hover, mark.hl:hover { background: color-mix(in srgb, var(--bg) 100%, var(--edge) 22%); }
+mark.hl.active { background: color-mix(in srgb, var(--bg) 100%, var(--edge) 30%); border-bottom-width: 3px; }
+mark.hl[data-state="resolved"] { --bg: transparent; border-bottom: 2px dotted #8fa3b6; }
+mark.hl[data-state="resolved"]:is(.hover, :hover, .active) { background: #eef2f5; }
+mark.hl[data-state="obsolete"] { --bg: transparent; --edge: #b4bec8; border-bottom: 2px dotted #c3cad2; color: var(--muted); }
+mark.hl.draft { --bg: color-mix(in srgb, var(--edge) 9%, transparent); background: var(--bg); border-bottom: 2px dashed var(--edge); }
+
+/* block and section highlights: the reader already marks a selected section with a left bar, so a thread on a whole block reuses that device */
+.block-hl { --edge: var(--comment); border-left: 3px solid var(--edge); padding-left: .85rem; margin-left: calc(-.85rem - 3px); border-radius: 2px; cursor: pointer; transition: background-color .15s; }
+.block-hl[data-kind="change-request"] { --edge: var(--change); }
+.block-hl.hover, .block-hl:hover { background: color-mix(in srgb, var(--edge) 7%, transparent); }
+.block-hl.active { background: color-mix(in srgb, var(--edge) 9%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--edge) 40%, transparent); }
+.block-hl[data-state="resolved"] { --edge: #9fb0c0; border-left-style: dotted; }
+.block-hl[data-state="obsolete"] { --edge: #c3cad2; border-left-style: dotted; }
+.block-hl.draft { border-left-style: dashed; background: color-mix(in srgb, var(--edge) 6%, transparent); }
+section.block-hl { padding-top: .1rem; padding-bottom: .1rem; }
+
+/* thread cards */
+.thread-card { --edge: var(--comment); --soft: var(--comment-soft); position: absolute; left: 0; right: 0; background: white; border: 1px solid var(--line); border-left: 3px solid var(--edge); border-radius: 6px; padding: .55rem .75rem .6rem; font-size: .85rem; line-height: 1.45; transition: top .18s ease, box-shadow .15s, border-color .15s; }
+.thread-card[data-kind="change-request"] { --edge: var(--change); --soft: var(--change-soft); }
+.thread-card.hover { border-color: color-mix(in srgb, var(--edge) 55%, var(--line)); border-left-color: var(--edge); }
+.thread-card.active { border-color: var(--edge); box-shadow: 0 6px 22px #172b3f26; z-index: 2; }
+.thread-card[data-state="resolved"] { --edge: #9fb0c0; color: #4b5967; }
+.thread-card[data-state="obsolete"] { --edge: #c3cad2; color: #6c7884; border-style: dashed; border-left-style: solid; }
+.card-head { display: flex; align-items: center; gap: .4rem; width: 100%; background: none; border: 0; padding: 0; margin: 0; color: inherit; text-align: left; cursor: pointer; border-radius: 4px; }
+.card-head:hover { background: none; }
+.card-kind { display: inline-flex; align-items: center; gap: .35rem; font-weight: 650; color: var(--edge); }
+.thread-card[data-state="resolved"] .card-kind, .thread-card[data-state="obsolete"] .card-kind { color: inherit; }
+.card-kind svg { width: 15px; height: 15px; flex-shrink: 0; }
+.state-pill { margin-left: auto; font-size: .75rem; padding: .1rem .5rem; border-radius: 999px; border: 1px solid; white-space: nowrap; display: inline-flex; align-items: center; gap: .3rem; }
+.state-pill svg { width: 12px; height: 12px; }
+.state-pill[data-state="open"] { color: var(--edge); border-color: color-mix(in srgb, var(--edge) 45%, white); background: var(--soft); }
+.state-pill[data-state="resolved"] { color: var(--resolved); border-color: #b6d4c2; background: #eef7f1; }
+.state-pill[data-state="obsolete"] { color: #6c7884; border-color: #d0d6dc; background: #f2f4f6; }
+.card-scope { margin: .35rem 0 0; font-size: .78rem; color: var(--muted); }
+.card-scope em { font-style: normal; color: #435364; }
+.comment { margin-top: .5rem; }
+.comment + .comment { border-top: 1px solid #edf0f3; padding-top: .5rem; }
+.comment-meta { display: flex; align-items: baseline; gap: .5rem; font-size: .8rem; color: var(--muted); }
+.comment-meta b { color: var(--ink); font-weight: 600; }
+.comment-meta time { margin-left: auto; white-space: nowrap; }
+.comment-meta .reply-kind { display: inline-flex; align-items: center; gap: .25rem; }
+.comment-meta .reply-kind svg { width: 12px; height: 12px; }
+.comment-meta .reply-kind[data-kind="change-request"] { color: var(--change); }
+.comment-body { margin: .2rem 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.thread-card:not(.active) .comment-body { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.thread-card:not(.active) .comment + .comment { display: none; }
+.thread-card:not(.active) .card-tools, .thread-card:not(.active) .reply-form { display: none; }
+.thread-card[data-state="resolved"]:not(.active) .comment-body, .thread-card[data-state="obsolete"]:not(.active) .comment-body { -webkit-line-clamp: 1; }
+.more-replies { margin: .35rem 0 0; font-size: .78rem; color: var(--muted); }
+.thread-card.active .more-replies { display: none; }
+.card-tools { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; padding-top: .55rem; border-top: 1px solid #edf0f3; }
+.card-tools button, .reply-form button, .compose button { padding: .3rem .6rem; font-size: .8rem; border-radius: 5px; }
+.card-tools .primary, .reply-form .primary, .compose .primary { background: #174568; border-color: #174568; color: white; }
+.card-tools .spacer { flex: 1; }
+.card-tools .state-menu { position: relative; }
+.state-options { position: absolute; right: 0; top: calc(100% + 4px); background: white; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 6px 18px #172b3f22; display: grid; min-width: 11rem; padding: .25rem; z-index: 4; }
+.state-options button { text-align: left; border: 0; border-radius: 4px; padding: .4rem .6rem; }
+.state-options button[aria-current] { background: #e2ecf5; }
+
+/* compose, reply and shared form pieces */
+.reply-form, .compose form { display: grid; gap: .45rem; margin-top: .5rem; }
+.reply-form textarea, .compose textarea { width: 100%; min-height: 4.2rem; resize: vertical; padding: .45rem .55rem; font-size: .85rem; }
+.reply-form input, .compose input { padding: .35rem .55rem; font-size: .85rem; }
+.form-row { display: flex; gap: .4rem; align-items: center; flex-wrap: wrap; }
+.form-row .spacer { flex: 1; }
+.kind-switch { display: inline-flex; border: 1px solid #b7c4d2; border-radius: 6px; overflow: hidden; }
+.kind-switch button { border: 0; border-radius: 0; padding: .3rem .6rem; font-size: .8rem; display: inline-flex; align-items: center; gap: .3rem; background: white; color: #435364; }
+.kind-switch button + button { border-left: 1px solid #b7c4d2; }
+.kind-switch button svg { width: 13px; height: 13px; }
+.kind-switch button[aria-pressed="true"][data-kind="comment"] { background: var(--comment-soft); color: var(--comment); font-weight: 650; }
+.kind-switch button[aria-pressed="true"][data-kind="change-request"] { background: var(--change-soft); color: var(--change); font-weight: 650; }
+.compose { border-left-width: 3px; border-style: dashed; border-left-style: solid; }
+.compose .card-kind { color: var(--edge); }
+.compose .quote { margin: .3rem 0 0; font-size: .78rem; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.compose .quote q { font-style: italic; color: #435364; }
+.compose .hint { margin: 0; font-size: .75rem; color: var(--muted); }
+
+/* narrow screens: no rail; threads open inline directly under the block they belong to */
+.thread-slot { margin: .5rem 0 1rem; }
+.slot-chips { display: flex; flex-wrap: wrap; gap: .35rem; }
+.chip { display: inline-flex; align-items: center; gap: .35rem; padding: .25rem .6rem; font-size: .8rem; border-radius: 999px; border: 1px solid; background: white; }
+.chip svg { width: 13px; height: 13px; }
+.chip[data-kind="comment"] { color: var(--comment); border-color: #b9d3e8; }
+.chip[data-kind="change-request"] { color: var(--change); border-color: #e7c39f; }
+.chip[data-state="resolved"], .chip[data-state="obsolete"] { color: var(--muted); border-color: #d0d6dc; }
+.chip[aria-pressed="true"] { background: #e2ecf5; }
+.chip .count { font-size: .72rem; background: #eef2f6; border-radius: 999px; padding: 0 .35rem; color: #435364; }
+.slot-cards { margin-top: .5rem; }
+.review-layout.narrow { grid-template-columns: minmax(0, 1fr); }
+.review-layout.narrow .rail, .review-layout.narrow .connectors { display: none; }
+.review-layout.narrow .thread-card { position: static; margin-top: .4rem; }
+.review-layout.narrow .thread-card.active { box-shadow: 0 3px 12px #172b3f1f; }
+
+@media (max-width: 700px) {
+  .app-header { align-items: start; flex-direction: column; gap: 1rem; }
+  .browser { grid-template-columns: minmax(0, 1fr); }
+  #documents { position: static; max-height: 200px; }
+  .reader-controls { align-items: stretch; flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) { .thread-card, mark.hl, .block-hl { transition: none; } }
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div><h1>mdpkg viewer</h1><p>Mockup A: review threads in a margin rail, anchored to the text they quote</p></div>
+  <span class="open-button">Open package</span>
+</header>
+<main>
+  <details class="mockup-guide" open>
+    <summary>About this mockup (design exploration for CARD-0043, not the real viewer)</summary>
+    <ul>
+      <li>Highlighted text and left bars mark existing threads. Blue is a comment, amber is a change request. Dotted underlines are resolved or obsolete threads.</li>
+      <li>Hover a highlight or a card to see which belongs to which. Click either to open the thread; the card lines up with the text and the others move aside. Press Escape to close.</li>
+      <li>Click any word to select it, then use the floating toolbar or the "Comment on selection" pill in the margin. Expand grows the selection to sentence, paragraph and section.</li>
+      <li>Inside an open thread you can reply, and mark it resolved, obsolete or open again. Untick "Show resolved and obsolete" to keep only open threads in the rail.</li>
+      <li>Make the reading pane narrower than about 900px: the rail folds away and threads open inline under their block instead.</li>
+    </ul>
+  </details>
+  <div id="package-details">
+    <span><strong>spec.mdpkg</strong></span><span>markdown-package/1</span><span>4 documents</span><span class="muted">current sha1-b414f39b</span>
+    <small>Sample content is taken from docs/spec.md §2 and §4 of this repository. Threads and names are invented for the mockup.</small>
+  </div>
+  <div class="browser">
+    <nav id="documents">
+      <label>Documents <input type="search" placeholder="Filter" aria-label="Filter documents"></label>
+      <p class="muted document-count">4 documents</p>
+      <ul class="document-list">
+        <li><button type="button" aria-current="true">docs/spec.md</button></li>
+        <li><button type="button">docs/investigations/review-comments.md</button></li>
+        <li><button type="button">docs/releases/mdpkg.md</button></li>
+        <li><button type="button">README.md</button></li>
+      </ul>
+    </nav>
+    <section class="reader-panel" id="reader" aria-label="Document">
+      <div class="reader-controls">
+        <label>View <select aria-label="View"><option>Rendered</option><option>Source</option></select></label>
+        <button type="button">Section menu</button>
+      </div>
+      <div class="review-layout" id="layout">
+        <div class="markdown" id="doc">
+          <section id="s2" data-thread="t3" data-kind="change-request" data-state="resolved" class="block-hl" tabindex="0" role="button">
+            <h2>2. Terminology</h2>
+            <ul>
+              <li><strong>Package</strong>: one ZIP file conforming to §3. The working file extension is <code>.mdpkg</code> (registration is open, §11.1).</li>
+              <li><strong>Current view</strong>: the plain ZIP entries that are the Git working tree of the commit named by the manifest's <code>current</code> field. Every Markdown document, and the override ledger, is here.</li>
+              <li><strong>Container-level entries</strong>: the entries under <code>.mdpkg/</code> that are <em>not</em> tracked in Git, because they name commit identities that cannot appear inside the tree they describe: <code>.mdpkg/manifest.json</code>, <code>.mdpkg/history.json</code>, <code>.mdpkg/history/bindings.json</code>, <code>.mdpkg/history/ranges/*.json</code>, <code>.mdpkg/history/patches/*.patch</code>.</li>
+              <li><strong>Namespace</strong>: the lowercase UUID identifying a package lineage. All addressing roots are derived within it.</li>
+              <li><strong>Entity</strong>: a document, a document's permanent preamble, or a heading section. Each has a <strong>locator</strong> (§6.2) and, at any snapshot, a <strong>scoped digest</strong> (§6.1).</li>
+              <li><strong>Root</strong>: the 64-hex SHA-256 that is an entity's stable identity: its default root unless the ledger says otherwise.</li>
+              <li><strong>Canonical JSON</strong>: UTF-8, object keys sorted bytewise, compact separators (<code>,</code> and <code>:</code>), no ASCII-escaping of non-ASCII characters, exactly one trailing LF. Every JSON file this format defines is written this way, with one exception: the manifest writes its <code>mdpkg</code> key first (§4).</li>
+            </ul>
+          </section>
+          <section id="s4">
+            <h2>4. The manifest</h2>
+            <p><code>.mdpkg/manifest.json</code> is canonical JSON with one deliberate exception: <mark class="hl" data-thread="t1" data-kind="change-request" data-state="open" tabindex="0" role="button">the <code>mdpkg</code> key is written first so it lands at <mark class="hl" data-thread="t5" data-kind="comment" data-state="open" tabindex="0" role="button">byte 50</mark> of the file</mark>. All other keys are in sorted order. <mark class="hl" data-thread="t2" data-kind="comment" data-state="open" tabindex="0" role="button">It MUST be O(1) in package size</mark>: a field earns its place only if a reader needs it before it can do anything else, it must be readable without a decoder, and it does not grow with the package.</p>
+<pre><code>{"mdpkg":"markdown-package/1",
+ "addressing":{"anchor":"cm0312-trail-source-v1","coverage":"complete","digest":"cm0312-source-lf-v1","overrides":".mdpkg/address/overrides.json"},
+ "current":"sha1-b414f39b3a54a4232fbaa6a0de0dd4966bdf981c",
+ "history":{"coverage":"complete","detail":".mdpkg/history.json","transform":["squashed"]},
+ "namespace":"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"}</code></pre>
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
+              <tbody>
+                <tr><td><code>mdpkg</code></td><td>string, exactly <code>markdown-package/1</code></td><td>Format magic and version. The only authoritative version token in the file.</td></tr>
+                <tr><td><code>namespace</code></td><td>lowercase UUID</td><td>Package lineage. Every addressing root is derived within it; a reference from another namespace is rejected before anything is resolved.</td></tr>
+                <tr><td><code>current</code></td><td>qualified object ID</td><td>The commit whose working tree the current view mirrors. MUST equal the target of <code>refs/heads/main</code>. Its prefix (<code>sha1-</code> / <code>sha256-</code>) is the repository's object format; no separate field is needed.</td></tr>
+                <tr><td><code>addressing.anchor</code></td><td>string</td><td>Anchor profile used to compute default roots. Version 1 defines only <code>cm0312-trail-source-v1</code>.</td></tr>
+                <tr><td><code>addressing.digest</code></td><td>string</td><td>Source digest profile. Version 1 defines only <code>cm0312-source-lf-v1</code>.</td></tr>
+                <tr><td><code>addressing.coverage</code></td><td><code>complete</code> or <code>partial</code></td><td>Whether producer-confirmed correspondence (§6.3) covers every retained transition. <code>partial</code> requires <code>history.json</code> to enumerate the covered ranges; a resolution whose reviewed commit falls in an uncovered range returns <code>unconfirmed</code>.</td></tr>
+                <tr><td><code>addressing.overrides</code></td><td>entry name or <code>null</code></td><td>The ledger's tracked path, or <code>null</code> as a positive statement that there are no exceptions at <code>current</code>.</td></tr>
+                <tr><td><code>history.coverage</code></td><td><code>complete</code>, <code>truncated</code> or <code>unknown</code></td><td>Whether the retained graph is the whole history of the declared scope. A synthetic root is <code>truncated</code>.</td></tr>
+                <tr><td><code>history.transform</code></td><td>array of <code>projected</code>, <code>squashed</code></td><td>Transformations applied to produce the retained graph, in order. Empty means the retained graph is the original graph.</td></tr>
+                <tr><td><code>history.detail</code></td><td>entry name</td><td>The unbounded descriptor, §5.3.</td></tr>
+              </tbody>
+            </table>
+            <p>One further object is defined and is present <strong>only in a review package</strong> (§6.8), where it is genuinely read before a reader can do anything else: it is how a reader tells a review package from an ordinary one and decides whether it must go and find the reviewed original.</p>
+<pre><code> "review":{"detail":".mdpkg/review/comments.json",
+           "of":{"current":"sha1-…","dispatch":"…","namespace":"c1b2d3e4-…","packageBytes":251778,"packageDigest":"sha256-…"},
+           "shape":"delta"}</code></pre>
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
+              <tbody>
+                <tr><td><code>review.of.namespace</code>, <code>review.of.current</code></td><td>UUID, qualified object ID</td><td>The correlation key: the exact lineage state this package reviews. Both REQUIRED. A reader matches on the pair and on nothing else, exactly as §6.4 rejects a reference from a foreign namespace before resolving anything (D-25).</td></tr>
+                <tr><td><code>review.of.packageDigest</code>, <code>review.of.packageBytes</code></td><td>string, integer</td><td>Corroborating evidence, OPTIONAL and RECOMMENDED: the SHA-256 and length of the file the reviewer held. A match means the reviewer held those exact bytes; <code>current</code> matching while the digest does not means the same lineage state was re-emitted or repacked, which is a fact worth reporting and is not an error; if <code>current</code> does not match, the digest is irrelevant. Never identity (D-25).</td></tr>
+                <tr><td><code>review.of.dispatch</code></td><td>string</td><td>OPTIONAL transport metadata echoed back from the sender, stored and never interpreted. A producer that fixes commit dates can emit two byte-identical packages at different times, and no content-derived identifier can tell them apart; which <em>send</em> a review answers is transport knowledge, not package identity (D-26).</td></tr>
+                <tr><td><code>review.shape</code></td><td><code>delta</code> or <code>bundled</code></td><td><code>delta</code> carries the review alone in the reviewer's own fresh namespace; <code>bundled</code> carries the reviewed package too and continues its lineage (D-24, §6.8).</td></tr>
+                <tr><td><code>review.detail</code></td><td>entry name</td><td>The tracked review document, §6.8. Normally <code>.mdpkg/review/comments.json</code>; <mark class="hl" data-thread="t4" data-kind="comment" data-state="obsolete" tabindex="0" role="button">the initial .NET Reader/Reviews implementation supports that exact path and reports other paths as an unsupported capability</mark>.</td></tr>
+              </tbody>
+            </table>
+            <p>The object is O(1) with a fixed key set, and it is the only manifest field whose absence is itself the answer to a question: a package without <code>review</code> is not a review package.</p>
+            <p data-thread="t6" data-kind="comment" data-state="open" class="block-hl" tabindex="0" role="button">Fields deliberately absent, with their measured cost on the npm / Rust corpora: a codec declaration (+42 / +42 bytes; the central directory already holds every entry's method), a document index (+3,527 / +22,228; the central directory is the index), per-document digests (+9,086 / +65,776; the tip tree already binds them and ZIP CRCs catch accidental corruption), entry counts or offsets (EOCD), and a package self-hash (a file cannot contain its own digest).</p>
+            <p>A validator MUST reject a package whose manifest disagrees with the archive: <code>current</code> not equal to the branch target, <code>overrides</code> naming an entry that is absent or absent when the tree contains the ledger, or a <code>transform</code> list inconsistent with <code>history.json</code>.</p>
+            <p>Two further obligations apply to a package carrying <code>review</code>, and both are checkable from what a validator already holds:</p>
+            <ul>
+              <li>A <code>bundled</code> review package's <code>namespace</code> MUST equal <code>review.of.namespace</code>, and its tip commit MUST change only paths under <code>.mdpkg/review/</code>: no document edits and no ledger edits. A validator checks the whole claim by diffing the tip tree against its parent, whose commit MUST be <code>review.of.current</code>. This is what makes it safe for a reviewer to be briefly a producer in the reviewed lineage without confirmation authority under §6.3: no addressing exception is created, every root stays valid, and the ledger is copied with the tree.</li>
+              <li>A <code>delta</code> review package's <code>namespace</code> MUST differ from <code>review.of.namespace</code>. A delta review is the reviewer's own one-commit lineage over its own review document; each exported delta is a snapshot even when the authoring tool retains a private edit history; the roots and digests inside it belong to the <em>reviewed</em> namespace and are read there (§6.8), and collapsing the two namespaces would make every thread a self-reference.</li>
+            </ul>
+            <p>A validator MUST also check the producer requirements that are otherwise stated with no addressee: entry-name uniqueness under NFC plus simple case folding (§3.6, D-16), the reserved-prefix rule (§3.6), LF-only content in every entry outside <code>.git/</code> (§3.6, D-17), and internal file attributes of <code>0</code> on every central-directory record (§3.5, D-19). All four are cheap from what a validator already holds, and each describes real damage a reader cannot detect for itself. A reader is not required to make these checks; §3.7's two tiers are about typing and recovery, not content conformance, and a package that fails any of them may still type as conforming at offset 0.</p>
+          </section>
+        </div>
+        <aside class="rail" id="rail" aria-label="Review threads">
+          <div class="rail-head">
+            <strong>Review</strong>
+            <span class="rail-count" id="rail-count"></span>
+            <label><input type="checkbox" id="show-resolved" checked> Show resolved and obsolete</label>
+            <p class="rail-status" id="rail-status" role="status" aria-live="polite"></p>
+          </div>
+          <div class="rail-cards" id="rail-cards"></div>
+        </aside>
+        <svg class="connectors" id="connectors" aria-hidden="true"></svg>
+      </div>
+    </section>
+  </div>
+</main>
+<div class="selection-toolbar" id="toolbar" role="toolbar" aria-label="Text selection" hidden>
+  <span class="selection-level" id="level" role="status" aria-live="polite"></span>
+  <button type="button" data-selection="collapse" aria-label="Collapse selection" title="Collapse selection"><span aria-hidden="true">−</span></button>
+  <button type="button" data-selection="expand" aria-label="Expand selection" title="Expand selection"><span aria-hidden="true">＋</span></button>
+  <button type="button" data-selection="comment">Leave comment</button>
+</div>
+<div id="parking" hidden></div>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const doc = $('#doc'), layoutEl = $('#layout'), rail = $('#rail'), railCards = $('#rail-cards'), connectors = $('#connectors');
+  const toolbar = $('#toolbar'), parking = $('#parking'), status = $('#rail-status'), showResolved = $('#show-resolved');
+  const reader = $('#reader');
+  const isWide = () => reader.clientWidth >= 880;
+
+  const ICON = {
+    comment: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5h11v7.5H7l-3.5 2.8v-2.8h-1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+    'change-request': '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.6 13.4l.9-3.4 7.3-7.3 2.5 2.5-7.3 7.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9.3 4.2l2.5 2.5" stroke="currentColor" stroke-width="1.5"/></svg>',
+    resolved: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 8.2l2 2 4-4.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    obsolete: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 12l8-8" stroke="currentColor" stroke-width="1.5"/></svg>',
+    open: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="currentColor"/></svg>',
+  };
+  const KIND_LABEL = {comment: 'Comment', 'change-request': 'Change request'};
+  const STATE_LABEL = {open: 'Open', resolved: 'Resolved', obsolete: 'Obsolete'};
+
+  const threads = [
+    {id: 't1', kind: 'change-request', state: 'open', anchor: {type: 'span'}, comments: [
+      {author: 'Priya Natarajan', at: '2 days ago', kind: 'change-request', body: 'Byte 50 is only true when the key is spelled exactly {"mdpkg": with no whitespace. State the offset as a consequence of the canonical form rather than a magic number, so a reader knows what to check when it does not hold.'},
+      {author: 'Mike Ciechan', at: 'yesterday', kind: 'comment', body: 'Agreed. The offset falls out of §3\'s stored-entry rule plus the compact separators, so I will derive it in the sentence and keep the number as the worked result.'}]},
+    {id: 't5', kind: 'comment', state: 'open', anchor: {type: 'span'}, comments: [
+      {author: 'Tomasz Wiśniewski', at: 'yesterday', kind: 'comment', body: 'Zero-based? A reader doing a seek before parsing will want to know which byte the quote starts on.'}]},
+    {id: 't2', kind: 'comment', state: 'open', anchor: {type: 'span'}, comments: [
+      {author: 'Tomasz Wiśniewski', at: '2 days ago', kind: 'comment', body: 'O(1) in what unit? A fixed key set can still carry an unbounded string value. The three criteria that follow are the real rule; the big-O phrase is a summary of them.'},
+      {author: 'Priya Natarajan', at: '2 days ago', kind: 'comment', body: 'The third criterion ("does not grow with the package") already pins the meaning. Reordering so it comes first would make the sentence self-explaining.'},
+      {author: 'Mike Ciechan', at: 'yesterday', kind: 'comment', body: 'Will reorder. Keeping O(1) because the release notes and the validator error text both use it.'}]},
+    {id: 't3', kind: 'change-request', state: 'resolved', anchor: {type: 'section', label: 'Whole section: 2. Terminology'}, comments: [
+      {author: 'Priya Natarajan', at: '5 days ago', kind: 'change-request', body: 'This list mixes container terms (package, current view, container-level entries) with addressing terms (entity, root, locator). Split it into two lists under the same heading so §3 and §6 can each point at their own half.'},
+      {author: 'Mike Ciechan', at: '3 days ago', kind: 'comment', body: 'Split as suggested and cross-referenced from §3.1 and §6.1. Marking resolved.'}]},
+    {id: 't4', kind: 'comment', state: 'obsolete', anchor: {type: 'span'}, comments: [
+      {author: 'Priya Natarajan', at: '5 days ago', kind: 'comment', body: 'Implementation detail in a format specification. The .NET Reader\'s supported path belongs in the Reader README, not here.'},
+      {author: 'Mike Ciechan', at: '3 days ago', kind: 'comment', body: 'The sentence was removed in the CARD-0037 rewrite, so this no longer applies. Marking obsolete rather than resolved because nothing was changed in response to it.'}]},
+    {id: 't6', kind: 'comment', state: 'open', anchor: {type: 'block', label: 'Whole paragraph'}, comments: [
+      {author: 'Tomasz Wiśniewski', at: 'yesterday', kind: 'comment', body: 'Link the corpus measurement (docs/investigations/container.md) so these byte counts are reproducible. Right now a reader has to trust six numbers with no provenance.'}]},
+  ];
+  let nextId = 7;
+
+  const state = {active: null, hover: null, composing: null, sel: null, openMenu: null};
+  const cards = new Map();
+  const byId = id => threads.find(t => t.id === id);
+  const marksOf = id => [...doc.querySelectorAll(`[data-thread="${id}"]`)];
+  const anchorElement = t => {
+    const els = marksOf(t.id);
+    if (!els.length) return null;
+    return t.anchor.type === 'section' ? els[0].querySelector('h1, h2, h3, h4') || els[0] : els[0];
+  };
+  const escapeHtml = s => s.replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  const setStatus = message => { status.textContent = message; };
+
+  /* ---------- cards ---------- */
+  function renderCard(t) {
+    let card = cards.get(t.id);
+    if (!card) { card = document.createElement('article'); card.className = 'thread-card'; card.dataset.thread = t.id; cards.set(t.id, card); }
+    card.dataset.kind = t.kind; card.dataset.state = t.state;
+    card.classList.toggle('active', state.active === t.id);
+    const [first, ...replies] = t.comments;
+    const stateIcon = t.state === 'open' ? ICON.open : ICON[t.state];
+    card.innerHTML = `
+      <button type="button" class="card-head" aria-expanded="${state.active === t.id}" aria-label="${KIND_LABEL[t.kind]} by ${escapeHtml(first.author)}, ${STATE_LABEL[t.state].toLowerCase()}">
+        <span class="card-kind">${ICON[t.kind]}${KIND_LABEL[t.kind]}</span>
+        <span class="state-pill" data-state="${t.state}">${stateIcon}${STATE_LABEL[t.state]}</span>
+      </button>
+      ${t.anchor.label ? `<p class="card-scope"><em>${escapeHtml(t.anchor.label)}</em></p>` : ''}
+      ${t.comments.map((c, i) => `
+        <div class="comment">
+          <p class="comment-meta"><b>${escapeHtml(c.author)}</b>${i > 0 && c.kind !== 'comment' ? `<span class="reply-kind" data-kind="${c.kind}">${ICON[c.kind]}${KIND_LABEL[c.kind]}</span>` : ''}<time>${escapeHtml(c.at)}</time></p>
+          <p class="comment-body">${escapeHtml(c.body)}</p>
+        </div>`).join('')}
+      ${replies.length ? `<p class="more-replies">${replies.length} ${replies.length === 1 ? 'reply' : 'replies'}</p>` : ''}
+      <div class="card-tools">
+        <button type="button" class="primary" data-act="reply">Reply</button>
+        <span class="spacer"></span>
+        <span class="state-menu"><button type="button" data-act="state" aria-haspopup="menu" aria-expanded="false">${t.state === 'open' ? 'Resolve' : 'Reopen'}…</button></span>
+      </div>
+      <form class="reply-form" hidden>
+        <textarea name="body" placeholder="Write a reply" required aria-label="Reply"></textarea>
+        <div class="form-row">
+          <span class="kind-switch" role="group" aria-label="Reply kind">
+            <button type="button" data-kind="comment" aria-pressed="true">${ICON.comment}Comment</button>
+            <button type="button" data-kind="change-request" aria-pressed="false">${ICON['change-request']}Change request</button>
+          </span>
+          <span class="spacer"></span>
+          <input name="author" value="You" aria-label="Your name" size="8">
+        </div>
+        <div class="form-row"><button type="submit" class="primary">Save reply</button><button type="button" data-act="cancel-reply">Cancel</button></div>
+      </form>`;
+    wireCard(card, t);
+    return card;
+  }
+
+  function wireCard(card, t) {
+    card.querySelector('.card-head').addEventListener('click', () => setActive(state.active === t.id ? null : t.id));
+    card.addEventListener('mouseenter', () => setHover(t.id));
+    card.addEventListener('mouseleave', () => setHover(null));
+    card.querySelector('[data-act="reply"]').addEventListener('click', () => {
+      const form = card.querySelector('.reply-form'); form.hidden = false; form.elements.body.focus(); layout();
+    });
+    card.querySelector('[data-act="cancel-reply"]').addEventListener('click', () => { const form = card.querySelector('.reply-form'); form.hidden = true; form.reset(); layout(); });
+    wireKindSwitch(card.querySelector('.reply-form .kind-switch'));
+    card.querySelector('.reply-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const form = event.target, body = form.elements.body.value.trim();
+      if (!body) return;
+      const kind = form.querySelector('[aria-pressed="true"]').dataset.kind;
+      t.comments.push({author: form.elements.author.value.trim() || 'You', at: 'just now', kind, body});
+      renderCard(t); layout(); setStatus('Reply saved in this tab. Prepare a review file to export it.');
+    });
+    const stateButton = card.querySelector('[data-act="state"]');
+    stateButton.addEventListener('click', () => toggleStateMenu(card, t, stateButton));
+  }
+
+  function wireKindSwitch(group, onChange) {
+    group.querySelectorAll('button').forEach(button => button.addEventListener('click', () => {
+      group.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+      onChange?.(button.dataset.kind);
+    }));
+  }
+
+  function toggleStateMenu(card, t, button) {
+    closeMenu();
+    const menu = document.createElement('div'); menu.className = 'state-options'; menu.setAttribute('role', 'menu');
+    for (const value of ['open', 'resolved', 'obsolete']) {
+      const option = document.createElement('button'); option.type = 'button'; option.setAttribute('role', 'menuitem');
+      option.textContent = value === 'open' ? 'Open (needs attention)' : value === 'resolved' ? 'Resolved (addressed)' : 'Obsolete (no longer applies)';
+      if (value === t.state) option.setAttribute('aria-current', 'true');
+      option.addEventListener('click', () => { setThreadState(t, value); closeMenu(); });
+      menu.append(option);
+    }
+    button.parentElement.append(menu); button.setAttribute('aria-expanded', 'true');
+    state.openMenu = {menu, button}; menu.querySelector('button').focus();
+  }
+  function closeMenu() {
+    if (!state.openMenu) return;
+    state.openMenu.menu.remove(); state.openMenu.button.setAttribute('aria-expanded', 'false'); state.openMenu = null;
+  }
+  function setThreadState(t, value) {
+    t.state = value;
+    for (const el of marksOf(t.id)) el.dataset.state = value;
+    renderCard(t); updateCount(); layout();
+    setStatus(`Thread marked ${value}. Prepare a new review file to include it.`);
+  }
+
+  /* ---------- hover and active linking ---------- */
+  function setHover(id) {
+    if (state.hover === id) return;
+    if (state.hover) { marksOf(state.hover).forEach(m => m.classList.remove('hover')); cards.get(state.hover)?.classList.remove('hover'); }
+    state.hover = id;
+    if (id) { marksOf(id).forEach(m => m.classList.add('hover')); cards.get(id)?.classList.add('hover'); }
+    drawConnectors();
+  }
+  function setActive(id, {scroll = true} = {}) {
+    closeMenu();
+    if (state.active) { marksOf(state.active).forEach(m => m.classList.remove('active')); const c = cards.get(state.active); if (c) { c.classList.remove('active'); c.querySelector('.card-head')?.setAttribute('aria-expanded', 'false'); const form = c.querySelector('.reply-form'); if (form) { form.hidden = true; } } }
+    state.active = id;
+    if (id) {
+      const t = byId(id);
+      if (t && (t.state !== 'open') && !showResolved.checked) { showResolved.checked = true; }
+      marksOf(id).forEach(m => m.classList.add('active'));
+      const c = cards.get(id); c?.classList.add('active'); c?.querySelector('.card-head')?.setAttribute('aria-expanded', 'true');
+    }
+    layout();
+    if (id && scroll) { const c = cards.get(id); requestAnimationFrame(() => c?.scrollIntoView({block: 'nearest', behavior: 'smooth'})); }
+  }
+
+  /* ---------- layout: wide (rail) and narrow (inline slots) ---------- */
+  const visible = t => t.state === 'open' || showResolved.checked || state.active === t.id;
+  const docOrder = t => { const el = anchorElement(t); return el ? [el.getBoundingClientRect().top, el.getBoundingClientRect().left] : [Infinity, 0]; };
+
+  function layout() {
+    const wide = isWide();
+    layoutEl.classList.toggle('narrow', !wide);
+    if (wide) layoutWide(); else layoutNarrow();
+    positionToolbar();
+  }
+
+  function layoutWide() {
+    doc.querySelectorAll('.thread-slot').forEach(s => s.remove());
+    const items = [];
+    for (const t of threads) {
+      const card = cards.get(t.id) || renderCard(t);
+      if (card.parentElement !== railCards) railCards.append(card);
+      card.hidden = !visible(t);
+      if (!card.hidden) items.push({id: t.id, card, el: anchorElement(t)});
+    }
+    if (state.composing) { const c = state.composing; if (c.card.parentElement !== railCards) railCards.append(c.card); items.push({id: 'compose', card: c.card, el: c.anchorEl()}); }
+    const base = railCards.getBoundingClientRect().top;
+    for (const it of items) { it.anchor = it.el ? Math.max(0, it.el.getBoundingClientRect().top - base) : 0; it.h = it.card.offsetHeight; }
+    items.sort((a, b) => a.anchor - b.anchor || (a.id === 'compose' ? 1 : 0));
+    const gap = 8, priority = state.composing ? 'compose' : state.active;
+    const pinned = items.findIndex(i => i.id === priority);
+    const tops = new Array(items.length);
+    if (pinned < 0) {
+      let y = 0; items.forEach((it, i) => { tops[i] = Math.max(it.anchor, y); y = tops[i] + it.h + gap; });
+    } else {
+      tops[pinned] = items[pinned].anchor;
+      let y = tops[pinned] + items[pinned].h + gap;
+      for (let i = pinned + 1; i < items.length; i++) { tops[i] = Math.max(items[i].anchor, y); y = tops[i] + items[i].h + gap; }
+      let ceiling = tops[pinned];
+      for (let i = pinned - 1; i >= 0; i--) { tops[i] = Math.min(items[i].anchor, ceiling - items[i].h - gap); ceiling = tops[i]; }
+      if (tops[0] < 0) { let y2 = 0; for (let i = 0; i < pinned; i++) { tops[i] = Math.max(tops[i], y2); y2 = tops[i] + items[i].h + gap; } }
+    }
+    let bottom = 0;
+    items.forEach((it, i) => { it.card.style.top = `${tops[i]}px`; it.top = tops[i]; bottom = Math.max(bottom, tops[i] + it.h); });
+    railCards.style.height = `${bottom}px`;
+    positionRailAdd();
+    drawConnectors();
+  }
+
+  function slotFor(el, t) {
+    let host = t?.anchor.type === 'section' ? el.querySelector('h1, h2, h3, h4') || el : el.closest('p, li, pre, table, h1, h2, h3, h4, blockquote') || el;
+    if (host.tagName === 'LI' || host.closest('table')) host = host.closest('ul, ol, table') || host;
+    let slot = host.nextElementSibling?.classList.contains('thread-slot') ? host.nextElementSibling : null;
+    if (!slot) { slot = document.createElement('div'); slot.className = 'thread-slot'; slot.innerHTML = '<div class="slot-chips"></div><div class="slot-cards"></div>'; host.after(slot); }
+    return slot;
+  }
+  function layoutNarrow() {
+    doc.querySelectorAll('.thread-slot').forEach(s => s.remove());
+    for (const t of threads) {
+      const card = cards.get(t.id) || renderCard(t);
+      const el = anchorElement(t); if (!el) continue;
+      const slot = slotFor(el, t);
+      if (!visible(t)) { parking.append(card); continue; }
+      const chip = document.createElement('button'); chip.type = 'button'; chip.className = 'chip';
+      chip.dataset.kind = t.kind; chip.dataset.state = t.state; chip.setAttribute('aria-pressed', String(state.active === t.id));
+      const first = t.comments[0].author.split(' ')[0];
+      chip.innerHTML = `${t.state === 'open' ? ICON[t.kind] : ICON[t.state]}<span>${escapeHtml(first)}</span>${t.comments.length > 1 ? `<span class="count">${t.comments.length}</span>` : ''}`;
+      chip.setAttribute('aria-label', `${KIND_LABEL[t.kind]} by ${t.comments[0].author}, ${STATE_LABEL[t.state].toLowerCase()}, ${t.comments.length} ${t.comments.length === 1 ? 'comment' : 'comments'}`);
+      chip.addEventListener('click', () => setActive(state.active === t.id ? null : t.id));
+      chip.addEventListener('mouseenter', () => setHover(t.id)); chip.addEventListener('mouseleave', () => setHover(null));
+      slot.querySelector('.slot-chips').append(chip);
+      if (state.active === t.id) slot.querySelector('.slot-cards').append(card); else parking.append(card);
+    }
+    if (state.composing) { const el = state.composing.anchorEl(); if (el) slotFor(el, {anchor: state.composing.target}).querySelector('.slot-cards').append(state.composing.card); }
+    doc.querySelectorAll('.thread-slot').forEach(s => { if (!s.querySelector('.chip') && !s.querySelector('.thread-card')) s.remove(); });
+  }
+
+  function drawConnectors() {
+    connectors.replaceChildren();
+    if (!isWide()) return;
+    const layoutRect = layoutEl.getBoundingClientRect(), docRect = doc.getBoundingClientRect(), railRect = railCards.getBoundingClientRect();
+    const gutterX = docRect.right - layoutRect.left + 14, cardX = railRect.left - layoutRect.left;
+    const NS = 'http://www.w3.org/2000/svg';
+    const dots = [];
+    const entries = threads.filter(visible).map(t => ({id: t.id, kind: t.kind, state: t.state, el: anchorElement(t), card: cards.get(t.id)}));
+    if (state.composing) entries.push({id: 'compose', kind: state.composing.kind, state: 'open', el: state.composing.anchorEl(), card: state.composing.card, draft: true});
+    for (const e of entries) {
+      if (!e.el || !e.card || e.card.hidden) continue;
+      const r = e.el.getBoundingClientRect();
+      const first = e.el.getClientRects()[0] || r;
+      let y = first.top + first.height / 2 - layoutRect.top;
+      let x = gutterX; while (dots.some(d => Math.abs(d.y - y) < 9 && Math.abs(d.x - x) < 9)) x += 10;
+      dots.push({x, y});
+      const color = e.state === 'open' ? (e.kind === 'comment' ? 'var(--comment)' : 'var(--change)') : e.state === 'resolved' ? '#9fb0c0' : '#c3cad2';
+      const linked = e.draft || e.id === state.hover || e.id === state.active;
+      if (linked) {
+        const cr = e.card.getBoundingClientRect();
+        const y2 = cr.top - layoutRect.top + 16, x2 = cardX - 1, mx = (x + x2) / 2;
+        const path = document.createElementNS(NS, 'path');
+        path.setAttribute('d', `M${x} ${y} C ${mx} ${y}, ${mx} ${y2}, ${x2} ${y2}`);
+        path.setAttribute('stroke', color); if (e.draft) path.setAttribute('stroke-dasharray', '4 3');
+        connectors.append(path);
+      }
+      const dot = document.createElementNS(NS, 'circle');
+      dot.setAttribute('cx', x); dot.setAttribute('cy', y); dot.setAttribute('r', linked ? 4.5 : 3.5); dot.setAttribute('fill', color);
+      if (e.draft) { dot.setAttribute('fill', 'white'); dot.setAttribute('stroke', color); dot.setAttribute('stroke-dasharray', '2 1.5'); }
+      connectors.append(dot);
+    }
+  }
+
+  function updateCount() {
+    const open = threads.filter(t => t.state === 'open').length, resolved = threads.filter(t => t.state === 'resolved').length, obsolete = threads.filter(t => t.state === 'obsolete').length;
+    const parts = [`${open} open`]; if (resolved) parts.push(`${resolved} resolved`); if (obsolete) parts.push(`${obsolete} obsolete`);
+    $('#rail-count').textContent = parts.join(', ');
+  }
+
+  /* ---------- highlight interaction ---------- */
+  doc.addEventListener('mouseover', event => {
+    const el = event.target.closest('[data-thread]');
+    if (el && doc.contains(el)) setHover(el.dataset.thread);
+  });
+  doc.addEventListener('mouseout', event => {
+    const el = event.target.closest('[data-thread]');
+    if (el && !el.contains(event.relatedTarget)) setHover(event.relatedTarget?.closest?.('[data-thread]')?.dataset.thread ?? null);
+  });
+  doc.addEventListener('keydown', event => {
+    const el = event.target.closest('[data-thread]');
+    if (el && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); setActive(state.active === el.dataset.thread ? null : el.dataset.thread); }
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    if (state.openMenu) { closeMenu(); return; }
+    if (state.composing) { cancelCompose(); return; }
+    if (state.sel) { clearSelection(); return; }
+    if (state.active) setActive(null);
+  });
+  document.addEventListener('click', event => { if (state.openMenu && !state.openMenu.menu.contains(event.target) && event.target !== state.openMenu.button) closeMenu(); });
+  showResolved.addEventListener('change', layout);
+
+  /* ---------- selection: click a word, expand, then comment ---------- */
+  const BLOCK = 'p, li, pre, h1, h2, h3, h4, h5, h6, blockquote, td, th';
+  const blockOf = node => (node.nodeType === 3 ? node.parentElement : node)?.closest(BLOCK);
+  const sameRange = (a, b) => a.compareBoundaryPoints(Range.START_TO_START, b) === 0 && a.compareBoundaryPoints(Range.END_TO_END, b) === 0;
+  const contains = (outer, inner) => outer.compareBoundaryPoints(Range.START_TO_START, inner) <= 0 && outer.compareBoundaryPoints(Range.END_TO_END, inner) >= 0;
+
+  function caretFromPoint(x, y) {
+    if (document.caretPositionFromPoint) { const p = document.caretPositionFromPoint(x, y); return p && {node: p.offsetNode, offset: p.offset}; }
+    const r = document.caretRangeFromPoint?.(x, y); return r && {node: r.startContainer, offset: r.startOffset};
+  }
+  function textOffset(block, container, offset) { const r = document.createRange(); r.setStart(block, 0); r.setEnd(container, offset); return r.toString().length; }
+  function pointAt(block, offset) {
+    const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT); let seen = 0, node;
+    while ((node = walker.nextNode())) { if (seen + node.data.length >= offset) return {node, offset: offset - seen}; seen += node.data.length; }
+    return {node: block, offset: block.childNodes.length};
+  }
+  function sentenceRange(range) {
+    const block = blockOf(range.startContainer); if (!block || blockOf(range.endContainer) !== block) return null;
+    const text = block.textContent, start = textOffset(block, range.startContainer, range.startOffset), end = textOffset(block, range.endContainer, range.endOffset);
+    const boundary = i => /[.!?]/.test(text[i]) && (i + 1 >= text.length || /\s/.test(text[i + 1])) && !(/[A-Za-z]/.test(text[i - 1] ?? '') && !/[A-Za-z]/.test(text[i - 2] ?? ' '));
+    let s = start; while (s > 0 && !boundary(s - 1)) s--; while (s < text.length && /\s/.test(text[s])) s++;
+    let e = end; while (e < text.length && !boundary(e)) e++; if (e < text.length) e++;
+    while (e < text.length && /["'”’)\]]/.test(text[e])) e++;
+    const r = document.createRange(); const a = pointAt(block, s), b = pointAt(block, e); r.setStart(a.node, a.offset); r.setEnd(b.node, b.offset); return r;
+  }
+  function wholeRange(el) { const r = document.createRange(); r.selectNodeContents(el); return r; }
+  function nextExpansion(range, level) {
+    const candidates = [];
+    if (level === 'Word' || level === 'Selection') { const s = sentenceRange(range); if (s) candidates.push(['Sentence', s]); }
+    const block = blockOf(range.startContainer);
+    if (block && level !== 'Paragraph' && level !== 'Section') candidates.push(['Paragraph', wholeRange(block)]);
+    const section = (block || range.commonAncestorContainer.parentElement || range.commonAncestorContainer).closest?.('section');
+    if (section && level !== 'Section') candidates.push(['Section', wholeRange(section)]);
+    for (const [name, r] of candidates) if (contains(r, range) && !sameRange(r, range)) return {level: name, range: r};
+    return null;
+  }
+
+  function applySelection(range, level, history) {
+    state.sel = {range: range.cloneRange(), level, history};
+    const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range.cloneRange());
+    refreshToolbar();
+  }
+  function clearSelection() { state.sel = null; toolbar.hidden = true; getSelection().removeAllRanges(); positionRailAdd(); }
+  function refreshToolbar() {
+    if (!state.sel) { toolbar.hidden = true; positionRailAdd(); return; }
+    const next = nextExpansion(state.sel.range, state.sel.level);
+    $('#level').textContent = state.sel.level;
+    $('[data-selection="expand"]').disabled = !next; $('[data-selection="expand"]').title = next ? `Expand to ${next.level.toLowerCase()}` : 'Selection cannot expand further';
+    $('[data-selection="collapse"]').disabled = !state.sel.history.length;
+    toolbar.hidden = false; positionToolbar(); positionRailAdd();
+  }
+  function positionToolbar() {
+    if (toolbar.hidden || !state.sel) return;
+    const rect = state.sel.range.getClientRects()[0] || state.sel.range.getBoundingClientRect();
+    const bounds = toolbar.getBoundingClientRect();
+    const x = Math.max(8, Math.min(rect.left, innerWidth - bounds.width - 8));
+    const above = rect.top - bounds.height - 8;
+    const y = Math.max(8, Math.min(above >= 8 ? above : rect.bottom + 8, innerHeight - bounds.height - 8));
+    toolbar.style.left = `${x}px`; toolbar.style.top = `${y}px`;
+  }
+  let railAdd = null;
+  function positionRailAdd() {
+    if (!state.sel || !isWide() || state.composing) { railAdd?.remove(); railAdd = null; return; }
+    if (!railAdd) { railAdd = document.createElement('button'); railAdd.type = 'button'; railAdd.className = 'rail-add'; railAdd.innerHTML = `${ICON.comment}Comment on selection`; railAdd.addEventListener('mousedown', e => e.preventDefault()); railAdd.addEventListener('click', startCompose); }
+    const rect = state.sel.range.getClientRects()[0] || state.sel.range.getBoundingClientRect();
+    railAdd.style.top = `${Math.max(0, rect.top - railCards.getBoundingClientRect().top - 4)}px`;
+    railCards.append(railAdd);
+  }
+  for (const button of toolbar.querySelectorAll('button')) button.addEventListener('mousedown', event => event.preventDefault());
+  $('[data-selection="expand"]').addEventListener('click', () => {
+    const next = nextExpansion(state.sel.range, state.sel.level); if (!next) return;
+    applySelection(next.range, next.level, [...state.sel.history, {range: state.sel.range, level: state.sel.level}]);
+  });
+  $('[data-selection="collapse"]').addEventListener('click', () => {
+    const previous = state.sel.history.at(-1); if (!previous) return;
+    applySelection(previous.range, previous.level, state.sel.history.slice(0, -1));
+  });
+  $('[data-selection="comment"]').addEventListener('click', startCompose);
+
+  doc.addEventListener('click', event => {
+    if (event.target.closest('[data-thread], a, button, .thread-slot, .thread-card')) {
+      const el = event.target.closest('[data-thread]');
+      if (el && doc.contains(el) && !event.target.closest('.thread-slot, .thread-card')) { const id = el.dataset.thread; setActive(state.active === id ? null : id); }
+      return;
+    }
+    if (!getSelection().isCollapsed) return; // a drag selection keeps its own range; selectionchange labels it
+    const pos = caretFromPoint(event.clientX, event.clientY);
+    if (!pos || pos.node.nodeType !== 3 || !doc.contains(pos.node)) { clearSelection(); return; }
+    const text = pos.node.data, isWord = c => /[\p{L}\p{N}_'’-]/u.test(c);
+    let s = pos.offset, e = pos.offset;
+    while (s > 0 && isWord(text[s - 1])) s--; while (e < text.length && isWord(text[e])) e++;
+    if (s === e) { clearSelection(); return; }
+    const r = document.createRange(); r.setStart(pos.node, s); r.setEnd(pos.node, e);
+    applySelection(r, 'Word', []);
+  });
+  document.addEventListener('selectionchange', () => {
+    const selection = getSelection();
+    if (selection.isCollapsed || !selection.rangeCount) { if (state.sel && !state.composing) { state.sel = null; toolbar.hidden = true; positionRailAdd(); } return; }
+    const range = selection.getRangeAt(0);
+    if (state.sel && sameRange(range, state.sel.range)) return; // our own word/expand selection, already labelled
+    if (!doc.contains(range.commonAncestorContainer)) return;
+    state.sel = {range: range.cloneRange(), level: 'Selection', history: []};
+    refreshToolbar();
+  });
+
+  /* ---------- composing a new thread inline ---------- */
+  function wrapRange(range, className) {
+    const pieces = [];
+    const root = range.commonAncestorContainer;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let node = root.nodeType === 3 ? root : walker.nextNode(); node; node = root.nodeType === 3 ? null : walker.nextNode()) {
+      if (!range.intersectsNode(node)) continue;
+      const start = node === range.startContainer ? range.startOffset : 0, end = node === range.endContainer ? range.endOffset : node.length;
+      if (end > start && node.data.slice(start, end).trim()) pieces.push({node, start, end});
+    }
+    return pieces.map(({node, start, end}) => {
+      const r = document.createRange(); r.setStart(node, start); r.setEnd(node, end);
+      const mark = document.createElement('mark'); mark.className = className; r.surroundContents(mark); return mark;
+    });
+  }
+  function unwrap(mark) { const parent = mark.parentNode; mark.replaceWith(...mark.childNodes); parent.normalize(); }
+
+  function startCompose() {
+    if (!state.sel) return;
+    if (state.composing) cancelCompose();
+    const {range, level} = state.sel;
+    const quote = range.toString().replace(/\s+/g, ' ').trim();
+    let target;
+    if (level === 'Section') { const el = range.commonAncestorContainer.closest?.('section') || blockOf(range.startContainer).closest('section'); el.classList.add('block-hl', 'draft'); target = {type: 'section', el, label: `Whole section: ${el.querySelector('h1, h2, h3, h4')?.textContent ?? ''}`}; }
+    else if (level === 'Paragraph') { const el = blockOf(range.startContainer); el.classList.add('block-hl', 'draft'); target = {type: 'block', el, label: 'Whole paragraph'}; }
+    else target = {type: 'span', marks: wrapRange(range, 'hl draft')};
+    getSelection().removeAllRanges(); state.sel = null; toolbar.hidden = true;
+    const card = document.createElement('article'); card.className = 'thread-card compose active'; card.dataset.kind = 'comment';
+    card.innerHTML = `
+      <div class="card-head" style="cursor:default"><span class="card-kind">${ICON.comment}<span class="compose-title">New comment</span></span></div>
+      ${target.label ? `<p class="card-scope"><em>${escapeHtml(target.label)}</em></p>` : `<p class="quote">Quoting <q>${escapeHtml(quote.length > 160 ? quote.slice(0, 157) + '…' : quote)}</q></p>`}
+      <form>
+        <span class="kind-switch" role="group" aria-label="Kind">
+          <button type="button" data-kind="comment" aria-pressed="true">${ICON.comment}Comment</button>
+          <button type="button" data-kind="change-request" aria-pressed="false">${ICON['change-request']}Change request</button>
+        </span>
+        <textarea name="body" required aria-label="Feedback" placeholder="What should the author know?"></textarea>
+        <div class="form-row"><input name="author" value="You" aria-label="Your name" size="10"><span class="spacer"></span><button type="submit" class="primary">Save comment</button><button type="button" data-act="cancel">Cancel</button></div>
+        <p class="hint">Saved comments stay in this tab until you prepare a review file.</p>
+      </form>`;
+    const composing = {target, kind: 'comment', card, anchorEl: () => target.type === 'span' ? target.marks[0] : target.el.querySelector?.('h1, h2, h3, h4') || target.el};
+    state.composing = composing;
+    const setKind = kind => {
+      composing.kind = kind; card.dataset.kind = kind;
+      card.querySelector('.compose-title').textContent = kind === 'comment' ? 'New comment' : 'New change request';
+      card.querySelector('.card-kind').firstElementChild.outerHTML = ICON[kind];
+      card.querySelector('[type="submit"]').textContent = kind === 'comment' ? 'Save comment' : 'Save change request';
+      card.querySelector('textarea').placeholder = kind === 'comment' ? 'What should the author know?' : 'What should change, and why?';
+      (target.marks ?? [target.el]).forEach(el => { el.dataset.kind = kind; });
+      drawConnectors();
+    };
+    wireKindSwitch(card.querySelector('.kind-switch'), setKind);
+    card.querySelector('[data-act="cancel"]').addEventListener('click', cancelCompose);
+    card.querySelector('form').addEventListener('submit', event => {
+      event.preventDefault();
+      const form = event.target, body = form.elements.body.value.trim(); if (!body) { form.elements.body.focus(); return; }
+      saveCompose(form.elements.author.value.trim() || 'You', body);
+    });
+    if (state.active) setActive(null, {scroll: false});
+    layout();
+    card.querySelector('textarea').focus({preventScroll: true});
+    requestAnimationFrame(() => card.scrollIntoView({block: 'nearest', behavior: 'smooth'}));
+  }
+  function cancelCompose() {
+    const c = state.composing; if (!c) return;
+    if (c.target.type === 'span') c.target.marks.forEach(unwrap);
+    else { c.target.el.classList.remove('block-hl', 'draft'); delete c.target.el.dataset.kind; }
+    c.card.remove(); state.composing = null; layout();
+  }
+  function saveCompose(author, body) {
+    const c = state.composing, id = `t${nextId++}`;
+    const t = {id, kind: c.kind, state: 'open', anchor: {type: c.target.type, label: c.target.label}, comments: [{author, at: 'just now', kind: c.kind, body}]};
+    const els = c.target.type === 'span' ? c.target.marks : [c.target.el];
+    for (const el of els) { el.classList.remove('draft'); el.dataset.thread = id; el.dataset.kind = c.kind; el.dataset.state = 'open'; el.tabIndex = 0; el.setAttribute('role', 'button'); if (c.target.type !== 'span') el.classList.add('block-hl'); }
+    threads.push(t); c.card.remove(); state.composing = null;
+    renderCard(t); updateCount(); setActive(id, {scroll: false});
+    setStatus(`${KIND_LABEL[c.kind]} saved in this tab. Prepare a review file to export it.`);
+  }
+
+  /* ---------- boot ---------- */
+  for (const t of threads) renderCard(t);
+  updateCount(); layout();
+  let lastWidth = reader.clientWidth;
+  addEventListener('resize', layout);
+  new ResizeObserver(() => { if (reader.clientWidth !== lastWidth) { lastWidth = reader.clientWidth; layout(); } }).observe(reader);
+  addEventListener('scroll', positionToolbar, {passive: true});
+  if (document.fonts?.ready) document.fonts.ready.then(layout);
+})();
+</script>
+</body>
+</html>
