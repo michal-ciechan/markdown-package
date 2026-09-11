@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Mockup: table wrap toggle in the left gutter (CARD-0047)</title>
+<style>
+/* =====================================================================
+   1. The real viewer's styles, copied from src/web-viewer/src/styles.css
+      (only the rules the mockup needs). Nothing in this block is new.
+   ===================================================================== */
+:root { color-scheme: light; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #202b38; background: #f5f6f8; line-height: 1.55; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+button, input, select, textarea { font: inherit; }
+button, .open-button { cursor: pointer; border: 1px solid #b7c4d2; border-radius: 6px; background: white; color: #174568; padding: .55rem .8rem; }
+button:hover { background: #eef4f8; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible, .open-button:focus-within { outline: 3px solid #197fba; outline-offset: 3px; }
+input, select, textarea { border: 1px solid #b7c4d2; border-radius: 5px; background: white; color: #202b38; padding: .55rem; min-width: 0; }
+.app-header { background: #172b3f; color: white; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.6rem max(1.2rem, calc((100vw - 1440px) / 2)); }
+h1 { font-size: 1.45rem; letter-spacing: -.03em; margin: 0; }
+.app-header p { margin: .3rem 0 0; color: #c3d4e4; }
+.open-button { background: #f8fbff; white-space: nowrap; position: relative; flex-shrink: 0; }
+main { max-width: 1480px; margin: auto; padding: 1.2rem; }
+#activity { min-height: 1.6rem; margin-bottom: 1rem; overflow-wrap: anywhere; }
+#package-details { display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; padding: 1rem; background: white; border: 1px solid #dbe1e8; border-radius: 7px; overflow-wrap: anywhere; margin-bottom: 1.2rem; }
+#package-details small { width: 100%; color: #5c6976; }
+.browser { display: grid; grid-template-columns: minmax(190px, 260px) minmax(0, 1fr); gap: 1.2rem; align-items: start; }
+#documents { position: sticky; top: 1rem; max-height: calc(100vh - 2rem); overflow: auto; padding: .3rem; }
+#documents > label { font-weight: 650; }
+#documents input { width: 100%; margin-top: .5rem; }
+.muted { color: #62707f; }
+.document-count { font-size: .85rem; }
+.document-list { list-style: none; padding: 0; margin: 0; }
+.document-list button { text-align: left; width: 100%; background: transparent; border-color: transparent; overflow-wrap: anywhere; }
+.document-list button[aria-current] { background: #e2ecf5; border-color: #b0c7d9; color: #153f61; font-weight: 600; }
+.reader-panel { background: white; border: 1px solid #dbe1e8; border-radius: 8px; padding: clamp(1rem, 3vw, 2.4rem); min-width: 0; }
+.document-title { margin: 0; font-size: 1.25rem; overflow-wrap: anywhere; }
+.reader-controls { display: flex; gap: .8rem; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e7eb; padding: 1rem 0; margin-bottom: 1.7rem; }
+.reader-controls label { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+.reader-controls select { max-width: min(38vw, 480px); }
+.reader-controls button { flex-shrink: 0; }
+.markdown { max-width: 84ch; overflow-wrap: anywhere; margin: auto; }
+.markdown h2 { font-size: 1.55rem; }
+.markdown h3 { font-size: 1.25rem; }
+.markdown :is(h1, h2, h3, h4, h5, h6) { line-height: 1.3; margin: 1.5em 0 .7em; scroll-margin-top: 1rem; }
+.markdown > :first-child { margin-top: 0; }
+.markdown a { color: #176fa5; text-decoration-thickness: .08em; }
+.markdown code { font-family: ui-monospace, Consolas, monospace; }
+.markdown :not(pre) > code { background: #f1f4f7; padding: .1rem .25rem; border-radius: 3px; }
+.selected-section { box-shadow: -4px 0 0 #5b96bf; }
+article.selected-section { box-shadow: none; }
+.selection-toolbar, .table-toolbar { display: flex; align-items: center; gap: .25rem; flex-wrap: wrap; padding: .35rem; border: 1px solid #adc1d3; border-radius: .65rem; background: #fff; box-shadow: 0 3px 16px #172b3f33; }
+.selection-toolbar button, .table-toolbar button { min-width: 44px; min-height: 44px; touch-action: manipulation; }
+.table-container { min-width: 0; max-width: 100%; margin: 1.2rem 0; }
+.table-toolbar { width: fit-content; margin: 0 0 .5rem auto; }
+.table-toolbar button { display: grid; place-items: center; padding: .5rem; }
+.table-toolbar button[aria-pressed="true"] { background: #174568; border-color: #174568; color: white; }
+.table-scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+.table-scroll:focus-visible { outline: 3px solid #197fba; outline-offset: 3px; }
+.markdown table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+.markdown :is(th, td) { border: 1px solid #ccd5df; padding: .5rem .7rem; min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+.markdown th { background: #eef4f8; font-weight: 650; text-align: left; }
+.markdown tbody tr:nth-child(even) { background: #f8fafc; }
+.table-nowrap table { table-layout: auto; width: max-content; min-width: 100%; }
+.table-nowrap :is(th, td) { white-space: nowrap; overflow-wrap: normal; }
+@media (max-width: 700px) {
+  .app-header { align-items: start; flex-direction: column; gap: 1rem; }
+  .browser { grid-template-columns: minmax(0, 1fr); }
+  #documents { position: static; max-height: 230px; }
+  .reader-controls { align-items: stretch; flex-direction: column; }
+  .reader-controls select { max-width: 100%; width: 100%; }
+}
+
+/* =====================================================================
+   2. CARD-0047 proposal: a left gutter column owned by the article.
+      This block is the whole CSS change the real app would need.
+   ===================================================================== */
+
+/* The article reserves a gutter on its left. Every margin control sits in that
+   column: the table wrap toggle now, comment markers when CARD-0043 lands.
+   --gutter-control is the visual box of a control; --gutter-gap is the space
+   between the column and the reading edge. 44px keeps the CARD-0045 touch
+   target as-is. */
+.markdown {
+  --gutter-control: 44px;
+  --gutter-gap: 12px;
+  --gutter: calc(var(--gutter-control) + var(--gutter-gap));
+  position: relative;
+  max-width: calc(84ch + var(--gutter));   /* the text column stays 84ch */
+  padding-left: var(--gutter);
+}
+
+/* The toolbar leaves the flow: no more 52px band above each table. It is
+   pinned to the top edge of the table and spans the first row's height, which
+   tableControls publishes as --first-row from a ResizeObserver. Without the
+   variable (or without JS) the CSS degrades to top alignment. */
+.table-container { position: relative; }
+.table-toolbar {
+  position: absolute; top: 0; left: calc(-1 * var(--gutter));
+  width: var(--gutter-control); height: var(--first-row, auto); min-height: var(--gutter-control);
+  display: flex; align-items: center; justify-content: center; flex-wrap: nowrap;
+  margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none;
+}
+.table-toolbar button {
+  position: relative; display: grid; place-items: center;
+  width: var(--gutter-control); height: var(--gutter-control); min-width: 0; min-height: 0; padding: 0;
+  border-radius: 6px;
+}
+.table-toolbar button svg { width: 20px; height: 20px; }
+/* A control smaller than 44px keeps a 44px hit target through its ::before
+   (the 2px accounts for the button's border, which the inset is measured from). */
+.table-toolbar button::before { content: ""; position: absolute; inset: min(0px, calc((var(--gutter-control) - 2px - 44px) / 2)); }
+
+/* Design option: compact 32px control (hit target still 44px). */
+.markdown[data-density="compact"] { --gutter-control: 32px; }
+.markdown[data-density="compact"] .table-toolbar button svg { width: 18px; height: 18px; }
+
+/* Design option: which state carries the fill. "filled" is the current
+   convention (pressed = wrapping = navy). "quiet" leaves the default state
+   plain and tints the non-default scroll state, like the current-document
+   button in the sidebar. */
+.markdown[data-pressed="quiet"] .table-toolbar button[aria-pressed="true"] { background: white; border-color: #b7c4d2; color: #174568; }
+.markdown[data-pressed="quiet"] .table-toolbar button[aria-pressed="true"]:hover { background: #eef4f8; }
+.markdown[data-pressed="quiet"] .table-toolbar button[aria-pressed="false"] { background: #e2ecf5; border-color: #174568; color: #153f61; }
+
+/* Phones: the existing 700px breakpoint. The gutter narrows to a 36px control
+   and a 6px gap (42px); the hit target stays 44px through ::before. */
+@media (max-width: 700px) {
+  .markdown { --gutter-control: 36px; --gutter-gap: 6px; }
+  .markdown .table-toolbar button svg { width: 18px; height: 18px; }
+}
+
+/* =====================================================================
+   3. Mockup-only: placeholder comment markers, alignment guides, the
+      narrow-pane simulation and the options panel. None of this is part of
+      the proposal; it shows the column hosting a second kind of control.
+   ===================================================================== */
+
+/* Placeholder comment markers (CARD-0043 direction not chosen; these borrow
+   mockup B's per-block count control and mockup A's kind colours). They obey
+   the same rule as the toggle: centred on the gutter axis, aligned to the
+   first line of the block they belong to. */
+.markdown [data-threads] { position: relative; }
+.gutter-mark { position: absolute; left: calc(-1 * var(--gutter)); top: var(--mark-top, calc((1.55em - 24px) / 2)); width: var(--gutter-control); display: flex; justify-content: center; }
+.gutter-mark button { --edge: #176fa5; --soft: #e6f1f9; width: 24px; height: 24px; padding: 0; border-radius: 999px; border: 1.5px solid var(--edge); background: var(--soft); color: var(--edge); font-size: .72rem; font-weight: 650; line-height: 1; display: grid; place-items: center; }
+.gutter-mark button[data-kind="change-request"] { --edge: #b5672a; --soft: #fff0df; }
+.gutter-mark button:hover { background: var(--edge); color: white; }
+.gutter-mark button svg { width: 13px; height: 13px; }
+.markdown:not([data-markers]) .gutter-mark { display: none; }
+
+/* Alignment guides: the gutter column and each table's first-row band. */
+.markdown[data-guides]::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: var(--gutter-control); background: #197fba0d; border-inline: 1px dashed #197fba66; pointer-events: none; }
+.markdown[data-guides] .table-container::after { content: ""; position: absolute; left: calc(-1 * var(--gutter)); right: 0; top: 0; height: var(--first-row, var(--gutter-control)); background: #197fba14; border-block: 1px dashed #197fba99; pointer-events: none; }
+.markdown[data-guides] .gutter-mark::after { content: ""; position: absolute; left: 0; right: calc(-1 * var(--gutter-gap)); top: 0; border-top: 1px dashed #b5672a99; pointer-events: none; }
+
+/* Narrow-pane simulation: the same rules the 700px media query applies. */
+.browser.narrow { grid-template-columns: minmax(0, 1fr); }
+.browser.narrow #documents { display: none; }
+.browser.narrow .reader-panel { max-width: 390px; margin: 0 auto; padding: 1rem; }
+.browser.narrow .reader-controls { align-items: stretch; flex-direction: column; }
+.browser.narrow .reader-controls select { max-width: 100%; width: 100%; }
+.browser.narrow .markdown { --gutter-control: 36px; --gutter-gap: 6px; }
+.browser.narrow .markdown .table-toolbar button svg { width: 18px; height: 18px; }
+
+/* Mockup guide and options panel. */
+.mockup-guide { background: #fffbea; border: 1px solid #e6d693; border-radius: 7px; padding: .8rem 1rem; margin-bottom: 1.2rem; font-size: .92rem; }
+.mockup-guide summary { cursor: pointer; font-weight: 650; }
+.mockup-guide ul { margin: .6rem 0 0; padding-left: 1.2rem; }
+.mockup-guide li { margin: .25rem 0; }
+.mockup-guide kbd { font-family: inherit; background: #fff; border: 1px solid #d8cc93; border-radius: 4px; padding: 0 .3rem; }
+.options { position: fixed; left: 1rem; bottom: 1rem; z-index: 30; width: 272px; max-width: calc(100vw - 2rem); background: white; border: 1px solid #adc1d3; border-radius: .65rem; box-shadow: 0 3px 16px #172b3f33; font-size: .88rem; }
+.options summary { cursor: pointer; font-weight: 650; padding: .6rem .8rem; }
+.options > div { padding: 0 .8rem .7rem; display: grid; gap: .45rem; }
+.options label { display: flex; align-items: center; gap: .45rem; }
+.options label > span { flex: 1; }
+.options select { padding: .2rem .3rem; font-size: .85rem; }
+.options .note { margin: .2rem 0 0; color: #62707f; font-size: .78rem; line-height: 1.35; }
+.legend { display: flex; flex-wrap: wrap; gap: .4rem 1rem; align-items: center; margin-top: .6rem; }
+.legend span { display: inline-flex; align-items: center; gap: .35rem; }
+.legend i { width: 14px; height: 14px; border-radius: 999px; border: 1.5px solid; display: inline-block; }
+.legend i.c { border-color: #176fa5; background: #e6f1f9; }
+.legend i.r { border-color: #b5672a; background: #fff0df; }
+.legend i.t { border-radius: 3px; background: #174568; border-color: #174568; }
+@media (max-width: 700px) {
+  .options { position: static; width: auto; margin-bottom: 1rem; box-shadow: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .table-toolbar button, .gutter-mark button { transition: background-color .12s, color .12s; }
+}
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div><h1>Markdown Package</h1><p>Mockup for CARD-0047: the per-table wrap toggle moves into a left gutter column, aligned to each table's first row.</p></div>
+  <span class="open-button">Open package</span>
+</header>
+<main>
+  <details class="mockup-guide" open>
+    <summary>About this mockup (design exploration for CARD-0047, not the real viewer)</summary>
+    <ul>
+      <li><strong>What moved.</strong> The wrap toggle built in CARD-0045 used to float above each table, right-aligned, taking ~52px of vertical space. It now sits to the <em>left</em> of the table, in a gutter column the article reserves, spanning the height of the table's first (header) row. Behaviour is unchanged: same icon, same accessible name (<code>Wrap table N text</code>), same pressed state, same keyboard support, same 44px hit target.</li>
+      <li><strong>The column is shared.</strong> The round markers are <em>placeholders</em> for CARD-0043's comment indicators (that card's direction has not been chosen). They are here to show the same gutter hosting two kinds of control with one alignment rule: a control aligns to the first row or line of the block it belongs to, on one vertical axis.</li>
+      <li><strong>Collision cases to inspect.</strong> §6.6: a comment on a <em>body cell</em> of the first table sits at that row's height, below the toggle. The second table starts in scroll mode and has a whole-table change request, which stacks directly under the toggle because the first-row slot belongs to the toggle. §8.2: a nine-column table, where the toggle earns its keep.</li>
+      <li><strong>Try it.</strong> Click any toggle. Turn on <kbd>Alignment guides</kbd> in the options panel to see the column and each first-row band. Switch <kbd>Control size</kbd> and <kbd>Pressed style</kbd>: both are open decisions. <kbd>Narrow pane</kbd> shows the phone layout (or resize the window below 700px). Pick a section in the reader's <kbd>Section</kbd> select to see the existing selected-section bar next to the gutter.</li>
+    </ul>
+    <div class="legend" aria-label="Legend">
+      <span><i class="t"></i> wrap toggle (pressed = wrapping, the default)</span>
+      <span><i class="c"></i> placeholder comment marker</span>
+      <span><i class="r"></i> placeholder change-request marker</span>
+    </div>
+  </details>
+
+  <details class="options" open>
+    <summary>Design options (mockup only)</summary>
+    <div>
+      <label><span>Control size</span>
+        <select id="opt-density" aria-label="Control size">
+          <option value="touch">44px (as today)</option>
+          <option value="compact">32px, 44px hit area</option>
+        </select></label>
+      <label><span>Pressed style</span>
+        <select id="opt-pressed" aria-label="Pressed style">
+          <option value="filled">Filled when wrapping (as today)</option>
+          <option value="quiet">Quiet; tint scroll mode</option>
+        </select></label>
+      <label><input type="checkbox" id="opt-center" checked> <span>Centre on first row (ResizeObserver)</span></label>
+      <label><input type="checkbox" id="opt-markers" checked> <span>Placeholder comment markers</span></label>
+      <label><input type="checkbox" id="opt-guides"> <span>Alignment guides</span></label>
+      <label><input type="checkbox" id="opt-narrow"> <span>Narrow pane (390px)</span></label>
+      <p class="note">Unticking "Centre on first row" shows the CSS-only fallback: the toggle top-aligns with the table.</p>
+    </div>
+  </details>
+
+  <div id="activity" role="status">docs/spec.md</div>
+  <div id="package-details">
+    <span><strong>spec.mdpkg</strong></span><span>4 documents · 14 entries · conforming typing tier</span>
+    <small>Sample content is taken from docs/spec.md §3.3, §6.6, §7.2 and §8.2 of this repository. Comment threads and their counts are invented.</small>
+  </div>
+
+  <div class="browser" id="browser">
+    <nav id="documents" aria-label="Package documents">
+      <label>Documents <input type="search" placeholder="Filter" aria-label="Filter documents"></label>
+      <p class="muted document-count">4 documents</p>
+      <ul class="document-list">
+        <li><button type="button" aria-current="true">docs/spec.md</button></li>
+        <li><button type="button">README.md</button></li>
+        <li><button type="button">docs/investigations/container.md</button></li>
+        <li><button type="button">docs/releases/preview.3.md</button></li>
+      </ul>
+    </nav>
+    <section class="reader-panel" aria-label="Document reader">
+      <div id="reader">
+        <h2 class="document-title">docs/spec.md</h2>
+        <div class="reader-controls">
+          <label>Section
+            <select id="sections" aria-label="Document section">
+              <option value="">Whole document</option>
+              <option value="s33">3.3 Compression per entry</option>
+              <option value="s66">6.6 Result statuses and stability</option>
+              <option value="s72">7.2 Read paths and what each needs</option>
+              <option value="s82">8.2 Package 2, byte by byte</option>
+            </select>
+          </label>
+          <button type="button" aria-pressed="false">View source</button>
+        </div>
+
+        <article class="markdown" id="doc" data-density="touch" data-pressed="filled" data-markers>
+
+          <h3 id="s33">3.3 Compression per entry</h3>
+
+          <div class="table-container" data-sourcepos="116:1-120:180">
+            <div class="table-scroll" role="region" aria-label="Table" tabindex="0">
+              <table>
+                <thead><tr><th scope="col">Entry</th><th scope="col">Method</th></tr></thead>
+                <tbody>
+                  <tr><td><code>.mdpkg/manifest.json</code></td><td><code>0</code> (stored) always in the conforming tier (§3.7): readable with no decoder</td></tr>
+                  <tr><td><code>.git/objects/pack/*.pack</code>, <code>*.idx</code>, <code>*.rev</code></td><td><code>0</code> (stored) always: internal offsets stay valid; the pack's own zlib streams and deltas are its compression</td></tr>
+                  <tr><td>Everything else</td><td><code>8</code> (raw DEFLATE), producer level 6, or <code>0</code> when the DEFLATE output is not smaller than the input</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <p data-threads="2" data-kind="comment">Only methods <code>0</code> and <code>8</code> are permitted. A reader that finds any other method in the central directory MUST reject the package. Level is producer policy: readers accept any valid DEFLATE stream. Each entry is decoded with a fresh decoder over exactly the extent the central directory gives, drained to completion, and checked against the directory's CRC32 and uncompressed size; the decoded-length limit comes from the directory, never from the stream.</p>
+
+          <p>Why not smaller: per-entry DEFLATE is 69.82% (npm) / 17.36% (Rust) larger than a whole-package gzip stream and 118% / 58% larger than the best solid codec measured. That gap is the price of decoding one document without decoding the package (0.1 ms and one entry instead of 50–70 ms and 9.4 MB), of ordinary ZIP tools listing the documents, and of corruption stopping at an entry boundary. The measured alternatives are in §9.</p>
+
+          <p data-threads="1" data-kind="change-request">Browser note: raw DEFLATE is native in <code>DecompressionStream('deflate-raw')</code> from Chrome 103, Firefox 113 and Safari 16.4; older engines need a JavaScript inflater (fflate's gunzip import measured at 2,112 gzipped bytes). Mobile qualification is open (§11.2).</p>
+
+          <h3 id="s66">6.6 Result statuses and stability</h3>
+
+          <div class="table-container" data-sourcepos="404:1-409:230">
+            <div class="table-scroll" role="region" aria-label="Table" tabindex="0">
+              <table>
+                <thead><tr><th scope="col">Status</th><th scope="col">Meaning</th></tr></thead>
+                <tbody>
+                  <tr><td><code>survives</code></td><td>Same entity, same scoped source.</td></tr>
+                  <tr><td><code>flagged-changed</code></td><td>Same entity, different source, or retired with a declared reason. The external review stays on record.</td></tr>
+                  <tr data-thread-row="1" data-kind="comment"><td><code>unconfirmed</code></td><td>The package cannot confirm correspondence. The review is preserved externally and the current section is treated as unreviewed relative to it. Candidate locations MAY be offered; the review badge MUST NOT be moved.</td></tr>
+                  <tr><td><code>invalidated</code></td><td>No valid answer from shipped evidence: wrong namespace or profile, malformed reference, unavailable snapshot, malformed package.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="table-container" data-sourcepos="411:1-418:200" data-thread-block="1" data-kind="change-request" data-initial="nowrap">
+            <div class="table-scroll" role="region" aria-label="Table" tabindex="0">
+              <table>
+                <thead><tr><th scope="col">Reference</th><th scope="col">Repack / re-ZIP</th><th scope="col">Squash</th><th scope="col">Truncate to later base</th><th scope="col">File move</th><th scope="col">Content edit</th></tr></thead>
+                <tbody>
+                  <tr><td>Document, section (current)</td><td>survives</td><td>survives if digest equal, else flagged-changed; ledger copied with the tree</td><td>survives if entity and ledger retained; unconfirmed outside <code>addressingCoverage</code></td><td>survives via ledger <code>to</code></td><td>flagged-changed, including heading rename and descendant edit</td></tr>
+                  <tr><td>Section with <code>at</code></td><td>survives</td><td>invalidated if the snapshot was collapsed</td><td>invalidated if discarded</td><td>survives at old snapshot</td><td>survives at old snapshot</td></tr>
+                  <tr><td>Commit</td><td>survives</td><td>invalidated if the object was replaced</td><td>invalidated if discarded</td><td>survives</td><td>survives</td></tr>
+                  <tr><td>Diff</td><td>survives (same profile)</td><td>survives only if both endpoints retained</td><td>same</td><td>survives at old endpoints</td><td>survives at old endpoints</td></tr>
+                  <tr><td>Hunk</td><td>survives if patch hash verifiable</td><td>survives as archived evidence if the patch is retained</td><td>same</td><td>survives in old patch</td><td>survives in old patch</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <p>A review-package thread (§6.8) needs no row of its own: it <em>is</em> a current document or section reference carrying a selector, so it has exactly the stability of the first row above, and the sub-section outcome the selector adds refines that status for display without ever replacing it.</p>
+
+          <h3 id="s72">7.2 Read paths and what each needs</h3>
+
+          <div class="table-container" data-sourcepos="529:1-537:140">
+            <div class="table-scroll" role="region" aria-label="Table" tabindex="0">
+              <table>
+                <thead><tr><th scope="col">Operation</th><th scope="col">Manifest fields used</th><th scope="col">Entries read</th><th scope="col">Pack touched</th></tr></thead>
+                <tbody>
+                  <tr><td>Type the file</td><td><code>mdpkg</code></td><td>first 79 bytes</td><td>no</td></tr>
+                  <tr><td>Browse documents in a ZIP tool</td><td>none</td><td>central directory, chosen documents</td><td>no</td></tr>
+                  <tr><td>Resolve a current section or document reference</td><td><code>namespace</code>, <code>addressing.*</code>, <code>current</code> (to trust the view)</td><td>manifest, ledger, one document</td><td>no</td></tr>
+                  <tr><td>Touched-since query</td><td><code>history.detail</code></td><td><code>history.json</code>, one range summary, bindings</td><td>no</td></tr>
+                  <tr><td>Resolve <code>at=</code>, <code>commit</code>, <code>diff</code>, <code>hunk</code></td><td><code>current</code>, <code>history.*</code></td><td><code>history.json</code>, <code>.idx</code>, needed pack ranges (plus archived patch for hunks)</td><td>yes</td></tr>
+                  <tr><td>Validate current view against tree</td><td><code>current</code></td><td>everything above plus tree objects</td><td>yes</td></tr>
+                  <tr><td>Work with the history natively</td><td>none</td><td>extract all; <code>git read-tree HEAD</code></td><td>yes</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <p>The two reader tiers of §3.7 change only how the manifest is found. In the recoverable tier the entry order is unknown, so the "everything before the pack" guarantee is lost and a range reader may fetch more, but every operation above still works from the central directory.</p>
+
+          <h3 id="s82">8.2 Package 2, byte by byte</h3>
+
+          <p>6,322 bytes; SHA-256 <code>b6fb3f23464452d3d4ab44660790e4f22c6cfa3fff1c184dd69152c3f4325ca9</code>.</p>
+
+          <div class="table-container" data-sourcepos="602:1-618:120">
+            <div class="table-scroll" role="region" aria-label="Table" tabindex="0">
+              <table>
+                <thead><tr><th scope="col">#</th><th scope="col">Local header</th><th scope="col">Data</th><th scope="col">End</th><th scope="col">Method</th><th scope="col">Compressed</th><th scope="col">Raw</th><th scope="col">CRC32</th><th scope="col">Name</th></tr></thead>
+                <tbody>
+                  <tr><td>0</td><td>0</td><td>50</td><td>426</td><td>0</td><td>376</td><td>376</td><td><code>bd7adfde</code></td><td><code>.mdpkg/manifest.json</code></td></tr>
+                  <tr><td>1</td><td>426</td><td>485</td><td>645</td><td>8</td><td>160</td><td>195</td><td><code>a14c171c</code></td><td><code>.mdpkg/address/overrides.json</code></td></tr>
+                  <tr><td>2</td><td>645</td><td>683</td><td>802</td><td>8</td><td>119</td><td>163</td><td><code>cf83f8e7</code></td><td><code>guide.md</code></td></tr>
+                  <tr><td>3</td><td>802</td><td>840</td><td>876</td><td>0</td><td>36</td><td>36</td><td><code>ba3d4b41</code></td><td><code>notes.md</code></td></tr>
+                  <tr><td>4</td><td>876</td><td>925</td><td>1,293</td><td>8</td><td>368</td><td>844</td><td><code>1be94c50</code></td><td><code>.mdpkg/history.json</code></td></tr>
+                  <tr><td>5</td><td>1,293</td><td>1,351</td><td>1,520</td><td>8</td><td>169</td><td>265</td><td><code>cafccc48</code></td><td><code>.mdpkg/history/bindings.json</code></td></tr>
+                  <tr><td>6</td><td>1,520</td><td>1,641</td><td>2,588</td><td>8</td><td>947</td><td>2,202</td><td><code>67747d75</code></td><td><code>.mdpkg/history/ranges/ff2689cd…b6f0.json</code></td></tr>
+                  <tr><td>7</td><td>2,588</td><td>2,627</td><td>2,648</td><td>0</td><td>21</td><td>21</td><td><code>576463b5</code></td><td><code>.git/HEAD</code></td></tr>
+                  <tr><td>8</td><td>2,648</td><td>2,689</td><td>2,739</td><td>0</td><td>50</td><td>50</td><td><code>184bf63d</code></td><td><code>.git/config</code></td></tr>
+                  <tr><td>9</td><td>2,739</td><td>2,789</td><td>2,830</td><td>0</td><td>41</td><td>41</td><td><code>4f5dffdc</code></td><td><code>.git/refs/heads/main</code></td></tr>
+                  <tr><td>10</td><td>2,830</td><td>2,927</td><td>4,279</td><td>0</td><td>1,352</td><td>1,352</td><td><code>afc5f15c</code></td><td><code>.git/objects/pack/pack-90bb5901…c475.idx</code></td></tr>
+                  <tr><td>11</td><td>4,279</td><td>4,377</td><td>5,370</td><td>0</td><td>993</td><td>993</td><td><code>8dc1b4b6</code></td><td><code>.git/objects/pack/pack-90bb5901…c475.pack</code></td></tr>
+                  <tr><td></td><td>5,370</td><td></td><td>6,300</td><td></td><td>930</td><td></td><td></td><td>central directory, 12 records</td></tr>
+                  <tr><td></td><td>6,300</td><td></td><td>6,322</td><td></td><td>22</td><td></td><td></td><td>EOCD, comment length 0</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <p><code>notes.md</code> is stored because DEFLATE would not shrink 36 bytes. Entries 1–3 are the working tree of <code>s1</code> in bytewise path order; entries 4–6 are container-level; entries 7–11 are the curated repository with the pack last. Everything a section read needs ends at byte 876.</p>
+
+        </article>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+(() => {
+  const doc = document.getElementById('doc');
+
+  /* ------------------------------------------------------------------
+     tableControls, as in src/web-viewer/src/ui/table-controls.js, plus the
+     one addition CARD-0047 needs: publish the first row's height on the
+     container as --first-row so the toolbar can span it. Everything else
+     (key, aria, title, click) is the CARD-0045 code unchanged.
+     ------------------------------------------------------------------ */
+  const ICON = '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18M3 10h14a4 4 0 0 1 0 8h-5m3-3-3 3 3 3M3 15h4"/></svg>';
+  const rows = new ResizeObserver(entries => {
+    for (const entry of entries) {
+      const container = entry.target.closest('.table-container');
+      container.style.setProperty('--first-row', `${entry.target.getBoundingClientRect().height}px`);
+    }
+    placeMarkers();
+  });
+  function tableControls(host, tables) {
+    for (const [index, container] of [...host.querySelectorAll('.table-container')].entries()) {
+      const key = container.dataset.sourcepos;
+      if (container.dataset.initial === 'nowrap') tables.set(key, false);   // mockup: show both states at once
+      const toolbar = document.createElement('div');
+      toolbar.className = 'table-toolbar';
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.setAttribute('aria-label', `Wrap table ${index + 1} text`);
+      button.innerHTML = ICON;
+      const scroll = container.querySelector('.table-scroll');
+      scroll.setAttribute('aria-label', `Table ${index + 1}`);
+      function apply() {
+        const wrapped = tables.get(key) !== false;
+        container.classList.toggle('table-nowrap', !wrapped);
+        button.setAttribute('aria-pressed', String(wrapped));
+        button.title = wrapped ? 'Turn off wrapping (scroll horizontally)' : 'Wrap cell text';
+      }
+      button.addEventListener('click', () => {
+        tables.set(key, tables.get(key) === false);
+        apply();
+      });
+      toolbar.append(button); container.prepend(toolbar); apply();
+      const firstRow = container.querySelector('tr');            // CARD-0047
+      if (firstRow) rows.observe(firstRow);
+    }
+  }
+  tableControls(doc, new Map());
+
+  /* ------------------------------------------------------------------
+     Mockup only from here down.
+     ------------------------------------------------------------------ */
+  const MARK = {comment: '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>',
+    'change-request': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>'};
+  function marker(kind, count, label) {
+    const wrap = document.createElement('div'); wrap.className = 'gutter-mark';
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.kind = kind;
+    b.setAttribute('aria-label', label); b.title = label + ' (placeholder, CARD-0043)';
+    b.innerHTML = count > 1 ? String(count) : MARK[kind];
+    b.addEventListener('click', () => { status.textContent = `${label}: opening the thread is CARD-0043's job, not this mockup's.`; });
+    wrap.append(b); return wrap;
+  }
+  const status = document.getElementById('activity');
+  // Paragraph-level threads: the marker aligns to the first line by CSS alone.
+  for (const block of doc.querySelectorAll('p[data-threads]')) {
+    const n = Number(block.dataset.threads), kind = block.dataset.kind;
+    block.append(marker(kind, n, `${n} ${kind === 'comment' ? 'comment' : 'change request'}${n > 1 ? 's' : ''} on this paragraph`));
+  }
+  // Cell-level and whole-table threads need a measured top, re-run on resize.
+  const measured = [];
+  for (const row of doc.querySelectorAll('tr[data-thread-row]')) {
+    const container = row.closest('.table-container'), m = marker(row.dataset.kind, Number(row.dataset.threadRow), 'Comment on the "unconfirmed" row');
+    container.append(m); measured.push({m, container, anchor: () => row.getBoundingClientRect().top - container.getBoundingClientRect().top + (row.getBoundingClientRect().height - 24) / 2});
+  }
+  for (const container of doc.querySelectorAll('.table-container[data-thread-block]')) {
+    const m = marker(container.dataset.kind, Number(container.dataset.threadBlock), 'Change request on this whole table');
+    container.append(m); measured.push({m, container, anchor: () => { const t = container.querySelector('.table-toolbar'); return t.offsetTop + t.offsetHeight + 6; }});
+  }
+  function placeMarkers() { for (const {m, anchor} of measured) m.style.setProperty('--mark-top', `${anchor()}px`); }
+  const containers = new ResizeObserver(placeMarkers);
+  for (const {container} of measured) containers.observe(container);
+  placeMarkers();
+
+  // Options panel.
+  const browser = document.getElementById('browser');
+  const opt = id => document.getElementById(id);
+  opt('opt-density').addEventListener('change', e => { doc.dataset.density = e.target.value; });
+  opt('opt-pressed').addEventListener('change', e => { doc.dataset.pressed = e.target.value; });
+  opt('opt-markers').addEventListener('change', e => { doc.toggleAttribute('data-markers', e.target.checked); });
+  opt('opt-guides').addEventListener('change', e => { doc.toggleAttribute('data-guides', e.target.checked); });
+  opt('opt-narrow').addEventListener('change', e => { browser.classList.toggle('narrow', e.target.checked); });
+  opt('opt-center').addEventListener('change', e => {
+    for (const c of doc.querySelectorAll('.table-container')) {
+      if (e.target.checked) rows.observe(c.querySelector('tr')); else { rows.unobserve(c.querySelector('tr')); c.style.removeProperty('--first-row'); }
+    }
+    placeMarkers();
+  });
+
+  // Section select: the real reader marks the chosen heading with .selected-section.
+  document.getElementById('sections').addEventListener('change', e => {
+    for (const el of doc.querySelectorAll('.selected-section')) el.classList.remove('selected-section');
+    const target = e.target.value ? document.getElementById(e.target.value) : doc;
+    target.classList.add('selected-section');
+    if (e.target.value) target.scrollIntoView({block: 'start'});
+  });
+})();
+</script>
+</body>
+</html>
