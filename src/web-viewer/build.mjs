@@ -6,6 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {gzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 import {build, version as esbuildVersion} from 'esbuild';
+import {budgetClosure} from './build-graph.mjs';
 
 const root = await fs.realpath(path.dirname(fileURLToPath(import.meta.url)));
 const outdir = path.join(root, 'dist');
@@ -154,13 +155,13 @@ async function run() {
     }
   }
 
-  // Count the entire Git closure even for Review's on-export writer. History
-  // milestones retain D-3's on-open loading policy; this card ships no history.
-  const onOpenRoots = chunks.flatMap(chunk => chunk.imports.filter(imported =>
-    !imported.external && imported.kind === 'dynamic-import' &&
-    [...staticClosure([imported.path], outputs)].some(file => gitChunks.some(git => git.file === file)))
-    .map(imported => imported.path));
-  const eager = staticClosure([main.file, ...onOpenRoots], outputs);
+  // Count ALL reachable imports by default, including startup capability chunks
+  // and Review's on-export Git writer. The existing DEFLATE fallback is the only
+  // exception: inflateRaw requests it only for an opened compressed entry when
+  // native DecompressionStream('deflate-raw') is unavailable. Never exclude a
+  // startup import merely because esbuild emitted it as a separate chunk.
+  const deferredEntryPoints = new Set(['src/container/inflate-fallback.js']);
+  const eager = budgetClosure([main.file], new Map(chunks.map(chunk => [chunk.file, chunk])), deferredEntryPoints);
   const eagerChunks = chunks.filter(chunk => eager.has(chunk.file));
   const eagerBytes = eagerChunks.reduce((total, chunk) => total + chunk.gzip_bytes, 0);
   const libraryBudget = LIBRARY_BUDGETS[options.milestone], appBudget = APP_BUDGETS[options.milestone];
@@ -187,6 +188,8 @@ async function run() {
       library_budget_gzip_bytes: libraryBudget, app_budget_gzip_bytes: appBudget,
       budget_gzip_bytes: budget, eager_gzip_bytes: eagerBytes,
       bootChunks: [...boot], eagerOnOpenChunks: [...eager], components,
+      deferredEntryPoints: [...deferredEntryPoints],
+      total_gzip_bytes: chunks.reduce((total, chunk) => total + chunk.gzip_bytes, 0),
       gitChunks: gitChunks.map(chunk => chunk.file), gitImportSites,
       historyRequired},
     passed: !failures.length, failures,

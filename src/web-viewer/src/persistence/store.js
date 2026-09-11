@@ -30,6 +30,15 @@ export async function openStore(base = location.href, factory = globalThis.index
   }
   const read = (name, id) => transaction([name], 'readonly', s => s(name).get(id));
   const all = name => transaction([name], 'readonly', s => s(name).all());
+  // Capture related pointers and envelopes before asynchronous source validation.
+  // A concurrent writer cannot interleave with this transaction's reads.
+  const restore = packageKey => transaction(['packages', 'reviews', 'drafts', 'resume'], 'readonly', async s => {
+    const resume = await s('resume').get('last');
+    const record = await s('packages').get(packageKey ?? resume?.packageKey ?? '');
+    const review = record?.reviewNamespace && await s('reviews').get([record.id, record.reviewNamespace]);
+    const draft = record?.activeDraftKey && await s('drafts').get([record.id, record.activeDraftKey]);
+    return {record, review, draft, resume};
+  });
   async function prune(aggressive = false) {
     return transaction(['packages', 'positions', 'handles'], 'readwrite', async s => {
       const packages = (await s('packages').all()).filter(p => p.version === 1 && !p.removed)
@@ -77,6 +86,7 @@ export async function openStore(base = location.href, factory = globalThis.index
       const nextDraft = draftId && await s('drafts').get(draftId);
       const oldDraft = oldDraftId && await s('drafts').get(oldDraftId);
       const mismatch = !p || p.generation !== generation ||
+        p.activeDraftKey !== expected.draftKey ||
         (p.reviewNamespace && p.reviewNamespace !== snapshot.namespace) ||
         (previous && previous.version !== 1) || (previous?.revision ?? 0) !== expected.review ||
         (oldDraft && oldDraft.version !== 1) || (oldDraft?.revision ?? 0) !== expected.draft ||
@@ -105,7 +115,7 @@ export async function openStore(base = location.href, factory = globalThis.index
       return {review: revision, draft: draftRevision, draftKey: snapshot.draft?.targetKey};
     }));
   }
-  return {read, all, openPackage, work, prune, close: () => db.close(),
+  return {read, all, restore, openPackage, work, prune, close: () => db.close(),
     saveHandle: (packageKey, handle) => transaction(['handles'], 'readwrite', s =>
       s('handles').put({version: 1, id: packageKey, packageKey, handle, at: Date.now()})),
     position: (packageKey, generation, position) => write(() => transaction(['packages', 'positions', 'resume'], 'readwrite', async s => {

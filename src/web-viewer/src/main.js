@@ -6,6 +6,7 @@ import {referenceFor} from './address/resolve.js';
 import {destination, markdownLink} from './links/destination.js';
 import {referencePreview} from './ui/reference-preview.js';
 import {displayFor} from './links/display.js';
+import {persistence} from './persistence/session.js';
 import './styles.css';
 
 const app = document.querySelector('#app');
@@ -60,9 +61,9 @@ const reviews = reviewView(element('review'), whole => ({model: currentDocument,
   const scope = currentDocument?.path === locator[1] && currentDocument.find(locator);
   if (scope) reader.select(scope);
 });
-// Keep persistence isolated from parsing and permission prompts. This optional
-// capability chunk can fail without taking down in-memory reading/authoring.
-const persistenceReady = import('./persistence/session.js').then(async ({persistence}) => {
+// Bundle unconditional startup code together to reduce requests and gzip cost.
+// Initialization failures still leave in-memory reading/authoring available.
+const persistenceReady = Promise.resolve().then(async () => {
   savedSessions = await persistence({host: element('saved-sessions'), reviews, reader,
     article: () => element('reader').querySelector('article'), receive, navigate: showDocument,
     getModel: () => currentDocument, getPackage: () => pkg, fileInput: element('package-file'),

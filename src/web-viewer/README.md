@@ -319,8 +319,10 @@ the writer's complete graph, although Git is only loaded on preparation. The
 older milestone app allowances are fixed per
 milestone at 12/16/24/32/40/48 KiB for M1–M6, with their library baselines, total
 ceilings and rationale in [plan §4](../../docs/superpowers/plans/2026-09-09-card-0018-viewer-app-build-plan.md#4-milestones).
-The gate counts shared static chunks and CSS toward the total; Git, when shipped,
-also counts through its dynamic import. The
+The gate counts shared chunks and CSS once, following all dynamic imports by
+default, including nested startup capabilities and the Git writer. The only
+explicit exclusion is the existing DEFLATE fallback, requested when an opened
+compressed entry needs it and native raw decompression is unavailable. The
 graph rejects Git in the initial static closure and requires exactly one dynamic
 Git import site in that closure. M3+ additionally requires the history descriptor
 and Git reader components, which are not yet shipped. Select a later milestone explicitly
@@ -329,10 +331,12 @@ grow automatically with the bundle. Changing an allowance requires amending
 plan §4 and `APP_BUDGETS` together with measured costs and the tradeoff; a gate
 failure alone does not justify a raise.
 
-Browser persistence is an isolated capability chunk requested at startup; a failed
-load leaves in-memory reading/authoring available. Its transfer cost is reported
-separately in `build-report.json`'s chunk list and is not part of the existing V-2
-static-plus-Git closure. The gate and its 133,145-byte ceiling are unchanged.
+Browser persistence is bundled with the startup entry to reduce transfer overhead;
+initialization failures still leave in-memory reading/authoring available. All of
+its startup cost counts in V-2. The corrected measurement is **138,602 gzip bytes**,
+**5,457 over** the unchanged 133,145-byte ceiling. Production builds therefore fail
+until further optimization or an explicit budget decision resolves that excess.
+`build-report.json` also reports total gzip cost including the conditional inflater.
 
 `node src/web-viewer/build.mjs --report` from the repository root prints the full JSON report;
 all invocations save it as `src/web-viewer/dist/build-report.json`. A version, calibration,

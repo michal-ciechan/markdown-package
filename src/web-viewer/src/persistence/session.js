@@ -65,6 +65,7 @@ export async function persistence({host, reviews, reader, article, receive, navi
       await store.deleteWork(p.id);
       if (active?.key === p.id) {
         active.record = await store.read('packages', p.id); active.expected = {review: 0, draft: 0}; active.pendingDraft = undefined;
+        active.generation = active.record.generation;
         active.locked = false;
         reviews.setPackage(getPackage()); lossGuard(false); ui.notice('Saved work deleted.');
       }
@@ -88,7 +89,7 @@ export async function persistence({host, reviews, reader, article, receive, navi
         if (sequence !== workSequence || session !== active) return;
         if (!store || !session.record) throw new Error('Browser storage is unavailable.');
         if (session.locked) throw new Error('Saved work needs recovery before it can be replaced. Copy or export your current work.');
-        const result = await store.work(session.key, session.record.generation, {...snapshot, draft, sourceDigests}, session.expected);
+        const result = await store.work(session.key, session.generation, {...snapshot, draft, sourceDigests}, session.expected);
         if (result.conflict) { session.locked = true; throw new Error('Another tab changed this work. Your version is available under saved recovery.'); }
         session.expected = result;
         if (sequence === workSequence && session === active) {
@@ -161,33 +162,35 @@ export async function persistence({host, reviews, reader, article, receive, navi
     async prepare(pkg, source) {
       const key = packageKey(pkg.manifest), result = {key, pkg, source, digests: new Map(), protectedPositions: new Set(), expected: {review: 0, draft: 0}, issues: []};
       if (!store) return result;
+      let snapshot;
       try {
-        result.record = await store.read('packages', key);
+        snapshot = await store.restore(key);
+        result.record = snapshot.record;
         if (!result.record) return result;
         envelope(result.record);
         const p = result.record;
         result.documentPath = tabRead()?.packageKey === key ? tabRead().documentPath : p.documentPath;
         if (p.reviewNamespace) {
-          const saved = await store.read('reviews', [key, p.reviewNamespace]);
+          const saved = snapshot.review;
           if (saved) { result.savedReview = await validateReview(saved, pkg); result.expected.review = saved.revision; }
         }
         if (p.activeDraftKey) {
-          const draft = await store.read('drafts', [key, p.activeDraftKey]);
+          const draft = snapshot.draft;
+          result.expected.draftKey = p.activeDraftKey; result.expected.draft = draft?.revision ?? 0;
           if (draft && !draft.tombstone) {
-            result.expected.draftKey = p.activeDraftKey; result.expected.draft = draft.revision;
             result.pendingDraft = {fields: draft, ...await decodeDraft(pkg, draft, result.savedReview?.review, result.savedReview?.namespace)};
           }
         }
       } catch (error) {
         result.locked = true;
         result.issues.push({reason: 'Saved work could not be restored: ' + error.message,
-          text: recoveryText(await store.read('drafts', [key, result.record?.activeDraftKey ?? '']).catch(() => undefined) ??
-            await store.read('reviews', [key, result.record?.reviewNamespace ?? '']).catch(() => undefined) ?? result.record),
+          text: recoveryText(snapshot?.draft || snapshot?.review || result.record),
           discard: async () => {
             if (!window.confirm('Delete the saved drafts and review for this package? Copy any recovery text you need first.')) return;
             await store.deleteWork(key);
             if (active?.key === key) {
               workSequence++; workTimer.cancel(); active.record = await store.read('packages', key);
+              active.generation = active.record.generation;
               active.expected = {review: 0, draft: 0}; active.pendingDraft = undefined; active.locked = false;
               reviews.setPackage(getPackage()); lossGuard(false);
             }
@@ -199,6 +202,7 @@ export async function persistence({host, reviews, reader, article, receive, navi
     async attach(session) {
       intent++; workSequence++; workTimer.cancel(); positionTimer.cancel(); pendingPosition = undefined;
       active = session; restoring = true; failed = false; lossGuard(false); recovery = session.issues;
+      session.generation = session.record?.generation ?? 0;
       session.metadata = {filename: session.pkg.name, size: session.source.blob.size, lastModified: session.source.blob.lastModified,
         namespace: session.pkg.manifest.namespace, current: session.pkg.manifest.current};
       if (session.savedReview && !session.locked) reviews.hydrate(session.savedReview);
@@ -246,8 +250,8 @@ export async function persistence({host, reviews, reader, article, receive, navi
       if (!store || getPackage()) return;
       const generation = intent;
       try {
-        const pointer = tabRead() ?? await store.read('resume', 'last');
-        const p = pointer?.packageKey && await store.read('packages', pointer.packageKey);
+        const tab = tabRead(), snapshot = await store.restore(tab?.packageKey);
+        const pointer = tab ?? snapshot.resume, p = snapshot.record;
         if (generation === intent && !getPackage() && p && !p.removed) await reopen(p, pointer.documentPath, true);
       } catch (error) { failure(error); }
     },

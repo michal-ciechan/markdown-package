@@ -157,6 +157,73 @@ test('two tabs preserve conflicting text and deletion defeats stale writers', as
   expect((await rows(page, 'conflicts'))[0].snapshot.draft.body).toBe('After deletion');
 });
 
+test('draft switch during another tab restore keeps the active draft and recovers stale input', async ({page, context}) => {
+  await open(page); await edit(page, 'Draft A'); await saved(page);
+  const other = await context.newPage(); await other.goto('/');
+  await expect(other.getByRole('button', {name: 'Choose file again', exact: true})).toBeVisible();
+  await other.evaluate(() => {
+    const transaction = IDBDatabase.prototype.transaction;
+    IDBDatabase.prototype.transaction = function(names, mode, ...args) {
+      const tx = transaction.call(this, names, mode, ...args);
+      if (mode === 'readonly' && [...tx.objectStoreNames].includes('packages') && !window.pausedRestore) {
+        window.pausedRestore = true;
+        // Delay only delivery of completion, after the real transaction has read
+        // A and released its locks. Tab 1 can now commit Cancel and draft B.
+        Object.defineProperty(tx, 'oncomplete', {set(callback) {
+          tx.addEventListener('complete', event => { window.releaseRestore = () => callback.call(tx, event); });
+        }});
+      }
+      return tx;
+    };
+  });
+  await other.locator('#package-file').setInputFiles(file());
+  await expect.poll(() => other.evaluate(() => typeof window.releaseRestore)).toBe('function');
+  await page.getByRole('button', {name: 'Cancel', exact: true}).click(); await saved(page);
+  await page.getByLabel('Document section').selectOption('2');
+  await edit(page, 'Draft B must remain discoverable'); await saved(page);
+  const b = (await rows(page, 'drafts')).find(d => !d.tombstone);
+  await other.evaluate(() => window.releaseRestore());
+  await expect(other.locator('.document-title')).toHaveText('guide.md');
+  // A, its review and its pointer came from the same completed snapshot.
+  // The old torn read instead restored no editor. The next write must conflict.
+  await expect(other.getByLabel('Feedback', {exact: true})).toHaveValue('Draft A');
+  await other.getByLabel('Feedback', {exact: true}).fill('Draft C from torn hydration');
+  await expect(other.locator('.local-save-status')).toContainText('Another tab changed');
+  const p = (await rows(page, 'packages'))[0];
+  expect(p.activeDraftKey).toBe(b.targetKey);
+  expect((await rows(page, 'resume'))[0].activeDraftKey).toBe(b.targetKey);
+  expect((await rows(page, 'drafts')).filter(d => !d.tombstone)).toEqual([b]);
+  const conflicts = await rows(page, 'conflicts');
+  expect(conflicts).toHaveLength(1);
+  expect(conflicts[0].snapshot.draft.body).toBe('Draft C from torn hydration');
+  await other.locator('.saved-recovery summary').click();
+  await expect(other.getByLabel('Saved text for recovery')).toHaveValue(/Draft C from torn hydration/);
+  await other.close({runBeforeUnload: false});
+  await reloadAttach(page);
+  await expect(page.getByLabel('Feedback', {exact: true})).toHaveValue('Draft B must remain discoverable');
+});
+
+test('active pointer mismatch conflicts even with the current review revision', async ({page}) => {
+  await open(page); await edit(page, 'Live draft B'); await saved(page);
+  const result = await page.evaluate(async () => {
+    const {openStore} = await import('/test-api.js'), db = await openStore();
+    try {
+      const p = (await db.all('packages'))[0];
+      const {record, review, draft, resume} = await db.restore(p.id);
+      const incoming = {...draft, targetKey: 'different-target', body: 'Recover incoming C'};
+      // Models the review's torn expectations: fresh review, absent old draft.
+      const outcome = await db.work(p.id, p.generation, {...review, draft: incoming}, {review: review.revision, draft: 0});
+      return {outcome, record, draft, resume, after: await db.restore(p.id), conflicts: await db.all('conflicts')};
+    } finally { db.close(); }
+  });
+  expect(result.outcome).toEqual({conflict: true});
+  expect(result.after.record).toEqual(result.record);
+  expect(result.after.draft).toEqual(result.draft);
+  expect(result.after.resume).toEqual(result.resume);
+  expect(result.conflicts).toHaveLength(1);
+  expect(result.conflicts[0].snapshot.draft.body).toBe('Recover incoming C');
+});
+
 test('transaction abort retains last draft and retry uses the same submitted IDs', async ({page}) => {
   await open(page); await edit(page, 'Submit atomically'); await saved(page);
   await page.evaluate(() => {
