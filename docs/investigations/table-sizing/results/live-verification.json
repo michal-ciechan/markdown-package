@@ -1,0 +1,46 @@
+{
+  "localCommit": "ceade1dab31f5c6c1f4271e9be7b11e1be9a4f94",
+  "liveUrl": "https://michal-ciechan.github.io/markdown-package/",
+  "measuredAt": "2026-09-11T17:39:41.977Z",
+  "browser": "140.0.7339.186",
+  "packageSha256": "d3cacebe3eeacca20ca2a224aadf53b44c2ca5b5dfc481e7ec9975f965dc2718",
+  "local": {
+    "passed": 100,
+    "failed": 0,
+    "layouts": 12,
+    "tableMeasurements": 96
+  },
+  "live": {
+    "passed": 100,
+    "failed": 0,
+    "layouts": 12,
+    "tableMeasurements": 96
+  },
+  "allMeasurementsIdentical": true,
+  "requestedUrls": [
+    "https://michal-ciechan.github.io/markdown-package/",
+    "https://michal-ciechan.github.io/markdown-package/main.css",
+    "https://michal-ciechan.github.io/markdown-package/main.js",
+    "https://michal-ciechan.github.io/markdown-package/chunk-BR22LSSV.js",
+    "https://michal-ciechan.github.io/markdown-package/chunk-EVXXVMYO.js"
+  ],
+  "assets": [
+    {
+      "name": "main.css",
+      "fetchedAt": "2026-09-11T17:40:38.086Z",
+      "bytes": 7600,
+      "liveSha256": "8ceca7db791c56c1eb8cf29d86c94ef71c13281c9381134e536003f24db66b14",
+      "localSha256": "8ceca7db791c56c1eb8cf29d86c94ef71c13281c9381134e536003f24db66b14",
+      "identical": true
+    },
+    {
+      "name": "main.js",
+      "fetchedAt": "2026-09-11T17:40:38.186Z",
+      "bytes": 224553,
+      "liveSha256": "376ea651ac5592d671171553e4fbd85faf5ad9cfd6c8c1d30a7def71e2fe301a",
+      "localSha256": "376ea651ac5592d671171553e4fbd85faf5ad9cfd6c8c1d30a7def71e2fe301a",
+      "identical": true
+    }
+  ],
+  "failures": []
+}
