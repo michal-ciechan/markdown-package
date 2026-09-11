@@ -19,7 +19,11 @@ export function displayFor(model) {
   const ast = markdownParser().parse(model.text), fragments = new Map(), headings = [], counts = new Map();
   const scopes = new Map(model.scopes.filter(s => s.kind === 'section').map(s => [s.start, s]));
   const indices = new Map(model.scopes.map((s, index) => [s, index]));
-  const add = (key, value) => { const candidates = fragments.get(key) ?? []; candidates.push(value); fragments.set(key, candidates); };
+  const add = (key, value) => {
+    const candidates = fragments.get(key) ?? [];
+    if (!candidates.includes(value)) candidates.push(value);
+    fragments.set(key, candidates);
+  };
   const walker = ast.walker(); let event;
   while ((event = walker.next())) {
     const node = event.node;

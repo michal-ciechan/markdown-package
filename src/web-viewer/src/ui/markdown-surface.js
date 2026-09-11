@@ -2,6 +2,7 @@ import {markdownRenderer} from './markdown-renderer.js';
 import {tableControls} from './table-controls.js';
 import {displayFor} from '../links/display.js';
 import {destination} from '../links/destination.js';
+import {renderPreviewBlock, PREVIEW_HTML_UNITS} from './preview-renderer.js';
 
 export function bindLinks(host, source, onNavigate) {
   for (const link of host.querySelectorAll('a')) {
@@ -59,17 +60,20 @@ export function boundedSource(text, limit = PREVIEW_UNITS) {
 
 export function previewMarkup(model, scope) {
   const {ast, headings} = displayFor(model), source = model.source(scope);
-  const fallback = () => ({source: boundedSource(source), excerpt: source.length > PREVIEW_UNITS, fallback: true});
+  const fallback = (budgetExceeded = false) => ({source: boundedSource(source), excerpt: budgetExceeded || source.length > PREVIEW_UNITS, fallback: true});
   if (scope.kind === 'section' && !headings.some(h => h.scope === scope)) return fallback();
   const blocks = [];
-  let units = 0, excerpt = false;
+  let units = 0, htmlUnits = 0, visibleUnits = 0, excerpt = false;
   for (let node = ast.firstChild; node; node = node.next) {
     const start = node.sourcepos[0][0] - 1, end = node.sourcepos[1][0];
     if (end <= scope.start || start >= scope.end) continue;
     if (start < scope.start || end > scope.end) return fallback();
     const size = model.lines.slice(start, end).join('\n').length + 1;
     if (units + size > PREVIEW_UNITS) { if (!blocks.length) return fallback(); excerpt = true; break; }
-    units += size; blocks.push(markdownRenderer().render(node));
+    const rendered = renderPreviewBlock(node, PREVIEW_HTML_UNITS - htmlUnits, PREVIEW_UNITS - visibleUnits);
+    if (!rendered) { if (!blocks.length) return fallback(true); excerpt = true; break; }
+    units += size; htmlUnits += rendered.html.length; visibleUnits += rendered.visibleUnits;
+    blocks.push(rendered.html);
   }
   return {html: blocks.join(''), excerpt};
 }

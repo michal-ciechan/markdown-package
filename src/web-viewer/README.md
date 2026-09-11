@@ -70,8 +70,11 @@ before reading and during decoding. Oversized location-only file links can still
 offer **Open document**; identity links require an established live scope before
 offering Open. Rich previews use the full document's reference definitions and
 canonical section boundaries. A display block crossing a boundary uses labelled
-canonical source. Content is limited to 16,000 UTF-16 units at whole-block
-boundaries, with bounded source excerpts for oversized first blocks. Raw HTML
+canonical source. Visible content (including image placeholders) is limited to
+16,000 UTF-16 units at whole-block boundaries. A separate 65,536-unit HTML budget
+checks escaping and markup before allocation/appending, bounding expansion from
+repeated reference definitions. Both budgets apply across the entire preview;
+an oversized first block uses a labelled bounded source excerpt. Raw HTML
 and automatic images stay disabled. Preview tables have independent controls.
 
 Only the active document and one preview target/model are retained. One preview

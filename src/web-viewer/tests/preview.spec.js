@@ -230,3 +230,45 @@ test('one MiB targets produce bounded excerpts; collect representative retained 
   // Broad leak tripwire only; exact measurements are recorded, not portable budgets.
   expect(samples.active.at(-1) - samples.active[0]).toBeLessThan(4 * 1024 * 1024);
 });
+
+test('expanded references and image placeholders show bounded excerpts with explicit Open', async ({page}) => {
+  const documents = {
+    'guide.md': '# Guide\n\n[references](references.md#target) [images](images.md)\n',
+    'references.md': '# Target\n\n' + '[x][r] '.repeat(100) + '\n\n# Outside\n\n[r]: https://example.com/' + 'a'.repeat(20000) + '\n',
+    'images.md': '![](x)'.repeat(2000),
+  };
+  await page.goto('/');
+  await page.locator('#package-file').setInputFiles({name: 'budget.mdpkg', mimeType: 'application/zip', buffer: await packageBytes(documents)});
+  await expect(page.locator('.document-title')).toHaveText('guide.md');
+  await local(page, 'references').click();
+  await expect(card(page).locator('.preview-status')).toContainText('Preview excerpt');
+  await expect(card(page).locator('.preview-content a')).toHaveCount(0);
+  await expect(card(page).getByRole('button', {name: 'Open section', exact: true})).toBeVisible();
+  await page.keyboard.press('Escape');
+  await local(page, 'images').click();
+  await expect(card(page)).toContainText('Canonical source excerpt');
+  await expect(card(page).locator('.preview-status')).toContainText('Preview excerpt');
+  expect((await card(page).locator('pre').textContent()).length).toBeLessThanOrEqual(16000);
+  await expect(card(page).getByRole('button', {name: 'Open document', exact: true})).toBeVisible();
+  await expect(page.locator('.document-title')).toHaveText('guide.md');
+});
+
+test('a self-colliding legacy alias works in preview and main-reader fragment navigation', async ({page}) => {
+  await page.goto('/');
+  await page.locator('#package-file').setInputFiles({name: 'alias.mdpkg', mimeType: 'application/zip', buffer: await packageBytes({
+    'guide.md': '# Guide\n\n[alias](target.md#mdpkg-section-2)\n', 'target.md': '# mdpkg-section-2\n\nUnique target.\n',
+  })});
+  await expect(page.locator('.document-title')).toHaveText('guide.md');
+  await local(page, 'alias').click();
+  await expect(card(page)).toContainText('Unique target.');
+  await expect(card(page).getByRole('button', {name: 'Open section', exact: true})).toBeVisible();
+  const navigated = await page.evaluate(async () => {
+    const {readerView, outline} = await import('/test-api.js');
+    const host = document.createElement('div'); document.body.append(host);
+    const reader = readerView(host, () => {}, () => {});
+    reader.show(outline(new TextEncoder().encode('# mdpkg-section-2\n'), 'alias.md'));
+    const found = reader.fragment('mdpkg-section-2');
+    host.remove(); return found;
+  });
+  expect(navigated).toBe(true);
+});
