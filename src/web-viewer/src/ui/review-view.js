@@ -34,7 +34,7 @@ export function reviewView(host, getContext, onNavigate) {
   function closeEditor() { composing = undefined; form.hidden = true; body.value = ''; }
   function edit(target, fields, focus = true) {
     if (deferredDraft) { status('Resume or cancel your saved draft before starting another comment.', true); return; }
-    if (composing) { body.focus(); status('Save or cancel your current comment first.', true); return; }
+    if (composing) { presentation('edit'); body.focus(); status('Save or cancel your current comment first.', true); return; }
     composing = target;
     form.hidden = false;
     author.value = fields?.author ?? savedAuthor;

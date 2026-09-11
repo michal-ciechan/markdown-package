@@ -24,7 +24,7 @@ export function inlineComments(host, reader, reviews) {
   // Keep inline button gestures together; keyboard focus remains native.
   layer.addEventListener('mousedown', e => { if (e.button === 0 && e.target.closest('button')) e.preventDefault(); });
   const peek = document.createElement('div'); peek.className = 'comment-peek'; peek.id = 'comment-peek'; peek.hidden = true; peek.setAttribute('role', 'tooltip'); document.body.append(peek);
-  let surface, groups = [], marks = [], reading = false, frame, hoverTimer, hoverTarget, gesture, reopen = new Set();
+  let surface, groups = [], marks = [], reading = false, frame, hoverTimer, hoverTarget, hoverIds, gesture, reopen = new Set();
   const active = new Map(), known = new Set(), cache = new Map();
   const highlightNames = ['comment', 'change', 'resolved', 'obsolete', 'mixed', 'linked', 'draft'];
   const ro = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(schedule);
@@ -57,16 +57,18 @@ export function inlineComments(host, reader, reviews) {
   }
   function hidePeek() {
     clearTimeout(hoverTimer); peek.hidden = true;
-    hoverTarget?.removeAttribute('aria-describedby'); hoverTarget = undefined; paint();
+    hoverTarget?.removeAttribute('aria-describedby'); hoverTarget = hoverIds = undefined; paint();
   }
   function preview(items, target, rect) {
     hidePeek(); if (reading || !items.length || !document.getSelection()?.isCollapsed) return;
+    // Distinct source ranges can share a paragraph target, even while pending.
+    hoverTarget = target; hoverIds = items.map(i => i.thread.id).join(',');
     paint(items.map(i => i.thread.id));
     hoverTimer = setTimeout(() => {
       if (!target.isConnected) return;
       const {thread, number} = items[0], first = thread.comments[0];
       peek.textContent = `${label(thread)} #${number} · ${thread.state} · ${first.author}\n${first.body.slice(0, 180)}${first.body.length > 180 ? '…' : ''}${items.length > 1 ? `\n${items.length} overlapping threads — click to cycle` : ''}`;
-      peek.hidden = false; hoverTarget = target; target.setAttribute('aria-describedby', peek.id);
+      peek.hidden = false; target.setAttribute('aria-describedby', peek.id);
       const scale = peek.getBoundingClientRect().width / peek.offsetWidth || 1;
       peek.style.maxWidth = (innerWidth - 16) / scale + 'px'; peek.style.maxHeight = (innerHeight - 16) / scale + 'px';
       const box = peek.getBoundingClientRect();
@@ -191,7 +193,14 @@ export function inlineComments(host, reader, reviews) {
     const next = items[(items.findIndex(i => active.get(i.group.key) === i.thread.id) + 1) % items.length];
     active.set(next.group.key, next.thread.id); update();
   }, true);
-  host.addEventListener('pointermove', e => { if (e.buttons) return; const items = hits(e); if (items.length) { if (hoverTarget !== e.target) preview(items, e.target, items[0].anchor.range.getBoundingClientRect()); } else if (surface?.content.contains(e.target)) hidePeek(); });
+  host.addEventListener('pointermove', e => {
+    if (e.buttons) return;
+    const items = hits(e);
+    if (items.length) {
+      if (hoverTarget !== e.target || hoverIds !== items.map(i => i.thread.id).join(','))
+        preview(items, e.target, items[0].anchor.range.getBoundingClientRect());
+    } else if (surface?.content.contains(e.target)) hidePeek();
+  });
   host.addEventListener('pointerleave', () => { clearTimeout(hoverTimer); hoverTimer = setTimeout(hidePeek, 150); });
   document.addEventListener('pointerdown', e => { if (!peek.contains(e.target)) hidePeek(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') hidePeek(); });
