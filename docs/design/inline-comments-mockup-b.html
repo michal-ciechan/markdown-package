@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mockup B: an interactive exploration of inline review folds in the markdown-package viewer.">
+  <title>Mockup B · Inline review folds</title>
+  <style>
+    :root { color-scheme: light; --ink: #242b32; --muted: #66717c; --line: #dce1e5; --paper: #fff; --canvas: #edf0f2; --comment: #116b70; --comment-bg: #e4f3f1; --change: #a84d16; --change-bg: #fff0df; --resolved: #4e665d; --obsolete: #747483; --focus: #285ac5; font-family: "Segoe UI", system-ui, sans-serif; font-size: 16px; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--canvas); color: var(--ink); line-height: 1.6; }
+    [hidden] { display: none !important; }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; color: inherit; }
+    button, a, [role="button"] { -webkit-tap-highlight-color: transparent; }
+    button { border: 1px solid var(--line); background: #fff; border-radius: 5px; padding: .45rem .75rem; font-size: .875rem; font-weight: 600; }
+    button:hover { background: #f0f3f5; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+    a { color: inherit; text-underline-offset: 4px; }
+    svg { width: 1.05rem; height: 1.05rem; fill: none; stroke: currentColor; stroke-width: 1.65; stroke-linecap: round; stroke-linejoin: round; vertical-align: -.17em; flex-shrink: 0; }
+    .icon-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+    .topbar { background: #20282f; color: #e8edf1; padding: .9rem 2.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .brand { display: flex; align-items: center; gap: .65rem; font-weight: 650; letter-spacing: -.02em; }
+    .brand-mark { display: grid; place-items: center; width: 28px; height: 28px; background: #d6ef68; color: #283017; border-radius: 4px; font-size: .85rem; font-weight: 800; }
+    .crumb { font-size: .875rem; color: #b8c1c8; font-weight: 400; margin-left: 1.2rem; letter-spacing: 0; }
+    .concept { border: 1px solid #52606c; border-radius: 4px; padding: .2rem .55rem; font-size: .75rem; white-space: nowrap; letter-spacing: .03em; }
+    .workspace { max-width: 1104px; margin: 0 auto; padding: 1.45rem 2rem 3rem; }
+    .filebar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+    .filename { display: flex; align-items: center; gap: .5rem; font-size: .875rem; font-weight: 650; }
+    .filename small { font-weight: 400; font-size: .8125rem; color: var(--muted); margin-left: .4rem; }
+    .view-switch { display: flex; background: #dfe5e9; padding: 3px; border-radius: 6px; }
+    .view-switch button { border: 0; background: transparent; padding: .35rem .85rem; color: #53606b; }
+    .view-switch button[aria-pressed="true"] { background: white; color: #222d35; box-shadow: 0 1px 3px #1826321a; }
+    .paper { background: var(--paper); border: 1px solid #d4dce1; box-shadow: 0 4px 18px #172b3f06; }
+    .document-head { padding: 2.3rem 4.75rem 1.55rem; }
+    .eyebrow { display: flex; gap: .7rem; align-items: center; font-family: ui-monospace, Consolas, monospace; font-size: .75rem; font-weight: 600; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+    .eyebrow span { width: 20px; height: 2px; background: #8b97a1; }
+    h1 { font-size: clamp(1.6rem, 3.2vw, 2.25rem); line-height: 1.2; letter-spacing: -.045em; font-weight: 650; margin: .75rem 0 .8rem; }
+    .document-meta { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; color: var(--muted); font-size: .8125rem; }
+    .avatars { display: flex; padding-left: 0; }
+    .avatar { display: inline-grid; place-items: center; flex-shrink: 0; width: 29px; height: 29px; border-radius: 50%; background: #e2eced; color: #30575a; font-size: .6875rem; font-weight: 700; border: 2px solid white; }
+    .avatars .avatar + .avatar { margin-left: -5px; }
+    .avatar.gold { background: #f4e6cb; color: #75572f; }
+    .avatar.lilac { background: #e8e5f0; color: #62547c; }
+    .reviewbar { padding: .65rem 1.35rem; border-block: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem; background: #fafbfc; }
+    .filters { display: flex; flex-wrap: wrap; gap: .2rem; }
+    .filters button { border-color: transparent; background: transparent; font-weight: 500; padding: .3rem .65rem; }
+    .filters button[aria-pressed="true"] { border-color: #bfcad2; background: white; color: #22333f; font-weight: 650; }
+    .count { margin-left: .4rem; font-size: .75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .quiet { border-color: transparent; background: transparent; color: var(--muted); }
+    .legend { display: flex; flex-wrap: wrap; gap: 1.15rem; font-size: .8125rem; color: var(--muted); padding: 1rem 4.75rem 0; }
+    .legend span { display: inline-flex; align-items: center; gap: .35rem; }
+    .legend .comment-key { color: var(--comment); }
+    .legend .change-key { color: var(--change); }
+    .instruction { margin: .65rem 4.75rem 1.6rem; font-size: .875rem; color: var(--muted); }
+    #document { padding: 0 4.75rem 2.5rem; }
+    .section-heading { display: flex; align-items: baseline; gap: .75rem; margin: 2rem 0 1rem; }
+    .section-heading:first-child { margin-top: 0; }
+    h2 { font-size: 1.3rem; line-height: 1.4; letter-spacing: -.025em; font-weight: 650; margin: 0; }
+    .section-number { font-family: ui-monospace, Consolas, monospace; color: #87919a; font-size: .875rem; }
+    .section-heading .quiet { margin-left: auto; padding: .25rem .4rem; font-size: .8125rem; }
+    .block { position: relative; margin: 1rem 0 1.35rem; scroll-margin-top: 1rem; }
+    .prose { font-size: 1rem; line-height: 1.85; overflow-wrap: anywhere; }
+    p.prose { margin: 0; }
+    .prose code, td code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: .875em; background: #f1f3f5; border-radius: 3px; padding: .12em .24em; }
+    .prose strong { font-weight: 650; }
+    .gutter { position: absolute; left: -2.9rem; top: .16rem; display: grid; place-items: center; width: 29px; height: 29px; padding: 0; border: 1px solid #cbd9dc; background: #f6fafb; color: #537279; font-size: .75rem; border-radius: 4px; }
+    .gutter.empty { background: transparent; border-color: transparent; color: #94a0a8; }
+    .block:hover .gutter.empty, .gutter.empty:focus-visible { border-color: #bfcbd3; color: #315a76; background: #f4f8fb; }
+    .block.scope-active > .prose { background: #f1f8f8; box-shadow: -8px 0 0 #f1f8f8, 8px 0 0 #f1f8f8, -11px 0 0 var(--comment); }
+    .anchor { cursor: pointer; border-bottom: 2px solid #29928e; background: #eaf7f3; box-decoration-break: clone; -webkit-box-decoration-break: clone; padding: .08em 0; transition: background .12s; }
+    .anchor.change { border-bottom-color: #cf792b; background: #fff4e6; }
+    .anchor.mixed { border-bottom: 3px double #a16d32; background: linear-gradient(0deg, #ffefd9 50%, #e7f4f0 50%); }
+    .anchor.resolved { background: transparent; border-bottom: 1px solid #7a8f82; }
+    .anchor.obsolete { background: transparent; border-bottom: 2px dotted #9690a1; }
+    .anchor.linked { background: #c0e6dd; outline: 2px solid #559c94; outline-offset: 2px; border-radius: 1px; }
+    .anchor.change.linked { background: #ffdaa8; outline-color: #d29645; }
+    .anchor.draft-anchor { background: #dce6ff; border-bottom-color: var(--focus); outline: 1px solid #91aeea; }
+    .annotation-strip { display: flex; align-items: center; flex-wrap: wrap; gap: .35rem; margin-top: .7rem; padding-bottom: .1rem; }
+    .strip-guide { font-family: ui-monospace, Consolas, monospace; font-size: .75rem; color: #8a949c; padding-right: .2rem; }
+    .thread-chip { display: inline-flex; align-items: center; gap: .35rem; padding: .27rem .55rem; font-size: .8125rem; font-weight: 500; line-height: 1.5; border-radius: 4px; color: var(--comment); background: #f7fbfa; border-color: #cbe1dd; }
+    .thread-chip svg { width: .9rem; height: .9rem; }
+    .thread-chip.change { color: var(--change); background: #fffaf4; border-color: #edd9c0; }
+    .thread-chip .chip-state { border-left: 1px solid #c8d7d5; padding-left: .35rem; font-size: .75rem; color: #596970; }
+    .thread-chip[aria-expanded="true"] { color: #fff; background: var(--comment); border-color: var(--comment); }
+    .thread-chip.change[aria-expanded="true"] { background: var(--change); border-color: var(--change); }
+    .thread-chip[aria-expanded="true"] .chip-state { color: #fff; border-left-color: #ffffff55; }
+    .thread-chip.is-obsolete { border-style: dashed; }
+    .thread-chip.is-resolved, .thread-chip.is-obsolete { background: #fafbfb; color: #657078; border-color: #d2d9dd; }
+    .thread-chip.is-resolved[aria-expanded="true"], .thread-chip.is-obsolete[aria-expanded="true"] { background: #616c75; color: white; }
+    .add-inline { font-size: .8125rem; padding: .25rem .45rem; font-weight: 500; }
+    .fold { position: relative; background: #f5f9f8; border-block: 1px solid #c7ded8; border-left: 3px solid var(--comment); margin: .8rem -1.4rem 1.45rem; padding: 1rem 1.3rem 1rem; }
+    .fold.change { background: #fffaf3; border-color: #ead6ba; border-left-color: var(--change); }
+    .fold::before { content: ""; position: absolute; top: -9px; left: 23px; width: 8px; height: 8px; background: inherit; border-left: 1px solid #c7ded8; border-top: 1px solid #c7ded8; transform: rotate(45deg); }
+    .fold.change::before { border-color: #ead6ba; }
+    .fold.is-obsolete, .fold.is-resolved { background: #f7f8f9; border-color: #d6dde1; border-left-color: #859099; }
+    .fold-head { display: flex; align-items: center; justify-content: space-between; gap: .65rem; flex-wrap: wrap; }
+    .fold-title { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; font-size: .875rem; font-weight: 650; color: var(--comment); }
+    .change .fold-title { color: var(--change); }
+    .thread-ref { font-family: ui-monospace, Consolas, monospace; font-size: .75rem; color: var(--muted); font-weight: 400; }
+    .state-badge { display: inline-flex; align-items: center; gap: .3rem; color: #626a70; border: 1px solid #cbd3d5; border-radius: 3px; padding: .05rem .4rem; font-size: .75rem; font-weight: 500; background: #fff8; }
+    .state-badge.open::before { content: ""; width: 5px; height: 5px; border: 1.5px solid currentColor; border-radius: 50%; }
+    .close-fold { line-height: 1; padding: .3rem; font-size: 1.1rem; }
+    .target-quote { margin: .65rem 0 .9rem; border-left: 2px solid #c0cdd0; padding: .1rem .6rem; color: #647077; font-size: .8125rem; max-height: 5rem; overflow: auto; }
+    .messages { display: grid; gap: .85rem; }
+    .message { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: .55rem; }
+    .message .avatar { margin-top: 1px; }
+    .message-meta { font-size: .8125rem; display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }
+    .message-meta strong { font-weight: 650; }
+    .message-meta time { color: var(--muted); font-size: .75rem; }
+    .message-body { margin: .2rem 0 0; line-height: 1.65; font-size: .9375rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .reply-indicator { color: #738087; font-size: .75rem; }
+    .fold-footer { display: flex; justify-content: space-between; gap: .65rem; align-items: center; flex-wrap: wrap; padding: .8rem 0 0 2.4rem; margin-top: .8rem; border-top: 1px solid #dce5e2; }
+    .state-control { font-size: .8125rem; display: flex; align-items: center; gap: .45rem; color: var(--muted); }
+    select { border: 1px solid #c9d2d8; border-radius: 4px; color: #40505a; background: #fff9; padding: .3rem; font-size: .8125rem; }
+    .reply-form { margin: 1rem 0 0 2.4rem; }
+    .reply-form label, .composer label { display: block; font-size: .8125rem; font-weight: 650; }
+    textarea, input { border: 1px solid #b8c5d1; border-radius: 4px; background: white; color: var(--ink); width: 100%; padding: .65rem .75rem; }
+    textarea { resize: vertical; min-height: 90px; line-height: 1.55; font-size: .9375rem; }
+    .reply-form textarea { margin-top: .35rem; }
+    .primary { background: #263d48; border-color: #263d48; color: white; }
+    .primary:hover { background: #385563; color: white; }
+    .form-actions { display: flex; align-items: center; gap: .5rem; margin-top: .6rem; flex-wrap: wrap; }
+    .form-actions small { color: var(--muted); font-size: .75rem; margin-left: auto; }
+    .state-note { font-size: .8125rem; color: #64717b; margin: .65rem 0; padding: .5rem .65rem; border: 1px dashed #c9d2d8; border-radius: 3px; }
+    .code-wrap { border: 1px solid #dfe4e8; background: #f6f8fa; margin: 1.4rem 0; border-radius: 4px; }
+    .code-label { border-bottom: 1px solid #e1e6ea; padding: .45rem .8rem; color: #75808b; font-size: .75rem; font-family: ui-monospace, Consolas, monospace; }
+    pre { padding: .9rem 1rem; margin: 0; overflow: auto; font-size: .8125rem; line-height: 1.8; color: #445260; tab-size: 2; }
+    pre code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; }
+    .rule .prose { padding-left: 1.7rem; }
+    .rule-number { position: absolute; left: .15rem; top: 0; font-variant-numeric: tabular-nums; color: #79838c; line-height: 1.85; }
+    .rule .annotation-strip { padding-left: 1.7rem; }
+    .table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 4px; margin: 1.1rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    th { background: #f6f8f9; color: #65727d; text-align: left; font-size: .8125rem; font-weight: 600; }
+    th, td { padding: .7rem .8rem; border-bottom: 1px solid #e4e8eb; vertical-align: top; }
+    th:first-child, td:first-child { width: 36%; }
+    tr:last-child td { border-bottom: 0; }
+    .document-end { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; border-top: 1px solid var(--line); padding: 1rem 1.4rem; color: var(--muted); font-size: .75rem; }
+    .demo-footer { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; color: var(--muted); font-size: .8125rem; }
+    .demo-footer button { font-size: .8125rem; }
+    .composer { margin: .85rem -1.4rem 1.2rem; padding: 1rem 1.3rem; background: #f3f6fe; border: 1px solid #c5d3ee; border-left: 3px solid var(--focus); }
+    .composer-heading { display: flex; justify-content: space-between; align-items: center; gap: .8rem; font-size: .9375rem; font-weight: 650; }
+    .composer-target { font-size: .8125rem; color: #5c7096; margin: .4rem 0 .8rem; padding-left: .6rem; border-left: 2px solid #a6bce5; max-height: 5rem; overflow: auto; }
+    .composer-fields { display: grid; grid-template-columns: minmax(130px, 1fr) minmax(0, 2fr); gap: 1rem; align-items: end; margin-bottom: .85rem; }
+    .composer input { font-size: .875rem; margin-top: .3rem; padding: .45rem .65rem; }
+    .kind-field { border: 0; padding: 0; margin: 0; min-width: 0; }
+    .kind-field legend { font-size: .8125rem; font-weight: 650; margin-bottom: .3rem; }
+    .kind-options { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .kind-options label { cursor: pointer; display: flex; gap: .35rem; align-items: center; border: 1px solid #c8d3e0; border-radius: 4px; padding: .4rem .65rem; background: #fff9; font-weight: 500; }
+    .kind-options input { accent-color: var(--comment); width: auto; margin: 0; }
+    .kind-options label:has(input:checked) { border-color: var(--comment); color: var(--comment); background: var(--comment-bg); }
+    .kind-options label:has(input[value="change-request"]:checked) { border-color: var(--change); color: var(--change); background: var(--change-bg); }
+    .selection-tools { position: fixed; z-index: 50; display: flex; flex-wrap: wrap; gap: .25rem; align-items: center; padding: .35rem; background: #26343e; color: #fff; border-radius: 6px; box-shadow: 0 5px 20px #1b2f4433; max-width: calc(100vw - 16px); }
+    .selection-tools span { padding: 0 .5rem; font-size: .8125rem; color: #dbe3e8; }
+    .selection-tools button { border-color: #586872; background: #344752; color: white; min-height: 36px; }
+    .selection-tools .primary { background: #fff; color: #26343e; border-color: white; }
+    .peek { position: fixed; z-index: 60; width: 315px; max-width: calc(100vw - 24px); background: #25343d; color: white; padding: .8rem 1rem; border-radius: 5px; box-shadow: 0 6px 20px #23333e25; font-size: .875rem; pointer-events: none; }
+    .peek strong { font-size: .8125rem; color: #d2e8e2; }
+    .peek p { margin: .3rem 0 .2rem; line-height: 1.5; }
+    .peek small { color: #b8c6d0; font-size: .75rem; }
+    #notice { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); z-index: 70; padding: .65rem 1rem; border-radius: 5px; background: #26343e; color: white; box-shadow: 0 3px 14px #18263025; font-size: .875rem; max-width: calc(100vw - 2rem); }
+    body.reading .reviewbar, body.reading .legend, body.reading .instruction, body.reading .annotation-strip, body.reading .fold, body.reading .gutter, body.reading .composer, body.reading .section-heading button { display: none; }
+    body.reading .anchor { background: transparent; border: 0; cursor: text; outline: 0; }
+    body.reading .scope-active > .prose { background: transparent; box-shadow: none; }
+    body.reading #document { padding-top: 1rem; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
+    @media (max-width: 760px) {
+      .topbar { padding: .8rem 1rem; } .crumb { display: none; }
+      .workspace { padding: 1rem .6rem 2rem; } .filebar { padding: 0 .3rem; } .filename small { display: none; }
+      .document-head { padding: 1.7rem 2.5rem 1.25rem; }
+      .reviewbar { padding: .6rem .8rem; } .filters button { font-size: .8125rem; padding: .3rem .5rem; }
+      .legend { padding: 1rem 2.5rem 0; gap: .65rem; } .instruction { margin: .6rem 2.5rem 1.6rem; }
+      #document { padding: 0 1.5rem 1.5rem 2.5rem; } .gutter { left: -2.1rem; width: 25px; height: 27px; }
+      .fold, .composer { margin-left: -.65rem; margin-right: -.5rem; padding: .85rem .8rem; }
+      .strip-guide { display: none; } .thread-chip { padding: .32rem .5rem; }
+      .fold-footer, .reply-form { padding-left: 0; margin-left: 0; }
+      .composer-fields { grid-template-columns: minmax(0, 1fr); gap: .6rem; }
+      .section-heading { flex-wrap: wrap; gap: .35rem .5rem; }
+      .section-heading .quiet { margin-left: 0; }
+      .form-actions small { width: 100%; margin-left: 0; }
+      .concept { font-size: .6875rem; } .brand { font-size: .875rem; }
+      table { min-width: 570px; }
+    }
+  </style>
+</head>
+<body>
+  <svg class="icon-defs" aria-hidden="true"><defs>
+    <symbol id="i-comment" viewBox="0 0 20 20"><path d="M4 3.5h12a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H8l-4.5 3v-3A1.5 1.5 0 0 1 2 13V5a1.5 1.5 0 0 1 2-1.5Z"/><path d="M6 7h8M6 10.5h5"/></symbol>
+    <symbol id="i-change" viewBox="0 0 20 20"><path d="M11.5 4H4v12h12V9M9 11l1-4 6-5 3 3-6 5-4 1Z"/></symbol>
+    <symbol id="i-file" viewBox="0 0 20 20"><path d="M5 2h6l4 4v12H5V2Z M11 2v5h4M8 11h4M8 14h4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 20 20"><path d="m4 10 4 4 8-8"/></symbol>
+  </defs></svg>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">m↓</span> markdown-package <span class="crumb">Viewer <span aria-hidden="true">/</span> Specification</span></div>
+    <span class="concept">B &nbsp; / &nbsp; INLINE FOLDS</span>
+  </header>
+  <main class="workspace">
+    <div class="filebar">
+      <div class="filename"><svg aria-hidden="true"><use href="#i-file"/></svg> docs/spec.md <small>Rendered markdown</small></div>
+      <div class="view-switch" role="group" aria-label="Document view"><button id="review-mode" aria-pressed="true">Review</button><button id="read-mode" aria-pressed="false">Read</button></div>
+    </div>
+    <div class="paper">
+      <header class="document-head">
+        <div class="eyebrow"><span></span> Format specification · v1</div>
+        <h1>3. Container: a profiled ZIP</h1>
+        <div class="document-meta"><div class="avatars" aria-hidden="true"><span class="avatar">MC</span><span class="avatar gold">JP</span><span class="avatar lilac">AL</span></div><span>3 reviewers</span><span aria-hidden="true">·</span><span id="review-summary">7 threads in this excerpt</span></div>
+      </header>
+      <div class="reviewbar" aria-label="Review controls">
+        <div class="filters" role="group" aria-label="Filter threads by state">
+          <button data-filter="all" aria-pressed="true">All threads <span class="count"></span></button>
+          <button data-filter="open" aria-pressed="false">Open <span class="count"></span></button>
+          <button data-filter="resolved" aria-pressed="false">Resolved <span class="count"></span></button>
+          <button data-filter="obsolete" aria-pressed="false">Obsolete <span class="count"></span></button>
+        </div>
+        <button id="collapse-all" class="quiet">Collapse folds</button>
+      </div>
+      <div class="legend"><span class="comment-key"><svg aria-hidden="true"><use href="#i-comment"/></svg> Comment</span><span class="change-key"><svg aria-hidden="true"><use href="#i-change"/></svg> Change request</span><span>✓ Resolved</span><span>⊘ Obsolete</span></div>
+      <p class="instruction">Hover to peek. Click a mark to open its thread. Select text or use <strong>+</strong> to leave feedback.</p>
+      <article id="document" aria-label="Specification excerpt with inline comments">
+        <div class="section-heading"><span class="section-number">3.2</span><h2>Entry order</h2><button class="quiet" data-new="entry" data-whole="true">+ Comment on paragraph</button></div>
+        <div class="block" id="block-entry" data-block="entry">
+          <p class="prose" data-source="entry">ZIP does not constrain order; this profile does, because order is what makes bounded reads cheap. A conforming producer writes:</p>
+        </div>
+        <div class="code-wrap"><div class="code-label">text &nbsp; / &nbsp; archive layout</div><pre><code>offset 0   .mdpkg/manifest.json                     stored, no data descriptor, no extra field
+           &lt;working tree of `current`&gt;              every tracked file, bytewise path order
+           .mdpkg/history.json                      container-level
+           .mdpkg/history/bindings.json             container-level, when present
+           .mdpkg/history/ranges/&lt;sha256&gt;.json      container-level, when present
+           .mdpkg/history/patches/&lt;sha256&gt;.patch    container-level, when present
+           .git/HEAD  .git/config  .git/refs/heads/main  [.git/shallow]
+           .git/objects/pack/pack-&lt;name&gt;.rev        optional
+           .git/objects/pack/pack-&lt;name&gt;.idx        stored
+           .git/objects/pack/pack-&lt;name&gt;.pack       stored, last
+           central directory
+           EOCD, comment length 0, at EOF</code></pre></div>
+        <p class="prose">Three rules are normative; the rest is the recommended order:</p>
+        <div role="list" aria-label="Normative entry order rules">
+          <div class="block rule" id="block-first" data-block="first" role="listitem"><span class="rule-number" aria-hidden="true">1.</span><p class="prose" data-source="first"><code>.mdpkg/manifest.json</code> MUST be the first entry, at offset 0.</p></div>
+          <div class="block rule" id="block-pack" data-block="pack" role="listitem"><span class="rule-number" aria-hidden="true">2.</span><p class="prose" data-source="pack">The pack MUST be the last entry, so one contiguous range from offset 0 to the pack's local header covers everything a document or section read can need. On the corpora this ordering costs 0 bytes and avoids transferring 158,993 (npm) / 3,312,561 (Rust) bytes for a full no-history browse.</p></div>
+          <div class="block rule" id="block-precede" data-block="precede" role="listitem"><span class="rule-number" aria-hidden="true">3.</span><p class="prose" data-source="precede">Every entry a current-reference resolution can need (§7.2) MUST precede the pack.</p></div>
+        </div>
+        <div class="block" id="block-reader" data-block="reader"><p class="prose" data-source="reader">Readers MUST NOT depend on any order beyond rule 1, because ordinary archive rewrites reorder entries (§3.7).</p></div>
+        <div class="section-heading"><span class="section-number">3.3</span><h2>Compression per entry</h2><button class="quiet" data-new="compression" data-whole="true">+ Comment on paragraph</button></div>
+        <div class="table-wrap"><table><thead><tr><th scope="col">Entry</th><th scope="col">Method</th></tr></thead><tbody>
+          <tr><td><code>.mdpkg/manifest.json</code></td><td><code>0</code> (stored) always in the conforming tier (§3.7): readable with no decoder</td></tr>
+          <tr><td><code>.git/objects/pack/*.pack</code>, <code>*.idx</code>, <code>*.rev</code></td><td><code>0</code> (stored) always: internal offsets stay valid; the pack's own zlib streams and deltas are its compression</td></tr>
+          <tr><td>Everything else</td><td><code>8</code> (raw DEFLATE), producer level 6, or <code>0</code> when the DEFLATE output is not smaller than the input</td></tr>
+        </tbody></table></div>
+        <div class="block" id="block-compression" data-block="compression"><p class="prose" data-source="compression">Only methods <code>0</code> and <code>8</code> are permitted. A reader that finds any other method in the central directory MUST reject the package. Level is producer policy: readers accept any valid DEFLATE stream. Each entry is decoded with a fresh decoder over exactly the extent the central directory gives, drained to completion, and checked against the directory's CRC32 and uncompressed size; the decoded-length limit comes from the directory, never from the stream.</p></div>
+        <div class="block" id="block-tradeoff" data-block="tradeoff"><p class="prose" data-source="tradeoff">Why not smaller: per-entry DEFLATE is 69.82% (npm) / 17.36% (Rust) larger than a whole-package gzip stream and 118% / 58% larger than the best solid codec measured. That gap is the price of decoding one document without decoding the package (0.1 ms and one entry instead of 50–70 ms and 9.4 MB), of ordinary ZIP tools listing the documents, and of corruption stopping at an entry boundary. The measured alternatives are in §9.</p></div>
+      </article>
+      <footer class="document-end"><span>Excerpt from docs/spec.md · §§3.2–3.3</span><span>End of excerpt</span></footer>
+    </div>
+    <footer class="demo-footer"><span>Mockup B · Example reviewers and feedback. Changes last until reload.</span><button id="reset-demo" class="quiet">Reset demo ↺</button></footer>
+  </main>
+  <div id="selection-tools" class="selection-tools" role="toolbar" aria-label="Selected text" hidden><span id="selection-label">Selected text</span><button data-selection="shrink" aria-label="Shrink selection">−</button><button data-selection="expand" aria-label="Expand selection to paragraph">＋</button><button data-selection="compose" class="primary">Leave feedback</button><button data-selection="cancel" aria-label="Dismiss selection">×</button></div>
+  <div id="peek" class="peek" role="tooltip" hidden></div>
+  <div id="notice" role="status" aria-live="polite" hidden></div>
+  <noscript><p style="padding: 1rem">Enable JavaScript to explore the sample threads and inline composer.</p></noscript>
+  <script>
+  'use strict';
+  // Self-contained design simulation. No storage, network, packages, or app imports.
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const icon = kind => `<svg aria-hidden="true"><use href="#i-${kind === 'change-request' ? 'change' : 'comment'}"/></svg>`;
+  const escapeHTML = text => String(text).replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]));
+  const sources = Object.fromEntries($$('[data-source]').map(el => [el.dataset.source, {html: el.innerHTML, text: el.textContent}]));
+  const seed = [
+    {id: '01', block: 'entry', quote: 'ZIP does not constrain order', kind: 'comment', state: 'open', messages: [{author: 'Maya Chen', initials: 'MC', time: '09:12', body: 'Helpful distinction. The archive is a ZIP; the profile adds the ordering contract.'}]},
+    {id: '02', block: 'entry', quote: 'because order is what makes bounded reads cheap', kind: 'change-request', state: 'open', messages: [{author: 'Jonah Patel', initials: 'JP', time: '09:18', body: 'Could we make “cheap” concrete here? Suggest “allows the reader to fetch a document without fetching the history pack”.'}, {author: 'Maya Chen', initials: 'MC', time: '09:24', body: 'Agreed. Keep the measured byte savings in rule 2; this sentence can explain the benefit.'}]},
+    {id: '03', block: 'entry', quote: 'bounded reads', kind: 'comment', state: 'open', messages: [{author: 'Ari Lewis', initials: 'AL', time: '09:21', body: 'Does this include local file slices as well as HTTP range requests? A small cross-reference would help.'}]},
+    {id: '04', block: 'entry', whole: true, kind: 'comment', state: 'open', messages: [{author: 'Maya Chen', initials: 'MC', time: '09:27', body: 'For this paragraph as a whole: keep producer requirements separate from reader recovery. The note below the three rules does that well.'}]},
+    {id: '05', block: 'first', quote: 'at offset 0', kind: 'comment', state: 'resolved', messages: [{author: 'Ari Lewis', initials: 'AL', time: 'Yesterday', body: 'Can we say explicitly whether a self-extracting prefix is allowed?'}, {author: 'Jonah Patel', initials: 'JP', time: '09:02', body: 'The offset-0 requirement rules it out for conforming packages. Covered by the first-entry probe in §3.1.'}]},
+    {id: '06', block: 'reader', quote: 'Readers MUST NOT depend on any order beyond rule 1', kind: 'change-request', state: 'obsolete', messages: [{author: 'Jonah Patel', initials: 'JP', time: 'Yesterday', body: 'Please state whether ordinary ZIP tools may reorder the entries.'}], note: 'The current paragraph already answers this request. Retained here as review history; no action needed.'},
+    {id: '07', block: 'compression', quote: 'the decoded-length limit comes from the directory, never from the stream', kind: 'change-request', state: 'open', messages: [{author: 'Ari Lewis', initials: 'AL', time: '09:36', body: 'Add a test vector for a stream whose output exceeds the directory’s uncompressed size. This constraint deserves an explicit example.'}]}
+  ];
+  const withRange = thread => {
+    const source = sources[thread.block].text;
+    const start = thread.whole ? 0 : source.indexOf(thread.quote);
+    if (start < 0) throw new Error(`Sample anchor missing: ${thread.id}`);
+    return {...thread, start, end: thread.whole ? source.length : start + thread.quote.length, quote: thread.whole ? source : thread.quote};
+  };
+  let threads = seed.map(thread => withRange(structuredClone(thread)));
+  let active = {entry: '02'}, filter = 'all', nextId = 8, selection = null, selectionHistory = null, composer = null;
+  let noticeTimer, hoverTimer, reading = false;
+  const draftReplies = new Map();
+  const visible = thread => filter === 'all' || thread.state === filter;
+  const findThread = id => threads.find(thread => thread.id === id);
+  const kindLabel = kind => kind === 'change-request' ? 'Change request' : 'Comment';
+  const stateLabel = state => state === 'resolved' ? '✓ Resolved' : state === 'obsolete' ? '⊘ Obsolete' : 'Open';
+  const announce = message => { clearTimeout(noticeTimer); $('#notice').textContent = message; $('#notice').hidden = false; noticeTimer = setTimeout(() => $('#notice').hidden = true, 4500); };
+
+  function paintAnchors(block) {
+    const prose = $(`[data-source="${block}"]`);
+    prose.innerHTML = sources[block].html;
+    const annotations = threads.filter(thread => thread.block === block && !thread.whole && visible(thread));
+    const draft = composer?.block === block && !composer.whole ? composer : null;
+    const walker = document.createTreeWalker(prose, NodeFilter.SHOW_TEXT);
+    const textNodes = []; let offset = 0;
+    while (walker.nextNode()) { textNodes.push({node: walker.currentNode, start: offset}); offset += walker.currentNode.length; }
+    for (const {node, start} of textNodes) {
+      const end = start + node.length;
+      const relevant = annotations.filter(thread => thread.start < end && thread.end > start);
+      const hasDraft = draft && draft.start < end && draft.end > start;
+      if (!relevant.length && !hasDraft) continue;
+      const cuts = new Set([start, end]);
+      for (const range of [...relevant, ...(hasDraft ? [draft] : [])]) { cuts.add(Math.max(start, range.start)); cuts.add(Math.min(end, range.end)); }
+      const boundaries = [...cuts].sort((a, b) => a - b), fragment = document.createDocumentFragment();
+      for (let i = 0; i < boundaries.length - 1; i++) {
+        const a = boundaries[i], b = boundaries[i + 1], text = node.textContent.slice(a - start, b - start);
+        const linked = relevant.filter(thread => thread.start <= a && thread.end >= b);
+        const selected = hasDraft && draft.start <= a && draft.end >= b;
+        if (!linked.length && !selected) { fragment.append(document.createTextNode(text)); continue; }
+        const mark = document.createElement('span'); mark.textContent = text; mark.className = 'anchor';
+        if (selected) mark.classList.add('draft-anchor');
+        if (linked.length) {
+          const kinds = new Set(linked.map(thread => thread.kind));
+          if (kinds.size > 1) mark.classList.add('mixed'); else if (kinds.has('change-request')) mark.classList.add('change');
+          if (linked.every(thread => thread.state !== 'open')) mark.classList.add(linked.some(thread => thread.state === 'resolved') ? 'resolved' : 'obsolete');
+          mark.dataset.threads = linked.map(thread => thread.id).join(' ');
+          mark.setAttribute('role', 'button'); mark.tabIndex = reading ? -1 : 0;
+          mark.setAttribute('aria-label', `${text}: ${linked.map(thread => `${kindLabel(thread.kind)} ${thread.id}, ${thread.state}`).join('; ')}. Open inline thread.`);
+          mark.setAttribute('aria-expanded', String(linked.some(thread => active[block] === thread.id)));
+          if (active[block]) mark.setAttribute('aria-controls', `fold-${block}`);
+        }
+        fragment.append(mark);
+      }
+      node.replaceWith(fragment);
+    }
+  }
+
+  function chipHTML(thread) {
+    const replies = thread.messages.length - 1;
+    return `<button class="thread-chip ${thread.kind === 'change-request' ? 'change' : ''} is-${thread.state}" data-thread="${thread.id}" aria-expanded="${active[thread.block] === thread.id}" ${active[thread.block] ? `aria-controls="fold-${thread.block}"` : ''} aria-label="${kindLabel(thread.kind)} ${thread.id}, ${thread.state}, ${replies} replies${thread.whole ? ', whole paragraph' : ''}">${icon(thread.kind)}<span>${thread.id}</span>${thread.whole ? '<span>Paragraph</span>' : ''}${replies ? `<span class="chip-state">${replies} ${replies === 1 ? 'reply' : 'replies'}</span>` : ''}${thread.state !== 'open' ? `<span class="chip-state">${stateLabel(thread.state)}</span>` : ''}</button>`;
+  }
+
+  function foldHTML(thread) {
+    const replyDraft = draftReplies.get(thread.id);
+    return `<section id="fold-${thread.block}" class="fold ${thread.kind === 'change-request' ? 'change' : ''} is-${thread.state}" aria-label="${kindLabel(thread.kind)} ${thread.id}" tabindex="-1">
+      <div class="fold-head"><div class="fold-title">${icon(thread.kind)} ${kindLabel(thread.kind)} <span class="thread-ref">#${thread.id}</span><span class="state-badge ${thread.state}">${stateLabel(thread.state)}</span></div><button class="quiet close-fold" data-close="${thread.block}" aria-label="Collapse thread ${thread.id}">×</button></div>
+      <blockquote class="target-quote">${thread.whole ? '<strong>Whole paragraph</strong> · ' : ''}${escapeHTML(thread.quote)}</blockquote>
+      ${thread.state === 'obsolete' ? `<p class="state-note">${escapeHTML(thread.note || 'Marked obsolete. Kept as review history; no action needed.')}</p>` : ''}
+      <div class="messages">${thread.messages.map((message, index) => `<div class="message"><span class="avatar ${message.initials === 'JP' ? 'gold' : message.initials === 'AL' ? 'lilac' : ''}" aria-hidden="true">${escapeHTML(message.initials)}</span><div><div class="message-meta"><strong>${escapeHTML(message.author)}</strong><time>${escapeHTML(message.time)}</time>${index ? '<span class="reply-indicator">↳ Reply</span>' : ''}</div><p class="message-body">${escapeHTML(message.body)}</p></div></div>`).join('')}</div>
+      <div class="fold-footer"><button data-reply="${thread.id}">${icon('comment')} Reply</button><label class="state-control">Thread state <select data-state="${thread.id}" aria-label="State of thread ${thread.id}">${['open','resolved','obsolete'].map(state => `<option value="${state}" ${state === thread.state ? 'selected' : ''}>${state[0].toUpperCase() + state.slice(1)}</option>`).join('')}</select></label></div>
+      <form class="reply-form" data-reply-form="${thread.id}" ${replyDraft === undefined ? 'hidden' : ''}><label for="reply-${thread.id}">Reply as Sam Taylor</label><textarea id="reply-${thread.id}" name="reply" rows="2" maxlength="4000" placeholder="Add to the conversation…" required>${escapeHTML(replyDraft || '')}</textarea><div class="form-actions"><button class="primary" type="submit">Post reply</button><button type="button" class="quiet" data-cancel-reply="${thread.id}">Cancel</button></div></form>
+    </section>`;
+  }
+
+  function renderBlock(block) {
+    const host = $(`[data-block="${block}"]`);
+    $$(':scope > .gutter, :scope > .annotation-strip, :scope > .fold', host).forEach(el => el.remove());
+    const local = threads.filter(thread => thread.block === block && visible(thread));
+    if (!local.some(thread => thread.id === active[block])) delete active[block];
+    paintAnchors(block);
+    host.classList.toggle('scope-active', !!local.find(thread => thread.id === active[block] && thread.whole));
+    const gutter = document.createElement('button'); gutter.className = `gutter${local.length ? '' : ' empty'}`;
+    if (local.length) { gutter.textContent = local.length; gutter.dataset.gutter = block; gutter.setAttribute('aria-label', `${local.length} threads on this paragraph. Open first thread.`); }
+    else { gutter.textContent = '+'; gutter.dataset.new = block; gutter.dataset.whole = 'true'; gutter.setAttribute('aria-label', 'Leave feedback on this paragraph'); }
+    host.append(gutter);
+    if (local.length) {
+      const strip = document.createElement('div'); strip.className = 'annotation-strip'; strip.setAttribute('aria-label', 'Threads on this paragraph');
+      strip.innerHTML = `<span class="strip-guide" aria-hidden="true">└</span>${local.map(chipHTML).join('')}<button class="quiet add-inline" data-new="${block}" data-whole="true" aria-label="New feedback on this paragraph">+ New</button>`;
+      host.append(strip);
+    }
+    const thread = local.find(thread => thread.id === active[block]);
+    if (thread) host.insertAdjacentHTML('beforeend', foldHTML(thread));
+    const composerNode = $(':scope > .composer', host); if (composerNode) host.append(composerNode);
+    updateHighlights();
+  }
+
+  function renderAll() {
+    Object.keys(sources).forEach(renderBlock);
+    $$('[data-filter]').forEach(button => { button.setAttribute('aria-pressed', String(button.dataset.filter === filter)); $('.count', button).textContent = threads.filter(thread => button.dataset.filter === 'all' || thread.state === button.dataset.filter).length; });
+    $('#review-summary').textContent = `${threads.length} threads in this excerpt`;
+    const authors = new Set(threads.flatMap(thread => thread.messages.map(message => message.author)));
+    $('.document-meta > span').textContent = `${authors.size} reviewers`;
+  }
+
+  function updateHighlights(peekIds = []) {
+    $$('.anchor[data-threads]').forEach(mark => mark.classList.toggle('linked', mark.dataset.threads.split(' ').some(id => peekIds.includes(id) || Object.values(active).includes(id))));
+    $$('[data-block]').forEach(host => { const local = threads.filter(thread => thread.block === host.dataset.block && visible(thread)); host.classList.toggle('scope-active', local.some(thread => thread.whole && (active[thread.block] === thread.id || peekIds.includes(thread.id)))); });
+  }
+
+  function openThread(id, toggle = true, focus = false) {
+    const thread = findThread(id); if (!thread) return;
+    dismissSelection(); hidePeek();
+    active[thread.block] = toggle && active[thread.block] === id ? undefined : id;
+    renderBlock(thread.block);
+    if (focus && active[thread.block]) $(`#fold-${thread.block}`).focus({preventScroll: true});
+    else $(`[data-thread="${id}"]`)?.focus({preventScroll: true});
+  }
+
+  function hidePeek() { clearTimeout(hoverTimer); $('#peek').hidden = true; $$('[aria-describedby="peek"]').forEach(el => el.removeAttribute('aria-describedby')); updateHighlights(); }
+  function showPeek(target) {
+    if (reading || composer || !document.getSelection().isCollapsed) return;
+    const ids = target.dataset.threads?.split(' ') || [target.dataset.thread];
+    const first = findThread(ids[0]); if (!first) return;
+    updateHighlights(ids);
+    clearTimeout(hoverTimer);
+    hoverTimer = setTimeout(() => {
+      if (!target.isConnected) return;
+      const peek = $('#peek'), message = first.messages[0];
+      peek.innerHTML = `<strong>${escapeHTML(kindLabel(first.kind))} #${first.id} · ${stateLabel(first.state)}</strong><p>${escapeHTML(message.body.length > 145 ? message.body.slice(0, 145) + '…' : message.body)}</p><small>${escapeHTML(message.author)}${ids.length > 1 ? ` · ${ids.length} overlapping threads` : ''} · Click to open</small>`;
+      peek.hidden = false; target.setAttribute('aria-describedby', 'peek');
+      const rect = target.getBoundingClientRect(), bounds = peek.getBoundingClientRect();
+      peek.style.left = `${Math.max(12, Math.min(rect.left, innerWidth - bounds.width - 12))}px`;
+      const below = rect.bottom + 9; peek.style.top = `${below + bounds.height < innerHeight - 12 ? below : Math.max(12, rect.top - bounds.height - 9)}px`;
+    }, 330);
+  }
+
+  function rangeOffsets(range) {
+    const parent = range.commonAncestorContainer.nodeType === 1 ? range.commonAncestorContainer : range.commonAncestorContainer.parentElement;
+    const prose = parent.closest('[data-source]'); if (!prose || !prose.contains(range.startContainer) || !prose.contains(range.endContainer)) return null;
+    const before = document.createRange(); before.selectNodeContents(prose); before.setEnd(range.startContainer, range.startOffset);
+    let start = before.toString().length, end = start + range.toString().length;
+    const text = sources[prose.dataset.source].text;
+    while (start < end && /\s/.test(text[start])) start++;
+    while (end > start && /\s/.test(text[end - 1])) end--;
+    return end > start ? {block: prose.dataset.source, start, end, whole: false, quote: text.slice(start, end), rect: range.getBoundingClientRect()} : null;
+  }
+
+  function nativeRange(block, start, end) {
+    const prose = $(`[data-source="${block}"]`), walker = document.createTreeWalker(prose, NodeFilter.SHOW_TEXT), range = document.createRange(); let offset = 0, began = false;
+    while (walker.nextNode()) { const node = walker.currentNode, next = offset + node.length;
+      if (!began && start <= next) { range.setStart(node, start - offset); began = true; }
+      if (began && end <= next) { range.setEnd(node, end - offset); return range; } offset = next;
+    }
+    return null;
+  }
+
+  function positionSelectionTools() {
+    if (!selection || $('#selection-tools').hidden) return;
+    const range = nativeRange(selection.block, selection.start, selection.end); if (!range) return dismissSelection();
+    const rect = range.getBoundingClientRect(), toolbar = $('#selection-tools'), bounds = toolbar.getBoundingClientRect();
+    toolbar.style.left = `${Math.max(8, Math.min(rect.left, innerWidth - bounds.width - 8))}px`;
+    toolbar.style.top = `${Math.max(8, Math.min(rect.bottom + 8, innerHeight - bounds.height - 8))}px`;
+  }
+
+  function showSelection(value) {
+    selection = value; hidePeek();
+    const tools = $('#selection-tools'); tools.hidden = false;
+    $('#selection-label').textContent = value.whole ? 'Whole paragraph' : `${value.quote.trim().split(/\s+/).length} word${value.quote.trim().split(/\s+/).length === 1 ? '' : 's'}`;
+    $('[data-selection="shrink"]').disabled = !selectionHistory;
+    $('[data-selection="expand"]').disabled = !!value.whole;
+    positionSelectionTools();
+  }
+  function dismissSelection() { selection = null; selectionHistory = null; $('#selection-tools').hidden = true; }
+
+  function startComposer(target) {
+    if (composer) { $('.composer textarea').focus(); announce('Your draft is still open. Post or cancel it before starting another.'); return; }
+    dismissSelection(); hidePeek(); document.getSelection().removeAllRanges();
+    const source = sources[target.block].text;
+    composer = {...target, start: target.whole ? 0 : target.start, end: target.whole ? source.length : target.end, quote: target.whole ? source : source.slice(target.start, target.end)};
+    renderBlock(composer.block);
+    const host = $(`[data-block="${composer.block}"]`), form = document.createElement('form');
+    form.className = 'composer'; form.setAttribute('aria-label', 'New inline feedback');
+    form.innerHTML = `<div class="composer-heading"><span>New feedback <span class="thread-ref">· ${composer.whole ? 'whole paragraph' : 'selected text'}</span></span><button type="button" class="quiet close-fold" data-cancel-compose aria-label="Cancel new feedback">×</button></div>
+      <blockquote class="composer-target">${escapeHTML(composer.quote)}</blockquote>
+      <div class="composer-fields"><label>Your name<input name="author" value="Sam Taylor" maxlength="100" autocomplete="name" required></label><fieldset class="kind-field"><legend>Feedback type</legend><div class="kind-options"><label><input type="radio" name="kind" value="comment" checked>${icon('comment')} Comment</label><label><input type="radio" name="kind" value="change-request">${icon('change-request')} Change request</label></div></fieldset></div>
+      <label for="new-feedback">Feedback</label><textarea id="new-feedback" name="body" rows="3" maxlength="4000" required placeholder="What should the author know?"></textarea>
+      <div class="form-actions"><button type="submit" class="primary" id="post-feedback">Post comment</button><button type="button" class="quiet" data-cancel-compose>Cancel</button><small>Attached here when you post · Ctrl / ⌘ + Enter</small></div>`;
+    host.append(form); $('#new-feedback').focus();
+  }
+
+  function cancelComposer() { const block = composer?.block; $('.composer')?.remove(); composer = null; if (block) { renderBlock(block); $(`[data-block="${block}"] .gutter`).focus({preventScroll: true}); } }
+
+  document.addEventListener('click', event => {
+    const target = event.target.closest('button, [data-threads]'); if (!target) return;
+    if (target.dataset.thread) return openThread(target.dataset.thread);
+    if (target.dataset.threads) {
+      if (reading || !document.getSelection().isCollapsed) return;
+      const ids = target.dataset.threads.split(' '), block = findThread(ids[0]).block;
+      const next = ids[(ids.indexOf(active[block]) + 1) % ids.length]; return openThread(next, ids.length === 1, true);
+    }
+    if (target.dataset.gutter) { const first = threads.find(thread => thread.block === target.dataset.gutter && visible(thread)); if (first) openThread(first.id); }
+    if (target.dataset.close) { const id = active[target.dataset.close]; delete active[target.dataset.close]; renderBlock(target.dataset.close); $(`[data-thread="${id}"]`)?.focus({preventScroll: true}); }
+    if (target.dataset.new) startComposer({block: target.dataset.new, whole: true});
+    if (target.hasAttribute('data-cancel-compose')) cancelComposer();
+    if (target.dataset.reply) { const id = target.dataset.reply; if (!draftReplies.has(id)) draftReplies.set(id, ''); const form = $(`[data-reply-form="${id}"]`); form.hidden = false; $('textarea', form).focus(); }
+    if (target.dataset.cancelReply) { const id = target.dataset.cancelReply; draftReplies.delete(id); $(`[data-reply-form="${id}"]`).hidden = true; $(`[data-reply="${id}"]`).focus(); }
+    if (target.dataset.filter) { filter = target.dataset.filter; dismissSelection(); hidePeek(); renderAll(); announce(`Showing ${filter === 'all' ? 'all' : filter} threads.`); }
+  });
+
+  document.addEventListener('change', event => {
+    if (event.target.dataset.state) { const thread = findThread(event.target.dataset.state); thread.state = event.target.value; renderAll(); announce(`Thread ${thread.id} marked ${thread.state}.`); const control = $(`[data-state="${thread.id}"]`) || $('[data-filter][aria-pressed="true"]'); control.focus({preventScroll: true}); }
+    if (event.target.name === 'kind' && event.target.closest('.composer')) $('#post-feedback').textContent = event.target.value === 'change-request' ? 'Post change request' : 'Post comment';
+  });
+  document.addEventListener('input', event => { const form = event.target.closest('[data-reply-form]'); if (form) draftReplies.set(form.dataset.replyForm, event.target.value); });
+  document.addEventListener('submit', event => {
+    const form = event.target; if (!form.matches('.composer, .reply-form')) return; event.preventDefault();
+    if (form.matches('.composer')) {
+      const body = form.elements.body.value.trim(), author = form.elements.author.value.trim();
+      if (!body || !author) return announce('Add your name and feedback before posting.');
+      const id = String(nextId++).padStart(2, '0'), block = composer.block;
+      const initials = author.split(/\s+/).map(word => Array.from(word)[0]).slice(0, 2).join('').toUpperCase();
+      threads.push({...composer, id, kind: form.elements.kind.value, state: 'open', messages: [{author, initials, time: 'Just now', body}]});
+      form.remove(); composer = null; active[block] = id; filter = 'all'; renderAll(); $(`#fold-${block}`).focus({preventScroll: true}); announce(`Feedback ${id} posted here on the document.`);
+    } else {
+      const body = form.elements.reply.value.trim(); if (!body) return announce('Write a reply before posting.');
+      const thread = findThread(form.dataset.replyForm); thread.messages.push({author: 'Sam Taylor', initials: 'ST', time: 'Just now', body}); draftReplies.delete(thread.id); renderAll(); $(`[data-reply="${thread.id}"]`).focus({preventScroll: true}); announce('Reply added to this thread.');
+    }
+  });
+
+  $('#document').addEventListener('pointerover', event => { const target = event.target.closest('[data-thread], [data-threads]'); if (target && !target.contains(event.relatedTarget)) showPeek(target); });
+  $('#document').addEventListener('pointerout', event => { const target = event.target.closest('[data-thread], [data-threads]'); if (target && !target.contains(event.relatedTarget)) hidePeek(); });
+  $('#document').addEventListener('focusin', event => { if (event.target.matches('[data-thread], [data-threads]')) showPeek(event.target); });
+  $('#document').addEventListener('focusout', hidePeek);
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') { hidePeek(); dismissSelection(); }
+    if (event.target.matches('[data-threads]') && ['Enter', ' '].includes(event.key)) { event.preventDefault(); event.target.click(); }
+    if ((event.ctrlKey || event.metaKey) && event.key === 'Enter' && event.target.closest('form')) { event.preventDefault(); event.target.closest('form').requestSubmit(); }
+  });
+
+  let pointerStart = null;
+  $('#document').addEventListener('pointerdown', event => { pointerStart = {x: event.clientX, y: event.clientY}; });
+  $('#document').addEventListener('pointerup', event => {
+    if (reading || composer || event.target.closest('button, input, textarea, select, .fold, .composer')) return;
+    const native = document.getSelection();
+    if (native.rangeCount && !native.isCollapsed) {
+      const range = native.getRangeAt(0), value = rangeOffsets(range);
+      if (value) { selectionHistory = null; showSelection(value); }
+      else { dismissSelection(); announce('Select text within one paragraph, or use + for a whole paragraph.'); }
+      return;
+    }
+    if (event.target.closest('[data-threads]') || !pointerStart || Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 5 || event.detail > 1) return;
+    const prose = event.target.closest('[data-source]'); if (!prose) return;
+    const caret = document.caretPositionFromPoint?.(event.clientX, event.clientY);
+    let node = caret?.offsetNode, offset = caret?.offset;
+    if (!node && document.caretRangeFromPoint) { const range = document.caretRangeFromPoint(event.clientX, event.clientY); node = range?.startContainer; offset = range?.startOffset; }
+    if (node?.nodeType !== Node.TEXT_NODE || !prose.contains(node)) return;
+    const text = node.textContent; let start = offset, end = offset;
+    while (start > 0 && /[\p{L}\p{N}_'-]/u.test(text[start - 1])) start--;
+    while (end < text.length && /[\p{L}\p{N}_'-]/u.test(text[end])) end++;
+    if (start === end) return;
+    const range = document.createRange(); range.setStart(node, start); range.setEnd(node, end); native.removeAllRanges(); native.addRange(range);
+    const value = rangeOffsets(range); if (value) { selectionHistory = null; showSelection(value); }
+  });
+  // Keyboard selections reach the same inline authoring path.
+  $('#document').addEventListener('keyup', event => { if (!event.shiftKey || reading || composer) return; const native = document.getSelection(); if (native.rangeCount && !native.isCollapsed) { const value = rangeOffsets(native.getRangeAt(0)); if (value) { selectionHistory = null; showSelection(value); } } });
+  $('#selection-tools').addEventListener('pointerdown', event => event.preventDefault());
+  $('#selection-tools').addEventListener('click', event => {
+    const action = event.target.closest('[data-selection]')?.dataset.selection; if (!action || !selection) return;
+    if (action === 'cancel') { dismissSelection(); document.getSelection().removeAllRanges(); }
+    if (action === 'compose') startComposer({...selection});
+    if (action === 'expand') { selectionHistory = {...selection}; const text = sources[selection.block].text; showSelection({...selection, start: 0, end: text.length, quote: text, whole: true}); }
+    if (action === 'shrink' && selectionHistory) { const previous = selectionHistory; selectionHistory = null; showSelection(previous); }
+    if (selection && ['expand', 'shrink'].includes(action)) { const native = document.getSelection(); native.removeAllRanges(); native.addRange(nativeRange(selection.block, selection.start, selection.end)); }
+  });
+  document.addEventListener('pointerdown', event => { if (!event.target.closest('#document, #selection-tools')) dismissSelection(); });
+  document.addEventListener('scroll', () => { hidePeek(); positionSelectionTools(); }, true);
+  window.addEventListener('resize', () => { hidePeek(); positionSelectionTools(); });
+
+  $('#collapse-all').addEventListener('click', () => { active = {}; hidePeek(); dismissSelection(); renderAll(); announce('All threads collapsed. Click any mark to reopen.'); });
+  function setReadMode(value) { reading = value; document.body.classList.toggle('reading', value); $('#read-mode').setAttribute('aria-pressed', String(value)); $('#review-mode').setAttribute('aria-pressed', String(!value)); dismissSelection(); hidePeek(); $$('.anchor[data-threads]').forEach(mark => { mark.tabIndex = value ? -1 : 0; if (value) mark.removeAttribute('role'); else mark.setAttribute('role', 'button'); }); }
+  $('#read-mode').addEventListener('click', () => setReadMode(true));
+  $('#review-mode').addEventListener('click', () => setReadMode(false));
+  $('#reset-demo').addEventListener('click', () => { $('.composer')?.remove(); composer = null; threads = seed.map(thread => withRange(structuredClone(thread))); active = {entry: '02'}; filter = 'all'; nextId = 8; draftReplies.clear(); setReadMode(false); renderAll(); announce('Demo reset to the seven sample threads.'); });
+  renderAll();
+  </script>
+</body>
+</html>
