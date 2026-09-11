@@ -2,7 +2,7 @@
   <!-- Bump this one version for the coordinated mdpkg, Reader and Core release.
        Reviews shares the build version but is not published by this workflow. -->
   <PropertyGroup>
-    <Version>0.1.0-preview.2</Version>
+    <Version>0.1.0-preview.3</Version>
     <Authors>markdown-package contributors</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/michal-ciechan/markdown-package</PackageProjectUrl>
