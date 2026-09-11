@@ -30,6 +30,60 @@ path turns absolute or keeps pointing into `dist/`.
 
 ## Review authoring and export (CARD-0038)
 
+### Cross-reference previews (CARD-0044)
+
+Write ordinary inline or reference-style Markdown links, for example
+`[retention](reference/storage.md#retention-policy)`. Relative paths start at the
+source document's directory, including links inside a preview. A leading `/`
+starts at the package root. An empty destination, `#`, or a path without a
+fragment selects the whole document. `.md` and `.markdown` links open previews.
+Paths retain exact case and Unicode spelling; queries, reserved regions and
+traversal above the package root are rejected.
+
+Click, tap, Enter or Space opens a contextual card without navigating or changing
+review drafts. On narrow screens the card sits at the bottom. Escape or Close
+restores focus to the original phrase; outside pointer/focus dismisses it.
+**Open section/document** navigates explicitly, and **Back to reference** restores
+the source document, selected scope, scroll and originating link. Links inside
+the preview replace the single card. External links remain ordinary links and
+have no fetched preview. Source mode stays literal Markdown.
+
+Relative links name current locations; they do not follow renames. Fragments use
+lowercased displayed heading text, removing punctuation/emoji and replacing
+whitespace with `-`. Repeated bases receive `-1`, `-2`, etc. Lookup is case
+sensitive. Collisions such as `Foo`, `Foo`, `Foo-1`, empty slug bases and nested
+headings cannot establish a unique canonical section: open the document and use
+the section picker. The legacy `mdpkg-section-N` alias remains available.
+
+For a durable link, select its target with the section picker, choose
+**Reference to selected section**, edit **Link label**, then **Copy Markdown link**.
+**Copy reference** copies just the URI. Both use the ledger's live root and retain
+`expect`; a confirmed editorial move can therefore follow to another document.
+“Content changed since this link was copied” is advisory for a live target.
+Retired or unconfirmed identities never fall back to similarly named headings.
+Details preserve the resolver's status/reason and any supplied successor roots.
+Copying does not rewrite source or update a link's historical digest. A link
+inserted into its own scope can consequently carry a changed-source notice.
+
+Preview reads are local, with a 2 MiB compressed/decoded document cap, enforced
+before reading and during decoding. Oversized location-only file links can still
+offer **Open document**; identity links require an established live scope before
+offering Open. Rich previews use the full document's reference definitions and
+canonical section boundaries. A display block crossing a boundary uses labelled
+canonical source. Content is limited to 16,000 UTF-16 units at whole-block
+boundaries, with bounded source excerpts for oversized first blocks. Raw HTML
+and automatic images stay disabled. Preview tables have independent controls.
+
+Only the active document and one preview target/model are retained. One preview
+lookup runs at a time; only the newest pending activation survives. Preview text
+can be copied, but reviewing it requires Open section first. The card is outside
+the article used for exact source-selection verification. Preview-only actions
+read no Git payloads and change no URL history. Cross-package loading, historical
+previews, hover activation and optional CLI link linting (Slice D) are deferred.
+
+Automated acceptance uses Chromium, including 390px touch emulation and a 200%
+CSS zoom check. Physical iOS and native browser zoom remain manual checks.
+
 ### Tables (CARD-0045)
 
 GFM pipe tables render with a header row, left/center/right column alignment,
@@ -233,7 +287,7 @@ deployable assets. Redirected `dist/` directories are rejected before deletion.
 - Default per-entry decoded/compressed ceilings are 64 MiB, with a 16 MiB central
   directory ceiling and 1 MiB manifest ceiling. Override through
   `openPackage(blob, {limits: {...}})` when integrating. These are viewer resource
-  limits, not format limits. The active document and one ledger are cached;
+  limits, not format limits. The active document, one preview target and one ledger are cached;
   opening further documents does not retain their predecessors.
 - Name uniqueness uses host-engine NFC (`String.prototype.normalize`), followed
   by Unicode 17.0.0 **simple** case folding (C + S mappings, no full or Turkic
@@ -262,7 +316,8 @@ identity. A malformed ledger invalidates resolution instead of falling back to
 the default root. Section source positions now support the review selection
 mapping described above.
 
-Current references without `expect` navigate directly to `loc`. They do not
+Current references without `expect` select `loc` with navigation-only semantics (rendered
+links preview it; the addressing form navigates). They do not
 consult coverage or the override ledger, verify the root, or compute/compare a
 scoped digest. The UI reports navigation only, with no reviewed-state verdict;
 a missing document or section produces a navigation error. Namespace, profile,

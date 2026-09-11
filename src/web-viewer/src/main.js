@@ -3,6 +3,9 @@ import {documentList} from './ui/documents.js';
 import {readerView} from './ui/reader-view.js';
 import {reviewView} from './ui/review-view.js';
 import {referenceFor} from './address/resolve.js';
+import {destination, markdownLink} from './links/destination.js';
+import {referencePreview} from './ui/reference-preview.js';
+import {displayFor} from './links/display.js';
 import './styles.css';
 
 const app = document.querySelector('#app');
@@ -23,11 +26,15 @@ app.innerHTML = `
     <div id="browser" class="browser" hidden>
       <nav id="documents" aria-label="Package documents"></nav>
       <section class="reader-panel" aria-label="Document reader">
+        <button id="back-reference" type="button" hidden>Back to reference</button>
         <div id="reader"></div>
         <div id="reference-tools" hidden>
           <button id="make-reference" type="button">Reference to selected section</button>
           <label id="generated-label" hidden>Reference <textarea id="generated-reference" rows="3" readonly spellcheck="false"></textarea></label>
           <button id="copy-reference" type="button" hidden>Copy reference</button>
+          <label id="link-label-control" hidden>Link label <input id="link-label" type="text"></label>
+          <button id="copy-markdown" type="button" hidden>Copy Markdown link</button>
+          <label id="generated-markdown-label" hidden>Markdown link <textarea id="generated-markdown" rows="3" readonly spellcheck="false"></textarea></label>
         </div>
         <section id="review" aria-label="Review authoring"></section>
       </section>
@@ -36,12 +43,14 @@ app.innerHTML = `
 
 const element = id => document.getElementById(id);
 const activity = element('activity'), resolution = element('resolution');
-let pkg, currentDocument, currentScope, openGeneration = 0, navigationGeneration = 0;
+let pkg, currentDocument, currentScope, openGeneration = 0, navigationGeneration = 0, returnLocation;
 const documents = documentList(element('documents'), name => showDocument(name));
-const reader = readerView(element('reader'), href => navigate(href), scope => {
+const preview = referencePreview({getPackage: () => pkg, onOpen: openPreview,
+  onBrowse: () => element('documents').querySelector('button')?.focus(), onOrdinary: navigate});
+const reader = readerView(element('reader'), (...args) => preview.activate(...args), scope => {
   currentScope = scope;
   clearGeneratedReference();
-}, () => element('review').querySelector('[data-action="text"]').click());
+}, () => element('review').querySelector('[data-action="text"]').click(), () => preview.close(false));
 const reviews = reviewView(element('review'), whole => ({model: currentDocument, anchor: reader.anchor(whole)}), async locator => {
   await showDocument(locator[1]);
   const scope = currentDocument?.path === locator[1] && currentDocument.find(locator);
@@ -56,6 +65,10 @@ function report(message, error = false) {
   activity.className = error ? 'error' : '';
 }
 function clearGeneratedReference() {
+  element('link-label-control').hidden = true;
+  element('copy-markdown').hidden = true;
+  element('generated-markdown-label').hidden = true;
+  element('generated-markdown').value = '';
   element('generated-label').hidden = true;
   element('copy-reference').hidden = true;
   element('generated-reference').value = '';
@@ -69,6 +82,7 @@ function displayDocument(model, scope) {
 
 async function receive(blob) {
   if (reviews.hasUnsaved() && !window.confirm('This tab has review feedback that has not been downloaded. Discard it and open another package?')) return;
+  preview.close(false); returnLocation = undefined; element('back-reference').hidden = true;
   const generation = ++openGeneration;
   navigationGeneration++;
   pkg = undefined;
@@ -118,6 +132,7 @@ async function receive(blob) {
 
 async function showDocument(name, fragment) {
   if (!pkg) return;
+  preview.close(false);
   const opened = pkg, generation = ++navigationGeneration;
   resolution.className = '';
   resolution.textContent = '';
@@ -142,6 +157,7 @@ async function showDocument(name, fragment) {
 
 async function resolve(value) {
   if (!pkg) return;
+  preview.close(false);
   const opened = pkg, generation = ++navigationGeneration;
   resolution.className = '';
   resolution.textContent = 'Resolving…';
@@ -164,26 +180,35 @@ async function resolve(value) {
   }
 }
 
-async function navigate(href) {
-  if (href.startsWith('mdpkg:')) { element('reference').value = href; await resolve(href); return; }
-  if (!currentDocument) return;
+async function navigate(href, source = currentDocument?.path) {
+  if (!source) return;
   try {
-    // Package-relative navigation is a convenience, not review evidence.
-    if (href.startsWith('//')) throw new Error('Protocol-relative external links are not package paths');
-    const hash = href.indexOf('#');
-    const path = decodeURIComponent(hash < 0 ? href : href.slice(0, hash));
-    const fragment = hash < 0 ? '' : decodeURIComponent(href.slice(hash + 1));
-    if (path.includes('?') || path.includes('\\') || /^[A-Za-z][A-Za-z0-9+.-]*:/.test(path)) throw new Error('Unsupported package link');
-    const parts = path.startsWith('/') ? [] : currentDocument.path.split('/').slice(0, -1);
-    if (!path) { if (fragment && !reader.fragment(fragment)) throw new Error('Heading fragment not found'); return; }
-    for (const part of path.split('/')) {
-      if (!part || part === '.') continue;
-      if (part === '..') { if (!parts.length) throw new Error('Link leaves the package'); parts.pop(); }
-      else parts.push(part);
-    }
-    await showDocument(parts.join('/'), fragment);
+    const target = destination(source, href);
+    if (target.kind === 'identity') { element('reference').value = href; await resolve(href); }
+    else if (target.path) await showDocument(target.path, target.fragment);
   } catch (error) { report(error.message, true); }
 }
+
+async function openPreview(result, origin) {
+  const opened = pkg;
+  const from = reader.capture(origin);
+  const path = result.document?.path ?? result.target?.path;
+  if (!path) return;
+  const loading = showDocument(path), generation = navigationGeneration;
+  await loading;
+  if (pkg !== opened || generation !== navigationGeneration || currentDocument?.path !== path) return;
+  const scope = result.scope && currentDocument.find(result.scope.locator);
+  if (scope) reader.select(scope);
+  returnLocation = from; element('back-reference').hidden = false;
+}
+element('back-reference').addEventListener('click', async () => {
+  const state = returnLocation, opened = pkg;
+  if (!state) return;
+  const loading = showDocument(state.path), generation = navigationGeneration;
+  await loading;
+  if (pkg !== opened || generation !== navigationGeneration || currentDocument?.path !== state.path) return;
+  reader.restore(state); returnLocation = undefined; element('back-reference').hidden = true;
+});
 
 // Deliberately no accept attribute: the iOS picker must include public.data.
 element('package-file').addEventListener('change', event => {
@@ -216,6 +241,9 @@ element('make-reference').addEventListener('click', async () => {
     element('generated-reference').value = reference;
     element('generated-label').hidden = false;
     element('copy-reference').hidden = false;
+    element('link-label').value = (displayFor(model).headings.find(h => h.scope === scope)?.title ?? scope.title).replace(/\n/g, ' ');
+    element('link-label-control').hidden = false;
+    element('copy-markdown').hidden = false;
   } catch (error) { if (opened === pkg) report('Could not create reference: ' + error.message, true); }
 });
 element('copy-reference').addEventListener('click', async () => {
@@ -224,5 +252,15 @@ element('copy-reference').addEventListener('click', async () => {
     element('generated-reference').focus();
     element('generated-reference').select();
     report('Select and copy the reference from the text box.');
+  }
+});
+
+element('copy-markdown').addEventListener('click', async () => {
+  const text = markdownLink(element('link-label').value, element('generated-reference').value);
+  try { await navigator.clipboard.writeText(text); report('Markdown link copied.'); }
+  catch {
+    element('generated-markdown-label').hidden = false;
+    const field = element('generated-markdown'); field.value = text; field.focus(); field.select();
+    report('Select and copy the Markdown link from the text box.');
   }
 });

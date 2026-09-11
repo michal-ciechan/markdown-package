@@ -12,7 +12,7 @@ export async function openPackage(blob, options = {}) {
     .slice().sort((a, b) => byteOrder(a.name, b.name));
   // Retain only the active document. Navigation must not grow memory with every
   // file opened, and current addressing reads zero Git bytes.
-  let cachedName, cachedDocument, ledger;
+  let cachedName, cachedDocument, ledger, previewName, previewDocument;
   const pkg = {
     ...container, documents, name: blob.name || 'Untitled package',
     document(name) {
@@ -27,6 +27,25 @@ export async function openPackage(blob, options = {}) {
       return cachedDocument;
     },
     ledger() { return ledger ??= readLedger(container); },
+    previewDocument(name) {
+      const entry = documents.find(entry => entry.name === name), maximum = 2 * 1024 * 1024;
+      if (!entry) throw new Error('Not a package document: ' + name);
+      if (!/\.(md|markdown)$/i.test(name)) {
+        const error = new Error('Preview is available for Markdown documents.'); error.code = 'preview-type'; throw error;
+      }
+      if (entry.compressedSize > maximum || entry.uncompressedSize > maximum) {
+        const error = new Error('Document too large to preview'); error.code = 'preview-size'; throw error;
+      }
+      if (name === cachedName) return cachedDocument;
+      if (previewName !== name) {
+        previewName = name;
+        const pending = container.read(name, maximum).then(bytes => outline(bytes, name));
+        previewDocument = pending;
+        pending.catch(() => { if (previewDocument === pending) pkg.releasePreview(); });
+      }
+      return previewDocument;
+    },
+    releasePreview() { previewName = undefined; previewDocument = undefined; },
     resolve(reference, context) { return resolveReference(pkg, reference, context); },
   };
   return pkg;

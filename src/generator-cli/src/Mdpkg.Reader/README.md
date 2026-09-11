@@ -32,6 +32,23 @@ Markdown view and ledger, computes file corroboration, and caches scopes on dema
 Snapshot data remains usable after the input is disposed. No historical Git tree is
 materialized; partial correspondence to a different reviewed commit returns history-required.
 
+For loose author links, `snapshot.ResolveReference(uri, cancellationToken)` parses
+strict v2 `mdpkg://` URIs and returns `LooseReferenceResolution`. Its `Category`
+distinguishes `navigation`, `identity` and `capability`; `Status`/`Reason` retain
+the browser's evidence outcomes, and `Scope` is present only for a live target.
+Omitting `expect` selects the current locator without ledger/identity claims.
+With `expect`, partial coverage always returns `unconfirmed /
+incomplete-correspondence`, even when `at` equals current. A historical `at`,
+commit, diff or hunk URI returns `unsupported / history-reader-required` and
+never falls forward. Retirement successor roots are not locators. The existing
+review-oriented `Resolve(PackageIdentity, ...)` contract is unchanged.
+
+Shared executable cases are in `docs/spec/link-fixtures.json`. This API works
+on the already bounded snapshot; it does not change snapshot loading to a
+single-document read, implement relative Markdown fragment lookup, or generate
+author links. `SourceScope.Root` remains a default root; authoring must select
+the live ledger root (the browser's `referenceFor` does this).
+
 Streams remain caller-owned. Reading starts at the current position and advances it.
 Non-seekable input is spooled to a private, size-limited, delete-on-close file; dispose
 the archive to release it. Failed opens and cancellation remove spools. Archive instances

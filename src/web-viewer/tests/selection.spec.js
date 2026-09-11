@@ -145,7 +145,7 @@ test('inline word boundaries cross formatting; links and blank space retain nati
   expect(await selected(page)).toBe('cooperate');
   await toolbar(page).getByRole('button', {name: 'Leave comment'}).click();
   expect(await page.evaluate(() => window.commentQuote)).toBe('co*oper*ate');
-  await page.getByRole('link', {name: 'Follow link'}).click();
+  await page.getByRole('button', {name: 'Follow link'}).click();
   expect(await page.evaluate(() => window.navigated)).toBe('other.md');
   await expect(toolbar(page)).toBeHidden();
   const box = await page.locator('.markdown > p').first().boundingBox();

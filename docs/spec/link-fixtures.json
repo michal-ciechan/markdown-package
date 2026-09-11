@@ -1,0 +1,941 @@
+{
+  "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+  "current": "sha1-4d22851602b61c912a1616962e838147a7777fbf",
+  "cases": [
+    {
+      "name": "unchanged",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "survives",
+      "reason": "same-source",
+      "live": [
+        "section",
+        "guide.md",
+        [
+          [
+            "# Guide",
+            0
+          ],
+          [
+            "## Setup",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "body-edit",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nNew body.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "flagged-changed",
+      "reason": "source-changed",
+      "live": [
+        "section",
+        "guide.md",
+        [
+          [
+            "# Guide",
+            0
+          ],
+          [
+            "## Setup",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "heading-move",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Installation\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {
+        "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+          "to": [
+            "section",
+            "guide.md",
+            [
+              [
+                "# Guide",
+                0
+              ],
+              [
+                "## Installation",
+                0
+              ]
+            ]
+          ]
+        }
+      },
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "flagged-changed",
+      "reason": "source-changed",
+      "live": [
+        "section",
+        "guide.md",
+        [
+          [
+            "# Guide",
+            0
+          ],
+          [
+            "## Installation",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "ancestor-move",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Manual\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {
+        "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+          "to": [
+            "section",
+            "guide.md",
+            [
+              [
+                "# Manual",
+                0
+              ],
+              [
+                "## Setup",
+                0
+              ]
+            ]
+          ]
+        }
+      },
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "survives",
+      "reason": "same-source",
+      "live": [
+        "section",
+        "guide.md",
+        [
+          [
+            "# Manual",
+            0
+          ],
+          [
+            "## Setup",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "file-move",
+      "documents": {
+        "other.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {
+        "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+          "to": [
+            "section",
+            "other.md",
+            [
+              [
+                "# Guide",
+                0
+              ],
+              [
+                "## Setup",
+                0
+              ]
+            ]
+          ]
+        }
+      },
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "survives",
+      "reason": "same-source",
+      "live": [
+        "section",
+        "other.md",
+        [
+          [
+            "# Guide",
+            0
+          ],
+          [
+            "## Setup",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "cross-file-move",
+      "documents": {
+        "reference/storage.md": "Preamble.\n\n# Guide\n\n## Installation\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {
+        "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+          "to": [
+            "section",
+            "reference/storage.md",
+            [
+              [
+                "# Guide",
+                0
+              ],
+              [
+                "## Installation",
+                0
+              ]
+            ]
+          ]
+        }
+      },
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "flagged-changed",
+      "reason": "source-changed",
+      "live": [
+        "section",
+        "reference/storage.md",
+        [
+          [
+            "# Guide",
+            0
+          ],
+          [
+            "## Installation",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "move-back",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {
+        "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+          "to": [
+            "section",
+            "guide.md",
+            [
+              [
+                "# Guide",
+                0
+              ],
+              [
+                "## Setup",
+                0
+              ]
+            ]
+          ]
+        }
+      },
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "survives",
+      "reason": "same-source",
+      "live": [
+        "section",
+        "guide.md",
+        [
+          [
+            "# Guide",
+            0
+          ],
+          [
+            "## Setup",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "deleted",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {
+        "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+          "dead": "deleted",
+          "next": [
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          ]
+        }
+      },
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "flagged-changed",
+      "reason": "deleted",
+      "live": null
+    },
+    {
+      "name": "split",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {
+        "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+          "dead": "split",
+          "next": [
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          ]
+        }
+      },
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "flagged-changed",
+      "reason": "split",
+      "live": null
+    },
+    {
+      "name": "merge",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {
+        "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+          "dead": "merge",
+          "next": [
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          ]
+        }
+      },
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "flagged-changed",
+      "reason": "merge",
+      "live": null
+    },
+    {
+      "name": "unknown",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "partial",
+      "ledger": {
+        "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+          "unknown": "unknown"
+        }
+      },
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "unconfirmed",
+      "reason": "incomplete-correspondence",
+      "live": null
+    },
+    {
+      "name": "missing-override",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "unconfirmed",
+      "reason": "missing-override",
+      "live": null
+    },
+    {
+      "name": "absent-target",
+      "documents": {},
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "unconfirmed",
+      "reason": "possibly-renamed-moved-or-deleted",
+      "live": null
+    },
+    {
+      "name": "reserved-slot",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb": {
+          "to": [
+            "section",
+            "guide.md",
+            [
+              [
+                "# Guide",
+                0
+              ],
+              [
+                "## Setup",
+                0
+              ]
+            ]
+          ]
+        }
+      },
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "unconfirmed",
+      "reason": "reserved-slot",
+      "live": null
+    },
+    {
+      "name": "reserved-birth",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {
+        "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+          "dead": "deleted"
+        },
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb": {
+          "to": [
+            "section",
+            "guide.md",
+            [
+              [
+                "# Guide",
+                0
+              ],
+              [
+                "## Setup",
+                0
+              ]
+            ]
+          ]
+        }
+      },
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "survives",
+      "reason": "same-source",
+      "live": [
+        "section",
+        "guide.md",
+        [
+          [
+            "# Guide",
+            0
+          ],
+          [
+            "## Setup",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "partial",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "partial",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "unconfirmed",
+      "reason": "incomplete-correspondence",
+      "live": null
+    },
+    {
+      "name": "partial-current-at",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "partial",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K&at=sha1-4d22851602b61c912a1616962e838147a7777fbf",
+      "category": "identity",
+      "status": "unconfirmed",
+      "reason": "incomplete-correspondence",
+      "live": null
+    },
+    {
+      "name": "current-at",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K&at=sha1-4d22851602b61c912a1616962e838147a7777fbf",
+      "category": "identity",
+      "status": "survives",
+      "reason": "same-source",
+      "live": [
+        "section",
+        "guide.md",
+        [
+          [
+            "# Guide",
+            0
+          ],
+          [
+            "## Setup",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "historical-at",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K&at=sha1-2222222222222222222222222222222222222222",
+      "category": "capability",
+      "status": "unsupported",
+      "reason": "history-reader-required",
+      "live": null
+    },
+    {
+      "name": "locator-only",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "partial",
+      "ledger": {
+        "b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984": {
+          "dead": "deleted"
+        }
+      },
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "navigation",
+      "status": null,
+      "reason": "current-location",
+      "live": [
+        "section",
+        "guide.md",
+        [
+          [
+            "# Guide",
+            0
+          ],
+          [
+            "## Setup",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "empty-expect",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "invalid-expect",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=bad&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "duplicate",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "encoded-duplicate",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K&%65xpect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "unknown-param",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K&preview=true",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "version",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v3/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "bad-percent",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K%",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "profile",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=other&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "kind-disagreement",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/document/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "reserved-locator",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiLmdpdC9hLm1kIixbWyIjIEd1aWRlIiwwXSxbIiMjIFNldHVwIiwwXV1dCg",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "locator-type",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiw0MixbWyIjIEEiLDBdXV0K",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "heading-cr",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgQVxyIiwwXV1dCg",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "trail-depth",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgQSIsMF0sWyIjIEEiLDBdLFsiIyBBIiwwXSxbIiMgQSIsMF0sWyIjIEEiLDBdLFsiIyBBIiwwXSxbIiMgQSIsMF1dXQo",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "occurrence-type",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgQSIsIjAiXV1dCg",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "locator-traversal",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiLi4vZ3VpZGUubWQiLFtbIiMgQSIsMF1dXQo",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "malformed-reference",
+      "live": null
+    },
+    {
+      "name": "foreign",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
+      "category": "identity",
+      "status": "invalidated",
+      "reason": "wrong-lineage",
+      "live": null
+    },
+    {
+      "name": "commit",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/commit/sha1-4d22851602b61c912a1616962e838147a7777fbf",
+      "category": "capability",
+      "status": "unsupported",
+      "reason": "history-reader-required",
+      "live": null
+    },
+    {
+      "name": "diff",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/diff/sha1-4d22851602b61c912a1616962e838147a7777fbf..sha1-2222222222222222222222222222222222222222?document=b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984&profile=git-myers-u3-v1",
+      "category": "capability",
+      "status": "unsupported",
+      "reason": "history-reader-required",
+      "live": null
+    },
+    {
+      "name": "hunk",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/hunk/sha1-4d22851602b61c912a1616962e838147a7777fbf..sha1-2222222222222222222222222222222222222222?document=b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984&profile=git-myers-u3-v1&patch=6b8944751385e3581ad3cb80e82d261a28d96fa8623d51a94f642927332406c8&ordinal=0",
+      "category": "capability",
+      "status": "unsupported",
+      "reason": "history-reader-required",
+      "live": null
+    },
+    {
+      "name": "document",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/document/a859a7e3a78cebcc72622e85cd4dc6e101ec516a6eca6b497b2765a459e9dc57?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=c40e51d47ea60768eca829f372f056d9a8e5a00cd03951ade7b6155e17bbab94&loc=WyJkb2N1bWVudCIsImd1aWRlLm1kIixbXV0K",
+      "category": "identity",
+      "status": "survives",
+      "reason": "same-source",
+      "live": [
+        "document",
+        "guide.md",
+        []
+      ]
+    },
+    {
+      "name": "preamble",
+      "documents": {
+        "guide.md": "Preamble.\n\n# Guide\n\n## Setup\n\nInstall here.\n"
+      },
+      "coverage": "complete",
+      "ledger": {},
+      "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/1cee2a9e65a42b7a64ecc9bd3325b60e94d40e6b5064122e73381800ed580bca?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=17f68459d7011004b591fc80a35286bbe0606c17bb0cfacb210f49220765013a&loc=WyJwcmVhbWJsZSIsImd1aWRlLm1kIixbXV0K",
+      "category": "identity",
+      "status": "survives",
+      "reason": "same-source",
+      "live": [
+        "preamble",
+        "guide.md",
+        []
+      ]
+    }
+  ],
+  "destinations": [
+    {
+      "source": "guide.md",
+      "href": "reference/storage.md#retention-policy",
+      "path": "reference/storage.md",
+      "fragment": "retention-policy"
+    },
+    {
+      "source": "reference/storage.md",
+      "href": "../guide.md",
+      "path": "guide.md",
+      "fragment": ""
+    },
+    {
+      "source": "reference/storage.md",
+      "href": "/guide.md#Guide",
+      "path": "guide.md",
+      "fragment": "Guide"
+    },
+    {
+      "source": "guide.md",
+      "href": "",
+      "path": "guide.md",
+      "fragment": ""
+    },
+    {
+      "source": "guide.md",
+      "href": "#",
+      "path": "guide.md",
+      "fragment": ""
+    },
+    {
+      "source": "guide.md",
+      "href": "#retry-limits",
+      "path": "guide.md",
+      "fragment": "retry-limits"
+    },
+    {
+      "source": "guide.md",
+      "href": "caf%C3%A9%20notes.md#%F0%9F%98%80",
+      "path": "café notes.md",
+      "fragment": "😀"
+    },
+    {
+      "source": "reference/storage.md",
+      "href": "%2e%2e%2fguide.md",
+      "path": "guide.md",
+      "fragment": ""
+    },
+    {
+      "source": "guide.md",
+      "href": "../a.md",
+      "invalid": true
+    },
+    {
+      "source": "guide.md",
+      "href": "%2e%2e/a.md",
+      "invalid": true
+    },
+    {
+      "source": "guide.md",
+      "href": "%2f%2fevil/a.md",
+      "invalid": true
+    },
+    {
+      "source": "guide.md",
+      "href": "//evil/a.md",
+      "invalid": true
+    },
+    {
+      "source": "guide.md",
+      "href": "a%5cb.md",
+      "invalid": true
+    },
+    {
+      "source": "guide.md",
+      "href": ".Git/a.md",
+      "invalid": true
+    },
+    {
+      "source": "guide.md",
+      "href": "%2emdpkg/a.md",
+      "invalid": true
+    },
+    {
+      "source": "guide.md",
+      "href": "a.md?q=x",
+      "invalid": true
+    },
+    {
+      "source": "guide.md",
+      "href": "a.md%3fq=x",
+      "invalid": true
+    },
+    {
+      "source": "guide.md",
+      "href": "a%00.md",
+      "invalid": true
+    },
+    {
+      "source": "guide.md",
+      "href": "%zz",
+      "invalid": true
+    },
+    {
+      "source": "guide.md",
+      "href": "a.md#%zz",
+      "invalid": true
+    },
+    {
+      "source": "guide.md",
+      "href": "javascript:alert(1)",
+      "invalid": true
+    }
+  ]
+}

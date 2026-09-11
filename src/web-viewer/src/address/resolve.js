@@ -35,7 +35,7 @@ export async function readLedger(container) {
 // Current-view evidence only. Historical refs are parsed strictly, then return
 // an app capability result outside the §6.6 evidence statuses. A later history
 // reader must prove snapshot availability, never fall forward to current.
-export async function resolveReference(pkg, value, {observedAt} = {}) {
+export async function resolveReference(pkg, value, {observedAt, document: readDocument = name => pkg.document(name), propagateReadErrors = false} = {}) {
   let ref;
   try { ref = parseReference(value); }
   catch (error) { return {status: 'invalidated', reason: 'malformed-reference', detail: error.message}; }
@@ -54,11 +54,12 @@ export async function resolveReference(pkg, value, {observedAt} = {}) {
       if (!pkg.documents.some(document => document.name === locator[1])) {
         return {navigation: true, detail: 'Document not found: ' + locator[1]};
       }
-      const document = await pkg.document(locator[1]);
+      const document = await readDocument(locator[1]);
       const scope = document.find(locator);
       if (!scope) return {navigation: true, detail: 'Section not found in ' + locator[1]};
       return {navigation: true, locator, document, scope};
     } catch (error) {
+      if (propagateReadErrors) throw error;
       return {navigation: true, detail: error.message};
     }
   }
@@ -79,10 +80,15 @@ export async function resolveReference(pkg, value, {observedAt} = {}) {
     }
     const locator = override?.to ?? ref.locator;
     validateLocator(locator, ref.kind);
+    if (!override && [...ledger.values()].some(entry => entry.to && canonicalJson(entry.to) === canonicalJson(locator))) {
+      return {status: 'unconfirmed', reason: 'reserved-slot'};
+    }
     if (!pkg.documents.some(document => document.name === locator[1])) {
       return {status: 'unconfirmed', reason: 'possibly-renamed-moved-or-deleted'};
     }
-    const document = await pkg.document(locator[1]);
+    let document;
+    try { document = await readDocument(locator[1]); }
+    catch (error) { if (propagateReadErrors) return {resourceError: error}; throw error; }
     const scope = document.find(locator);
     if (!scope) return {status: 'unconfirmed', reason: 'possibly-renamed-moved-or-deleted'};
     const actualDigest = await document.digest(scope);

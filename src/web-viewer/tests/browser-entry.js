@@ -5,3 +5,8 @@ export {openPackage} from '../src/inbound/open.js';
 export {readComments} from '../src/review/comments.js';
 export {reviewView} from '../src/ui/review-view.js';
 export {nextExpansion} from '../src/ui/selection-ranges.js';
+
+export {referencePreview} from '../src/ui/reference-preview.js';
+export {resolveDestination} from '../src/links/resolve.js';
+export {writePackage} from '../src/container/writer.js';
+export {referenceFor} from '../src/address/resolve.js';

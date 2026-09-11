@@ -64,6 +64,15 @@ Console.WriteLine(archive.Identity.Current);
             examples = re.findall(r'```csharp\n(.*?)```', (ROOT/'src/generator-cli/src/Mdpkg.Core/README.md').read_text(encoding='utf-8'), re.S)
             assert len(examples) == 2
             program = examples[0]
+        elif package == 'Mdpkg.Reader':
+            program += '''
+input.Position = 0;
+var snapshot = await PackageSnapshot.ReadAsync(input);
+var scope = snapshot.GetScopes("guide.md")[0];
+var uri = $"mdpkg://{snapshot.Identity.Namespace}/v2/document/{scope.Root}?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect={scope.Digest}&loc={scope.Locator.Encode()}";
+LooseReferenceResolution loose = snapshot.ResolveReference(uri);
+if (loose.Category != "identity" || loose.Status != "survives" || loose.Scope is null) throw new Exception("Loose-reference consumer failed.");
+'''
         (project/'Program.cs').write_text(program, encoding='utf-8')
         run('restore',csproj,'--configfile',work/'NuGet.Config','--packages',work/'packages',cwd=work)
         assets=json.loads((project/'obj/project.assets.json').read_text(encoding='utf-8'))

@@ -85,7 +85,7 @@ public enum IdentityStatus
 public sealed record IdentityResolution(IdentityStatus Status, string Reason, SourceScope? Scope = null, IReadOnlyList<string>? Successors = null);
 
 /// <summary>Caller-selected current view. Owns bounded payload data and requires no live stream or Git process.</summary>
-public sealed class PackageSnapshot
+public sealed partial class PackageSnapshot
 {
     private readonly Dictionary<string, byte[]> documents;
     private readonly Ledger ledger;
@@ -190,10 +190,15 @@ public sealed class PackageSnapshot
         if (reviewed.Namespace != Identity.Namespace) return new(IdentityStatus.Invalidated, "wrong-lineage");
         if (!Profile.Root(root) || !Profile.Root(expect) || !Profile.Oid(reviewed.Current)) return new(IdentityStatus.Invalidated, "malformed-anchor");
         if (Addressing.Coverage == "partial" && reviewed.Current != Identity.Current) return new(IdentityStatus.Unconfirmed, "history-required");
+        return ResolveCurrent(root, expect, declared, cancellationToken);
+    }
+
+    private IdentityResolution ResolveCurrent(string root, string expect, DocumentLocator declared, CancellationToken cancellationToken)
+    {
         ledger.Entries.TryGetValue(root, out var record);
         if (record?.Dead is { } dead) return new(IdentityStatus.FlaggedChanged, dead, Successors: Array.AsReadOnly(record.Next?.ToArray() ?? []));
         if (record?.Unknown is { } unknown) return new(IdentityStatus.Unconfirmed, unknown);
-        if (record is null && root != declared.DefaultRoot(reviewed.Namespace)) return new(IdentityStatus.Unconfirmed, "missing-override");
+        if (record is null && root != declared.DefaultRoot(Identity.Namespace)) return new(IdentityStatus.Unconfirmed, "missing-override");
         var locator = record?.To is { } to ? DocumentLocator.FromJson(to) : declared;
         if (locator.Kind != declared.Kind) return new(IdentityStatus.Invalidated, "ledger-scope-kind-mismatch");
         var scope = GetScopes(locator.DocumentPath, cancellationToken).FirstOrDefault(s => s.Locator.Encode() == locator.Encode());

@@ -151,7 +151,7 @@ test('links in cells retain safe external and package navigation and images neve
   const requests = []; page.on('request', request => { if (request.url().startsWith('https://example.com')) requests.push(request.url()); });
   await mount(page, '| Content |\n| --- |\n| [local](guide.md#intro) |\n| [external](https://example.com) |\n' +
     '| [bad](javascript:alert%281%29) |\n| ![image](https://example.com/pixel.png) |\n| <img src=x onerror=alert(1)> |\n');
-  await page.getByRole('link', {name: 'local'}).click();
+  await page.getByRole('button', {name: 'local'}).click();
   expect(await page.evaluate(() => window.navigated)).toBe('guide.md#intro');
   await expect(page.getByRole('link', {name: 'external'})).toHaveAttribute('rel', 'noopener noreferrer');
   await expect(page.locator('td a').filter({hasText: 'bad'})).not.toHaveAttribute('href');

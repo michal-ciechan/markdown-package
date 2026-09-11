@@ -104,3 +104,22 @@ button:disabled { opacity: .6; cursor: default; }
 .markdown tbody tr:nth-child(even) { background: #f8fafc; }
 .table-nowrap table { table-layout: auto; width: max-content; min-width: 100%; }
 .table-nowrap :is(th, td) { white-space: nowrap; overflow-wrap: normal; }
+
+/* Preview lives outside the source-selection article and never changes its width. */
+.preview-link::after { content: ''; display: inline-block; width: .35em; height: .35em; margin: 0 .15em .15em .25em; border: 1px solid currentColor; }
+.preview-origin { background: #fff0b3; outline: 2px solid #876810; outline-offset: 2px; }
+.reference-preview { position: fixed; z-index: 50; width: 32rem; max-width: calc(100vw - 1rem); max-height: 50dvh; overflow: auto; overscroll-behavior: contain; background: #fff; color: #172b3a; border: 1px solid #758a9a; border-radius: .65rem; box-shadow: 0 .4rem 1.8rem #10283833; padding: 1rem; }
+.reference-preview[hidden] { display: none; }
+.reference-preview header { display: flex; align-items: start; gap: .75rem; justify-content: space-between; }
+.reference-preview h2 { font-size: 1rem; margin: 0; overflow-wrap: anywhere; }
+.reference-preview button { flex-shrink: 0; }
+.preview-status { font-size: .9rem; }
+.preview-status:empty { display: none; }
+.preview-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
+.preview-content { min-width: 0; overflow-wrap: anywhere; }
+.reference-preview details { font-size: .8rem; overflow-wrap: anywhere; }
+.reference-preview pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+#link-label-control { display: block; margin: .5rem 0; }
+#link-label-control[hidden] { display: none; }
+#generated-markdown { display: block; width: 100%; font-size: .8rem; }
+@media (max-width: 600px) { .reference-preview { width: calc(100vw - 1rem); } }

@@ -181,10 +181,12 @@ export async function openContainer(source, options = {}) {
   return {
     source, manifest, entries, byName, typing, end, issues,
     tier: typing.conforming ? 'conforming' : 'recoverable',
-    async read(name) {
+    async read(name, maximumBytes) {
       const target = byName.get(name);
       if (!target) throw new Error('Package entry is missing: ' + name);
-      return (await readEntry(source, target, limits)).bytes;
+      const bounded = maximumBytes === undefined ? limits : {...limits,
+        maxEntryBytes: Math.min(limits.maxEntryBytes, maximumBytes), maxCompressedBytes: Math.min(limits.maxCompressedBytes, maximumBytes)};
+      return (await readEntry(source, target, bounded)).bytes;
     },
   };
 }

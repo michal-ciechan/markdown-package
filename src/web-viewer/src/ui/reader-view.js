@@ -1,11 +1,10 @@
-import {markdownRenderer} from './markdown-renderer.js';
-import {markdownParser} from './markdown-parser.js';
-import {tableControls} from './table-controls.js';
+import {markdownSurface} from './markdown-surface.js';
+import {displayFor} from '../links/display.js';
 import {selectionAnchor} from '../review/selection.js';
 import {makeSelector} from '../review/selector.js';
 import {selectionToolbar} from './selection-toolbar.js';
 
-export function readerView(host, onNavigate, onScope, onComment) {
+export function readerView(host, onNavigate, onScope, onComment, onChange = () => {}) {
   const title = document.createElement('h2');
   title.className = 'document-title';
   const controls = document.createElement('div');
@@ -39,6 +38,7 @@ export function readerView(host, onNavigate, onScope, onComment) {
   const tableStates = new Map();
 
   function draw() {
+    onChange();
     toolbar?.reset();
     selection = undefined;
     content.replaceChildren();
@@ -53,46 +53,27 @@ export function readerView(host, onNavigate, onScope, onComment) {
       pre.append(code);
       content.append(pre);
     } else {
-      // Only trusted renderer markup reaches innerHTML; raw HTML is disabled.
-      const template = document.createElement('template');
-      template.innerHTML = markdownRenderer().render(markdownParser().parse(model.text));
-      tableControls(template.content, tableStates, model);
-      for (const link of template.content.querySelectorAll('a')) {
-        const href = link.getAttribute('href');
-        link.removeAttribute('href');
-        if (!href || /[\u0000-\u0020\u007f]/.test(href)) continue;
-        if (/^(?:https?:|mailto:)/i.test(href)) {
-          link.setAttribute('href', href);
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-        } else if (!/^[A-Za-z][A-Za-z0-9+.-]*:/.test(href) || href.startsWith('mdpkg:')) {
-          link.setAttribute('href', '#');
-          link.addEventListener('click', event => { event.preventDefault(); onNavigate(href); });
-        }
-      }
-      content.append(template.content);
-      const headings = [...content.querySelectorAll('h1, h2, h3, h4, h5, h6')];
-      const slugs = new Map();
-      for (const heading of headings) {
-        const base = heading.textContent.toLowerCase().replace(/[^\p{L}\p{N}_\-\s]/gu, '').replace(/\s+/g, '-');
-        const occurrence = slugs.get(base) ?? 0;
-        slugs.set(base, occurrence + 1);
-        const slug = base + (occurrence ? '-' + occurrence : '');
-        fragments.set(slug, heading);
-        const line = Number(heading.dataset.sourcepos?.split(':')[0]) - 1;
-        const scope = model.scopes.find(scope => scope.kind === 'section' && scope.start === line);
-        if (scope) {
-          const index = model.scopes.indexOf(scope);
-          heading.id = `mdpkg-section-${index}`;
-          fragments.set(heading.id, heading);
-          scopeElements.set(scope, heading);
-        }
+      content.append(markdownSurface(model, {onNavigate, states: tableStates}));
+      const display = displayFor(model);
+      const headings = new Map([...content.querySelectorAll('h1,h2,h3,h4,h5,h6')].map(h =>
+        [Number(h.dataset.sourcepos?.split(':')[0]), h]));
+      for (const [fragment, candidates] of display.fragments) {
+        if (candidates.length !== 1) continue;
+        const item = candidates[0];
+        const heading = headings.get(item.node.sourcepos[0][0]);
+        if (heading) fragments.set(fragment, heading);
+        if (heading && item.scope) scopeElements.set(item.scope, heading);
       }
     }
   }
 
   function select(scope, scroll = true) {
     toolbar?.reset();
+    if (scroll) {
+      const live = document.getSelection();
+      if (live?.rangeCount && (content.contains(live.anchorNode) || content.contains(live.focusNode))) live.removeAllRanges();
+      selection = undefined;
+    }
     selected = scope;
     sections.value = String(model.scopes.indexOf(scope));
     for (const element of content.querySelectorAll('.selected-section')) element.classList.remove('selected-section');
@@ -110,6 +91,11 @@ export function readerView(host, onNavigate, onScope, onComment) {
   return {
     anchor(wholeScope = false) {
       if (!model) throw new Error('Open a document first.');
+      const live = document.getSelection();
+      if (!wholeScope && live?.rangeCount && !live.isCollapsed &&
+          (!content.contains(live.anchorNode) || !content.contains(live.focusNode))) {
+        throw new Error('Open section before reviewing preview text.');
+      }
       return wholeScope ? {scope: selected, select: makeSelector(model.source(selected), 0, model.source(selected).length)} :
         selectionAnchor(model, content, selection, sourceMode);
     },
@@ -125,7 +111,16 @@ export function readerView(host, onNavigate, onScope, onComment) {
       draw();
       select(scope, false);
     },
-    select(scope) { select(scope); },
+    select(scope, scroll = true) { select(scope, scroll); },
+    capture(origin) { return {path: model?.path, locator: selected?.locator, sourceMode, scrollX, scrollY,
+      linkIndex: [...content.querySelectorAll('a')].indexOf(origin)}; },
+    restore(state) {
+      if (sourceMode !== state.sourceMode) { sourceMode = state.sourceMode; draw(); }
+      const scope = state.locator && model.find(state.locator);
+      if (scope) select(scope, false);
+      window.scrollTo(state.scrollX, state.scrollY);
+      (content.querySelectorAll('a')[state.linkIndex] ?? content).focus({preventScroll: true});
+    },
     fragment(fragment) {
       if (sourceMode) { sourceMode = false; draw(); }
       const element = fragments.get(fragment);
