@@ -19,13 +19,21 @@ public sealed class PackageArchive : IDisposable
     private bool disposed;
     internal Manifest Manifest { get; private set; } = null!;
     internal HistoryDetail History { get; private set; } = null!;
+    /// <summary>Resource limits applied to this archive.</summary>
     public ReadLimits Limits { get; }
+    /// <summary>Validated manifest namespace and current commit.</summary>
     public PackageIdentity Identity { get; private set; } = null!;
+    /// <summary>Manifest addressing profiles, coverage and optional ledger path.</summary>
     public AddressingProfile Addressing { get; private set; } = null!;
+    /// <summary>Owned review declaration JSON, or null for a package without a review declaration.</summary>
     public JsonElement? Review { get; private set; }
+    /// <summary>ZIP metadata assessment; unread payloads and Git integrity are not certified.</summary>
     public ContainerStatus ContainerStatus { get; }
+    /// <summary>Indexed entry metadata in archive order.</summary>
     public IReadOnlyList<PackageEntry> Entries { get; }
+    /// <summary>Container findings accepted while opening the archive.</summary>
     public IReadOnlyList<PackageDiagnostic> Diagnostics { get; }
+    /// <summary>Package byte length measured from the input position supplied at open.</summary>
     public long PackageBytes => stream.Length;
 
     private PackageArchive(Stream stream, bool ownsStream, ReadLimits limits, ZipIndex index)
@@ -37,7 +45,18 @@ public sealed class PackageArchive : IDisposable
         ContainerStatus = index.Typed && index.Findings.Count == 0 ? ContainerStatus.Conforming : ContainerStatus.Recoverable;
     }
 
-    /// <summary>Reads from the caller's current position. Non-seekable input is privately spooled within MaxInputBytes.</summary>
+    /// <summary>Opens bounded, selective ZIP32 access starting at the current input position.</summary>
+    /// <param name="input">Readable caller-owned stream; remains open on success, failure and disposal.</param>
+    /// <param name="limits">Resource budgets, or null to use the standard defaults.</param>
+    /// <param name="acceptRecoverable">Explicitly accepts recoverable container typing; defaults to false.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation; cancellation is propagated to the caller.</param>
+    /// <returns>An archive that the caller must dispose to release private spool resources.</returns>
+    /// <remarks>Non-seekable streams are spooled within the input budget. Opening checks ZIP metadata and selected manifest, history and reference payloads; it does not fully verify untouched payloads or Git integrity.</remarks>
+    /// <exception cref="ArgumentNullException">Input is null.</exception>
+    /// <exception cref="ArgumentException">Input is unreadable or limits are invalid.</exception>
+    /// <exception cref="PackageFormatException">Selected package structure or payloads violate the supported format.</exception>
+    /// <exception cref="ResourceLimitException">A configured budget is exceeded.</exception>
+    /// <exception cref="OperationCanceledException">Cancellation was requested.</exception>
     public static async Task<PackageArchive> OpenAsync(Stream input, ReadLimits? limits = null, bool acceptRecoverable = false, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(input);
@@ -104,7 +123,20 @@ public sealed class PackageArchive : IDisposable
         catch { archive?.Dispose(); source?.Dispose(); throw; }
     }
 
+    /// <summary>Checks the indexed entry names without decoding a payload.</summary>
+    /// <param name="name">Case-sensitive archive entry name.</param>
+    /// <returns>True when the entry exists.</returns>
     public bool Contains(string name) => entries.ContainsKey(name);
+    /// <summary>Decodes and checks one entry within per-read and aggregate budgets.</summary>
+    /// <param name="name">Case-sensitive archive entry name.</param>
+    /// <param name="maximumBytes">Decoded byte cap for this read; null uses the document limit.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation; cancellation is propagated to the caller.</param>
+    /// <returns>An independently owned byte array.</returns>
+    /// <remarks>Repeated reads consume the aggregate decoded budget again.</remarks>
+    /// <exception cref="PackageFormatException">The entry is absent or fails payload checks.</exception>
+    /// <exception cref="ResourceLimitException">A per-read, compressed-input or aggregate budget is exceeded.</exception>
+    /// <exception cref="ObjectDisposedException">The archive has been disposed.</exception>
+    /// <exception cref="OperationCanceledException">Cancellation was requested.</exception>
     public byte[] ReadEntry(string name, long? maximumBytes = null, CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(disposed, this); cancellationToken.ThrowIfCancellationRequested();
@@ -132,17 +164,25 @@ public sealed class PackageArchive : IDisposable
         if (!bytes.AsSpan().SequenceEqual(CanonicalJson.Bytes(node, manifest))) throw new JsonException("JSON is not canonical.");
         return node;
     }
+    /// <summary>Hashes the entire package byte range.</summary>
+    /// <param name="cancellationToken">Token used to cancel the operation; cancellation is propagated to the caller.</param>
+    /// <returns>A lowercase SHA-256 digest with a sha256- prefix.</returns>
+    /// <remarks>Reads the whole package without decoding entries; does not certify payload conformance.</remarks>
     public async Task<string> ComputeDigestAsync(CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(disposed, this); stream.Position = 0;
         return "sha256-" + Convert.ToHexStringLower(await SHA256.HashDataAsync(stream, cancellationToken));
     }
-    /// <summary>Copies package bytes for an explicitly requested verification provider; never closes the destination.</summary>
+    /// <summary>Copies the entire package for an explicitly requested verification provider.</summary>
+    /// <param name="destination">Writable destination stream; remains open.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation; cancellation is propagated to the caller.</param>
+    /// <returns>A task that completes when copying finishes.</returns>
     public async Task CopyToAsync(Stream destination, CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(disposed, this); stream.Position = 0;
         await stream.CopyToAsync(destination, cancellationToken);
     }
+    /// <summary>Releases archive resources and private spools while leaving the caller input stream open.</summary>
     public void Dispose() { if (!disposed && ownsStream) stream.Dispose(); disposed = true; }
 
     private sealed class RelativeStream(Stream inner) : Stream

@@ -2,6 +2,7 @@
   <PropertyGroup>
     <PackageId>Mdpkg.Reviews</PackageId>
     <Description>Typed extraction and current-view resolution of Markdown package review feedback.</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup><ProjectReference Include="../Mdpkg.Reader/Mdpkg.Reader.csproj" /></ItemGroup>
   <ItemGroup><None Include="README.md" Pack="true" PackagePath="/" /></ItemGroup>

@@ -16,7 +16,7 @@ dotnet run --no-restore --project examples/review-consumer -- docs/spec/review-f
 python src/generator-cli/tests/verify-consumers.py
 ```
 
-The example has only `<PackageReference Include="Mdpkg.Reviews" Version="0.1.0-preview.1" />`.
+The example has only `<PackageReference Include="Mdpkg.Reviews" Version="0.1.0-preview.2" />`.
 Equivalent application code (optional second argument is the backend's exact reviewed file):
 
 ```csharp

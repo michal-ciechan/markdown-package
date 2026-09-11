@@ -4,6 +4,14 @@ namespace Mdpkg.Reviews;
 
 public sealed partial class ReviewExtractor
 {
+    /// <summary>Correlates caller-selected snapshots and resolves feedback with ledger identity and quote/context evidence.</summary>
+    /// <param name="review">Previously extracted feedback, preserved even when a location cannot be established.</param>
+    /// <param name="context">Backend-selected exact reviewed snapshot and optional explicitly selected newer target.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation; cancellation is propagated to the caller.</param>
+    /// <returns>All feedback items with separate identity, target and correlation assessments.</returns>
+    /// <remarks>Never opens dispatch paths or URLs. Newer targets require the exact reviewed snapshot; review-package context requires caller-established full verification. Quote relocation searches only a live changed scope and refuses ties. Ranges use UTF-16 code units relative to canonical scope source.</remarks>
+    /// <exception cref="ArgumentNullException">Review or context is null.</exception>
+    /// <exception cref="OperationCanceledException">Cancellation was requested.</exception>
     public Task<ReviewResolutionResult> ResolveAsync(ReviewExtractionResult review, ReviewedPackageContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(review); ArgumentNullException.ThrowIfNull(context);

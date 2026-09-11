@@ -5,8 +5,18 @@ using Mdpkg.Reader.Internal;
 
 namespace Mdpkg.Reviews;
 
+/// <summary>Extracts typed review feedback and resolves it against caller-selected snapshots without applying edits.</summary>
 public sealed partial class ReviewExtractor
 {
+    /// <summary>Extracts every comment and reply in source order, including resolved and obsolete threads.</summary>
+    /// <param name="returnedPackage">Readable returned-package stream at its current position; remains caller-owned.</param>
+    /// <param name="options">Resource and verification options, or null for defaults.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation; cancellation is propagated to the caller.</param>
+    /// <returns>Owned feedback and independent outcome, schema, container and verification assessments.</returns>
+    /// <remarks>Default assurance is structural. Full verification requires an explicit provider. Version 1 intent is unspecified; version 2 preserves authored kinds. Expected malformed, resource and IO failures are reported as outcomes; cancellation is thrown.</remarks>
+    /// <exception cref="ArgumentNullException">The input stream is null.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Options contain invalid limits.</exception>
+    /// <exception cref="OperationCanceledException">Cancellation was requested.</exception>
     public async Task<ReviewExtractionResult> ExtractAsync(Stream returnedPackage, ReviewReadOptions? options = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(returnedPackage); options ??= new(); options.Limits.Validate();
