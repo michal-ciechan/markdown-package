@@ -1,5 +1,105 @@
 import {test, expect} from '@playwright/test';
+import fs from 'node:fs/promises';
 import {trackTableObservers, observedRows} from './table-observer-helper.js';
+
+const sizingFixture = await fs.readFile(new URL('../../../docs/investigations/table-sizing/fixtures/varying-columns.md', import.meta.url), 'utf8');
+
+async function sizing(page) {
+  return page.locator('.table-container').evaluateAll(containers => containers.map(container => {
+    const table = container.querySelector('table'), scroll = container.querySelector('.table-scroll');
+    const width = element => element.getBoundingClientRect().width;
+    const rows = [...table.rows], columns = [...rows[0].cells].map((_, i) => {
+      const cells = rows.map(row => row.cells[i]);
+      const natural = Math.max(...cells.map(cell => {
+        const range = document.createRange(); range.selectNodeContents(cell);
+        const style = getComputedStyle(cell);
+        return range.getBoundingClientRect().width + parseFloat(style.paddingLeft) + parseFloat(style.paddingRight) + 1;
+      }));
+      return {width: width(cells[0]), natural};
+    });
+    const lineCounts = rows.flatMap(row => [...row.cells].map(cell => {
+      const range = document.createRange(); range.selectNodeContents(cell);
+      const centers = [];
+      for (const rect of range.getClientRects()) {
+        if (!rect.width || !rect.height) continue;
+        const center = (rect.top + rect.bottom) / 2;
+        // Inline code/bold can have slightly different font metrics on one line.
+        if (!centers.some(y => Math.abs(y - center) < 6)) centers.push(center);
+      }
+      return centers.length;
+    }));
+    scroll.scrollLeft = scroll.scrollWidth;
+    const scrolled = scroll.scrollLeft, endVisible = table.getBoundingClientRect().right <= scroll.getBoundingClientRect().right + 1;
+    scroll.scrollLeft = 0;
+    const parent = container.parentElement, style = getComputedStyle(parent);
+    return {table: width(table), wrapper: width(container), available: parent.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight),
+      toolbar: width(container.querySelector('.table-toolbar')), client: scroll.clientWidth, scroll: scrolled, endVisible,
+      columns, lineCounts, heights: rows.map(row => row.getBoundingClientRect().height)};
+  }));
+}
+
+for (const width of [1280, 800, 390]) test(`no-wrap columns and wrappers fit content at ${width}px`, async ({page}) => {
+  await page.setViewportSize({width, height: 844});
+  await mount(page, sizingFixture);
+  for (let i = 1; i <= 8; i++) await wrap(page, i).click();
+  const oldSizing = await page.addStyleTag({content: '.table-nowrap table { min-width: 100%; } .table-container.table-nowrap { width: auto; }'});
+  const oldMetrics = await sizing(page);
+  await oldSizing.evaluate(style => style.remove());
+  const metrics = await sizing(page);
+  expect(metrics).toHaveLength(8);
+  expect(metrics.map(m => m.heights)).toEqual(oldMetrics.map(m => m.heights));
+  for (const m of metrics) {
+    for (const column of m.columns) expect(Math.abs(column.width - column.natural)).toBeLessThanOrEqual(1);
+    expect(m.lineCounts.every(count => count <= 1)).toBe(true);
+    expect(m.wrapper).toBeLessThanOrEqual(m.available + 1);
+    expect(m.endVisible).toBe(true);
+    expect(Math.abs(m.wrapper - Math.min(m.available, Math.max(m.table, width < 700 ? m.toolbar : 0)))).toBeLessThanOrEqual(1);
+    if (m.table > m.client + 1) expect(m.scroll).toBeGreaterThan(0);
+  }
+  expect(metrics[0].columns[2].width).toBeGreaterThan(metrics[0].columns[1].width);
+  expect(metrics[0].columns[1].width).toBeGreaterThan(metrics[0].columns[0].width);
+  expect(metrics[0].wrapper).toBeLessThan(metrics[0].available - 10);
+  expect(metrics[1].scroll).toBeGreaterThan(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  // Content remains selectable after compact sizing, including a nested table.
+  expect(await anchor(page, '[aria-label="Table 1"] tbody tr:first-child td:first-child', '7')).toEqual({quote: '7'});
+  expect(await anchor(page, 'blockquote tbody tr:first-child td:nth-child(3)', 'A nested table')).toEqual({quote: 'A nested table'});
+  await wrap(page).focus(); await page.keyboard.press('Enter');
+  await expect(wrap(page)).toBeFocused(); await expect(wrap(page)).toHaveAttribute('aria-pressed', 'true');
+  await page.keyboard.press('Space');
+  await expect(wrap(page)).toBeFocused(); await expect(wrap(page)).toHaveAttribute('aria-pressed', 'false');
+  await wrap(page).scrollIntoViewIfNeeded();
+  await page.screenshot({path: `test-results/table-sizing-${width}.png`});
+  for (const [index, label] of [[1, 'wide'], [7, 'nested']]) {
+    await page.locator('.table-container').nth(index).scrollIntoViewIfNeeded();
+    await page.screenshot({path: `test-results/table-sizing-${label}-${width}.png`});
+  }
+});
+
+test('no-wrap column widths respond to body edits and remain natural across resize and zoom', async ({page}) => {
+  await page.setViewportSize({width: 1280, height: 844});
+  await mount(page, sizingFixture);
+  await wrap(page).click();
+  const initial = (await sizing(page))[0];
+  const cell = page.locator('table').first().locator('tbody tr').nth(1).locator('td').nth(1);
+  await cell.evaluate(cell => { cell.textContent = 'A much longer status than the header'; });
+  const grown = (await sizing(page))[0];
+  expect(grown.columns[1].width).toBeGreaterThan(initial.columns[1].width + 50);
+  for (const i of [0, 2]) expect(grown.columns[i].width).toBeCloseTo(initial.columns[i].width, 0);
+  await cell.evaluate(cell => { cell.textContent = 'Waiting'; });
+  for (const width of [800, 390, 1280]) {
+    await page.setViewportSize({width, height: 844});
+    const resized = (await sizing(page))[0];
+    expect(resized.columns).toEqual(initial.columns);
+    expect(resized.heights).toEqual(initial.heights);
+  }
+  await page.evaluate(() => { document.body.style.zoom = '2'; });
+  await wrap(page).scrollIntoViewIfNeeded();
+  await wrap(page).focus(); await page.keyboard.press('Enter'); await page.keyboard.press('Space');
+  await expect(wrap(page)).toBeFocused();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({path: 'test-results/table-sizing-zoom.png'});
+});
 
 const source = '# Tables\n\n| Name | Details | Value |\n| :--- | :---: | ---: |\n' +
   '| **Alpha** | A sentence with `code`. | 42 |\n| same | same | 7 |\n\n' +

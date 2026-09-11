@@ -99,8 +99,12 @@ automatic image requests remain disabled, including inside cells.
 The wrap icon in the left margin, level with each table's header row, toggles
 **Wrap table text** (CARD-0047). Below 700px it sits above the table on the right,
 leaving the reading column at full width. It starts pressed:
-cells wrap within equal column widths. Turn it off for content-sized columns
-and horizontal scrolling within that table. Both modes contain overflow, even
+cells wrap within equal column widths. Turn it off so each column fits its widest
+header or body cell on one line. Short no-wrap tables and their wrappers stay
+compact instead of stretching across the reader (CARD-0048); wide tables still
+scroll horizontally without wrapping. Desktop controls stay in the shared left
+gutter; below 700px the control follows the compact wrapper's right edge.
+Both modes contain overflow, even
 for many columns or long code. Each table keeps its choice through scrolling,
 source/render switching and document navigation until another package is opened
 or the tab closes. Preferences are in memory, keyed by document path and table
