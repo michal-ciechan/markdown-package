@@ -54,7 +54,7 @@ jobs:
         run: npm run build
         working-directory: src/web-viewer
       - name: Install browser test runtime
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium firefox webkit
         working-directory: src/web-viewer
       - name: Test browser authoring and download
         run: npx playwright test

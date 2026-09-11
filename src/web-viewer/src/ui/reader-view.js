@@ -93,6 +93,7 @@ export function readerView(host, onNavigate, onScope, onComment, onChange = () =
     if (selected) select(selected, false);
   });
   return {
+    resumeMode(value) { if (sourceMode !== value) { sourceMode = value; draw(); if (selected) select(selected, false); } },
     anchor(wholeScope = false) {
       if (!model) throw new Error('Open a document first.');
       const live = document.getSelection();

@@ -7,8 +7,9 @@ CommonMark 0.31.2 plus a GFM table extension, offers normalized source and secti
 current document/section references against the package's ledger and source.
 Reviewers can select text or a section, author comments and change requests,
 reply in a thread, set its state, and export a separate v2 delta review package.
-On open, it selects the first `.md` or `.markdown` file (case-insensitive) in
-byte order, or the first ordinary file if neither extension is present. The
+On first open, it selects the first `.md` or `.markdown` file (case-insensitive) in
+byte order, or the first ordinary file if neither extension is present. Reopening
+the same snapshot restores its remembered document and reading position. The
 document list keeps its existing order and includes all ordinary files.
 
 From `C:\src\markdown-package\src\web-viewer`:
@@ -181,9 +182,10 @@ the editor, without clamping. Empty canonical scopes cannot receive a selector.
 Rendering verification reparses the document twice per captured selection;
 large-document selection performance has not been measured on phones.
 
-Drafts live in memory in this tab. Opening another package or closing the tab
-warns about feedback not yet downloaded/shared. Download is the durable handoff;
-the app cannot confirm that a browser saved the file. Changes invalidate prepared
+Drafts and authored reviews are saved in this browser as described below.
+Closing or replacing a package warns while local feedback is pending or failed.
+Download is the handoff to the recipient; the app cannot confirm that a browser
+saved the file. Changes invalidate prepared
 files, including changes made while preparation is in flight. Thread/comment IDs
 and the review namespace persist across this tab's exports; each export is a new
 parentless, one-commit snapshot. The original Blob is read-only. Optional dispatch
@@ -201,10 +203,68 @@ comments JSON, with explicit rejection and no truncation. The writer's timestamp
 validator accepts its generated UTC millisecond RFC 3339 subset.
 
 Bundled returns, v1 export, imported-review display/editing, quote relocation
-against newer packages, retained-history browsing, durable draft storage and real
+against newer packages, retained Git-history browsing and real
 iOS share-sheet/device acceptance remain deferred. Send the delta to a recipient
 that retains the original; it contains no ordinary documents. No backend code is
 part of this change.
+
+## Browser history and resume (CARD-0046)
+
+**Recently opened** lists up to 20 packages and 20 documents per package. It
+remembers successful opens, section selection, actual scrolling, and source/render
+mode. Renamed copies of the same declared snapshot share work; a different
+namespace or commit gets its own record even when the filename is identical.
+Reattachment checks normalized document digests and exact review/draft selectors.
+Changed or missing text is retained in recovery with copy/discard controls instead
+of being attached to a different target. A draft in another document has a
+**Resume draft in …** action; it does not change the last reading destination.
+Explicit document/reference navigation takes precedence over a saved destination.
+
+The standard picker, drop and paste work without file-handle support. On reload,
+**Choose file again** asks for the package; matching state restores automatically.
+No package File/Blob, source document, prepared export or object URL is cached.
+Where a secure-context `showOpenFilePicker` is available, **Open package** uses
+that unrestricted picker and stores its read-only handle separately. The standard
+picker remains available and has no `accept` restriction. Already granted read
+access permits automatic reopening. **Allow access** requests read permission
+only on a click; reload never prompts. Revoked permission, a moved/deleted file or
+unavailable APIs fall back to choosing the file again. Changed handle contents
+require an explicit **Open as separate package** action if identity differs.
+Picker cancellation and invalid archives leave the current editor/package intact.
+
+Author, kind and exact unfinished body text save after 400 ms of inactivity,
+with a 1,500 ms maximum wait while typing. Blur, navigation, hidden visibility and
+pagehide also attempt a flush. **Saved in this browser** means the IndexedDB
+transaction committed. Only that checkpoint is recoverable after a crash; final
+keystrokes or in-flight writes can be lost. **Could not save; keep this tab open**
+offers retry, while in-memory reading, authoring and export continue to work.
+**Review not exported** is independent of browser saving. Submitted thread/reply
+IDs, state and review namespace survive reload; submission and draft deletion
+commit together. Cancel deletes the editor draft, including pending writes.
+
+Storage is IndexedDB schema version 1, named `mdpkg-viewer:<deployment base path>`.
+It contains package metadata, optional handles, positions, review graphs, drafts,
+resume pointers and conflict recovery records. Session storage optionally remembers
+each tab's own last document. Draft/review writes compare revisions transactionally;
+a stale tab preserves its version in recovery instead of overwriting or resurrecting
+work. Deletions advance revisions/package generations. Unknown versions are retained
+for recovery; no automatic database reset or unrelated storage clearing occurs.
+
+**Remove from recents** removes history and handle access while retaining authored
+work. **Delete saved work** separately confirms deletion of that package's local
+drafts/reviews/recovery. Older authored work remains discoverable beyond the recent
+list. Quota recovery prunes expendable history/handles and retries once; it never
+silently evicts feedback. Unfinished bodies allow at most 256 KiB UTF-8, with an
+8 MiB editor-envelope ceiling; oversized selections report a save failure without
+truncation. Submitted review limits remain unchanged.
+
+Filenames, names, selected quotes and feedback are private to this browser profile
+and origin, with no backend or device sync. Clearing site data or browser eviction
+can remove everything; autosave is not a backup. Whole-package caching, original-file
+writes, cross-snapshot relocation and browser Back/Forward integration are deferred.
+Real IndexedDB/fallback tests run in Chromium, Firefox and WebKit. Permission tests
+use injected doubles; native Chrome/Edge/Android grants and real Safari/iOS providers
+remain untested. WebKit automation and Chromium touch emulation are not device tests.
 
 ## Tests
 
@@ -212,7 +272,7 @@ From `src/web-viewer/`:
 
 ```powershell
 npm test
-npx playwright install chromium
+npx playwright install chromium firefox webkit
 npm run test:browser
 python tests/validate-export.py test-results/browser-review.mdpkg
 ```
@@ -228,6 +288,9 @@ remain untested.
 The Python acceptance test uses independent ZIP and native Git checks. Pages CI
 runs these tests before publishing. The browser fixture and .NET rerun commands
 are in [tests/fixtures/README.md](tests/fixtures/README.md).
+Persistence/fallback cases run in all three browser projects; existing authoring
+and single-output export cases remain Chromium-only. Run only the new cases with
+`npx playwright test persistence.spec.js`.
 
 ## Deployment
 
@@ -265,6 +328,11 @@ with `npm run build -- --milestone=M3` when implementing it; the ceiling does no
 grow automatically with the bundle. Changing an allowance requires amending
 plan §4 and `APP_BUDGETS` together with measured costs and the tradeoff; a gate
 failure alone does not justify a raise.
+
+Browser persistence is an isolated capability chunk requested at startup; a failed
+load leaves in-memory reading/authoring available. Its transfer cost is reported
+separately in `build-report.json`'s chunk list and is not part of the existing V-2
+static-plus-Git closure. The gate and its 133,145-byte ceiling are unchanged.
 
 `node src/web-viewer/build.mjs --report` from the repository root prints the full JSON report;
 all invocations save it as `src/web-viewer/dist/build-report.json`. A version, calibration,

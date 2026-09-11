@@ -12,10 +12,12 @@ const app = document.querySelector('#app');
 app.innerHTML = `
   <header class="app-header">
     <div><h1>Markdown Package</h1><p>Open a package. Read its documents. Follow a reference.</p></div>
-    <label class="open-button">Open package<input id="package-file" type="file"></label>
+    <div class="open-actions"><button id="enhanced-open" type="button" hidden>Open package</button>
+    <label class="open-button"><span id="standard-open-label">Open package</span><input id="package-file" type="file"></label></div>
   </header>
   <main>
     <div id="activity" role="status" aria-live="polite">Choose a file, or drop or paste a package here. Files stay on this device.</div>
+    <section id="saved-sessions" aria-label="Browser history and saved work"></section>
     <section id="package-details" hidden aria-label="Package details"></section>
     <details id="conformance" hidden><summary>Package conformance findings</summary><ul></ul></details>
     <form id="reference-form" hidden>
@@ -44,20 +46,36 @@ app.innerHTML = `
 const element = id => document.getElementById(id);
 const activity = element('activity'), resolution = element('resolution');
 let pkg, currentDocument, currentScope, openGeneration = 0, navigationGeneration = 0, returnLocation;
+let savedSessions;
 const documents = documentList(element('documents'), name => showDocument(name));
 const preview = referencePreview({getPackage: () => pkg, onOpen: openPreview,
   onBrowse: () => element('documents').querySelector('button')?.focus(), onOrdinary: navigate});
 const reader = readerView(element('reader'), (...args) => preview.activate(...args), scope => {
   currentScope = scope;
   clearGeneratedReference();
+  savedSessions?.position();
 }, () => element('review').querySelector('[data-action="text"]').click(), () => preview.close(false));
 const reviews = reviewView(element('review'), whole => ({model: currentDocument, anchor: reader.anchor(whole)}), async locator => {
   await showDocument(locator[1]);
   const scope = currentDocument?.path === locator[1] && currentDocument.find(locator);
   if (scope) reader.select(scope);
 });
-window.addEventListener('beforeunload', event => {
-  if (reviews.hasUnsaved()) { event.preventDefault(); event.returnValue = ''; }
+// Keep persistence isolated from parsing and permission prompts. This optional
+// capability chunk can fail without taking down in-memory reading/authoring.
+const persistenceReady = import('./persistence/session.js').then(async ({persistence}) => {
+  savedSessions = await persistence({host: element('saved-sessions'), reviews, reader,
+    article: () => element('reader').querySelector('article'), receive, navigate: showDocument,
+    getModel: () => currentDocument, getPackage: () => pkg, fileInput: element('package-file'),
+    enhanced: element('enhanced-open'), standardLabel: element('standard-open-label')});
+  void savedSessions.startup();
+  return savedSessions;
+}).catch(error => {
+  element('saved-sessions').textContent = 'Browser saving is unavailable. Keep this tab open or export your review. ' + error.message;
+  const guard = event => { event.preventDefault(); event.returnValue = ''; };
+  reviews.subscribe(() => {
+    window.removeEventListener('beforeunload', guard);
+    if (reviews.hasUnsaved()) window.addEventListener('beforeunload', guard);
+  });
 });
 
 function report(message, error = false) {
@@ -80,27 +98,29 @@ function displayDocument(model, scope) {
   element('reference-tools').hidden = false;
 }
 
-async function receive(blob) {
-  if (reviews.hasUnsaved() && !window.confirm('This tab has review feedback that has not been downloaded. Discard it and open another package?')) return;
-  preview.close(false); returnLocation = undefined; element('back-reference').hidden = true;
+async function receive(source, expectedKey, documentPath) {
+  if (source instanceof Blob) source = {blob: source, sourceKind: 'file'};
+  const {blob} = source;
   const generation = ++openGeneration;
-  navigationGeneration++;
-  pkg = undefined;
-  reviews.setPackage(undefined);
-  currentDocument = undefined;
-  currentScope = undefined;
-  reader.clear();
-  clearGeneratedReference();
-  for (const id of ['browser', 'package-details', 'conformance', 'reference-form', 'reference-tools']) element(id).hidden = true;
-  element('reference').value = '';
-  resolution.className = '';
-  resolution.textContent = '';
   report('Opening ' + (blob.name || 'package') + '…');
   try {
     const opened = await openPackage(blob);
+    await persistenceReady;
+    await savedSessions?.flush();
+    const outgoingRevision = reviews.revision();
+    const prepared = await savedSessions?.prepare(opened, source);
     if (generation !== openGeneration) return;
+    if (outgoingRevision !== reviews.revision()) { report('Feedback changed while opening. The current package was kept; choose the new package again.'); return; }
+    if (expectedKey && prepared?.key !== expectedKey) { savedSessions.mismatch(source); return; }
+    if ((savedSessions ? savedSessions.hasUnsaved() : reviews.hasUnsaved()) &&
+        !window.confirm('This tab has feedback that could not be saved in this browser. Discard the unsaved changes and open another package?')) return;
+    preview.close(false); returnLocation = undefined; element('back-reference').hidden = true;
+    const initialNavigation = ++navigationGeneration;
     pkg = opened;
     reviews.setPackage(pkg);
+    currentDocument = undefined; currentScope = undefined; reader.clear(); clearGeneratedReference();
+    element('reference').value = ''; resolution.className = ''; resolution.textContent = '';
+    const attached = prepared ? savedSessions.attach(prepared) : Promise.resolve();
     const detail = element('package-details');
     detail.replaceChildren();
     const name = document.createElement('strong'), metadata = document.createElement('span');
@@ -122,18 +142,29 @@ async function receive(blob) {
     element('browser').hidden = false;
     element('reference-form').hidden = false;
     report(pkg.tier === 'recoverable' ? 'Package recovered. See the conformance findings below.' : 'Package opened.');
+    await attached;
+    // A later failed picker/open keeps this successfully installed package.
+    // A successful replacement or explicit navigation owns the reader instead.
+    if (pkg !== opened || navigationGeneration !== initialNavigation) return;
     const initialDocument = pkg.documents.find(entry => /\.(?:md|markdown)$/i.test(entry.name)) ?? pkg.documents[0];
-    if (initialDocument) await showDocument(initialDocument.name);
+    const remembered = documentPath ?? prepared?.documentPath;
+    if (initialDocument) {
+      const exists = remembered && pkg.documents.some(entry => entry.name === remembered);
+      await showDocument(exists ? remembered : initialDocument.name, undefined, true);
+      if (remembered && !exists) report('The saved document is missing. Its saved work was retained for recovery.', true);
+    }
     else report(pkg.manifest.review ? 'Review package opened. It contains no ordinary documents; this viewer does not yet display review threads.' : 'Package opened; its current view has no documents.');
   } catch (error) {
     if (generation === openGeneration) report('Could not open package: ' + error.message, true);
   }
 }
 
-async function showDocument(name, fragment) {
+async function showDocument(name, fragment, resume = false) {
   if (!pkg) return;
   preview.close(false);
   const opened = pkg, generation = ++navigationGeneration;
+  await savedSessions?.flush();
+  if (opened !== pkg || generation !== navigationGeneration) return;
   resolution.className = '';
   resolution.textContent = '';
   report('Reading ' + name + '…');
@@ -143,6 +174,7 @@ async function showDocument(name, fragment) {
     displayDocument(model);
     report(name);
     if (fragment && !reader.fragment(fragment)) report('Document opened; heading fragment was not found: ' + fragment, true);
+    await savedSessions?.navigated(model, resume && !fragment);
   } catch (error) {
     if (opened === pkg && generation === navigationGeneration) {
       currentDocument = undefined;
@@ -159,6 +191,8 @@ async function resolve(value) {
   if (!pkg) return;
   preview.close(false);
   const opened = pkg, generation = ++navigationGeneration;
+  await savedSessions?.flush();
+  if (opened !== pkg || generation !== navigationGeneration) return;
   resolution.className = '';
   resolution.textContent = 'Resolving…';
   const result = await opened.resolve(value);
@@ -177,6 +211,7 @@ async function resolve(value) {
     displayDocument(result.document, result.scope);
     reader.select(result.scope);
     report(result.document.path);
+    await savedSessions?.navigated(result.document);
   }
 }
 
@@ -214,7 +249,7 @@ element('back-reference').addEventListener('click', async () => {
 element('package-file').addEventListener('change', event => {
   const file = event.target.files[0];
   event.target.value = '';
-  if (file) receive(file);
+  if (file) { const expected = savedSessions?.picked(); receive(file, expected?.key, expected?.documentPath); }
 });
 document.addEventListener('dragover', event => {
   if ([...event.dataTransfer.types].includes('Files')) { event.preventDefault(); event.dataTransfer.dropEffect = 'copy'; }

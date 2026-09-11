@@ -8,7 +8,7 @@ export function reviewView(host, getContext, onNavigate) {
   host.hidden = true;
   host.innerHTML = `<h2>Review</h2>
     <p>Select text in the reader, or review the selected section. Review files contain feedback; send them back with access to the original package.</p>
-    <p class="review-memory">Drafts stay in this tab. Download your review before closing or opening another package.</p>
+    <p class="review-memory">Browser saving and review export are separate. Download your review to return feedback.</p>
     <div class="review-actions"><button type="button" data-action="text">Review selected text</button><button type="button" data-action="scope">Review selected section</button></div>
     <form class="review-editor" hidden>
       <p class="review-target"></p><pre class="review-quote"></pre>
@@ -23,22 +23,24 @@ export function reviewView(host, getContext, onNavigate) {
   const find = selector => host.querySelector(selector), action = name => find(`[data-action="${name}"]`);
   const form = find('form'), author = form.elements.author, kind = form.elements.kind, body = form.elements.body;
   let pkg, review = newReview(), namespace, composing, prepared, revision = 0, dirty = false, savedAuthor = '', preparing = false;
+  let listener = () => {}, exportRevision = 0, deferredDraft = false;
   const status = (message, error = false) => { find('.review-status').textContent = message; find('.review-status').classList.toggle('error', error); };
   function invalidate() {
     revision++; dirty = true; prepared = undefined;
     action('download').hidden = action('share').hidden = true;
   }
   function closeEditor() { composing = undefined; form.hidden = true; body.value = ''; }
-  function edit(target) {
-    if (composing && body.value.trim()) { status('Save or cancel your current comment first.', true); return; }
+  function edit(target, fields, focus = true) {
+    if (deferredDraft) { status('Resume or cancel your saved draft before starting another comment.', true); return; }
+    if (composing) { status('Save or cancel your current comment first.', true); return; }
     composing = target;
     form.hidden = false;
-    author.value = savedAuthor;
-    kind.value = 'comment'; body.value = '';
+    author.value = fields?.author ?? savedAuthor;
+    kind.value = fields?.kind ?? 'comment'; body.value = fields?.body ?? '';
     find('.review-target').textContent = target.thread ? 'Reply to this thread' :
       `${target.model.path} · ${target.anchor.scope.title.replace(/\n/g, ' ')} · Exact source quote`;
     find('.review-quote').textContent = target.thread?.select.quote ?? target.anchor.select.quote;
-    body.focus();
+    if (focus) { body.focus(); revision++; listener('edit'); }
   }
   function draw() {
     const list = find('.review-threads'); list.replaceChildren();
@@ -52,7 +54,7 @@ export function reviewView(host, getContext, onNavigate) {
       const state = document.createElement('select'); state.setAttribute('aria-label', 'Thread state');
       for (const value of ['open', 'resolved', 'obsolete']) state.add(new Option(value, value));
       state.value = thread.state;
-      state.addEventListener('change', () => { thread.state = state.value; invalidate(); status('Thread state saved. Prepare a new review file to include it.'); });
+      state.addEventListener('change', () => { thread.state = state.value; invalidate(); listener('state'); status('Thread state saved. Prepare a new review file to include it.'); });
       label.append(state); article.append(heading, quote, label);
       for (const comment of thread.comments) {
         const entry = document.createElement('div'); entry.className = 'review-comment';
@@ -76,8 +78,10 @@ export function reviewView(host, getContext, onNavigate) {
       } catch (error) { status(error.message, true); }
     });
   }
-  action('cancel').addEventListener('click', closeEditor);
-  form.addEventListener('input', () => { prepared = undefined; revision++; action('download').hidden = action('share').hidden = true; });
+  action('cancel').addEventListener('click', () => { closeEditor(); revision++; listener('cancel'); });
+  const input = () => { prepared = undefined; revision++; action('download').hidden = action('share').hidden = true; listener('input'); };
+  form.addEventListener('input', input); form.addEventListener('change', input);
+  form.addEventListener('focusout', () => listener('flush'));
   form.addEventListener('submit', async event => {
     event.preventDefault();
     if (!composing || !body.value.trim()) { status('Enter feedback before saving.', true); return; }
@@ -93,12 +97,12 @@ export function reviewView(host, getContext, onNavigate) {
       validateComments(candidate);
       review = candidate;
       savedAuthor = comment.author;
-      closeEditor(); invalidate(); draw(); status('Comment saved in this tab. Prepare a review file to export it.');
+      closeEditor(); invalidate(); draw(); listener('submit'); status('Comment saved in this tab. Prepare a review file to export it.');
     } catch (error) { if (opened === pkg) status(error.message, true); }
     finally { submit.disabled = false; }
   });
   action('prepare').addEventListener('click', async () => {
-    if (composing) { status('Save or cancel your current comment before exporting.', true); return; }
+    if (composing || deferredDraft) { status('Save or cancel your current comment before exporting.', true); return; }
     const opened = pkg, generation = revision;
     preparing = true; draw(); status('Building and validating review file…');
     try {
@@ -113,20 +117,35 @@ export function reviewView(host, getContext, onNavigate) {
   });
   action('download').addEventListener('click', () => {
     if (!prepared) return;
-    try { downloadReview(prepared); dirty = false; status('Review download requested. Keep the file to return your feedback.'); }
+    try { downloadReview(prepared); dirty = false; exportRevision = revision; listener('export'); status('Review download requested. Keep the file to return your feedback.'); }
     catch (error) { status('Download failed: ' + error.message, true); }
   });
   action('share').addEventListener('click', async () => {
     const file = prepared, generation = revision;
     if (!file) return;
-    try { await navigator.share({files: [file]}); if (generation === revision) { dirty = false; status('Review shared.'); } }
+    try { await navigator.share({files: [file]}); if (generation === revision) { dirty = false; exportRevision = revision; listener('export'); status('Review shared.'); } }
     catch (error) { if (generation === revision) status(error.name === 'AbortError' ? 'Sharing cancelled. Your review is ready to download.' : 'Sharing failed. Download the review file instead.', error.name !== 'AbortError'); }
   });
   return {
-    hasUnsaved: () => dirty || !!(composing && body.value.trim()),
+    subscribe(value) { listener = value; },
+    revision: () => revision,
+    snapshot() {
+      return {namespace, review: structuredClone(review), revision, exportRevision, dirty,
+        draft: composing ? {context: composing, author: author.value, kind: kind.value, body: body.value} : undefined};
+    },
+    hydrate(saved, draft) {
+      review = structuredClone(saved.review); namespace = saved.namespace;
+      revision = saved.contentRevision ?? 0; exportRevision = saved.exportRevision ?? -1;
+      dirty = review.threads.length > 0 && exportRevision !== revision;
+      closeEditor(); prepared = undefined; draw();
+      if (draft) edit(draft.context, draft.fields, false);
+    },
+    deferDraft(value) { deferredDraft = value; },
+    restoreDraft(context, fields) { deferredDraft = false; edit(context, fields, false); },
+    hasUnsaved: () => dirty || !!composing,
     setPackage(value) {
       pkg = value; review = newReview(); namespace = value ? crypto.randomUUID() : undefined;
-      revision++; dirty = false; prepared = undefined; closeEditor();
+      revision++; exportRevision = revision; dirty = false; prepared = undefined; deferredDraft = false; closeEditor();
       action('download').hidden = action('share').hidden = true;
       host.hidden = !value; status(''); draw();
     },

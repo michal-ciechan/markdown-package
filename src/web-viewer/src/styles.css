@@ -12,6 +12,14 @@ h1 { font-size: 1.45rem; letter-spacing: -.03em; margin: 0; }
 .app-header p { margin: .3rem 0 0; color: #c3d4e4; }
 .open-button { background: #f8fbff; white-space: nowrap; position: relative; flex-shrink: 0; }
 .open-button input { position: absolute; width: 1px; height: 1px; opacity: 0; padding: 0; }
+.open-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; }
+#saved-sessions { margin-bottom: 1.2rem; }
+.persistence-note, .local-save-status, .export-status { font-size: .85rem; }
+.persistence-note { color: #526172; }
+.recent-package { padding: .6rem 0; border-bottom: 1px solid #dbe1e8; display: flex; flex-wrap: wrap; gap: .4rem; }
+.recent-package small { width: 100%; overflow-wrap: anywhere; }
+.recent-package button { max-width: 100%; overflow-wrap: anywhere; }
+.saved-recovery textarea { display: block; width: 100%; min-height: 8rem; }
 main { max-width: 1480px; margin: auto; padding: 1.2rem; }
 #activity { min-height: 1.6rem; margin-bottom: 1rem; overflow-wrap: anywhere; }
 .error { color: #9c2531; }
