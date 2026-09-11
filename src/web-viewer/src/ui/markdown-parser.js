@@ -5,14 +5,15 @@ import {Parser, Node} from 'commonmark';
 // Use its container/block recognition and inline parser, including reference links.
 function cells(line) {
   const parts = [];
-  let start = 0, escaped = false, pipes = 0;
+  let start = 0, pipes = 0;
   for (let index = 0; index < line.length; index++) {
     const char = line[index];
-    if (char === '|' && !escaped) {
+    // GFM splits before inline parsing: even in code spans, only an
+    // immediately preceding backslash protects a pipe (regardless of parity).
+    if (char === '|' && line[index - 1] !== '\\') {
       parts.push({raw: line.slice(start, index), start, end: index});
       start = index + 1; pipes++;
     }
-    escaped = char === '\\' && !escaped;
   }
   parts.push({raw: line.slice(start), start, end: line.length});
   if (pipes && !parts[0].raw.trim()) parts.shift();
@@ -29,8 +30,12 @@ export function markdownParser() {
     if (!parser.blank && !parser.indented && !block.tableRows && block.sourceLines?.length) {
       const headerLine = block.sourceLines.at(-1);
       const header = cells(headerLine.text);
-      const delimiter = cells(parser.currentLine.slice(parser.nextNonspace)).parts;
-      if (header.pipes && header.parts.length && header.parts.length === delimiter.length &&
+      const delimiterText = parser.currentLine.slice(parser.nextNonspace);
+      const delimiter = cells(delimiterText).parts;
+      // Setext headings and list starts take precedence over the extension.
+      // A pipe or colon in the delimiter can establish a one-column table.
+      if (!/^-[ \t]/.test(delimiterText) && /[|:]/.test(delimiterText) &&
+          header.parts.length && header.parts.length === delimiter.length &&
           delimiter.every(cell => /^:?-+:?$/.test(cell.raw.trim()))) {
         if (block.sourceLines.length > 1) {
           const previousLine = block.sourceLines.at(-2);
@@ -55,17 +60,21 @@ export function markdownParser() {
     }
     return paragraph.continue(parser, block);
   }}, custom_block: {...paragraph, continue(parser, block) {
-    if (parser.blank) return 1;
-    // Temporarily use paragraph block-start rules so headings, lists, fences,
-    // and quotes can interrupt a table. Between lines it is a custom block,
-    // preventing lazy paragraph continuation outside a list/quote container.
+    if (parser.blank || !cells(parser.currentLine.slice(parser.nextNonspace)).parts.length) return 1;
+    // The pinned parser's line loop only tries block starts for paragraphs.
+    // Restore the table type during those rules so all blocks can terminate it.
     block._type = 'paragraph';
     return 0;
   }}};
-  // The pinned parser's fifth block-start rule is Setext. A body row cannot
-  // turn a table into a heading (the thematic-break rule still runs).
-  parser.blockStarts = parser.blockStarts.map((start, index) => index === 4 ?
-    (parser, block) => block.tableRows ? 0 : start(parser, block) : start);
+  parser.blockStarts = parser.blockStarts.map(start => (parser, block) => {
+    if (!block.tableRows) return start(parser, block);
+    block._type = 'custom_block';
+    try {
+      return start(parser, block);
+    } finally {
+      if (block._open) block._type = 'paragraph';
+    }
+  });
   parser.addLine = function () {
     if (this.tip.type === 'paragraph') {
       (this.tip.sourceLines ??= []).push({text: this.currentLine.slice(this.offset),
