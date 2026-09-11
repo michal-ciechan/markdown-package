@@ -1,5 +1,5 @@
 import {anchorRange} from './selector.js';
-import {Parser} from 'commonmark';
+import {markdownParser} from '../ui/markdown-parser.js';
 import {markdownRenderer} from '../ui/markdown-renderer.js';
 
 function verifyEndpoint(model, host, node, offset, sourceOffset) {
@@ -8,7 +8,7 @@ function verifyEndpoint(model, host, node, offset, sourceOffset) {
   // and prove that the marker appears at this exact DOM text position.
   const marker = 'mdpkgSelection' + crypto.randomUUID().replaceAll('-', '');
   const template = document.createElement('template');
-  template.innerHTML = markdownRenderer().render(new Parser({smart: false}).parse(
+  template.innerHTML = markdownRenderer().render(markdownParser().parse(
     model.text.slice(0, sourceOffset) + marker + model.text.slice(sourceOffset)));
   const prefix = document.createRange(); prefix.selectNodeContents(host); prefix.setEnd(node, offset);
   const at = prefix.toString().length, visible = host.textContent;
@@ -29,12 +29,16 @@ function endpoint(model, host, node, offset) {
   // Include full lines: CommonMark columns in tabbed blocks need not be UTF-16 indices.
   const startLine = Number(match[1]) - 1, endLine = Number(match[3]);
   const base = model.lines.slice(0, startLine).reduce((n, line) => n + line.length + 1, 0);
-  const source = model.lines.slice(startLine, endLine).join('\n'), literal = node.data;
+  const isCell = block.matches('th, td');
+  const column = isCell ? Number(match[2]) - 1 : 0;
+  const source = isCell ? model.lines[startLine].slice(column, Number(match[4]) - 1) :
+    model.lines.slice(startLine, endLine).join('\n');
+  const literal = node.data;
   const at = source.indexOf(literal);
   if (!literal || at < 0 || source.indexOf(literal, at + 1) >= 0) {
     throw new Error('This rendered text has no unambiguous source position. Use View source and select the exact text.');
   }
-  return base + at + offset;
+  return base + column + at + offset;
 }
 
 export function selectionAnchor(model, host, range, sourceMode) {

@@ -1,4 +1,6 @@
 import {markdownRenderer} from './markdown-renderer.js';
+import {markdownParser} from './markdown-parser.js';
+import {tableControls} from './table-controls.js';
 import {selectionAnchor} from '../review/selection.js';
 import {makeSelector} from '../review/selector.js';
 import {selectionToolbar} from './selection-toolbar.js';
@@ -34,6 +36,7 @@ export function readerView(host, onNavigate, onScope, onComment) {
     } else if (value?.anchorNode && content.contains(value.anchorNode)) selection = undefined;
   });
   const scopeElements = new Map(), fragments = new Map();
+  const tableStates = new Map();
 
   function draw() {
     toolbar?.reset();
@@ -52,7 +55,8 @@ export function readerView(host, onNavigate, onScope, onComment) {
     } else {
       // Only trusted renderer markup reaches innerHTML; raw HTML is disabled.
       const template = document.createElement('template');
-      template.innerHTML = markdownRenderer().render(model.ast);
+      template.innerHTML = markdownRenderer().render(markdownParser().parse(model.text));
+      tableControls(template.content, tableStates, model);
       for (const link of template.content.querySelectorAll('a')) {
         const href = link.getAttribute('href');
         link.removeAttribute('href');
@@ -131,6 +135,6 @@ export function readerView(host, onNavigate, onScope, onComment) {
       else element.scrollIntoView({block: 'start'});
       return true;
     },
-    clear() { model = undefined; selected = undefined; title.textContent = ''; sections.replaceChildren(); draw(); },
+    clear() { model = undefined; selected = undefined; tableStates.clear(); title.textContent = ''; sections.replaceChildren(); draw(); },
   };
 }

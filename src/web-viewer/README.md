@@ -3,7 +3,7 @@
 Open a local `.mdpkg` through the file picker, drag/drop or paste. The picker has
 no `accept` restriction so iOS can select packages typed as `public.data`.
 Documents stay on the device. The viewer lists the current view, renders it with
-CommonMark 0.31.2, offers normalized source and section navigation, and resolves
+CommonMark 0.31.2 plus a GFM table extension, offers normalized source and section navigation, and resolves
 current document/section references against the package's ledger and source.
 Reviewers can select text or a section, author comments and change requests,
 reply in a thread, set its state, and export a separate v2 delta review package.
@@ -29,6 +29,43 @@ app works under a `/<repo>/` subpath; gate D-1 fails the build if a published
 path turns absolute or keeps pointing into `dist/`.
 
 ## Review authoring and export (CARD-0038)
+
+### Tables (CARD-0045)
+
+GFM pipe tables render with a header row, left/center/right column alignment,
+and inline Markdown (including emphasis, code and links). Escaped pipes work
+inside cells and code spans. Missing body cells are empty; extra cells are
+ignored. Invalid table delimiters remain ordinary Markdown. Raw HTML and
+automatic image requests remain disabled, including inside cells.
+
+The wrap icon above each table toggles **Wrap table text**. It starts pressed:
+cells wrap within equal column widths. Turn it off for content-sized columns
+and horizontal scrolling within that table. Both modes contain overflow, even
+for many columns or long code. Each table keeps its choice through scrolling,
+source/render switching and document navigation until another package is opened
+or the tab closes. Preferences are in memory, keyed by document path and table
+source position; they are not saved in localStorage or exported in the package.
+The button has a 44 × 44 px target, an accessible name and pressed state, and
+supports Tab, Enter and Space. The table scroll region is keyboard focusable.
+Mobile layout and tap behavior are tested with Chromium emulation.
+
+Tables remain ordinary source within their enclosing document/preamble/section.
+The addressing inventory, heading trails and digests still use unextended
+CommonMark 0.31.2 as required by spec §6.1–6.2. Display parsing is separate: a
+rare Setext-looking table sequence can therefore appear differently in the
+section inventory and rendered view. No table/row/cell locator or format change
+is introduced. Cell text can be selected for review, including repeated values
+in separate cells; click/expand treats a cell as a paragraph boundary. Exact
+source verification remains mandatory, with **View source** for transformed or
+ambiguous text (such as entities and escaped pipes).
+
+The table-only display parser extends the pinned CommonMark parser's block and
+inline hooks; no dependency or bundle budget was added. Its internal hook
+assumptions must be checked if CommonMark is upgraded. The parser regression
+tests cover the [GFM table rules](https://github.github.com/gfm/#tables-extension-),
+block boundaries, nested containers, inline safety and the unchanged inventory.
+
+### Authoring feedback
 
 1. Open the original package and select text in the rendered reader. Choose
    **Review selected text**, or use the section menu and **Review selected section**.

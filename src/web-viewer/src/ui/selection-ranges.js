@@ -1,6 +1,6 @@
 import {wordBounds, sentenceBounds} from './selection-boundaries.js';
 
-const blocks = 'p, li, pre, h1, h2, h3, h4, h5, h6';
+const blocks = 'p, li, pre, th, td, h1, h2, h3, h4, h5, h6';
 const parent = node => node.nodeType === 1 ? node : node.parentElement;
 
 export function sameRange(a, b) {
