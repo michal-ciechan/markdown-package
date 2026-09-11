@@ -23,10 +23,15 @@ const dependencies = ['buffer', 'commonmark', 'fflate', 'isomorphic-git', 'esbui
 // to the app allowance; M5/M6 retain the independent Git-slice upper bound.
 // Later milestones must be selected deliberately, not inferred from size.
 const LIBRARY_BUDGETS = {Review: 100377, M1: 48014, M2: 48014, M3: 101787, M4: 101787, M5: 154150, M6: 154150};
-const APP_BUDGETS = {Review: 32 * 1024, M1: 12 * 1024, M2: 16 * 1024, M3: 24 * 1024,
+// User-approved CARD-0046 increase: 133,145 -> 140,000 gzip bytes to include
+// browser persistence's real startup cost. After consolidation, the complete
+// counted graph measures 138,602 bytes (1,398 headroom). Keep library baselines
+// fixed; the 6,855-byte increase belongs to owned app code. See plan §4.
+const REVIEW_BUDGET = 140000;
+const APP_BUDGETS = {Review: REVIEW_BUDGET - LIBRARY_BUDGETS.Review, M1: 12 * 1024, M2: 16 * 1024, M3: 24 * 1024,
   M4: 32 * 1024, M5: 40 * 1024, M6: 48 * 1024};
 // CARD-0038 ships authoring independently of the deferred history milestone.
-// Review = CommonMark + Git writer baselines, plus 16 KiB browse / 16 KiB review.
+// Review = CommonMark + Git writer baselines, plus browse/review/persistence.
 const options = {milestone: 'Review', report: false};
 for (const arg of process.argv.slice(2)) {
   if (arg === '--report') options.report = true;

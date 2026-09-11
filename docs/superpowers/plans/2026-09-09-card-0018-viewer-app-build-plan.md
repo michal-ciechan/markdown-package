@@ -251,9 +251,17 @@ as implemented in `src/web-viewer/build.mjs` (`LIBRARY_BUDGETS` and `APP_BUDGETS
 fixed planning ceilings; the app allowances for future slices are not measured
 implementation costs.
 
+Amended 2026-09-11 by explicit user decision for CARD-0046: raise only Review's
+total ceiling from 133,145 to 140,000 gzip bytes to accommodate browser-local
+persistence. Honest startup accounting after consolidation measures 138,602,
+leaving 1,398 bytes of headroom. The 6,855-byte increase goes to the app allowance
+(39,623); library baselines and other milestone ceilings remain unchanged.
+All unconditional startup code continues to count. See the
+[measurement and validation report](../../investigations/2026-09-11-card-0046-restore-race-budget-fix.md).
+
 | M | Milestone | Ships | Library baseline, gz | App allowance, gz | Total ceiling, gz | Retires |
 | --- | --- | --- | ---: | ---: | ---: | --- |
-| Review | **CARD-0038 authoring branch.** Browse/identity plus v2 capture, delta emission and export; history remains deferred | slices 1–3, 5–8 | 100,377 | 32,768 (32 KiB) | 133,145 | Automated browser export accepted by the backend; real-device gates remain open |
+| Review | **CARD-0038 authoring branch, extended by CARD-0046.** Browse/identity plus v2 capture, delta emission, export and browser-local persistence; Git history remains deferred | slices 1–3, 5–8 | 100,377 | 39,623 | 140,000 | Automated browser export accepted by the backend; real-device gates remain open |
 | M1 | **Open and browse.** File picker → 79-byte typing → central directory → document list → one document rendered | slices 0, 1, 2 | 48,014 | 12,288 (12 KiB) | 60,302 | The largest external unknown: does the iOS picker actually hand over a `.mdpkg` |
 | M2 | **Identity.** Outline, heading trail, scoped digest, default root, cross-checked against the committed worked example | slice 3 | 48,014 | 16,384 (16 KiB) | 64,398 | That the identity layer is portable to the browser without re-derivation |
 | M3 | **History, eagerly.** `history.json` and summaries from the current view; isomorphic-git over the ZIP-mounted pack | slice 4 | 101,787 | 24,576 (24 KiB) | 126,363 | D-3's cost on a real device (M6 item 8) |

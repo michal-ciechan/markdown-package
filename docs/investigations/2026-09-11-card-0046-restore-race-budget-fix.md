@@ -1,8 +1,9 @@
 # CARD-0046 restore race and startup budget correction
 
-The restore race is fixed. Release remains blocked by the unchanged bundle
-ceiling: the honestly counted candidate is 138,602 gzip bytes, 5,457 over 133,145.
-No allowance was increased and the production build refuses to emit assets.
+The restore race is fixed. The user subsequently approved raising the Review
+ceiling to 140,000 gzip bytes for CARD-0046's real persistence cost. The measured
+138,602-byte bundle now has 1,398 bytes of headroom. The earlier failure and
+optimization evidence below retain the original 133,145-byte ceiling for context.
 
 ## Storage correction
 
@@ -49,7 +50,8 @@ available. Consolidation eliminates separate session/shared transfers and saves
 1,915 gzip bytes compared with the corrected code left split. No parser,
 permission, authoring, export, preview or gutter implementation was changed.
 
-All measurements below use the pinned esbuild and per-file level-9 gzip method:
+All measurements below use the pinned esbuild and per-file level-9 gzip method;
+the excess column compares against the former 133,145-byte ceiling:
 
 | Candidate | Budgeted gzip bytes | Excess |
 | --- | ---: | ---: |
@@ -71,9 +73,9 @@ The retained build consists of 97,164 gzip bytes in the initial static graph
 (including CSS) and 41,438 in the Git writer: 138,602 budgeted bytes. The optional
 inflater adds 2,343, for **140,945 gzip bytes across all emitted candidate assets**.
 `build-report.json` records both budgeted and all-assets totals. README now
-describes the honest accounting and build failure.
+describes the honest accounting and approved ceiling.
 
-## Validation
+## Validation before the budget decision
 
 - `npm test`: **118 passed, 0 failed** (116 existing plus two graph tests).
 - Full `npx playwright test`: **153 passed, 0 failed**, in one 5.1-minute run:
@@ -98,33 +100,36 @@ their cause remains unestablished, so no unrelated timeout/product change or
 claim of having fixed a flake is made. This is engine automation; no additional
 native-file-provider or physical-device acceptance is claimed.
 
-The final `npm run test:browser` invocation exits 1 at V-2, before starting
-Playwright, and leaves only `dist/build-report.json`. Behavioral verification
-therefore uses a temporary local bundle
+Before approval, the final `npm run test:browser` invocation exited 1 at V-2,
+before starting Playwright, and left only `dist/build-report.json`. Behavioral
+verification therefore used a temporary local bundle
 generated with the same production esbuild options, without changing the budget
 or claiming a successful production build. Local harness:
 `C:\src\markdown-package\.antiphon\task-77699f72-test-build.mjs`.
 
-Reproduce the behavioral run from the repository root, then the viewer directory:
+Following approval, reproduce verification with the normal gated commands from
+the viewer directory; the temporary harness is no longer needed:
 
 ```powershell
-node .antiphon/task-77699f72-test-build.mjs
-Set-Location src/web-viewer
 npm test
-npx playwright test
+npm run test:browser
 python tests/validate-export.py test-results/browser-review.mdpkg
-npm run build
 ```
 
-The final command intentionally fails V-2 and clears the temporary deployable
-assets, leaving only the diagnostic build report. No bypass was added to the
-production build, package scripts or CI.
+No bypass was added to the production build, package scripts or CI.
 
 ## Decision and repository scope
 
-Decide whether to authorize a revised ceiling using the measured 138,602-byte
-candidate, or commission further optimization/feature deferral to retain 133,145.
-Until then this is not a passing build or a release-ready CARD-0046 completion.
+Resolved by explicit user decision: `REVIEW_BUDGET` in `build.mjs` is 140,000.
+Its adjacent comment records CARD-0046, the measured 138,602-byte cost, and the
+approved increase. The derived app allowance is 39,623; the 100,377-byte library
+baseline and startup accounting are unchanged. Plan §4 and README are updated.
+
+Post-decision validation: `npm run build` passes V-1, V-2, lazy Git and asset-path
+checks at **138,602 / 140,000 gzip bytes**, emitting deployable assets normally.
+`node --test tests/build-graph.test.mjs`: **2 passed, 0 failed**. This follow-up
+changes only the budget configuration and documentation; the earlier 118 Node,
+153 browser and 25 export-check results above cover the unchanged application.
 
 The pre-existing untracked `docs/design/` directory and CARD-0044, CARD-0046 and
 CARD-0047 review documents belong to other work and are left untouched. Only

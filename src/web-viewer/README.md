@@ -313,8 +313,10 @@ Buffer shim, comparing its raw size, gzip size and SHA-256 with
 `bundle-results.json`. This calibration bundle is not published in `dist/`.
 
 V-2 defaults to **Review**, the CARD-0038 branch of the milestone plan. Its
-48,014-byte CommonMark plus 52,363-byte Git writer library baselines and 32 KiB
-app allowance give a **133,145-byte gzip ceiling**. The gate conservatively counts
+48,014-byte CommonMark plus 52,363-byte Git writer library baselines and 39,623-byte
+app allowance give a **140,000-byte gzip ceiling**. The user approved the increase
+from 133,145 for CARD-0046's measured browser-persistence cost after startup
+consolidation. The gate conservatively counts
 the writer's complete graph, although Git is only loaded on preparation. The
 older milestone app allowances are fixed per
 milestone at 12/16/24/32/40/48 KiB for M1–M6, with their library baselines, total
@@ -334,8 +336,7 @@ failure alone does not justify a raise.
 Browser persistence is bundled with the startup entry to reduce transfer overhead;
 initialization failures still leave in-memory reading/authoring available. All of
 its startup cost counts in V-2. The corrected measurement is **138,602 gzip bytes**,
-**5,457 over** the unchanged 133,145-byte ceiling. Production builds therefore fail
-until further optimization or an explicit budget decision resolves that excess.
+leaving **1,398 bytes of headroom** under the approved 140,000-byte ceiling.
 `build-report.json` also reports total gzip cost including the conditional inflater.
 
 `node src/web-viewer/build.mjs --report` from the repository root prints the full JSON report;
