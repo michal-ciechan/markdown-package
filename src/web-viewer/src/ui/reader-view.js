@@ -36,11 +36,14 @@ export function readerView(host, onNavigate, onScope, onComment, onChange = () =
   });
   const scopeElements = new Map(), fragments = new Map();
   const tableStates = new Map();
+  let surface;
 
   function draw() {
     onChange();
     toolbar?.reset();
     selection = undefined;
+    surface?.abort();
+    surface = undefined;
     content.replaceChildren();
     scopeElements.clear();
     fragments.clear();
@@ -53,7 +56,8 @@ export function readerView(host, onNavigate, onScope, onComment, onChange = () =
       pre.append(code);
       content.append(pre);
     } else {
-      content.append(markdownSurface(model, {onNavigate, states: tableStates}));
+      surface = new AbortController();
+      content.append(markdownSurface(model, {onNavigate, states: tableStates, signal: surface.signal}));
       const display = displayFor(model);
       const headings = new Map([...content.querySelectorAll('h1,h2,h3,h4,h5,h6')].map(h =>
         [Number(h.dataset.sourcepos?.split(':')[0]), h]));

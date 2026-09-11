@@ -29,12 +29,18 @@ export function referencePreview({getPackage, onOpen, onBrowse, onOrdinary}) {
   const content = card.querySelector('.preview-content'), actions = card.querySelector('.preview-actions');
   const details = card.querySelector('details p');
   let origin, activeLink, activeHref, generation = 0, pending, busy = false, activePackage;
+  let surface;
+  function clearContent() {
+    surface?.abort();
+    surface = undefined;
+    content.replaceChildren();
+  }
   function close(restore = true) {
     generation++; pending = undefined; card.hidden = true;
     origin?.setAttribute('aria-expanded', 'false'); origin?.classList.remove('preview-origin');
     if (restore && origin?.isConnected) origin.focus({preventScroll: true});
     origin = undefined; activeLink = undefined; activeHref = undefined;
-    content.replaceChildren(); actions.replaceChildren(); details.textContent = ''; title.textContent = '';
+    clearContent(); actions.replaceChildren(); details.textContent = ''; title.textContent = '';
     // An unabortable read keeps its single cache slot until drain settles it;
     // a newer link to that same document can then reuse the pending result.
     if (!busy) activePackage?.releasePreview?.();
@@ -85,7 +91,7 @@ export function referencePreview({getPackage, onOpen, onBrowse, onOrdinary}) {
         status.textContent = message(result);
         details.textContent = [result.category, result.status, result.reason, result.detail,
           result.successors?.length ? 'Successor roots: ' + result.successors.join(', ') : ''].filter(Boolean).join(' / ');
-        content.replaceChildren(); actions.replaceChildren();
+        clearContent(); actions.replaceChildren();
         if (result.scope) {
           try {
             const markup = previewMarkup(result.document, result.scope);
@@ -94,7 +100,10 @@ export function referencePreview({getPackage, onOpen, onBrowse, onOrdinary}) {
               const label = document.createElement('p'), pre = document.createElement('pre');
               label.textContent = markup.excerpt ? 'Canonical source excerpt' : 'Canonical source (display boundary differs)';
               pre.textContent = markup.source; content.append(label, pre);
-            } else content.append(markdownSurface(result.document, {html: markup.html, prefix: 'preview-', onNavigate: activate}));
+            } else {
+              surface = new AbortController();
+              content.append(markdownSurface(result.document, {html: markup.html, prefix: 'preview-', onNavigate: activate, signal: surface.signal}));
+            }
             if (markup.excerpt) status.textContent += ' Preview excerpt. Open the target for the full content.';
           } catch (error) { status.textContent = 'Could not render this preview. Open the target to read it.'; details.textContent += ' / ' + error.message; }
         }
@@ -122,7 +131,7 @@ export function referencePreview({getPackage, onOpen, onBrowse, onOrdinary}) {
     if (!origin) return;
     activeLink = link; activeHref = href; activePackage = pkg;
     origin.setAttribute('aria-expanded', 'true'); origin.classList.add('preview-origin');
-    content.replaceChildren(); actions.replaceChildren(); details.textContent = '';
+    clearContent(); actions.replaceChildren(); details.textContent = '';
     title.textContent = 'Reference preview'; status.textContent = 'Loading preview…'; card.hidden = false;
     pending = {pkg, href, source, generation: ++generation};
     position(); if (card.hidden) return;

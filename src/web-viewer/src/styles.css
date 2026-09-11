@@ -44,7 +44,15 @@ summary { cursor: pointer; }
 .reader-controls label { display: flex; align-items: center; gap: .5rem; min-width: 0; }
 .reader-controls select { max-width: min(38vw, 480px); }
 .reader-controls button { flex-shrink: 0; }
-.markdown { max-width: 84ch; overflow-wrap: anywhere; margin: auto; }
+.markdown {
+  --gutter-control: 32px;
+  --gutter-gap: 12px;
+  --gutter: calc(var(--gutter-control) + var(--gutter-gap));
+  position: relative;
+  max-width: calc(84ch + var(--gutter));
+  padding-left: var(--gutter);
+  overflow-wrap: anywhere; margin: auto;
+}
 .markdown h1 { font-size: 2rem; }
 .markdown h2 { font-size: 1.55rem; }
 .markdown h3 { font-size: 1.25rem; }
@@ -83,16 +91,38 @@ article.selected-section { box-shadow: none; }
 .review-comment > p:first-child, .review-memory { color: #526172; font-size: .9rem; }
 .review-body { white-space: pre-wrap; overflow-wrap: anywhere; }
 button:disabled { opacity: .6; cursor: default; }
-.selection-toolbar, .table-toolbar { display: flex; align-items: center; gap: .25rem; flex-wrap: wrap; padding: .35rem; border: 1px solid #adc1d3; border-radius: .65rem; background: #fff; box-shadow: 0 3px 16px #172b3f33; }
+.selection-toolbar { display: flex; align-items: center; gap: .25rem; flex-wrap: wrap; padding: .35rem; border: 1px solid #adc1d3; border-radius: .65rem; background: #fff; box-shadow: 0 3px 16px #172b3f33; }
 .selection-toolbar { position: fixed; z-index: 20; }
-.selection-toolbar button, .table-toolbar button { min-width: 44px; min-height: 44px; touch-action: manipulation; }
+.selection-toolbar button { min-width: 44px; min-height: 44px; touch-action: manipulation; }
 .selection-toolbar button span { display: inline-block; width: 1rem; font-size: 1.1rem; line-height: 1; }
 .selection-toolbar [data-selection="comment"] { background: #174568; border-color: #174568; color: white; }
 .selection-level { font-size: .8rem; color: #526172; padding: 0 .35rem; }
-.table-container { min-width: 0; max-width: 100%; margin: 1.2rem 0; }
-.table-toolbar { width: fit-content; margin: 0 0 .5rem auto; }
-.table-toolbar button { display: grid; place-items: center; padding: .5rem; }
-.table-toolbar button[aria-pressed="true"] { background: #174568; border-color: #174568; color: white; }
+.table-container { position: relative; min-width: 0; max-width: 100%; margin: 1.2rem 0; }
+/* Reserve the article's left column for margin controls. Without a measured
+   first row the toolbar is control-height and falls back to top alignment. */
+.table-toolbar {
+  position: absolute; top: 0; left: calc(-1 * var(--gutter-offset, var(--gutter)));
+  width: var(--gutter-control); height: var(--first-row, auto); min-height: var(--gutter-control);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0; padding: 0;
+}
+.table-toolbar button {
+  position: relative; display: grid; place-items: center;
+  width: var(--gutter-control); height: var(--gutter-control); padding: 0;
+  touch-action: manipulation;
+}
+.table-toolbar button svg { width: 18px; height: 18px; }
+/* Insets are measured from inside the 1px border: 32px visible, 44px clickable. */
+.table-toolbar button::before { content: ''; position: absolute; inset: calc((var(--gutter-control) - 2px - 44px) / 2); }
+/* aria-pressed still means wrapping; only the non-default, scrolling state is tinted. */
+.table-toolbar button[aria-pressed="false"] { background: #e2ecf5; border-color: #174568; color: #153f61; }
+@media (width < 700px) {
+  .markdown { padding-left: 0; max-width: 84ch; }
+  .table-toolbar {
+    position: static; width: fit-content; height: auto; min-height: 0;
+    margin: 0 0 .5rem auto; padding: 6px;
+  }
+}
 .table-scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
 .table-scroll:focus-visible { outline: 3px solid #197fba; outline-offset: 3px; }
 .markdown table { border-collapse: collapse; width: 100%; table-layout: fixed; }

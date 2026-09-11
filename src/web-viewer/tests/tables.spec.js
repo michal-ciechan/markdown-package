@@ -1,4 +1,5 @@
 import {test, expect} from '@playwright/test';
+import {trackTableObservers, observedRows} from './table-observer-helper.js';
 
 const source = '# Tables\n\n| Name | Details | Value |\n| :--- | :---: | ---: |\n' +
   '| **Alpha** | A sentence with `code`. | 42 |\n| same | same | 7 |\n\n' +
@@ -51,8 +52,111 @@ test('renders semantic tables, aligned cells and inline content with independent
   await page.keyboard.press('Enter');
   await expect(wrap(page)).toHaveAttribute('aria-pressed', 'true');
   expect(await wrap(page).evaluate(button => ({width: button.offsetWidth, height: button.offsetHeight})))
-    .toEqual({width: 44, height: 44});
+    .toEqual({width: 32, height: 32});
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('region', {name: 'Table 1', exact: true})).toBeFocused();
   await page.screenshot({path: 'test-results/tables-controls.png', fullPage: true});
+});
+
+for (const width of [1280, 700, 699, 390]) {
+  test(`wrap control placement, quiet state and 44px hit area at ${width}px`, async ({page}) => {
+    await page.setViewportSize({width, height: 844});
+    await mount(page);
+    await wrap(page).scrollIntoViewIfNeeded();
+    if (width >= 700) await expect.poll(() => page.locator('.table-container').first().evaluate(container => {
+      const button = container.querySelector('button').getBoundingClientRect();
+      const row = container.querySelector('tr').getBoundingClientRect();
+      return Math.abs(button.y + button.height / 2 - row.y - row.height / 2);
+    })).toBeLessThanOrEqual(1);
+    const layout = await wrap(page).evaluate(button => {
+      const box = button.getBoundingClientRect(), container = button.closest('.table-container');
+      const table = container.querySelector('.table-scroll').getBoundingClientRect();
+      const article = button.closest('.markdown');
+      // Probe all four corners of the 44px target, outside the visible box.
+      const hits = [-21.5, 21.5].flatMap(dx => [-21.5, 21.5].map(dy =>
+        document.elementFromPoint(box.x + box.width / 2 + dx, box.y + box.height / 2 + dy) === button));
+      return {width: box.width, height: box.height, left: box.left, right: box.right,
+        bottom: box.bottom, tableLeft: table.left, tableTop: table.top, tableRight: table.right,
+        padding: getComputedStyle(article).paddingLeft, hits,
+        background: getComputedStyle(button).backgroundColor};
+    });
+    expect(layout.width).toBe(32); expect(layout.height).toBe(32);
+    expect(layout.hits).toEqual([true, true, true, true]);
+    expect(layout.background).toBe('rgb(255, 255, 255)');
+    if (width >= 700) {
+      expect(layout.right).toBeLessThan(layout.tableLeft);
+      expect(layout.padding).toBe('44px');
+    } else {
+      expect(layout.bottom).toBeLessThan(layout.tableTop);
+      expect(layout.left).toBeGreaterThan(layout.tableLeft);
+      expect(layout.right + 6).toBeCloseTo(layout.tableRight, 0);
+      expect(layout.padding).toBe('0px');
+    }
+    // Activate via the invisible extension, then check the non-default tint.
+    const box = await wrap(page).boundingBox();
+    await page.mouse.click(box.x - 5, box.y + box.height / 2);
+    await expect(wrap(page)).toHaveAttribute('aria-pressed', 'false');
+    await expect(wrap(page)).toHaveCSS('background-color', 'rgb(226, 236, 245)');
+    await expect(wrap(page, 2)).toHaveAttribute('aria-pressed', 'true');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.screenshot({path: `test-results/table-gutter-${width}.png`, fullPage: true});
+  });
+}
+
+test('header alignment follows wrapping, resizing and zoom', async ({page}) => {
+  await mount(page, '| ' + 'Long heading '.repeat(8) + '| Short |\n| --- | --- |\n| cell | value |\n');
+  const alignment = () => page.locator('.table-container').evaluate(container => {
+    const button = container.querySelector('button').getBoundingClientRect();
+    const row = container.querySelector('tr').getBoundingClientRect();
+    return Math.abs(button.y + button.height / 2 - row.y - row.height / 2);
+  });
+  const heights = [];
+  for (const width of [1280, 800]) {
+    await page.setViewportSize({width, height: 900});
+    for (const nowrap of [false, true]) {
+      if ((await wrap(page).getAttribute('aria-pressed') === 'false') !== nowrap) await wrap(page).click();
+      await expect.poll(alignment).toBeLessThanOrEqual(1);
+      heights.push(await page.locator('tr').first().evaluate(row => row.getBoundingClientRect().height));
+    }
+  }
+  expect(heights[0]).toBeGreaterThan(heights[1]);
+  expect(heights[2]).toBeGreaterThan(heights[0]);
+  await page.evaluate(() => { document.body.style.zoom = '2'; });
+  await expect.poll(alignment).toBeLessThanOrEqual(1);
+});
+
+test('nested tables share the article gutter with top-level tables', async ({page}) => {
+  await mount(page, source + '\n> | Quote |\n> | --- |\n> | cell |\n\n' +
+    '- | List |\n  | --- |\n  | cell |\n\n  > | Nested quote |\n  > | --- |\n  > | cell |\n');
+  await expect(wrap(page, 5)).toHaveCount(1);
+  await expect.poll(() => page.locator('.table-toolbar button').evaluateAll(buttons => {
+    const positions = buttons.map(button => button.getBoundingClientRect().left);
+    return Math.max(...positions) - Math.min(...positions);
+  })).toBeLessThanOrEqual(1);
+});
+
+test('missing ResizeObserver uses top alignment and still toggles', async ({page}) => {
+  await page.addInitScript(() => { window.ResizeObserver = undefined; });
+  await mount(page, '| ' + 'Long heading '.repeat(8) + '| Short |\n| --- | --- |\n| cell | value |\n');
+  const gap = await wrap(page).evaluate(button => button.getBoundingClientRect().top -
+    button.closest('.table-container').querySelector('.table-scroll').getBoundingClientRect().top);
+  expect(gap).toBe(0);
+  await wrap(page).click();
+  await expect(wrap(page)).toHaveAttribute('aria-pressed', 'false');
+});
+
+test('one row observer is shared and released on source mode, navigation and clear', async ({page}) => {
+  await trackTableObservers(page);
+  await mount(page);
+  expect(await observedRows(page)).toEqual([2]);
+  await page.getByRole('button', {name: 'View source', exact: true}).click();
+  expect(await observedRows(page)).toEqual([]);
+  await page.getByRole('button', {name: 'View rendered', exact: true}).click();
+  expect(await observedRows(page)).toEqual([2]);
+  await page.evaluate(() => window.reader.show(window.model));
+  expect(await observedRows(page)).toEqual([2]);
+  await page.evaluate(() => window.reader.clear());
+  expect(await observedRows(page)).toEqual([]);
 });
 
 test('wrap preferences survive source/render switching and document navigation; clear resets them', async ({page}) => {

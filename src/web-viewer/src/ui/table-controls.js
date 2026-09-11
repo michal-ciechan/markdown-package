@@ -1,4 +1,19 @@
-export function tableControls(host, states, model) {
+export function tableControls(host, states, model, signal) {
+  // One observer per rendered surface, shared by its tables. The owner aborts
+  // before replacing the surface so detached rows are never retained.
+  const rows = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(entries => {
+    for (const entry of entries) {
+      const container = entry.target.closest('.table-container');
+      // Use CSS pixels, including under browser/CSS zoom.
+      container?.style.setProperty('--first-row', `${entry.borderBoxSize[0].blockSize}px`);
+      // The positioned markdown surface owns the column even for tables in
+      // lists/quotes; their indentation must not move controls into the text.
+      if (container?.offsetParent?.classList.contains('markdown')) {
+        container.style.setProperty('--gutter-offset', `${container.offsetLeft}px`);
+      }
+    }
+  });
+  signal?.addEventListener('abort', () => rows?.disconnect(), {once: true});
   // The reader clears these preferences on package changes. Keep only paths and
   // positions, so visiting documents does not retain their full source or DOM.
   let tables = states.get(model.path);
@@ -26,5 +41,7 @@ export function tableControls(host, states, model) {
       apply();
     });
     toolbar.append(button); container.prepend(toolbar); apply();
+    const firstRow = container.querySelector('tr');
+    if (firstRow && !signal?.aborted) rows?.observe(firstRow, {box: 'border-box'});
   }
 }

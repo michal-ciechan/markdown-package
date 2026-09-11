@@ -36,10 +36,10 @@ export function bindLinks(host, source, onNavigate) {
   }
 }
 
-export function markdownSurface(model, {html, onNavigate, states = new Map(), prefix = ''} = {}) {
+export function markdownSurface(model, {html, onNavigate, states = new Map(), prefix = '', signal} = {}) {
   const template = document.createElement('template');
   template.innerHTML = html ?? markdownRenderer().render(displayFor(model).ast);
-  tableControls(template.content, states, model);
+  tableControls(template.content, states, model, signal);
   if (onNavigate) bindLinks(template.content, model.path, onNavigate);
   const display = displayFor(model);
   const headings = new Map(display.headings.map(h => [h.node.sourcepos[0][0], h]));

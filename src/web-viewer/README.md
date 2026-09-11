@@ -95,15 +95,21 @@ inside cells and code spans. Missing body cells are empty; extra cells are
 ignored. Invalid table delimiters remain ordinary Markdown. Raw HTML and
 automatic image requests remain disabled, including inside cells.
 
-The wrap icon above each table toggles **Wrap table text**. It starts pressed:
+The wrap icon in the left margin, level with each table's header row, toggles
+**Wrap table text** (CARD-0047). Below 700px it sits above the table on the right,
+leaving the reading column at full width. It starts pressed:
 cells wrap within equal column widths. Turn it off for content-sized columns
 and horizontal scrolling within that table. Both modes contain overflow, even
 for many columns or long code. Each table keeps its choice through scrolling,
 source/render switching and document navigation until another package is opened
 or the tab closes. Preferences are in memory, keyed by document path and table
 source position; they are not saved in localStorage or exported in the package.
-The button has a 44 × 44 px target, an accessible name and pressed state, and
-supports Tab, Enter and Space. The table scroll region is keyboard focusable.
+The button is 32 × 32 px with an invisible 44 × 44 px hit target, an accessible
+name and pressed state, and supports Tab, Enter and Space. The default wrapping
+state is plain; turning wrapping off gives the button a quiet tint. A shared
+ResizeObserver keeps controls centred on their first rows as widths change,
+and disconnects when the reader or preview redraws. Without ResizeObserver,
+controls align to the table's top edge. The table scroll region is keyboard focusable.
 Mobile layout and tap behavior are tested with Chromium emulation.
 
 Tables remain ordinary source within their enclosing document/preamble/section.

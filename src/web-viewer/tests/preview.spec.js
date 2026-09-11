@@ -5,6 +5,7 @@ import {writePackage} from '../src/container/writer.js';
 import {utf8} from '../src/format.js';
 import {outline} from '../src/address/outline.js';
 import {referenceFor} from '../src/address/resolve.js';
+import {trackTableObservers, observedRows} from './table-observer-helper.js';
 
 const original = await openPackage(new Blob([await fs.readFile('../../docs/spec/review-fixtures/original.mdpkg')]));
 const reserved = await Promise.all(original.entries.filter(e => e.name.startsWith('.')).map(async e =>
@@ -31,6 +32,24 @@ async function open(page) {
   await page.locator('#package-file').setInputFiles({name: 'links.mdpkg', mimeType: 'application/zip', buffer: data});
   await expect(page.locator('.document-title')).toHaveText('guide.md');
 }
+
+test('preview table observers release rows on nested navigation and close', async ({page}) => {
+  await trackTableObservers(page);
+  await open(page);
+  await local(page, 'storage').click();
+  await expect(card(page)).toContainText('eight days');
+  expect(await observedRows(page)).toEqual([1]);
+  await expect.poll(() => card(page).locator('.table-container').evaluate(container => {
+    const button = container.querySelector('button').getBoundingClientRect();
+    const row = container.querySelector('tr').getBoundingClientRect();
+    return Math.abs(button.y + button.height / 2 - row.y - row.height / 2);
+  })).toBeLessThan(1);
+  await card(page).getByRole('button', {name: 'self', exact: true}).click();
+  await expect(card(page)).toContainText('eight days');
+  expect(await observedRows(page)).toEqual([1]);
+  await card(page).getByRole('button', {name: 'Close', exact: true}).click();
+  expect(await observedRows(page)).toEqual([]);
+});
 
 test('preview preserves reader, definitions, IDs and drafts; nested links retain original origin; Open/Back works', async ({page}) => {
   const requests = [], errors = []; page.on('request', r => requests.push(r.url())); page.on('pageerror', e => errors.push(e.message));
