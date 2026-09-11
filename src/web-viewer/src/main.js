@@ -7,6 +7,7 @@ import {destination, markdownLink} from './links/destination.js';
 import {referencePreview} from './ui/reference-preview.js';
 import {displayFor} from './links/display.js';
 import {persistence} from './persistence/session.js';
+import {inlineComments} from './ui/inline-comments.js';
 import './styles.css';
 
 const app = document.querySelector('#app');
@@ -78,6 +79,7 @@ const persistenceReady = Promise.resolve().then(async () => {
     if (reviews.hasUnsaved()) window.addEventListener('beforeunload', guard);
   });
 });
+inlineComments(element('reader'), reader, reviews);
 
 function report(message, error = false) {
   activity.textContent = message;

@@ -23,7 +23,9 @@ export function reviewView(host, getContext, onNavigate) {
   const find = selector => host.querySelector(selector), action = name => find(`[data-action="${name}"]`);
   const form = find('form'), author = form.elements.author, kind = form.elements.kind, body = form.elements.body;
   let pkg, review = newReview(), namespace, composing, prepared, revision = 0, dirty = false, savedAuthor = '', preparing = false;
-  let listener = () => {}, exportRevision = 0, deferredDraft = false;
+  let listener = () => {}, presentation = () => {}, exportRevision = 0, deferredDraft = false;
+  const threadElements = new Map(), targetLabel = find('.review-target'), targetQuote = form.querySelector('.review-quote');
+  const notify = kind => { listener(kind); presentation(kind); };
   const status = (message, error = false) => { find('.review-status').textContent = message; find('.review-status').classList.toggle('error', error); };
   function invalidate() {
     revision++; dirty = true; prepared = undefined;
@@ -32,20 +34,22 @@ export function reviewView(host, getContext, onNavigate) {
   function closeEditor() { composing = undefined; form.hidden = true; body.value = ''; }
   function edit(target, fields, focus = true) {
     if (deferredDraft) { status('Resume or cancel your saved draft before starting another comment.', true); return; }
-    if (composing) { status('Save or cancel your current comment first.', true); return; }
+    if (composing) { body.focus(); status('Save or cancel your current comment first.', true); return; }
     composing = target;
     form.hidden = false;
     author.value = fields?.author ?? savedAuthor;
     kind.value = fields?.kind ?? 'comment'; body.value = fields?.body ?? '';
-    find('.review-target').textContent = target.thread ? 'Reply to this thread' :
+    targetLabel.textContent = target.thread ? 'Reply to this thread' :
       `${target.model.path} · ${target.anchor.scope.title.replace(/\n/g, ' ')} · Exact source quote`;
-    find('.review-quote').textContent = target.thread?.select.quote ?? target.anchor.select.quote;
-    if (focus) { body.focus(); revision++; listener('edit'); }
+    targetQuote.textContent = target.thread?.select.quote ?? target.anchor.select.quote;
+    if (focus) { revision++; notify('edit'); body.focus(); }
+    else presentation('restore');
   }
   function draw() {
     const list = find('.review-threads'); list.replaceChildren();
+    threadElements.clear();
     for (const thread of review.threads) {
-      const article = document.createElement('article'); article.className = 'review-thread';
+      const article = document.createElement('section'); article.className = 'review-thread';
       const heading = document.createElement('button'), locator = decodeLocator(thread.loc);
       heading.type = 'button'; heading.textContent = `${locator[1]} · ${locator[2].at(-1)?.[0] ?? locator[0]}`;
       heading.addEventListener('click', () => onNavigate(locator));
@@ -54,7 +58,7 @@ export function reviewView(host, getContext, onNavigate) {
       const state = document.createElement('select'); state.setAttribute('aria-label', 'Thread state');
       for (const value of ['open', 'resolved', 'obsolete']) state.add(new Option(value, value));
       state.value = thread.state;
-      state.addEventListener('change', () => { thread.state = state.value; invalidate(); listener('state'); status('Thread state saved. Prepare a new review file to include it.'); });
+      state.addEventListener('change', () => { thread.state = state.value; invalidate(); notify('state'); status('Thread state saved. Prepare a new review file to include it.'); });
       label.append(state); article.append(heading, quote, label);
       for (const comment of thread.comments) {
         const entry = document.createElement('div'); entry.className = 'review-comment';
@@ -66,8 +70,10 @@ export function reviewView(host, getContext, onNavigate) {
         entry.append(metadata, content, reply); article.append(entry);
       }
       list.append(article);
+      threadElements.set(thread.id, article);
     }
     action('prepare').disabled = !review.threads.length || preparing;
+    presentation('draw');
   }
   for (const [name, whole] of [['text', false], ['scope', true]]) {
     action(name).addEventListener('mousedown', event => event.preventDefault());
@@ -78,8 +84,8 @@ export function reviewView(host, getContext, onNavigate) {
       } catch (error) { status(error.message, true); }
     });
   }
-  action('cancel').addEventListener('click', () => { closeEditor(); revision++; listener('cancel'); });
-  const input = () => { prepared = undefined; revision++; action('download').hidden = action('share').hidden = true; listener('input'); };
+  action('cancel').addEventListener('click', () => { closeEditor(); revision++; notify('cancel'); });
+  const input = () => { prepared = undefined; revision++; action('download').hidden = action('share').hidden = true; notify('input'); };
   form.addEventListener('input', input); form.addEventListener('change', input);
   form.addEventListener('focusout', () => listener('flush'));
   form.addEventListener('submit', async event => {
@@ -97,7 +103,7 @@ export function reviewView(host, getContext, onNavigate) {
       validateComments(candidate);
       review = candidate;
       savedAuthor = comment.author;
-      closeEditor(); invalidate(); draw(); listener('submit'); status('Comment saved in this tab. Prepare a review file to export it.');
+      closeEditor(); invalidate(); draw(); notify('submit'); status('Comment saved in this tab. Prepare a review file to export it.');
     } catch (error) { if (opened === pkg) status(error.message, true); }
     finally { submit.disabled = false; }
   });
@@ -127,6 +133,8 @@ export function reviewView(host, getContext, onNavigate) {
     catch (error) { if (generation === revision) status(error.name === 'AbortError' ? 'Sharing cancelled. Your review is ready to download.' : 'Sharing failed. Download the review file instead.', error.name !== 'AbortError'); }
   });
   return {
+    display(listener) { presentation = listener; },
+    view: () => ({review, composing, form, threadElements, home: host, list: find('.review-threads')}),
     subscribe(value) { listener = value; },
     revision: () => revision,
     snapshot() {

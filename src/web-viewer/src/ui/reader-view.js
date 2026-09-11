@@ -23,7 +23,7 @@ export function readerView(host, onNavigate, onScope, onComment, onChange = () =
   content.tabIndex = -1;
   controls.append(label, toggle);
   host.append(title, controls, content);
-  let model, sourceMode = false, selected, selection;
+  let model, sourceMode = false, selected, selection, presentation = () => {};
   const toolbar = onComment ? selectionToolbar(content, {
     getModel: () => model, isSource: () => sourceMode,
     onRange: range => { selection = range; }, onComment,
@@ -39,6 +39,7 @@ export function readerView(host, onNavigate, onScope, onComment, onChange = () =
   let surface;
 
   function draw() {
+    presentation();
     onChange();
     toolbar?.reset();
     selection = undefined;
@@ -69,6 +70,7 @@ export function readerView(host, onNavigate, onScope, onComment, onChange = () =
         if (heading && item.scope) scopeElements.set(item.scope, heading);
       }
     }
+    presentation({model, content, sourceMode});
   }
 
   function select(scope, scroll = true) {
@@ -93,6 +95,8 @@ export function readerView(host, onNavigate, onScope, onComment, onChange = () =
     if (selected) select(selected, false);
   });
   return {
+    display(listener) { presentation = listener; },
+    surface: () => model && ({model, content, sourceMode}),
     resumeMode(value) { if (sourceMode !== value) { sourceMode = value; draw(); if (selected) select(selected, false); } },
     anchor(wholeScope = false) {
       if (!model) throw new Error('Open a document first.');

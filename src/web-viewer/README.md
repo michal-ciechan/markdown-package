@@ -146,6 +146,54 @@ block boundaries, nested containers, inline safety and the unchanged inventory.
    file sharing is supported; cancelling or failing share retains the download.
    Preparation is separate so the share gesture keeps browser user activation.
 
+### Inline conversations (CARD-0049)
+
+Authored and browser-restored v2 threads appear beneath their source block in
+the chosen Mockup B layout. Teal speech icons identify comments; amber edit
+icons identify change requests. Numbered buttons also name the type and state.
+Hover a marked phrase or focus its button for a short preview; click, tap,
+Enter or Space opens the conversation. Escape dismisses a preview. Overlapping
+comment/request spans have a combined underline; repeated clicks cycle their
+threads, and each numbered button opens its thread directly. Native dragging,
+modified clicks and cross-reference links retain their existing behavior.
+
+Each block displays one conversation at a time; different blocks can stay open
+together. **Collapse thread**, **Collapse folds**, the state filter and **Read**
+reduce the displayed feedback. **Review** brings it back. Resolved threads have
+quiet underlines; obsolete threads have dotted underlines, dashed buttons and
+an explicit history notice. These are manually assigned review states.
+
+The existing selection toolbar and review actions open the shared composer at
+the future thread's position, with its exact quote and a blue source highlight.
+Replies use that same location. Filtering, changing folds, Read/Review and
+source/render switches preserve an unfinished draft; a second draft request
+focuses the existing editor. Saving, replies, state changes, browser persistence
+and v2 export continue through the existing review model and writer.
+
+Source ranges are validated against the original locator and selector evidence,
+then verified with the same source-to-render checks used for authoring. Text is
+highlighted with CSS ranges, without splitting source text nodes. Transformed
+or ambiguous rendered text receives a labelled block location and its literal
+source quote; **View source** shows the precise range. Browsers without the CSS
+Highlight API still have block bars and numbered buttons. Table comments fold
+below the table at the reading-column width and leave its compact sizing and gutter control
+available. Source mode groups threads below the source block.
+
+Feedback, controls and composer remain outside the main article, with empty
+spacers reserving their visual positions. They cannot become source selections,
+heading IDs or fragment targets. Cross-reference previews remain independent.
+The first 200 review threads are candidates for inline placement; additional
+threads, threads in other documents and unavailable anchors remain in the
+navigable Review list below the reader. Mapping is cached until the document
+redraws. Large-document mapping performance on physical phones is unmeasured.
+Imported review-package attachment/resolution remains deferred; this display
+uses the real local/restored review, not demonstration or imported mock data.
+
+Chromium tests cover overlap cycling, keyboard previews, independent folds,
+state filters, draft restoration, source fallback, preview/table coexistence,
+and 390px layouts plus 200% CSS zoom at a 1280px viewport. Physical
+touch devices and native browser zoom remain manual checks.
+
 ### Click selection (CARD-0040)
 
 Click or tap a word in the rendered document to select the entire word, including
@@ -339,8 +387,11 @@ failure alone does not justify a raise.
 
 Browser persistence is bundled with the startup entry to reduce transfer overhead;
 initialization failures still leave in-memory reading/authoring available. All of
-its startup cost counts in V-2. The corrected measurement is **138,602 gzip bytes**,
+its startup cost counts in V-2. The CARD-0046 checkpoint measured **138,602 gzip bytes**,
 leaving **1,398 bytes of headroom** under the approved 140,000-byte ceiling.
+CARD-0049's inline-comment candidate measures **143,357 gzip bytes**, exceeding
+that ceiling by **3,357 bytes**. Its display and CSS remain fully counted; a
+budget decision is required before the production build can ship this candidate.
 `build-report.json` also reports total gzip cost including the conditional inflater.
 
 `node src/web-viewer/build.mjs --report` from the repository root prints the full JSON report;
