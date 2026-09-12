@@ -24,12 +24,22 @@ public class ResolutionTests
     [InlineData("original.mdpkg", IdentityStatus.Survives, TargetStatus.TargetIntact, "guide.md")]
     [InlineData("changed.mdpkg", IdentityStatus.FlaggedChanged, TargetStatus.TargetRelocated, "guide.md")]
     [InlineData("moved.mdpkg", IdentityStatus.Survives, TargetStatus.TargetIntact, "moved.md")]
-    public async Task ExactChangedAndConfirmedMoveResolveAgainstSuppliedBytes(string file, IdentityStatus identity, TargetStatus target, string path)
+    public async Task ExactCheckpointResolvesButNewerTargetsNeedRelationshipEvidence(string file, IdentityStatus identity, TargetStatus target, string path)
     {
         var review = await Review(); var original = await Snapshot(); var selected = await Snapshot(file);
         var result = await new ReviewExtractor().ResolveAsync(review, new(original, selected, UseNewerTarget: file != "original.mdpkg"), TestContext.Current.CancellationToken);
         Assert.All(result.Items, i =>
         {
+            if (file != "original.mdpkg")
+            {
+                Assert.Equal(IdentityStatus.Unconfirmed, i.IdentityStatus); Assert.Equal(TargetStatus.Unconfirmed, i.TargetStatus);
+                Assert.Equal("origin-unverified", i.Reason); Assert.Null(i.ResolvedLocation);
+                // Current ledger/digest behavior still works when no cross-checkpoint claim is made.
+                var anchor = review.Threads.First(t => t.Id == i.ThreadId).Anchor;
+                var current = selected.Resolve(selected.Identity, anchor.Root, anchor.Expect, anchor.Locator, TestContext.Current.CancellationToken);
+                Assert.Equal(identity, current.Status); Assert.Equal(path, current.Scope!.Locator.DocumentPath);
+                return;
+            }
             Assert.Equal(identity, i.IdentityStatus); Assert.Equal(target, i.TargetStatus); Assert.Equal(path, i.ResolvedLocation!.Locator.DocumentPath);
             Assert.Equal("guide.md", i.DeclaredDocumentPath); Assert.Equal(PackageProfiles.OffsetUnits, i.ResolvedLocation.Range!.Units);
         });
@@ -92,8 +102,8 @@ public class ResolutionTests
         Assert.Equal(quote.Length, result.Items[0].ResolvedLocation!.Range!.End - result.Items[0].ResolvedLocation!.Range!.Start);
     }
     [Theory]
-    [InlineData("winner", TargetStatus.TargetRelocated)][InlineData("tie", TargetStatus.TargetDetached)][InlineData("missing", TargetStatus.TargetDetached)]
-    public async Task ContextRequiresAStrictWinnerAndNeverUsesOccurrenceToBreakTies(string kind, TargetStatus expected)
+    [InlineData("winner")][InlineData("tie")][InlineData("missing")]
+    public async Task UnverifiedCheckpointStopsBeforeAnyQuoteRelocation(string kind)
     {
         var original = await Snapshot(); var review = await Review(); var s = review.Threads[0].Anchor.Selector;
         var target = await Changed(e => e["guide.md"] = Profile.Utf8.GetBytes(kind switch
@@ -103,8 +113,8 @@ public class ResolutionTests
             _ => "# Guide\n\nNo matching text.\n"
         }));
         var result = await new ReviewExtractor().ResolveAsync(review, new(original, target, true), TestContext.Current.CancellationToken);
-        Assert.Equal(expected, result.Items[0].TargetStatus); Assert.Equal(IdentityStatus.FlaggedChanged, result.Items[0].IdentityStatus);
-        if (expected == TargetStatus.TargetDetached) Assert.Null(result.Items[0].ResolvedLocation!.Range);
+        Assert.Equal(TargetStatus.Unconfirmed, result.Items[0].TargetStatus); Assert.Equal(IdentityStatus.Unconfirmed, result.Items[0].IdentityStatus);
+        Assert.Equal("origin-unverified", result.Items[0].Reason); Assert.Null(result.Items[0].ResolvedLocation);
     }
     [Theory]
     [InlineData("deleted")][InlineData("split")][InlineData("merge")]
@@ -120,8 +130,12 @@ public class ResolutionTests
             e["other.md"] = Fixtures.Bytes("comments-v2.json"); // Contains the quote too; never searched.
         });
         var result = await new ReviewExtractor().ResolveAsync(review, new(original, target, true), TestContext.Current.CancellationToken);
-        var item = result.Items[0]; Assert.Equal(IdentityStatus.FlaggedChanged, item.IdentityStatus); Assert.Equal(TargetStatus.TargetDetached, item.TargetStatus);
-        Assert.Null(item.ResolvedLocation); Assert.Equal(successor, Assert.Single(item.Successors!)); Assert.Equal(dead, item.Reason);
+        var item = result.Items[0]; Assert.Equal(IdentityStatus.Unconfirmed, item.IdentityStatus); Assert.Equal(TargetStatus.Unconfirmed, item.TargetStatus);
+        Assert.Null(item.ResolvedLocation); Assert.Empty(item.Successors!); Assert.Equal("origin-unverified", item.Reason);
+        var anchor = review.Threads[0].Anchor;
+        var current = target.Resolve(target.Identity, root, anchor.Expect, anchor.Locator, TestContext.Current.CancellationToken);
+        Assert.Equal(IdentityStatus.FlaggedChanged, current.Status); Assert.Null(current.Scope);
+        Assert.Equal(successor, Assert.Single(current.Successors!)); Assert.Equal(dead, current.Reason);
     }
     [Fact]
     public async Task PartialCoverageRequiresHistoryEvenWhenQuoteAndDigestMatch()
@@ -134,7 +148,8 @@ public class ResolutionTests
             e["guide.md"] = Profile.Utf8.GetBytes(Fixtures.Json("vectors.json")["source"]!.GetValue<string>());
         });
         var result = await new ReviewExtractor().ResolveAsync(review, new(original, target, true), TestContext.Current.CancellationToken);
-        Assert.Equal(IdentityStatus.Unconfirmed, result.Items[0].IdentityStatus); Assert.Equal(TargetStatus.HistoryRequired, result.Items[0].TargetStatus);
+        Assert.Equal(IdentityStatus.Unconfirmed, result.Items[0].IdentityStatus); Assert.Equal(TargetStatus.Unconfirmed, result.Items[0].TargetStatus);
+        Assert.Equal("origin-unverified", result.Items[0].Reason);
         Assert.Null(result.Items[0].ResolvedLocation);
     }
     [Fact]

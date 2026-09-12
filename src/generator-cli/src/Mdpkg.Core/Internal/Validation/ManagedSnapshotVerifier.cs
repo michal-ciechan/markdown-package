@@ -51,7 +51,8 @@ internal static class ManagedSnapshotVerifier
         var objects = Decode(pack, index, reverse, resources, maximumObjects, maximumBlobBytes, ct);
         Require(objects.TryGetValue(manifest.Current.Id[5..], out var commit) && commit.Kind == 1 && objects.Values.Count(o => o.Kind == 1) == 1,
             "Snapshot must contain exactly one current commit.");
-        var text = Profile.Utf8.GetString(commit!.Bytes);
+        CommitProtocol.RejectUnverifiedBootstrap(commit!.Bytes);
+        var text = Profile.Utf8.GetString(commit.Bytes);
         var split = text.IndexOf("\n\n", StringComparison.Ordinal);
         Require(split >= 0 && !text.Contains('\0') && text.EndsWith('\n'), "Malformed snapshot commit.");
         var headers = text[..split].Split('\n');

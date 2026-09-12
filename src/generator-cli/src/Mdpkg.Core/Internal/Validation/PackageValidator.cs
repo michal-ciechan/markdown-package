@@ -203,8 +203,11 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
         foreach (var (commit, index) in commits.Select((commit, index) => (commit, index)))
         {
             var rawCommit = await repo.ReadObjectAsync("commit", commit, ct);
+            CommitProtocol.RejectUnverifiedBootstrap(rawCommit);
             Reject(CountParents(rawCommit) > 1, "Retained graph includes a merge second parent.");
             var tree = await repo.ReadTreeAsync(commit, null, [], normalize: false, ct);
+            if (manifest.Review?["shape"]?.GetValue<string>() == "delta")
+                Reject(tree.Any(e => e.Name != ".mdpkg/review/comments.json"), "Delta review retains non-review files.");
             foreach (var e in tree)
             {
                 try { Profile.Utf8.GetString(e.Bytes); }
@@ -229,15 +232,11 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
                 Reject(view.Count != tip.Count || view.Any(e => !tip.TryGetValue(e.Name, out var blob) || !blob.Bytes.AsSpan().SequenceEqual(e.Bytes)), "Current view differs from the tip tree.", "MDPK2001");
             }
         }
-        if (manifest.Review is { } review)
+        if (manifest.Review is { } review && review["shape"]!.GetValue<string>() == "bundled")
         {
-            if (review["shape"]!.GetValue<string>() == "delta") Reject(commits.Length != 1 || view.Any(e => !e.Name.StartsWith(".mdpkg/review/", StringComparison.Ordinal)), "Delta review must be a one-commit review-only lineage.");
-            else
-            {
-                Reject(commits.Length < 2 || "sha1-" + commits[^2] != review["of"]!["current"]!["id"]!.GetValue<string>(), "Bundled review parent differs from review.of.current.");
-                var changed = await git.TextAsync(temp.Path, ct, "diff-tree", "--no-commit-id", "--name-only", "-r", "-z", "--no-renames", commits[^2], head);
-                Reject(changed.Split('\0', StringSplitOptions.RemoveEmptyEntries).Any(p => !p.StartsWith(".mdpkg/review/", StringComparison.Ordinal)), "Bundled review changes non-review paths.");
-            }
+            Reject(commits.Length < 2 || "sha1-" + commits[^2] != review["of"]!["current"]!["id"]!.GetValue<string>(), "Bundled review parent differs from review.of.current.");
+            var changed = await git.TextAsync(temp.Path, ct, "diff-tree", "--no-commit-id", "--name-only", "-r", "-z", "--no-renames", commits[^2], head);
+            Reject(changed.Split('\0', StringSplitOptions.RemoveEmptyEntries).Any(p => !p.StartsWith(".mdpkg/review/", StringComparison.Ordinal)), "Bundled review changes non-review paths.");
         }
     }
 

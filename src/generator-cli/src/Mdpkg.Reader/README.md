@@ -30,7 +30,10 @@ does not certify untouched payloads or Git graph/current-view agreement. Recover
 typing requires explicit opt-in. `PackageSnapshot.ReadAsync` loads the bounded current
 Markdown view and ledger, computes file corroboration, and caches scopes on demand.
 Snapshot data remains usable after the input is disposed. No historical Git tree is
-materialized; partial correspondence to a different reviewed commit returns history-required.
+materialized. A different reviewed checkpoint returns an unconfirmed result before
+ledger or digest matching: `history-unavailable` for snapshot targets,
+`origin-unverified`/`origin-unavailable` for a snapshot checkpoint against Git, or
+`history-required` for a different commit. A declared origin does not establish proof.
 
 `PackageIdentity.Current` is a `CurrentState` with `Kind` (`snapshot` or `commit`) and
 `Id`. The revised schema requires an explicit history mode. Selective opening reports

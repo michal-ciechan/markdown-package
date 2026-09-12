@@ -89,6 +89,7 @@ public sealed partial class PackageSnapshot
 {
     private readonly Dictionary<string, byte[]> documents;
     private readonly Ledger ledger;
+    private readonly bool hasDeclaredOrigin;
     private readonly System.Collections.Concurrent.ConcurrentDictionary<string, IReadOnlyList<SourceScope>> scopes = new(StringComparer.Ordinal);
     /// <summary>Selected snapshot namespace and current commit.</summary>
     public PackageIdentity Identity { get; }
@@ -107,6 +108,7 @@ public sealed partial class PackageSnapshot
     {
         Identity = archive.Identity; Addressing = archive.Addressing; PackageDigest = digest; PackageBytes = archive.PackageBytes;
         IsReviewPackage = archive.Review is not null;
+        hasDeclaredOrigin = archive.History?.Origin is not null;
         this.documents = documents; this.ledger = ledger;
         DocumentPaths = Array.AsReadOnly(documents.Keys.ToArray());
     }
@@ -183,13 +185,18 @@ public sealed partial class PackageSnapshot
     /// <param name="declared">Original declared scope locator.</param>
     /// <param name="cancellationToken">Token used to cancel the operation; cancellation is propagated to the caller.</param>
     /// <returns>Identity evidence with any live scope and dead-identity successor navigation.</returns>
-    /// <remarks>Partial coverage across different commits yields history-required. This method does not resolve quote selectors or search successor scopes.</remarks>
+    /// <remarks>A different checkpoint requires relationship evidence unavailable to this current-view reader. This method does not resolve quote selectors or search successor scopes.</remarks>
     public IdentityResolution Resolve(PackageIdentity reviewed, string root, string expect, DocumentLocator declared, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (reviewed.Namespace != Identity.Namespace) return new(IdentityStatus.Invalidated, "wrong-lineage");
         if (!Profile.Root(root) || !Profile.Root(expect) || !Profile.State(reviewed.Current)) return new(IdentityStatus.Invalidated, "malformed-anchor");
-        if (Addressing.Coverage == "partial" && reviewed.Current != Identity.Current) return new(IdentityStatus.Unconfirmed, "history-required");
+        if (reviewed.Current != Identity.Current)
+        {
+            if (Identity.Current.Kind == "snapshot") return new(IdentityStatus.Unconfirmed, "history-unavailable");
+            if (reviewed.Current.Kind == "snapshot") return new(IdentityStatus.Unconfirmed, hasDeclaredOrigin ? "origin-unverified" : "origin-unavailable");
+            return new(IdentityStatus.Unconfirmed, "history-required");
+        }
         return ResolveCurrent(root, expect, declared, cancellationToken);
     }
 
