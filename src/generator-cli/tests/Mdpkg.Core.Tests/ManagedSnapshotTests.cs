@@ -199,6 +199,53 @@ public class ManagedSnapshotTests
     }
 
     [Theory]
+    [InlineData("foo = \0", "update = !evil", "gitmodulesUpdate")]
+    [InlineData("foo = \"before\0after\"", "update = !evil", "gitmodulesUpdate")]
+    [InlineData("foo = before\0after", "path = -evil", "gitmodulesPath")]
+    [InlineData("foo = \0\0", "url = -evil", "gitmodulesUrl")]
+    [InlineData("foo = \0", "[submodule \"other\"]\nupdate = !evil", "gitmodulesUpdate")]
+    [InlineData("foo = \0\\\ncontinued", "update = !evil", "gitmodulesUpdate")]
+    [InlineData("foo = \0 # comment", "update = !evil", "gitmodulesUpdate")]
+    [InlineData("foo = \0", "update = checkout", null)]
+    [InlineData("update = !evil\0ignored", "path = lib", "gitmodulesUpdate")]
+    [InlineData("update = \0!evil", "path = lib", null)]
+    [InlineData("url = https://example.invalid/lib\0\\nevil", "update = checkout", null)]
+    [InlineData("foo = \0\\q", "update = !evil", null)]
+    [InlineData("foo = \0\"unterminated", "update = !evil", null)]
+    public async Task GitmodulesValuesAfterNulMatchNative(string first, string following, string? nativeError)
+    {
+        using var f = new EngineFixture();
+        f.Write(".gitmodules", "[submodule \"lib\"]\n" + first + "\n" + following + "\n");
+        File.WriteAllText(f.Output, "prior");
+        var native = await new Builder().PackAsync(f.Request, Ct);
+        if (nativeError is null) EngineFixture.Success(native);
+        else
+        {
+            Assert.NotEqual(Outcome.Success, native.Outcome);
+            Assert.Contains(native.Diagnostics, d => d.Message.Contains(nativeError, StringComparison.Ordinal));
+            Assert.Equal("prior", File.ReadAllText(f.Output));
+        }
+
+        GitProcess.BeforeStart.Value = _ => throw new InvalidOperationException("Managed snapshot invoked Git.");
+        EngineResult managed;
+        try { managed = await new Builder(Managed).PackAsync(f.Request, Ct); }
+        finally { GitProcess.BeforeStart.Value = null; }
+        if (nativeError is null)
+        {
+            EngineFixture.Success(managed);
+            Assert.Equal(native.Manifest!.Current, managed.Manifest!.Current);
+            EngineFixture.Success(await new Validator().ValidateAsync(new(f.Output, Deep: true), Ct));
+        }
+        else
+        {
+            Assert.Equal(Outcome.Nonconforming, managed.Outcome);
+            Assert.Contains(managed.Diagnostics, d => d.Code == "MDPK4002");
+            Assert.Equal("prior", File.ReadAllText(f.Output));
+            Assert.Empty(Directory.GetFiles(f.Root, "*.tmp"));
+        }
+    }
+
+    [Theory]
     [InlineData(".git")][InlineData("git~1")][InlineData(".g\u200cit")][InlineData(".GIT")]
     public async Task NestedGitAliasesCannotProduceAValidatedSnapshot(string name)
     {

@@ -108,7 +108,6 @@ internal static class SnapshotGitRules
                     var c = text[position++];
                     if (c == '\n') { Parse(!quoted, "Unterminated .gitmodules value."); break; }
                     if (!quoted && c is '#' or ';') { SkipComment(); break; }
-                    Parse(c != '\0', "NUL in .gitmodules.");
                     if (!quoted && c is ' ' or '\t') { if (data.Length > 0) spaces++; continue; }
                     if (c == '\\')
                     {
@@ -122,6 +121,11 @@ internal static class SnapshotGitRules
                     data.Append(c);
                 }
                 Parse(!quoted, "Unterminated .gitmodules value."); value = data.ToString();
+                // Git consumes NULs as value bytes and keeps parsing the config,
+                // but its semantic callbacks see a NUL-terminated C string.
+                // Truncate only after parsing all quotes, escapes and continuations.
+                var nul = value.IndexOf('\0');
+                if (nul >= 0) value = value[..nul];
             }
             else Parse(position == text.Length || text[position] is '\n' or '#' or ';', "Malformed .gitmodules assignment.");
             if (section == "submodule" && subsection is not null)
