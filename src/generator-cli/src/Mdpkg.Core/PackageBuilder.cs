@@ -3,7 +3,7 @@ using Mdpkg.Core.Internal.IO;
 
 namespace Mdpkg.Core;
 
-/// <summary>Creates and deep-self-validates packages using isolated native Git.</summary>
+/// <summary>Creates and verifies packages before publication. Release builds use isolated native Git; managed snapshot candidates have an independent in-process verifier.</summary>
 public sealed class PackageBuilder
 {
     private readonly Internal.EngineSettings settings;

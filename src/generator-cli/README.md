@@ -3,6 +3,11 @@
 `pack` creates real `.mdpkg` packages. `validate` checks them, and `validate --deep`
 verifies the curated repository with native Git and compares every current-view file
 with its tip-tree blob. `update` and `address` remain explicit exit-70 placeholders.
+An internal managed snapshot candidate is implemented but **not enabled in release
+builds**: full-object packing materially increases similar-file package sizes.
+The [acceptance report](../../docs/investigations/2026-09-12-card-0050-managed-snapshot-results.md)
+records measurements, the decision gate and candidate-only test commands. Ordinary
+release `pack` still requires Git; no new CLI backend flag has been added.
 The [format specification](https://github.com/michal-ciechan/markdown-package/blob/master/docs/spec.md) governs the bytes; the
 [tool reference](https://github.com/michal-ciechan/markdown-package/blob/master/docs/spec/generator-cli.md) documents commands and diagnostics.
 

@@ -40,6 +40,27 @@ permissions:
   contents: read
 
 jobs:
+  managed-snapshot-candidate:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: src/generator-cli
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: src/generator-cli/global.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Build private managed snapshot candidate
+        run: dotnet pack src/Mdpkg.Cli/Mdpkg.Cli.csproj -c Release -p:MdpkgManagedSnapshotCandidate=true --artifacts-path artifacts/managed-candidate -o artifacts/managed-candidate-feed
+      - name: Prove installed snapshots with absent and poison Git
+        run: python tests/prove-managed-snapshot.py --local-feed artifacts/managed-candidate-feed
+      # This candidate feed is intentionally neither published nor uploaded.
   build:
     strategy:
       matrix:

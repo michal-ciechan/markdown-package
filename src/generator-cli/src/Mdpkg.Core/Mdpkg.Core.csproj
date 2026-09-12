@@ -9,6 +9,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <EmbedAllSources>true</EmbedAllSources>
+    <DefineConstants Condition="'$(MdpkgManagedSnapshotCandidate)' == 'true'">$(DefineConstants);MDPKG_MANAGED_SNAPSHOT_CANDIDATE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <!-- Reader internals are a coordinated, exact-version ABI. -->

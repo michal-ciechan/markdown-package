@@ -34,18 +34,24 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
             if (destination.StartsWith(sourcePath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, comparison))
                 throw new EngineException(Outcome.InvalidSource, "MDPK1003", "Output must be outside the source directory to avoid packaging prior output.", destination);
             var correspondence = request.CorrespondenceBytes ?? (request.Correspondence is null ? null : await File.ReadAllBytesAsync(request.Correspondence, ct));
-            using var temp = new TemporaryDirectory(settings.TemporaryDirectory);
-            var git = new GitProcess(settings.GitExecutable, resources.MaxSpoolBytes);
-            var work = Path.Combine(temp.Path, "repository.git"); Directory.CreateDirectory(work);
-            var repo = new Repository(git, work, resources);
-            await repo.InitializeAsync(ct);
+            var managed = settings.ManagedSnapshots && !request.FromGit && request.Scope is null && request.Depth is null
+                ? new ManagedSnapshot(resources) : null;
+            using var temp = managed is null ? new TemporaryDirectory(settings.TemporaryDirectory) : null;
+            var git = managed is null ? new GitProcess(settings.GitExecutable, resources.MaxSpoolBytes) : null;
+            Repository? repo = null;
+            if (temp is not null)
+            {
+                var work = Path.Combine(temp.Path, "repository.git"); Directory.CreateDirectory(work);
+                repo = new Repository(git!, work, resources);
+                await repo.InitializeAsync(ct);
+            }
             string[] sourceCommits = [];
             Repository? sourceRepo = null;
             var truncated = request.Depth is not null;
             if (request.FromGit)
             {
                 for (var dir = new DirectoryInfo(sourcePath); dir != null; dir = dir.Parent) SourceTree.RejectLink(dir.FullName);
-                if (await git.TextAsync(sourcePath, ct, "rev-parse", "--is-bare-repository") != "true")
+                if (await git!.TextAsync(sourcePath, ct, "rev-parse", "--is-bare-repository") != "true")
                 {
                     var top = Path.GetFullPath(await git.TextAsync(sourcePath, ct, "rev-parse", "--show-toplevel"));
                     if (!string.Equals(top.TrimEnd(Path.DirectorySeparatorChar), sourcePath.TrimEnd(Path.DirectorySeparatorChar), comparison))
@@ -75,7 +81,7 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
                         : SourceTree.FromMemory(request.InputEntries, findings, ct, resources);
                     if (request.Scope is not null)
                     {
-                        var unprojected = await repo.TreeAsync(entries, ct);
+                        var unprojected = await repo!.TreeAsync(entries, ct);
                         entries = await repo.ReadTreeAsync(unprojected, request.Scope, findings, normalize: true, ct);
                     }
                 }
@@ -107,13 +113,14 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
                 var roots = LedgerEngine.LiveRoots(ledger, inventory, request.Namespace);
                 var complete = i == 0 ? ledger.Entries.Values.All(r => r.Unknown is null) : LedgerEngine.CompleteTransition(previousRoots, roots, ledger);
                 LedgerEngine.Store(entries, ledger);
-                var tree = await repo.TreeAsync(entries, ct);
+                var tree = managed is null ? await repo!.TreeAsync(entries, ct) : managed.Tree(entries, ct);
                 string commit;
-                if (sourceRepo is null) commit = await repo.CommitAsync(tree, null, request.Message, ct, request.Metadata);
+                if (sourceRepo is null) commit = managed is null ? await repo!.CommitAsync(tree, null, request.Message, ct, request.Metadata)
+                    : managed.Commit(tree, request.Message, request.Metadata);
                 else
                 {
                     var original = await sourceRepo.ReadObjectAsync("commit", sourceCommits[i], ct);
-                    commit = await repo.ObjectAsync("commit", RewriteCommit(original, tree, head), ct);
+                    commit = await repo!.ObjectAsync("commit", RewriteCommit(original, tree, head), ct);
                 }
                 if (i == 0) ranges.Add(new("sha1-" + commit, "sha1-" + commit, complete ? "complete" : "partial"));
                 else ranges.Add(new("sha1-" + head, "sha1-" + commit, complete ? "complete" : "partial"));
@@ -139,7 +146,7 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
             var items = new List<EntryData> { new(Profile.Manifest, CanonicalJson.Bytes(manifest, manifest: true)) };
             items.AddRange(currentEntries.OrderBy(e => e.Name, Utf8Comparer.Instance));
             items.Add(new(Profile.History, CanonicalJson.Bytes(history)));
-            items.AddRange(await repo.CurateAsync(head!, request.ReverseIndex, ct));
+            items.AddRange(managed is null ? await repo!.CurateAsync(head!, request.ReverseIndex, ct) : managed.Curate(head!, request.ReverseIndex, ct));
             stagedOutput = Path.Combine(Path.GetDirectoryName(destination)!, "." + Path.GetFileName(destination) + "." + Guid.NewGuid().ToString("N") + ".tmp");
             await using (var file = new FileStream(stagedOutput, FileMode.CreateNew, FileAccess.Write, FileShare.None))
             {
@@ -151,7 +158,7 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
                 await file.FlushAsync(ct);
                 file.Flush(flushToDisk: true);
             }
-            var validated = await new Validation.PackageValidator(settings).ValidateAsync(new(stagedOutput, Deep: true, Resources: resources), ct);
+            var validated = await new Validation.PackageValidator(settings).ValidateAsync(new(stagedOutput, Deep: true, Resources: resources), ct, managedSnapshot: managed is not null);
             findings.AddRange(validated.Diagnostics);
             if (validated.Outcome != Outcome.Success) return validated with { Diagnostics = findings, Package = null };
             ct.ThrowIfCancellationRequested();

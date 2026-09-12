@@ -10,7 +10,7 @@ internal static class PackCommand
     {
         var sourceDir = new Argument<DirectoryInfo>("source-dir")
         {
-            Description = "Document tree that becomes the working tree of current. .git/ is ignored; a real .mdpkg/ outside .mdpkg/address/ is rejected with MDPK1002 (§3.6, §6.3).",
+            Description = "Current files, including untracked and ignored text, without staging or committing. The exact root .git directory or gitfile is ignored. UTF-8/LF and reserved-path rules apply (§3.6, §6.3).",
         };
         var fromGit = new Option<bool>("--from-git")
         {
@@ -34,7 +34,7 @@ internal static class PackCommand
             }
         });
 
-        var command = new Command("pack", "Emit a fresh package from a source directory (§7).");
+        var command = new Command("pack", "Emit a fresh package from current files (§7). Release builds currently require Git; import, scope and depth always use Git.");
         command.Arguments.Add(sourceDir);
         var output = OutOption.Create(required: true);
         command.Options.Add(output);

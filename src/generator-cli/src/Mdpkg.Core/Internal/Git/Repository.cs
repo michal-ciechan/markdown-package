@@ -31,17 +31,8 @@ internal sealed class Repository(GitProcess git, string path, ResourceOptions? r
         }
         return await Build(blobs);
     }
-    public Task<string> CommitAsync(string tree, string? parent, string message, CancellationToken ct, SnapshotMetadata? metadata = null)
-    {
-        metadata ??= SnapshotMetadata.CliDefault with { Message = message };
-        static string Identity(CommitIdentity identity)
-        {
-            var offset = identity.Time.Offset;
-            return $"{identity.Name} <{identity.Email}> {identity.Time.ToUnixTimeSeconds().ToString(System.Globalization.CultureInfo.InvariantCulture)} {(offset < TimeSpan.Zero ? "-" : "+")}{Math.Abs(offset.Hours):00}{Math.Abs(offset.Minutes):00}";
-        }
-        return ObjectAsync("commit", Profile.Utf8.GetBytes($"tree {tree}\n" + (parent is null ? "" : $"parent {parent}\n") +
-            $"author {Identity(metadata.Author)}\ncommitter {Identity(metadata.Committer)}\n\n{message.TrimEnd('\n')}\n"), ct);
-    }
+    public Task<string> CommitAsync(string tree, string? parent, string message, CancellationToken ct, SnapshotMetadata? metadata = null) =>
+        ObjectAsync("commit", CommitSerializer.Serialize(tree, parent, message, metadata), ct);
     public Task<byte[]> ReadObjectAsync(string kind, string id, CancellationToken ct) => git.RunAsync(Path, ["cat-file", kind, id], null, ct);
     public async Task<List<EntryData>> ReadTreeAsync(string commit, string? scope, List<Finding> findings, bool normalize, CancellationToken ct)
     {

@@ -20,6 +20,16 @@ The following examples are compiled and executed by `tests/verify-consumers.py`
 using only package references. Native `git` must be installed for creation and deep
 validation. It is not required for full validation, Reader, or Reviews.
 
+The internal managed snapshot candidate is gated off in release builds. It supports
+directory snapshots without `Scope`/`Depth` and `SnapshotPackageRequest`, including
+correspondence, metadata, compression, descriptors and reverse indexes, with no Git
+process or temporary Git repository. It captures the same current files and uses
+the same normalization, ledger preparation and publication flow. Stream creation
+still spools a private package before copying to the caller-owned stream. Import,
+scope, depth and standalone deep validation keep using native Git. See the
+[acceptance report](https://github.com/michal-ciechan/markdown-package/blob/master/docs/investigations/2026-09-12-card-0050-managed-snapshot-results.md)
+for the measured size tradeoff preventing default activation.
+
 Directory creation (arguments: source directory, destination outside that directory):
 
 ```csharp

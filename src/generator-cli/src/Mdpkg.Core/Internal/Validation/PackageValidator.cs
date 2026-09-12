@@ -18,7 +18,7 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
 {
     private readonly EngineSettings settings = settings ?? new();
     private static readonly string[] CheckCodes = ["MDPK1006", "MDPK1007", "MDPK1008", "MDPK1006", "MDPK1005", "MDPK1009", "MDPK1001", "MDPK1002", "MDPK1004", "MDPK2001", "MDPK2002", "MDPK2003", "MDPK2004", "MDPK2005", "MDPK2006", "MDPK4002", "MDPK4002", "MDPK2001", "MDPK1003", "MDPK1010", "MDPK1011", "MDPK2007", "MDPK4003"];
-    public async Task<EngineResult> ValidateAsync(ValidateRequest request, CancellationToken ct = default)
+    public async Task<EngineResult> ValidateAsync(ValidateRequest request, CancellationToken ct = default, bool managedSnapshot = false)
     {
         var findings = new List<Finding>();
         var completed = new HashSet<string>(StringComparer.Ordinal);
@@ -119,7 +119,8 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
             if (request.Deep && !findings.Any(f => f.Code is "MDPK4002" or "MDPK1002" or "MDPK2001"))
             {
                 deepRun = true;
-                await DeepAsync(manifest, history, gitEntries, view, resources, ct);
+                if (managedSnapshot) ManagedSnapshotVerifier.Verify(manifest, history, gitEntries, view, resources, ct);
+                else await DeepAsync(manifest, history, gitEntries, view, resources, ct);
                 deepSucceeded = true;
             }
             file.Position = 0;

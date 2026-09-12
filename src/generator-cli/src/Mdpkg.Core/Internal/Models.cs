@@ -15,4 +15,8 @@ internal sealed record PackRequest(string Source, string Destination, string Nam
     IReadOnlyList<PackageInputEntry>? InputEntries = null, ResourceOptions? Resources = null);
 internal sealed record ValidateRequest(string Path, bool Deep = false, bool AcceptRecoverable = false,
     string? Namespace = null, string ObjectFormat = "sha1", ResourceOptions? Resources = null);
-internal sealed record EngineSettings(string GitExecutable = "git", string? TemporaryDirectory = null);
+internal sealed record EngineSettings(string GitExecutable = "git", string? TemporaryDirectory = null)
+{
+    // Internal differential/acceptance seam. Enable by default only after CARD-0050 gates.
+    internal bool ManagedSnapshots { get; init; } = Git.SnapshotBackend.DefaultManaged;
+}

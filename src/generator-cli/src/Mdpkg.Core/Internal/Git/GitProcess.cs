@@ -7,6 +7,8 @@ namespace Mdpkg.Core.Internal.Git;
 /// <summary>Plumbing only; never a shell, checkout, fetch, hook, or source write.</summary>
 internal sealed class GitProcess(string executable, long maximumOutputBytes = long.MaxValue)
 {
+    // Async-local instrumentation for acceptance tests, including availability probes.
+    internal static readonly AsyncLocal<Action<ProcessStartInfo>?> BeforeStart = new();
     public async Task<byte[]> RunAsync(string directory, IEnumerable<string> arguments, byte[]? input, CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
@@ -27,6 +29,7 @@ internal sealed class GitProcess(string executable, long maximumOutputBytes = lo
         foreach (var setting in new[] { "core.autocrlf=false", "core.compression=6", "pack.threads=1", "pack.window=10", "pack.depth=50", "pack.writeReverseIndex=false", "core.hooksPath=", "credential.helper=", "protocol.allow=never", "gc.auto=0", "maintenance.auto=false", "core.useReplaceRefs=false", "core.quotePath=false" })
         { start.ArgumentList.Add("-c"); start.ArgumentList.Add(setting); }
         foreach (var arg in args) start.ArgumentList.Add(arg);
+        BeforeStart.Value?.Invoke(start);
         using var process = new Process { StartInfo = start };
         try { process.Start(); }
         catch (Win32Exception ex) { throw new IOException("Cannot start Git ('" + executable + "'): " + ex.Message, ex); }

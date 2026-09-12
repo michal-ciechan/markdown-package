@@ -7,7 +7,7 @@ internal static class ApiSupport
     internal static Internal.EngineSettings Settings(EngineSettings? settings)
     {
         settings ??= new(); ArgumentException.ThrowIfNullOrWhiteSpace(settings.GitExecutable);
-        return new(settings.GitExecutable, settings.TemporaryDirectory);
+        return new(settings.GitExecutable, settings.TemporaryDirectory) { ManagedSnapshots = settings.ManagedSnapshots };
     }
     internal static void Creation(CreationOptions options, SnapshotMetadata metadata)
     {

@@ -1,0 +1,1558 @@
+{
+  "Windows": [
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "tiny",
+      "Backend": "native",
+      "SourceBytes": 1289,
+      "First": {
+        "Milliseconds": 3010.0235,
+        "Processes": 12,
+        "PeakHostRss": 70430720,
+        "PeakTemporaryBytes": 6459,
+        "PackageBytes": 3172,
+        "PackBytes": 250
+      },
+      "Warm": [
+        {
+          "Milliseconds": 2347.2529,
+          "Processes": 12,
+          "PeakHostRss": 71884800,
+          "PeakTemporaryBytes": 6459,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 1660.0034,
+          "Processes": 12,
+          "PeakHostRss": 69435392,
+          "PeakTemporaryBytes": 6459,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 1643.496,
+          "Processes": 12,
+          "PeakHostRss": 74559488,
+          "PeakTemporaryBytes": 6459,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 1736.8569,
+          "Processes": 12,
+          "PeakHostRss": 73977856,
+          "PeakTemporaryBytes": 6459,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 2227.1901,
+          "Processes": 12,
+          "PeakHostRss": 76222464,
+          "PeakTemporaryBytes": 6459,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 1987.0829,
+          "Processes": 12,
+          "PeakHostRss": 80756736,
+          "PeakTemporaryBytes": 6459,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 1845.4339,
+          "Processes": 12,
+          "PeakHostRss": 81928192,
+          "PeakTemporaryBytes": 6459,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 2289.7772,
+          "Processes": 12,
+          "PeakHostRss": 82022400,
+          "PeakTemporaryBytes": 6459,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 1717.6945,
+          "Processes": 12,
+          "PeakHostRss": 82259968,
+          "PeakTemporaryBytes": 6459,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 2317.8986,
+          "Processes": 12,
+          "PeakHostRss": 82714624,
+          "PeakTemporaryBytes": 6459,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "tiny",
+      "Backend": "managed",
+      "SourceBytes": 1289,
+      "First": {
+        "Milliseconds": 123.1884,
+        "Processes": 0,
+        "PeakHostRss": 81973248,
+        "PeakTemporaryBytes": 3176,
+        "PackageBytes": 3176,
+        "PackBytes": 254
+      },
+      "Warm": [
+        {
+          "Milliseconds": 25.2152,
+          "Processes": 0,
+          "PeakHostRss": 82128896,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 17.7424,
+          "Processes": 0,
+          "PeakHostRss": 82743296,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 173.7925,
+          "Processes": 0,
+          "PeakHostRss": 84033536,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 16.7796,
+          "Processes": 0,
+          "PeakHostRss": 83165184,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 10.576,
+          "Processes": 0,
+          "PeakHostRss": 83169280,
+          "PeakTemporaryBytes": 0,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 20.4499,
+          "Processes": 0,
+          "PeakHostRss": 83288064,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 28.2412,
+          "Processes": 0,
+          "PeakHostRss": 83337216,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 21.3154,
+          "Processes": 0,
+          "PeakHostRss": 83374080,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 12.3192,
+          "Processes": 0,
+          "PeakHostRss": 84484096,
+          "PeakTemporaryBytes": 0,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 13.8125,
+          "Processes": 0,
+          "PeakHostRss": 84484096,
+          "PeakTemporaryBytes": 0,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "many-small",
+      "Backend": "native",
+      "SourceBytes": 25790,
+      "First": {
+        "Milliseconds": 10349.3468,
+        "Processes": 69,
+        "PeakHostRss": 86216704,
+        "PeakTemporaryBytes": 15558,
+        "PackageBytes": 7426,
+        "PackBytes": 1358
+      },
+      "Warm": [
+        {
+          "Milliseconds": 8391.8491,
+          "Processes": 69,
+          "PeakHostRss": 84508672,
+          "PeakTemporaryBytes": 15558,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 8081.6253,
+          "Processes": 69,
+          "PeakHostRss": 90497024,
+          "PeakTemporaryBytes": 15558,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 9783.1835,
+          "Processes": 69,
+          "PeakHostRss": 86913024,
+          "PeakTemporaryBytes": 15558,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 6714.1508,
+          "Processes": 69,
+          "PeakHostRss": 86265856,
+          "PeakTemporaryBytes": 15558,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 7177.8279,
+          "Processes": 69,
+          "PeakHostRss": 82735104,
+          "PeakTemporaryBytes": 15558,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 7221.1997,
+          "Processes": 69,
+          "PeakHostRss": 86405120,
+          "PeakTemporaryBytes": 15558,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 6759.1083,
+          "Processes": 69,
+          "PeakHostRss": 82796544,
+          "PeakTemporaryBytes": 15558,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 8548.0131,
+          "Processes": 69,
+          "PeakHostRss": 84459520,
+          "PeakTemporaryBytes": 15558,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 8473.6244,
+          "Processes": 69,
+          "PeakHostRss": 88219648,
+          "PeakTemporaryBytes": 15558,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 11684.5458,
+          "Processes": 69,
+          "PeakHostRss": 97984512,
+          "PeakTemporaryBytes": 15558,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "many-small",
+      "Backend": "managed",
+      "SourceBytes": 25790,
+      "First": {
+        "Milliseconds": 73.6189,
+        "Processes": 0,
+        "PeakHostRss": 88150016,
+        "PeakTemporaryBytes": 7812,
+        "PackageBytes": 7812,
+        "PackBytes": 1744
+      },
+      "Warm": [
+        {
+          "Milliseconds": 39.982,
+          "Processes": 0,
+          "PeakHostRss": 86155264,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 50.206,
+          "Processes": 0,
+          "PeakHostRss": 87109632,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 41.5043,
+          "Processes": 0,
+          "PeakHostRss": 86077440,
+          "PeakTemporaryBytes": 0,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 30.9058,
+          "Processes": 0,
+          "PeakHostRss": 86278144,
+          "PeakTemporaryBytes": 0,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 31.8861,
+          "Processes": 0,
+          "PeakHostRss": 86532096,
+          "PeakTemporaryBytes": 0,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 36.6676,
+          "Processes": 0,
+          "PeakHostRss": 86585344,
+          "PeakTemporaryBytes": 0,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 47.3528,
+          "Processes": 0,
+          "PeakHostRss": 86872064,
+          "PeakTemporaryBytes": 0,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 56.2299,
+          "Processes": 0,
+          "PeakHostRss": 86827008,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 45.645,
+          "Processes": 0,
+          "PeakHostRss": 86859776,
+          "PeakTemporaryBytes": 0,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 28.5244,
+          "Processes": 0,
+          "PeakHostRss": 87015424,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "large",
+      "Backend": "native",
+      "SourceBytes": 1648948,
+      "First": {
+        "Milliseconds": 3478.2927,
+        "Processes": 15,
+        "PeakHostRss": 178212864,
+        "PeakTemporaryBytes": 953604,
+        "PackageBytes": 398961,
+        "PackBytes": 153158
+      },
+      "Warm": [
+        {
+          "Milliseconds": 3212.8539,
+          "Processes": 15,
+          "PeakHostRss": 177725440,
+          "PeakTemporaryBytes": 953604,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 3274.8694,
+          "Processes": 15,
+          "PeakHostRss": 183107584,
+          "PeakTemporaryBytes": 953604,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 3086.4641,
+          "Processes": 15,
+          "PeakHostRss": 200581120,
+          "PeakTemporaryBytes": 953604,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 3335.3508,
+          "Processes": 15,
+          "PeakHostRss": 195997696,
+          "PeakTemporaryBytes": 953604,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 3315.3296,
+          "Processes": 15,
+          "PeakHostRss": 179552256,
+          "PeakTemporaryBytes": 953604,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 2942.8514,
+          "Processes": 15,
+          "PeakHostRss": 190152704,
+          "PeakTemporaryBytes": 953604,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 3913.5368,
+          "Processes": 15,
+          "PeakHostRss": 192958464,
+          "PeakTemporaryBytes": 953604,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 2032.1428,
+          "Processes": 15,
+          "PeakHostRss": 191213568,
+          "PeakTemporaryBytes": 953604,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 2894.2055,
+          "Processes": 15,
+          "PeakHostRss": 215203840,
+          "PeakTemporaryBytes": 953604,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 2092.4566,
+          "Processes": 15,
+          "PeakHostRss": 217595904,
+          "PeakTemporaryBytes": 953604,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "large",
+      "Backend": "managed",
+      "SourceBytes": 1648948,
+      "First": {
+        "Milliseconds": 939.6864,
+        "Processes": 0,
+        "PeakHostRss": 220774400,
+        "PeakTemporaryBytes": 488859,
+        "PackageBytes": 488859,
+        "PackBytes": 243056
+      },
+      "Warm": [
+        {
+          "Milliseconds": 565.3956,
+          "Processes": 0,
+          "PeakHostRss": 216850432,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 529.6953,
+          "Processes": 0,
+          "PeakHostRss": 198483968,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 534.4261,
+          "Processes": 0,
+          "PeakHostRss": 226463744,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 469.7953,
+          "Processes": 0,
+          "PeakHostRss": 207843328,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 561.47,
+          "Processes": 0,
+          "PeakHostRss": 183840768,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 480.2158,
+          "Processes": 0,
+          "PeakHostRss": 205455360,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 507.2853,
+          "Processes": 0,
+          "PeakHostRss": 205459456,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 536.614,
+          "Processes": 0,
+          "PeakHostRss": 203632640,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 480.9423,
+          "Processes": 0,
+          "PeakHostRss": 181755904,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 556.7189,
+          "Processes": 0,
+          "PeakHostRss": 207507456,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "similar",
+      "Backend": "native",
+      "SourceBytes": 1780250,
+      "First": {
+        "Milliseconds": 9091.7612,
+        "Processes": 69,
+        "PeakHostRss": 210067456,
+        "PeakTemporaryBytes": 661061,
+        "PackageBytes": 319042,
+        "PackBytes": 16403
+      },
+      "Warm": [
+        {
+          "Milliseconds": 8885.7814,
+          "Processes": 69,
+          "PeakHostRss": 208764928,
+          "PeakTemporaryBytes": 661061,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 8565.6081,
+          "Processes": 69,
+          "PeakHostRss": 193830912,
+          "PeakTemporaryBytes": 661061,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 7535.672,
+          "Processes": 69,
+          "PeakHostRss": 162328576,
+          "PeakTemporaryBytes": 661061,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 8666.3111,
+          "Processes": 69,
+          "PeakHostRss": 156004352,
+          "PeakTemporaryBytes": 661061,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 7228.5801,
+          "Processes": 69,
+          "PeakHostRss": 128462848,
+          "PeakTemporaryBytes": 661061,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 8225.0818,
+          "Processes": 69,
+          "PeakHostRss": 129503232,
+          "PeakTemporaryBytes": 661061,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 8835.2884,
+          "Processes": 69,
+          "PeakHostRss": 119816192,
+          "PeakTemporaryBytes": 661061,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 9125.6015,
+          "Processes": 69,
+          "PeakHostRss": 112361472,
+          "PeakTemporaryBytes": 661061,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 12417.2204,
+          "Processes": 69,
+          "PeakHostRss": 111034368,
+          "PeakTemporaryBytes": 661061,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 10927.3332,
+          "Processes": 69,
+          "PeakHostRss": 103964672,
+          "PeakTemporaryBytes": 661061,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "similar",
+      "Backend": "managed",
+      "SourceBytes": 1780250,
+      "First": {
+        "Milliseconds": 398.1911,
+        "Processes": 0,
+        "PeakHostRss": 105902080,
+        "PeakTemporaryBytes": 600973,
+        "PackageBytes": 600973,
+        "PackBytes": 298334
+      },
+      "Warm": [
+        {
+          "Milliseconds": 490.5881,
+          "Processes": 0,
+          "PeakHostRss": 114798592,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 440.0094,
+          "Processes": 0,
+          "PeakHostRss": 105037824,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 465.7053,
+          "Processes": 0,
+          "PeakHostRss": 107986944,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 517.3069,
+          "Processes": 0,
+          "PeakHostRss": 126947328,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 388.7206,
+          "Processes": 0,
+          "PeakHostRss": 116699136,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 386.2761,
+          "Processes": 0,
+          "PeakHostRss": 115888128,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 455.2461,
+          "Processes": 0,
+          "PeakHostRss": 106188800,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 571.816,
+          "Processes": 0,
+          "PeakHostRss": 102830080,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 646.241,
+          "Processes": 0,
+          "PeakHostRss": 101462016,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 629.8257,
+          "Processes": 0,
+          "PeakHostRss": 104263680,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        }
+      ]
+    }
+  ],
+  "Linux": [
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "tiny",
+      "Backend": "native",
+      "SourceBytes": 1289,
+      "First": {
+        "Milliseconds": 761.3844,
+        "Processes": 12,
+        "PeakHostRss": 93114368,
+        "PeakTemporaryBytes": 6421,
+        "PackageBytes": 3172,
+        "PackBytes": 250
+      },
+      "Warm": [
+        {
+          "Milliseconds": 155.1137,
+          "Processes": 12,
+          "PeakHostRss": 93360128,
+          "PeakTemporaryBytes": 6421,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 187.3085,
+          "Processes": 12,
+          "PeakHostRss": 96489472,
+          "PeakTemporaryBytes": 6421,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 207.8508,
+          "Processes": 12,
+          "PeakHostRss": 98295808,
+          "PeakTemporaryBytes": 6421,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 164.3717,
+          "Processes": 12,
+          "PeakHostRss": 99115008,
+          "PeakTemporaryBytes": 6421,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 140.2005,
+          "Processes": 12,
+          "PeakHostRss": 99315712,
+          "PeakTemporaryBytes": 6421,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 134.1384,
+          "Processes": 12,
+          "PeakHostRss": 99581952,
+          "PeakTemporaryBytes": 6421,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 133.2367,
+          "Processes": 12,
+          "PeakHostRss": 99606528,
+          "PeakTemporaryBytes": 6421,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 132.5757,
+          "Processes": 12,
+          "PeakHostRss": 99692544,
+          "PeakTemporaryBytes": 6421,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 135.506,
+          "Processes": 12,
+          "PeakHostRss": 100036608,
+          "PeakTemporaryBytes": 6421,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        },
+        {
+          "Milliseconds": 162.567,
+          "Processes": 12,
+          "PeakHostRss": 100048896,
+          "PeakTemporaryBytes": 6421,
+          "PackageBytes": 3172,
+          "PackBytes": 250
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "tiny",
+      "Backend": "managed",
+      "SourceBytes": 1289,
+      "First": {
+        "Milliseconds": 60.6246,
+        "Processes": 0,
+        "PeakHostRss": 100368384,
+        "PeakTemporaryBytes": 3176,
+        "PackageBytes": 3176,
+        "PackBytes": 254
+      },
+      "Warm": [
+        {
+          "Milliseconds": 19.7739,
+          "Processes": 0,
+          "PeakHostRss": 100491264,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 15.1472,
+          "Processes": 0,
+          "PeakHostRss": 100548608,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 17.8815,
+          "Processes": 0,
+          "PeakHostRss": 100585472,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 17.5657,
+          "Processes": 0,
+          "PeakHostRss": 100585472,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 19.6735,
+          "Processes": 0,
+          "PeakHostRss": 100585472,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 17.005,
+          "Processes": 0,
+          "PeakHostRss": 100585472,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 16.0326,
+          "Processes": 0,
+          "PeakHostRss": 100585472,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 16.2489,
+          "Processes": 0,
+          "PeakHostRss": 100585472,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 18.0046,
+          "Processes": 0,
+          "PeakHostRss": 100585472,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        },
+        {
+          "Milliseconds": 16.4521,
+          "Processes": 0,
+          "PeakHostRss": 100683776,
+          "PeakTemporaryBytes": 3176,
+          "PackageBytes": 3176,
+          "PackBytes": 254
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "many-small",
+      "Backend": "native",
+      "SourceBytes": 25790,
+      "First": {
+        "Milliseconds": 455.7784,
+        "Processes": 69,
+        "PeakHostRss": 101158912,
+        "PeakTemporaryBytes": 15520,
+        "PackageBytes": 7426,
+        "PackBytes": 1358
+      },
+      "Warm": [
+        {
+          "Milliseconds": 556.0721,
+          "Processes": 69,
+          "PeakHostRss": 101736448,
+          "PeakTemporaryBytes": 15520,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 556.8169,
+          "Processes": 69,
+          "PeakHostRss": 102354944,
+          "PeakTemporaryBytes": 15520,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 620.5665,
+          "Processes": 69,
+          "PeakHostRss": 103120896,
+          "PeakTemporaryBytes": 15520,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 591.9983,
+          "Processes": 69,
+          "PeakHostRss": 103919616,
+          "PeakTemporaryBytes": 15520,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 651.3801,
+          "Processes": 69,
+          "PeakHostRss": 104009728,
+          "PeakTemporaryBytes": 15520,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 612.8071,
+          "Processes": 69,
+          "PeakHostRss": 104415232,
+          "PeakTemporaryBytes": 15520,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 616.3277,
+          "Processes": 69,
+          "PeakHostRss": 105418752,
+          "PeakTemporaryBytes": 15520,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 610.6882,
+          "Processes": 69,
+          "PeakHostRss": 107069440,
+          "PeakTemporaryBytes": 15520,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 632.0868,
+          "Processes": 69,
+          "PeakHostRss": 107069440,
+          "PeakTemporaryBytes": 15520,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        },
+        {
+          "Milliseconds": 438.5716,
+          "Processes": 69,
+          "PeakHostRss": 107077632,
+          "PeakTemporaryBytes": 15520,
+          "PackageBytes": 7426,
+          "PackBytes": 1358
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "many-small",
+      "Backend": "managed",
+      "SourceBytes": 25790,
+      "First": {
+        "Milliseconds": 60.1401,
+        "Processes": 0,
+        "PeakHostRss": 107393024,
+        "PeakTemporaryBytes": 7812,
+        "PackageBytes": 7812,
+        "PackBytes": 1744
+      },
+      "Warm": [
+        {
+          "Milliseconds": 61.2747,
+          "Processes": 0,
+          "PeakHostRss": 107393024,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 77.4094,
+          "Processes": 0,
+          "PeakHostRss": 107393024,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 111.7066,
+          "Processes": 0,
+          "PeakHostRss": 107569152,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 98.4125,
+          "Processes": 0,
+          "PeakHostRss": 107716608,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 96.7485,
+          "Processes": 0,
+          "PeakHostRss": 107843584,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 89.6944,
+          "Processes": 0,
+          "PeakHostRss": 108064768,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 79.4371,
+          "Processes": 0,
+          "PeakHostRss": 108064768,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 66.0282,
+          "Processes": 0,
+          "PeakHostRss": 108064768,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 165.8402,
+          "Processes": 0,
+          "PeakHostRss": 110301184,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        },
+        {
+          "Milliseconds": 100.4216,
+          "Processes": 0,
+          "PeakHostRss": 110485504,
+          "PeakTemporaryBytes": 7812,
+          "PackageBytes": 7812,
+          "PackBytes": 1744
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "large",
+      "Backend": "native",
+      "SourceBytes": 1648948,
+      "First": {
+        "Milliseconds": 1809.1565,
+        "Processes": 15,
+        "PeakHostRss": 209846272,
+        "PeakTemporaryBytes": 953566,
+        "PackageBytes": 398961,
+        "PackBytes": 153158
+      },
+      "Warm": [
+        {
+          "Milliseconds": 1021.1563,
+          "Processes": 15,
+          "PeakHostRss": 193245184,
+          "PeakTemporaryBytes": 953566,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 1260.428,
+          "Processes": 15,
+          "PeakHostRss": 228171776,
+          "PeakTemporaryBytes": 953566,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 1443.454,
+          "Processes": 15,
+          "PeakHostRss": 235253760,
+          "PeakTemporaryBytes": 953566,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 1364.4711,
+          "Processes": 15,
+          "PeakHostRss": 230838272,
+          "PeakTemporaryBytes": 953566,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 938.0955,
+          "Processes": 15,
+          "PeakHostRss": 217980928,
+          "PeakTemporaryBytes": 953566,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 1015.3234,
+          "Processes": 15,
+          "PeakHostRss": 240709632,
+          "PeakTemporaryBytes": 953566,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 1133.548,
+          "Processes": 15,
+          "PeakHostRss": 249442304,
+          "PeakTemporaryBytes": 953566,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 1072.5192,
+          "Processes": 15,
+          "PeakHostRss": 262221824,
+          "PeakTemporaryBytes": 953566,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 1058.1863,
+          "Processes": 15,
+          "PeakHostRss": 237457408,
+          "PeakTemporaryBytes": 953566,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        },
+        {
+          "Milliseconds": 862.2709,
+          "Processes": 15,
+          "PeakHostRss": 242581504,
+          "PeakTemporaryBytes": 953566,
+          "PackageBytes": 398961,
+          "PackBytes": 153158
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "large",
+      "Backend": "managed",
+      "SourceBytes": 1648948,
+      "First": {
+        "Milliseconds": 472.8765,
+        "Processes": 0,
+        "PeakHostRss": 231772160,
+        "PeakTemporaryBytes": 488859,
+        "PackageBytes": 488859,
+        "PackBytes": 243056
+      },
+      "Warm": [
+        {
+          "Milliseconds": 380.2538,
+          "Processes": 0,
+          "PeakHostRss": 227946496,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 465.6381,
+          "Processes": 0,
+          "PeakHostRss": 222089216,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 510.1283,
+          "Processes": 0,
+          "PeakHostRss": 234917888,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 548.345,
+          "Processes": 0,
+          "PeakHostRss": 251990016,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 499.8201,
+          "Processes": 0,
+          "PeakHostRss": 247361536,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 335.5096,
+          "Processes": 0,
+          "PeakHostRss": 250740736,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 342.109,
+          "Processes": 0,
+          "PeakHostRss": 248033280,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 422.9879,
+          "Processes": 0,
+          "PeakHostRss": 233889792,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 590.4526,
+          "Processes": 0,
+          "PeakHostRss": 253571072,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        },
+        {
+          "Milliseconds": 343.6955,
+          "Processes": 0,
+          "PeakHostRss": 252440576,
+          "PeakTemporaryBytes": 488859,
+          "PackageBytes": 488859,
+          "PackBytes": 243056
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "similar",
+      "Backend": "native",
+      "SourceBytes": 1780250,
+      "First": {
+        "Milliseconds": 854.0724,
+        "Processes": 69,
+        "PeakHostRss": 260186112,
+        "PeakTemporaryBytes": 661023,
+        "PackageBytes": 319042,
+        "PackBytes": 16403
+      },
+      "Warm": [
+        {
+          "Milliseconds": 1015.4542,
+          "Processes": 69,
+          "PeakHostRss": 290893824,
+          "PeakTemporaryBytes": 661023,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 1026.8704,
+          "Processes": 69,
+          "PeakHostRss": 295550976,
+          "PeakTemporaryBytes": 661023,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 1032.5463,
+          "Processes": 69,
+          "PeakHostRss": 298967040,
+          "PeakTemporaryBytes": 661023,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 1009.2317,
+          "Processes": 69,
+          "PeakHostRss": 297893888,
+          "PeakTemporaryBytes": 661023,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 1226.2614,
+          "Processes": 69,
+          "PeakHostRss": 250228736,
+          "PeakTemporaryBytes": 661023,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 1148.8628,
+          "Processes": 69,
+          "PeakHostRss": 297635840,
+          "PeakTemporaryBytes": 661023,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 921.8158,
+          "Processes": 69,
+          "PeakHostRss": 285978624,
+          "PeakTemporaryBytes": 661023,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 791.4882,
+          "Processes": 69,
+          "PeakHostRss": 297246720,
+          "PeakTemporaryBytes": 661023,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 743.0805,
+          "Processes": 69,
+          "PeakHostRss": 296341504,
+          "PeakTemporaryBytes": 661023,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        },
+        {
+          "Milliseconds": 719.4092,
+          "Processes": 69,
+          "PeakHostRss": 230494208,
+          "PeakTemporaryBytes": 661023,
+          "PackageBytes": 319042,
+          "PackBytes": 16403
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "similar",
+      "Backend": "managed",
+      "SourceBytes": 1780250,
+      "First": {
+        "Milliseconds": 471.3778,
+        "Processes": 0,
+        "PeakHostRss": 222703616,
+        "PeakTemporaryBytes": 600973,
+        "PackageBytes": 600973,
+        "PackBytes": 298334
+      },
+      "Warm": [
+        {
+          "Milliseconds": 605.2456,
+          "Processes": 0,
+          "PeakHostRss": 269266944,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 472.648,
+          "Processes": 0,
+          "PeakHostRss": 301965312,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 453.4067,
+          "Processes": 0,
+          "PeakHostRss": 275369984,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 303.4963,
+          "Processes": 0,
+          "PeakHostRss": 273760256,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 248.5982,
+          "Processes": 0,
+          "PeakHostRss": 224419840,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 298.2838,
+          "Processes": 0,
+          "PeakHostRss": 274960384,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 287.1068,
+          "Processes": 0,
+          "PeakHostRss": 243834880,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 234.4068,
+          "Processes": 0,
+          "PeakHostRss": 242749440,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 313.9652,
+          "Processes": 0,
+          "PeakHostRss": 213700608,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        },
+        {
+          "Milliseconds": 379.1257,
+          "Processes": 0,
+          "PeakHostRss": 218140672,
+          "PeakTemporaryBytes": 600973,
+          "PackageBytes": 600973,
+          "PackBytes": 298334
+        }
+      ]
+    }
+  ]
+}

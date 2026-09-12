@@ -15,7 +15,11 @@ mdpkg address  <in.mdpkg>    --out <file.mdpkg>   <op> ...    # sparse exception
 mdpkg validate <in.mdpkg>                         [options]   # validation only, writes nothing
 ```
 
-Install `dotnet tool install -g mdpkg`; also invokable as `dotnet mdpkg`. Requires `git` on `PATH` (§5.1 curates a real repository).
+Install `dotnet tool install -g mdpkg`; also invokable as `dotnet mdpkg`. Current release builds require `git` on `PATH` for creation and deep validation. A generated Git repository is a format requirement; launching native Git is an implementation choice.
+
+The managed snapshot candidate remains internally gated pending the [CARD-0050 acceptance decision](../investigations/2026-09-12-card-0050-managed-snapshot-results.md). In candidate builds, ordinary snapshots without `--scope` or `--depth` use managed object/pack/index creation and independent in-process repository verification, including `--reverse-index`, descriptors, compression, messages and correspondence. `--from-git`, snapshot scope/depth and standalone `validate --deep` retain native Git. No new CLI flag selects a backend and eligible managed failures never fall back to Git. Release behavior remains native until the gate is resolved.
+
+Snapshots read current disk contents, including untracked and ignored UTF-8 files, without staging or committing. Only the exact root `.git` directory/gitfile is skipped; it is never read. Text is normalized to LF and path/content rules apply. The generated single-commit repository is included in the package. Files are captured sequentially once for both the current view and Git blobs; this is not an atomic filesystem snapshot of concurrent edits.
 
 | Verb | Writes a package | Reads `.git/` pack | Mutates input | Spec path |
 | --- | --- | --- | --- | --- |
@@ -311,7 +315,7 @@ Writes no package. Every writing verb runs the same check set against its own ou
 | Every summary named by the SHA-256 of its own bytes; every binding present | `MDPK2005` | summary entries | §5.4 |
 | Every archived patch matches its bound hash | `MDPK2006` | patch entries | §5.5 |
 | Curated repository holds nothing §5.1 omits | `MDPK4002` | central directory | §5.1 |
-| `git fsck --full --strict` on the extracted repository | `MDPK4002` | `--deep` only | §3.8, §8.4 |
+| Repository integrity: native `git fsck --full --strict`, or the independent managed verifier during candidate snapshot production | `MDPK4002` | `--deep` / pack self-check | §3.8, §8.4 |
 | Current view equals the tip tree, blob for blob | `MDPK2001` | `--deep` only | §7.1 |
 | Unsafe entry names and UTF-8 names | `MDPK1003` | central directory | §3.6 |
 | No ZIP64 sentinels, locator or extra field | `MDPK1010` | directory/local headers/EOCD | G-2 |

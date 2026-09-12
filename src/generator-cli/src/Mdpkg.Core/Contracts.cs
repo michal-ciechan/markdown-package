@@ -86,7 +86,10 @@ public sealed class ValidationResult : PackageResult
 }
 
 /// <summary>Native Git and private workspace settings; no ambient configuration is changed.</summary>
-public sealed record EngineSettings(string GitExecutable = "git", string? TemporaryDirectory = null);
+public sealed record EngineSettings(string GitExecutable = "git", string? TemporaryDirectory = null)
+{
+    internal bool ManagedSnapshots { get; init; } = Internal.Git.SnapshotBackend.DefaultManaged;
+}
 public sealed record CommitIdentity(string Name, string Email, DateTimeOffset Time);
 public sealed record SnapshotMetadata(CommitIdentity Author, CommitIdentity Committer, string Message)
 {
