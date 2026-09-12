@@ -14,7 +14,7 @@ internal static class PackCommand
         };
         var fromGit = new Option<bool>("--from-git")
         {
-            Description = "Import the source directory's own history instead of synthesising a single root commit (§5.3 sourceRepository, scope).",
+            Description = "Import committed source history; selects --history git unless explicitly overridden (§5.3). Ordinary pack captures current files without history.",
         };
         var scope = new Option<string>("--scope")
         {
@@ -44,7 +44,7 @@ internal static class PackCommand
         command.Options.Add(fromGit);
         command.Options.Add(scope);
         command.Options.Add(depth);
-        var message = CommonOptions.Message("Commit message for the synthesised root (§5.1).", "Initial package");
+        var message = CommonOptions.Message("Commit message for explicit --history git output (§5.1); not accepted in snapshot mode.", "Initial package");
         var requireComplete = CommonOptions.RequireComplete();
         var correspondence = CommonOptions.Correspondence();
         command.Options.Add(message);

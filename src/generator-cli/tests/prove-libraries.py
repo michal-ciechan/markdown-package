@@ -28,6 +28,8 @@ using var input = File.OpenRead(args[1]);
 using var archive = await PackageArchive.OpenAsync(input);
 if (archive.Identity != created.Identity || archive.VerifySnapshot() != created.Identity)
     throw new InvalidOperationException("Core and Reader identities disagree.");
+if (created.Mode != HistoryMode.None || created.Identity!.Current.Kind != "snapshot" || created.Assurance != IdentityAssurance.SnapshotVerified)
+    throw new InvalidOperationException("Default creation must emit the typed history-free state.");
 Console.WriteLine("Core snapshot create + full hash validation + transitive Reader passed without Git.");
 '''
 READER_PROGRAM = '''using Mdpkg.Reader;

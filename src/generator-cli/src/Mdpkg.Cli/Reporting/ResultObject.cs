@@ -41,7 +41,7 @@ internal sealed record HistoryResult(string Mode,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] int? Ranges = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] int? Patches = null);
 
-/// <summary>§6 <c>checks[]</c>: one per §11 check; <c>status</c> is <c>pass</c>, <c>fail</c> or <c>skipped</c>.</summary>
+/// <summary>§6 <c>checks[]</c>: one per §11 check; <c>status</c> is <c>pass</c>, <c>fail</c>, <c>skipped</c> or mode-specific <c>not-applicable</c>.</summary>
 internal sealed record CheckResult(string Code, string Status);
 
 /// <summary>§6 <c>diagnostics[]</c> (§4): <c>spec</c> is the citing section or decision.</summary>

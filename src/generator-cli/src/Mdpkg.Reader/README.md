@@ -1,5 +1,11 @@
 # Mdpkg.Reader
 
+This source targets **draft 2**, the breaking `markdown-package/1` revision in
+**0.1.0-preview.3**. Typed state and history modes replace the earlier string-valued
+manifest; there is no compatibility parser. Use a fresh local package feed until
+the coordinated public release gate succeeds. The older preview.2 publication
+does not establish acceptance of this revision.
+
 Read-only .NET 10 foundation for `.mdpkg`: bounded ZIP32 indexing and selective payload
 decoding; canonical format checks; Unicode path rules; typed package identities and
 locators; CommonMark source scopes, digests and current-view ledger resolution.
@@ -11,7 +17,7 @@ Creation and full/deep validation are available through `Mdpkg.Core`.
 Install after the [public release gate](https://github.com/michal-ciechan/markdown-package/actions/workflows/publish-nuget.yml) succeeds:
 
 ```sh
-dotnet add package Mdpkg.Reader --version 0.1.0-preview.2 --source https://api.nuget.org/v3/index.json
+dotnet add package Mdpkg.Reader --version 0.1.0-preview.3 --source https://api.nuget.org/v3/index.json
 ```
 
 ```csharp

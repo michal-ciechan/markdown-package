@@ -1,6 +1,8 @@
 # Coordinated mdpkg, Reader and Core releases (CARD-0036/CARD-0039)
 
-**Published and verified (2026-09-10):** `mdpkg`, `Mdpkg.Reader` and `Mdpkg.Core`
+The current coordinated source candidate is **0.1.0-preview.3**, the [single breaking draft 2 update](draft-2.md). Run fresh local-feed acceptance before publication; the historical preview.2 record below does not certify the revised format.
+
+**Historical preview.2 publication (2026-09-10), preceding the breaking draft 2:** `mdpkg`, `Mdpkg.Reader` and `Mdpkg.Core`
 are live on nuget.org at **0.1.0-preview.2**. After the NuGet Trusted Publishing
 policy was extended, [run 34516104021](https://github.com/michal-ciechan/markdown-package/actions/runs/34516104021)
 was rerun and all five jobs passed: `verify (ubuntu-latest)`,
@@ -149,7 +151,7 @@ The **`prove-nuget-org` matrix** is the release-complete signal:
   an explicit nuget.org-only config and no fallback folders. It verifies package
   provenance, exact resolved versions and the Core/Reader dependency. The dependency
   graph must contain only Core (for that consumer), Reader, Markdig and SharpZipLib.
-  It builds only these consumers, creates with Core, deep-validates with native Git,
+  It builds only these consumers, creates and fully validates a default snapshot without Git,
   checks Reader identity/content and runs standalone Reader without Git on PATH.
 
 Neither public entry downloads build artifacts or receives publishing credentials.

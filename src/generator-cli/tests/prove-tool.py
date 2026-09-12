@@ -111,9 +111,20 @@ def main():
         assert output.is_file() and output.stat().st_size > 0
         with zipfile.ZipFile(output) as archive:
             assert archive.read('guide.md').decode('utf-8') == document
+            manifest = json.loads(archive.read('.mdpkg/manifest.json'))
+            assert manifest['history'] == {'mode': 'none'} and manifest['current']['kind'] == 'snapshot'
+            assert not any(name.startswith('.git/') for name in archive.namelist())
         validation = json.loads(run(tool, 'validate', str(output), '--deep', '--format', 'json'))
         assert validation['exitCode'] == 0 and validation['package']['tier'] == 'conforming', validation
-        print(f'mdpkg {version}: global install from {source}; version/help, pack, content and deep validation passed; 0 failures.')
+        assert validation['current'] == manifest['current'] and validation['assurance'] == 'snapshot-verified'
+        committed = work / 'git.mdpkg'
+        run(tool, 'pack', str(source_dir), '--out', str(committed), '--namespace', manifest['namespace'], '--history', 'git')
+        git_validation = json.loads(run(tool, 'validate', str(committed), '--deep', '--format', 'json'))
+        assert git_validation['current']['kind'] == 'commit' and git_validation['assurance'] == 'git-verified'
+        materialized = work / 'materialized.mdpkg'
+        converted = json.loads(run(tool, 'update', str(output), '--materialize', '--out', str(materialized), '--format', 'json'))
+        assert converted['materialized'] and converted['bootstrapCommit'] == converted['current']['id']
+        print(f'mdpkg {version}: global install, version/help, both history modes, full/deep validation and materialization passed; 0 failures.')
 
 
 if __name__ == '__main__':

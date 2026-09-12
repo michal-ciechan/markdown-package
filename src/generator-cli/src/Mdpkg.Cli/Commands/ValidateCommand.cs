@@ -10,7 +10,7 @@ internal static class ValidateCommand
     {
         var deep = new Option<bool>("--deep")
         {
-            Description = "Additionally read the pack: hash every current-view entry as a Git blob and compare with the tip tree; run git fsck --full --strict (§7.1, §11.2 item 13).",
+            Description = "Git mode: verify the retained repository, current tree and bootstrap origin with native Git (§7.1, §11.2). Snapshot mode already hashes every current file without Git; --deep adds no repository work.",
         };
 
         var command = new Command("validate", "Run every §11 check against a package. Writes no package (§11).");

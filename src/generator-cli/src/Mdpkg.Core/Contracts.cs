@@ -6,9 +6,12 @@ namespace Mdpkg.Core;
 public enum OperationStatus { Success, SourceRejected, Nonconforming, ObligationUnmet, EnvironmentFailure, ResourceLimitExceeded }
 public enum DiagnosticSeverity { Info, Warning, Error }
 public enum CheckStatus { Passed, Failed, Skipped, NotApplicable }
+/// <summary>Full validates all payloads and snapshot identity; Deep additionally proves Git history/current tree/origin in Git mode.</summary>
 public enum ValidationLevel { Full, Deep }
 public enum WarningPolicy { Report, Fail }
+/// <summary>Source selection: capture current files (Snapshot), or import committed source history (GitImport). Independent of output history mode.</summary>
 public enum CreationMode { Snapshot, GitImport }
+/// <summary>None emits an initial history-free snapshot; Git emits a retained commit. Changed published successors require PackageUpdater.</summary>
 public enum HistoryMode { None, Git }
 public sealed record Diagnostic(string Code, DiagnosticSeverity Severity, string? Entry, string Message, string Spec);
 public sealed record ValidationCheck(string Code, CheckStatus Status);
@@ -37,9 +40,12 @@ public abstract class PackageResult
     public ManifestMetadata? Manifest { get; }
     public HistoryMetadata? History { get; }
     public PackageIdentity? Identity => Manifest is { } m ? new(m.Namespace, m.Current) : null;
+    /// <summary>Completed identity verification, distinct from container conformance and caller-requested validation level.</summary>
     public IdentityAssurance Assurance { get; }
     public HistoryMode? Mode => Manifest is null ? null : Manifest.History is SnapshotHistory ? HistoryMode.None : HistoryMode.Git;
+    /// <summary>True when this operation converted its exact input snapshot into bootstrap history.</summary>
     public bool Materialized { get; }
+    /// <summary>Verified deterministic C0 ID when materialization occurred; never a replacement for the original snapshot identity.</summary>
     public string? BootstrapCommit { get; }
     public VerifiedHistoryContext? HistoryContext { get; }
     public int OverrideCount { get; }
@@ -117,6 +123,7 @@ public sealed record CreationOptions
     public string Digest { get; init; } = PackageProfiles.Digest;
     public ResourceOptions Resources { get; init; } = new();
 }
+/// <summary>Capture an initial state from current files by default; GitImport requires HistoryMode.Git. Keep output outside SourceDirectory.</summary>
 public sealed record DirectoryPackageRequest(string SourceDirectory, Guid Namespace)
 {
     public CreationMode Mode { get; init; }

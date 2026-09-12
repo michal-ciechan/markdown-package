@@ -31,6 +31,10 @@ for name in ('Mdpkg.Reader', 'Mdpkg.Core', 'Mdpkg.Reviews', 'mdpkg'):
             assert repository.get('commit') == args.commit, (name, repository.attrib)
         for member in ('README.md', 'LICENSE'):
             assert archive.read(member), (name, member)
+        readme = archive.read('README.md').decode('utf-8')
+        assert 'draft 2' in readme and 'breaking' in readme, (name, 'breaking draft release note missing')
+        source_readme = root / 'README.md' if name == 'mdpkg' else root / 'src' / name / 'README.md'
+        assert readme.replace('\r\n', '\n') == source_readme.read_text(encoding='utf-8'), (name, 'packaged README differs from source')
         dependencies = {d.get('id'): d.get('version') for d in meta.findall('.//n:dependency', ns)}
         assert 'Microsoft.CodeAnalysis.PublicApiAnalyzers' not in dependencies
         if name == 'Mdpkg.Core':
@@ -38,6 +42,11 @@ for name in ('Mdpkg.Reader', 'Mdpkg.Core', 'Mdpkg.Reviews', 'mdpkg'):
             assert archive.read('lib/net10.0/Mdpkg.Core.xml')
         if name == 'Mdpkg.Reader':
             assert set(dependencies) == {'Markdig', 'SharpZipLib'}, dependencies
+            xml = archive.read('lib/net10.0/Mdpkg.Reader.xml').decode('utf-8')
+            assert 'Mdpkg.Reader.CurrentState' in xml and 'Mdpkg.Reader.PackageArchive.VerifySnapshot' in xml
+        if name == 'Mdpkg.Reviews':
+            assert set(dependencies) == {'Mdpkg.Reader'} and dependencies['Mdpkg.Reader'] in (version, f'[{version}]'), dependencies
+            assert archive.read('lib/net10.0/Mdpkg.Reviews.xml')
         if name in ('Mdpkg.Reader', 'mdpkg'):
             assert archive.read('UNICODE-LICENSE.txt')
     artifacts.append(path)

@@ -4,15 +4,16 @@ A .NET global tool that emits and checks conforming `.mdpkg` packages. [`../spec
 
 Audience: coding agents driving the tool non-interactively. Implementation: [`src/generator-cli/`](../../src/generator-cli/), a .NET tool on System.CommandLine. `pack`, `validate`, `update --materialize` and bounded `update --tree` are implemented. General history transforms and `address` remain explicit `not implemented` actions (exit 70). Tests read this file and fail when §1, §3, §4 or §10 change without the tool following. Distribution and publishing are separate work; run the project from source today.
 
-## Revised draft-2 behavior — S2 creation/reading and S3 updates implemented
+## Revised draft-2 behavior — integrated source acceptance
 
 The current `/1` specification is a breaking two-mode revision. S2 implements the
 typed schema in Reader, Core, CLI and Reviews declarations, plus history-free
 creation and full snapshot validation. The superseded string-valued manifest is
 rejected. S3 implements deterministic materialization, native Git origin proof,
 archive-bound Reader checkpoint contexts and bounded append. S4 adds mode-specific
-Reviews verification and origin-aware resolution; browser support remains S5 and
-integrated release acceptance remains S6.
+Reviews verification and origin-aware resolution. The browser implements current
+reading and snapshot review export; the [S6 acceptance evidence](../investigations/2026-09-12-card-0052-integrated-acceptance.md)
+checks the full pipeline. Browser historical/origin verification remains unsupported.
 
 The `pack`, `validate`, `update --materialize` and bounded `update --tree` rows below
 are implemented. Historical transform details below this revision summary do not
@@ -45,12 +46,11 @@ import projections, discarded source checkpoints and summary transforms needs
 its own source-range policy and is not silently included in S3. Identity-preserving
 `--materialize` re-emission of a Git input does not have this append restriction.
 
-Separate source selection from output history mode in the public API. Replace
-`PackageIdentity` and manifest `Current` strings with a tagged state record;
-replace unconditional history metadata with the mode union. Make commit metadata
-optional/forbidden according to mode; do not synthesize and discard it on a
-history-free path. Add materialize/update requests with explicit input package,
-destination, successor metadata and correspondence. Directory/stream creation,
+The public API separates source selection from output history mode.
+`PackageIdentity.Current` is a tagged state record, and history metadata is a
+mode union. Commit metadata is optional/forbidden according to mode; the
+history-free path does not synthesize and discard it. Materialize/update requests
+take an explicit input package, destination, successor metadata and correspondence. Directory/stream creation,
 resource options, cancellation and atomic publication retain their existing
 contracts. Results carry typed identity, mode, assurance and whether
 materialization occurred; an optional C0 ID belongs in the operation result,
@@ -77,18 +77,18 @@ mdpkg address  <in.mdpkg>    --out <file.mdpkg>   <op> ...    # sparse exception
 mdpkg validate <in.mdpkg>                         [options]   # validation only, writes nothing
 ```
 
-Install `dotnet tool install -g mdpkg`; also invokable as `dotnet mdpkg`. Current release builds require `git` on `PATH` for creation and deep validation. In the older implementation, a generated Git repository is unconditional; draft 2 requires it only in Git mode; launching native Git is an implementation choice.
+Install `dotnet tool install -g mdpkg`; also invokable as `dotnet mdpkg`. Current source defaults to history-free snapshots; creation and full/deep validation in snapshot mode require no Git. Explicit Git output, import, materialization and updates require native Git in the release backend.
 
-The managed snapshot candidate remains internally gated pending the [CARD-0050 acceptance decision](../investigations/2026-09-12-card-0050-managed-snapshot-results.md). In candidate builds, ordinary snapshots without `--scope` or `--depth` use managed object/pack/index creation and independent in-process repository verification, including `--reverse-index`, descriptors, compression, messages and correspondence. `--from-git`, snapshot scope/depth and standalone `validate --deep` retain native Git. No new CLI flag selects a backend and eligible managed failures never fall back to Git. Release behavior remains native until the gate is resolved.
+The managed snapshot candidate remains internally gated pending the [CARD-0050 acceptance decision](../investigations/2026-09-12-card-0050-managed-snapshot-results.md). In candidate builds, explicit Git-mode current-file captures without `--scope` or `--depth` use managed object/pack/index creation and independent in-process repository verification, including `--reverse-index`, descriptors, compression, messages and correspondence. `--from-git`, snapshot scope/depth and standalone `validate --deep` retain native Git. No new CLI flag selects a backend and eligible managed failures never fall back to Git. Git-mode release behavior remains native until that separate gate is resolved.
 
 The user chose to improve compression before reconsidering activation. The candidate now supports depth-one cross-file blob deltas with independent reconstruction and integrity checks; the [follow-up measurements](../investigations/2026-09-12-card-0050-managed-delta-results.md) replace the initial full-object size comparison. Native Git remains the default.
 
-Snapshots read current disk contents, including untracked and ignored UTF-8 files, without staging or committing. Only the exact root `.git` directory/gitfile is skipped; it is never read. Text is normalized to LF and path/content rules apply. The generated single-commit repository is included in the package. Files are captured sequentially once for both the current view and Git blobs; this is not an atomic filesystem snapshot of concurrent edits.
+Snapshots read current disk contents, including untracked and ignored UTF-8 files, without staging or committing. Only the exact root `.git` directory/gitfile is skipped; it is never read. Text is normalized to LF and path/content rules apply. History-free output contains no repository. Explicit `--history git` adds a single-commit repository. Files are captured sequentially once for the current view and its selected state representation; this is not an atomic filesystem snapshot of concurrent edits.
 
 | Verb | Writes a package | Reads `.git/` pack | Mutates input | Spec path |
 | --- | --- | --- | --- | --- |
-| `pack` | yes | no (creates one) | no | §3, §4, §5, §6.3 |
-| `update` | yes | yes | no — always a new file (§9, "atomic in-place update: not attempted; rewrite the file") | §5.3, §5.4, D-3 |
+| `pack` | yes | none in snapshot mode; creates/imports in Git mode | no | §3, §4, §5, §6.3 |
+| `update` | yes | for Git input; creates history for snapshot input | no — always a new file (§9, "atomic in-place update: not attempted; rewrite the file") | §5.3, §5.4, D-3 |
 | `address` | yes | no | no | §6.3, D-12 |
 | `validate` | no | on `--deep` | no | §4, §3.7 |
 
@@ -147,7 +147,7 @@ Stable codes; `--format json` puts them in `diagnostics[]`. `sev` is the default
 | `MDPK1009` | warn | EOCD comment present. Any version token in it is a hint; disagreement with the manifest escalates to error, absence never does | §3.5, C1 |
 | `MDPK1010` | error | ZIP64 sentinels present or required (G-2) | §11.1 item 1 |
 | `MDPK1011` | error | Malformed ZIP structure, encrypted entry, CRC or decompression failure | §3.3–§3.5 |
-| `MDPK2001` | error | `current` differs from the target of `refs/heads/main` | §4, §5.2, D-7 |
+| `MDPK2001` | error | Snapshot hash or Git `current.id` differs from verified content/reference | §4, §5.2, D-7 |
 | `MDPK2002` | error | `addressing.overrides` names an absent entry, or is `null` while the tree carries a ledger, or names a ledger with zero entries | §4, §6.3, D-12 |
 | `MDPK2003` | error | `history.transform` inconsistent with `history.json`'s `transformations` | §4, §5.3, D-3 |
 | `MDPK2004` | error | `shallowBoundaries` differs from `.git/shallow`, or is non-empty while that file is absent | §5.3 |
@@ -182,15 +182,15 @@ Stable codes; `--format json` puts them in `diagnostics[]`. `sev` is the default
 | `.mdpkg/manifest.json` | every writing verb | Canonical JSON with `mdpkg` first and every other key sorted, so the magic lands at byte 50; O(1) in package size | §4, D-15, §3.1 |
 | working-tree entries | `pack`, `update`, `address` | Bytewise path order (recommended, not required), LF-normalized | D-9, D-17 |
 | `.mdpkg/address/overrides.json` | `address`, and `pack` / `update` when correspondence records exist | Tracked. Absent when it would have zero entries, with `overrides` then `null` | §6.3, D-12 |
-| `.mdpkg/history.json` | every writing verb | Container-level, untracked, canonical JSON, no `version` key of its own | §5.3, D-4 |
+| `.mdpkg/history.json` | Git-mode writing only | Container-level, untracked, canonical JSON, no `version` key of its own | §5.3, D-4 |
 | `.mdpkg/history/bindings.json` | `update --squash` | `{"version":1,"bindings":[...]}`; written after the squash commit exists | §5.4 |
 | `.mdpkg/history/ranges/<sha256>.json` | `update --squash` | Range summary named by the SHA-256 of its own bytes, keyed by origin root | §5.4, D-5 |
 | `.mdpkg/history/patches/<sha256>.patch` | `--retain-patches` | Exact patch bytes; regeneration across Git versions is not byte-stable | §5.5 |
-| `.git/HEAD` | every writing verb | `ref: refs/heads/main` plus LF | §5.1, D-7 |
-| `.git/config` | every writing verb | The 50-byte non-bare config of §5.1, exactly. No `core.autocrlf` is written, deliberately | §5.1, C3, D-18b |
-| `.git/refs/heads/main` | every writing verb | The commit ID of `current` plus LF | §5.1, §5.2 |
+| `.git/HEAD` | Git-mode writing only | `ref: refs/heads/main` plus LF | §5.1, D-7 |
+| `.git/config` | Git-mode writing only | The 50-byte non-bare config of §5.1, exactly. No `core.autocrlf` is written, deliberately | §5.1, C3, D-18b |
+| `.git/refs/heads/main` | Git-mode writing only | The commit ID of `current.id` plus LF | §5.1, §5.2 |
 | `.git/shallow` | genuine shallow clone only | Boundary commit IDs, one per line; MUST equal `shallowBoundaries` | §5.1, §5.3 |
-| `.git/objects/pack/pack-*.pack`, `*.idx` | every writing verb | Exactly one pack and its index, byte for byte as Git wrote them | §5.1, D-17 (scope) |
+| `.git/objects/pack/pack-*.pack`, `*.idx` | Git-mode writing only | Exactly one pack and its index, byte for byte as Git wrote them | §5.1, D-17 (scope) |
 
 ### 5.3 Written outside the package
 
@@ -210,13 +210,19 @@ Stable codes; `--format json` puts them in `diagnostics[]`. `sev` is the default
 | `exitCode` | integer | §3 |
 | `package` | object or null | `path`, `bytes`, `sha256`, `entries`, `tier`; `tier` is `conforming` or `recoverable` (§3.7) |
 | `manifest` | object or null | The manifest as written or read (§4) |
-| `current` | qualified object ID or null | Equal to the target of `refs/heads/main` (D-7) |
+| `current` | `{kind,id}` or null | Snapshot SHA-256 state, or retained Git commit matching `refs/heads/main` |
+| `mode` | string or null | `none` or `git` |
+| `assurance` | string | `declared`, `snapshot-verified` or `git-verified` |
+| `materialized` | boolean | This operation converted its input S0 to C0 |
+| `bootstrapCommit` | optional string | Deterministic C0 ID when materialization occurred |
 | `addressing` | object | `coverage`, `overrideCount`, `mintedRoots`, `uncoveredRanges` (§4, §6.3) |
-| `history` | object | `coverage`, `transform`, `retainedCommits`, `ranges`, `patches` (§4, §5.3) |
-| `checks` | array | One `{code, status}` per §11 check: `pass`, `fail` or `skipped` |
+| `history` | object or null | Snapshot: `{mode:"none"}`. Git: `mode`, `coverage`, `transform`, `retainedCommits`, `ranges`, `patches` (§4, §5.3) |
+| `checks` | array | One `{code, status}` per §11 check: `pass`, `fail`, `skipped` or `not-applicable` |
 | `diagnostics` | array | `{code, sev, entry, message, spec}`; `spec` is the citing section or decision |
 
 ---
+
+Actual [CLI JSON projections](cli-output-examples.json) for snapshot creation, explicit Git output and materialization are generated by `python docs/spec/generate-cli-examples.py`; use `--check` after building the CLI to reject drift.
 
 ## 7. Generation path 1 — fresh package (`pack`)
 
@@ -226,7 +232,8 @@ mdpkg pack ./docs --out ./docs.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d
 
 | Option | Default | Behavior | Spec |
 | --- | --- | --- | --- |
-| `--from-git` | off | Import the source directory's own history instead of synthesising a single root commit | §5.3 `sourceRepository`, `scope` |
+| `--history <mode>` | `none` | Choose `none` or `git`; import defaults to `git` | §4 |
+| `--from-git` | off | Import committed source history; defaults to Git mode | §5.3 `sourceRepository`, `scope` |
 | `--scope <pathspec>` | whole tree | Path projection recorded in `history.json` as `scope`; sets `history.transform` to `["projected"]` | §4, §5.3, D-3 |
 | `--depth <n>` | full | Retain the last *n* first-parent commits. Sets `history.coverage: truncated` and `root: synthetic` | §4, §5.3, D-3 |
 | `--message <text>` | `Initial package` | Commit message for the synthesised root | §5.1 |
@@ -236,17 +243,17 @@ mdpkg pack ./docs --out ./docs.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d
 | --- | --- | --- |
 | 1 | Enumerate the source tree; reject reserved prefixes, unsafe components and NFC-plus-case-fold collisions before anything is written | §3.6, D-11, D-16 |
 | 2 | Normalize CRLF and lone CR to LF in every entry that will live outside `.git/`; report `MDPK1004` per entry rewritten | §3.6, D-17 |
-| 3 | Write blobs, trees and commits from the normalized bytes. A CRLF source therefore gets new blob, tree and commit IDs; `sourceBase` and `sourceTip` name the source lineage and imply no byte identity | D-17, §5.3 |
+| 3 | In Git mode, write blobs, trees and commits from the normalized bytes. A CRLF source therefore gets new blob, tree and commit IDs; `sourceBase` and `sourceTip` name the source lineage and imply no byte identity | D-17, §5.3 |
 | 4 | Compute the inventory: default root and scoped digest per entity of every Markdown document, under the declared anchor and digest profiles | §6.1, §6.2 |
 | 5 | Emit the ledger from `--correspondence` records only, or omit it and write `overrides: null` | §6.3, D-12 |
-| 6 | Build the curated repository: `git pack-objects --revs --delta-base-offset`, then `index-pack`, then strip everything §5.1 does not list | §5.1, §5.2 |
+| 6 | Snapshot mode hashes all current files plus semantic declarations (§4.1); Git mode builds the curated repository: `git pack-objects --revs --delta-base-offset`, then `index-pack`, then strip everything §5.1 does not list | §5.1, §5.2 |
 | 7 | Assemble the ZIP under §8's invariants | §3.2–§3.6 |
-| 8 | Re-open the staged file and run every §11 check, including deep Git checks; a failure deletes staging and exits 3, preserving an existing destination | §4 |
+| 8 | Re-open the staged file and run every §11 check, including full snapshot hashing or deep Git checks according to mode; a failure deletes staging and exits 3, preserving an existing destination | §4 |
 
-Manifest written by `pack` with no history transform and no exceptions:
+Manifest written by default `pack` for `guide.md` containing `# Guide` followed by LF, with no exceptions:
 
 ```json
-{"mdpkg":"markdown-package/1","addressing":{"anchor":"cm0312-trail-source-v1","coverage":"complete","digest":"cm0312-source-lf-v1","overrides":null},"current":"sha1-...","history":{"coverage":"complete","detail":".mdpkg/history.json","transform":[]},"namespace":"..."}
+{"mdpkg":"markdown-package/1","addressing":{"anchor":"cm0312-trail-source-v1","coverage":"complete","digest":"cm0312-source-lf-v1","overrides":null},"current":{"id":"sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4","kind":"snapshot"},"history":{"mode":"none"},"namespace":"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"}
 ```
 
 ### 7.1 `--correspondence` file
@@ -283,7 +290,7 @@ The file is a JSON array of the records below. Supplying a record is the produce
 | `.git/` entry content | byte for byte as Git wrote it; §5.1 fixes the three text files | §5.1, D-17 (scope) |
 | Timestamps | fixed 1980-01-01 in every local and central record (G-3) | §8.2 |
 
-Consequence, not an option: extraction of the result is a Git working tree after `git read-tree HEAD`, and the unpack is byte-exact on every platform (D-18a). What a consumer's Git does afterwards follows the host's own `core.autocrlf`; the tool pins nothing in `.git/config` (D-18b, §5.1, §9).
+Extraction is byte-exact in both modes (D-18a). A snapshot extracts ordinary files without a repository. In Git mode, `git read-tree HEAD` reconstructs the index; later checkouts follow the host's `core.autocrlf` (D-18b, §5.1, §9).
 
 ---
 
@@ -358,7 +365,7 @@ Writes no package. Every writing verb runs the same check set against its own ou
 
 | Option | Default | Behavior | Spec |
 | --- | --- | --- | --- |
-| `--deep` | off | Additionally reads the pack: hashes every current-view entry as a Git blob (`"blob " length 0x00 bytes`, SHA-1) and compares with the tip tree | §7.1, §11.2 item 13 |
+| `--deep` | off | Git mode: additionally proves retained history, current tree and origin. Snapshot mode already hashes every current file; Git checks are not applicable | §4.1, §7.1, §11.2 |
 | `--accept-recoverable` | off | Accepts tier 2 and reports `tier: recoverable`; the package still fails conformance and SHOULD be re-emitted | §3.7 |
 
 | Check | Code on failure | Bytes needed | Spec |
@@ -372,7 +379,7 @@ Writes no package. Every writing verb runs the same check set against its own ou
 | Entry-name uniqueness under NFC plus simple case folding | `MDPK1001` | central directory | §4, §3.6, D-16 |
 | Reserved-prefix rule after NFC and case folding | `MDPK1002` | central directory | §4, §3.6, D-11 |
 | LF-only content in every entry outside `.git/` | `MDPK1004` | payload already decoded for CRC | §4, §3.6, D-17 |
-| `current` equals the target of `refs/heads/main` | `MDPK2001` | manifest plus one entry | §4, §5.2, D-7 |
+| Typed `current` matches the full snapshot hash or Git branch reference | `MDPK2001` | all current files in snapshot mode; manifest plus branch reference in Git mode | §4.1, §5.2, D-7 |
 | `overrides` presence agrees with the tree | `MDPK2002` | manifest plus ledger | §4, §6.3, D-12 |
 | `transform` consistent with `history.json` | `MDPK2003` | two entries | §4, §5.3 |
 | `shallowBoundaries` equals `.git/shallow` | `MDPK2004` | two entries | §5.3 |
@@ -412,11 +419,11 @@ Deep validation checks each declared complete correspondence transition against 
 
 Report safety checks on Windows and Linux resolve filesystem links (including parent directories) and compare file identities to detect hard links to protected inputs or output. Unsafe `--report` destinations are usage errors (exit 1) before the engine runs. Safety is checked again before publication; a newly unsafe or unwritable report fails with exit 5. Reports are written through a unique sibling file and replacement, never by truncating an existing destination inode. No report is written for a rejected destination.
 
-Source policy (G-5): snapshot input ignores the exact root `.git` entry and rejects symlinks/reparse points, including linked source ancestors. Output must be outside the source tree and its existing parent directories cannot be links/reparse points. A report must also be outside source and must not overwrite package or correspondence inputs or the package output. Names containing colons or control characters are rejected for portable staging. A snapshot may use `--scope`; selection uses native Git pathspecs over the staged tree. `--from-git` requires a repository root (or bare repository) and reads committed `HEAD` history, not dirty/untracked working-tree changes. Use `--scope` to select a subtree. Every retained tree is normalized and checked; Git links and submodules are rejected. Regular files are committed as mode `100644`, including executable source files, to agree with the fixed ZIP attributes; this can also rewrite imported tree/commit IDs. `--depth` and shallow-source imports produce a synthetic root and `truncated` coverage, without shipping `.git/shallow`. `--message` applies only to synthesized snapshots. Review-package authoring is outside `pack`; source `.mdpkg/review/` entries are rejected because they need a review manifest.
+Source policy (G-5): snapshot input ignores the exact root `.git` entry and rejects symlinks/reparse points, including linked source ancestors. Output must be outside the source tree and its existing parent directories cannot be links/reparse points. A report must also be outside source and must not overwrite package or correspondence inputs or the package output. Names containing colons or control characters are rejected for portable staging. Current-file capture with explicit `--history git` may use `--scope`; history-free output rejects it. `--from-git` requires a repository root (or bare repository) and reads committed `HEAD` history, not dirty/untracked working-tree changes. Use `--scope` to select a subtree. Every retained tree is normalized and checked; Git links and submodules are rejected. Regular files are committed as mode `100644`, including executable source files, to agree with the fixed ZIP attributes; this can also rewrite imported tree/commit IDs. `--depth` and shallow-source imports produce a synthetic root and `truncated` coverage, without shipping `.git/shallow`. `--message` applies to explicit Git-mode initial commits and appended successors; history-free creation rejects commit metadata. Review-package authoring is outside `pack`; source `.mdpkg/review/` entries are rejected because they need a review manifest.
 
-Git runs through argument lists in isolated temporary repositories. System/global Git configuration, hooks, credential helpers, replace refs, lazy fetching and remote protocols are disabled. No source checkout, index write or fetch occurs. Cancellation kills active Git subprocesses and removes staging. Native Git on PATH and temporary disk space are required. Entry payloads are buffered in memory; an individual entry above `Int32.MaxValue` is refused as an environment/resource error. ZIP32 sentinel limits are checked separately (`MDPK1010`).
+Git runs through argument lists in isolated temporary repositories. System/global Git configuration, hooks, credential helpers, replace refs, lazy fetching and remote protocols are disabled. No source checkout, index write or fetch occurs. Cancellation kills active Git subprocesses and removes staging. Native Git on PATH is required only for Git operations; both modes use bounded temporary staging. Entry payloads are buffered in memory; an individual entry above `Int32.MaxValue` is refused as an environment/resource error. ZIP32 sentinel limits are checked separately (`MDPK1010`).
 
-Public Mdpkg.Core results carry typed outcomes, diagnostics and performed checks; only the command adapter assigns process exit codes and writes stdout/stderr/reports. SHA-256 creation requests emit `MDPK4001` and exit 2. Invalid source text emits `MDPK4003` and exit 2. Malformed package content exits 3; missing files, failing Git or unwritable output exit 5. `--accept-recoverable` enables inspection and a `recoverable` result tier but still exits 3 for failed conformance. Shallow validation skips the two deep checks; `pack` always runs them before replacement.
+Public Mdpkg.Core results carry typed outcomes, diagnostics and performed checks; only the command adapter assigns process exit codes and writes stdout/stderr/reports. Git `--object-format sha256` creation requests emit `MDPK4001` and exit 2; this does not refer to the supported SHA-256 snapshot state hash. Invalid source text emits `MDPK4003` and exit 2. Malformed package content exits 3; missing files, failing Git or unwritable output exit 5. `--accept-recoverable` enables inspection and a `recoverable` result tier but still exits 3 for failed conformance. Git-mode shallow validation skips deep repository checks; Git creation runs them before replacement. Snapshot validation and creation always verify all current-file hashes without Git.
 
 Creation, ZIP emission and full/deep native Git orchestration live in `Mdpkg.Core`, depending on `Mdpkg.Reader` for format/ZIP/addressing reads. CLI is a public-API adapter with no Reader-internal access. It explicitly selects Core's producer compatibility resource profile, preserving ZIP32 and managed payload limits instead of imposing Reader service defaults. Public Core APIs default to service limits and offer explicit metadata, typed correspondence, immutable results and caller-owned streams; see the [Core API guide](../../src/generator-cli/src/Mdpkg.Core/README.md). For review returns, this CLI checks the manifest declaration, canonical review JSON, and (with `--deep`) delta/bundled Git lineage restrictions. Thread/comment/selector schema validation and authored v2 kind extraction belong to `Mdpkg.Reviews`, which depends only on Reader. CLI validation alone is not a review-feedback schema check; full feedback assurance combines Reviews' schema checks with an explicitly supplied full-verification provider.
 
@@ -452,5 +459,5 @@ Creation, ZIP emission and full/deep native Git orchestration live in `Mdpkg.Cor
 | **G-1** | `--format text`; machine output only under `--format json` or `--report`; `--fail-on-warning` off | None — CLI surface, outside the format |
 | **G-2** | Refuse ZIP64 on read and write; hard producer limits of 4 GiB and 65,535 entries. The evidence reader's only tested behavior is rejection, and nothing in the corpora approaches the limits | §11.1 item 1 |
 | **G-3** | Fixed 1980-01-01 ZIP timestamps, matching the worked example | None — the format constrains no timestamp |
-| **G-4** | Fixed snapshot author/committer and timestamp; preserve imported metadata where possible | Deterministic commit metadata is producer policy |
+| **G-4** | Fixed explicit Git-mode initial author/committer and timestamp; preserve imported metadata where possible | Deterministic commit metadata is producer policy |
 | **G-5** | Source containment/link policy and portable staging restrictions described in §12 | Filesystem traversal is producer policy |

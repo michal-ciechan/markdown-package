@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><IsPackable>false</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Mdpkg.Core/Mdpkg.Core.csproj" />
+    <ProjectReference Include="../../src/Mdpkg.Reviews/Mdpkg.Reviews.csproj" />
+  </ItemGroup>
+</Project>

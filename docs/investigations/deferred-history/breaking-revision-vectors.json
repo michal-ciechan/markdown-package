@@ -1,5 +1,5 @@
 {
-  "purpose": "S1 shared draft-2 conformance data; product implementation pending. Historical source measurements remain unchanged.",
+  "purpose": "Shared draft-2 conformance data used by CLI, Core, Reader, Reviews and browser acceptance. Historical source measurements remain unchanged.",
   "sourceRevision": "732f6daf0747292c411e07a53f7dbe0daf7b8a84",
   "vectors": [
     {

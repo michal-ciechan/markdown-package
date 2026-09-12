@@ -1,0 +1,636 @@
+{
+  "date": "2026-09-12",
+  "classification": "Exploratory shared-host samples, not an isolated performance gate; no memory measurement.",
+  "corpus": "Exact CARD-0050 ManagedSnapshotBenchmarks generation; tiny/many-small/large/similar.",
+  "sampling": "One first sample plus three warm samples per mode/shape/OS. Creation includes post-write full verification; validation is a separate Deep operation.",
+  "gitVersions": {
+    "windows": "2.50.1.windows.1",
+    "linux": "2.43.0"
+  },
+  "measurements": [
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "tiny",
+      "Mode": "snapshot",
+      "SourceBytes": 1289,
+      "PackageBytes": 610,
+      "GitPayloadBytes": 0,
+      "SelectiveReadBytes": 693,
+      "SelectiveGitPayloadBytes": 0,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": true,
+      "First": {
+        "CreateMilliseconds": 777.213,
+        "FullValidationMilliseconds": 3.34,
+        "CreateGitCalls": 0,
+        "ValidationGitCalls": 0
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 29.6903,
+          "FullValidationMilliseconds": 2.7165,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 8.8239,
+          "FullValidationMilliseconds": 1.3672,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 98.3076,
+          "FullValidationMilliseconds": 1.6378,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "tiny",
+      "Mode": "git-native",
+      "SourceBytes": 1289,
+      "PackageBytes": 3208,
+      "GitPayloadBytes": 1518,
+      "SelectiveReadBytes": 1814,
+      "SelectiveGitPayloadBytes": 41,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": false,
+      "First": {
+        "CreateMilliseconds": 20813.1757,
+        "FullValidationMilliseconds": 2072.9377,
+        "CreateGitCalls": 12,
+        "ValidationGitCalls": 6
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 3057.6548,
+          "FullValidationMilliseconds": 1450.6757,
+          "CreateGitCalls": 12,
+          "ValidationGitCalls": 6
+        },
+        {
+          "CreateMilliseconds": 2731.9954,
+          "FullValidationMilliseconds": 1376.919,
+          "CreateGitCalls": 12,
+          "ValidationGitCalls": 6
+        },
+        {
+          "CreateMilliseconds": 2403.8475,
+          "FullValidationMilliseconds": 1501.6843,
+          "CreateGitCalls": 12,
+          "ValidationGitCalls": 6
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "many-small",
+      "Mode": "snapshot",
+      "SourceBytes": 25790,
+      "PackageBytes": 3224,
+      "GitPayloadBytes": 0,
+      "SelectiveReadBytes": 2461,
+      "SelectiveGitPayloadBytes": 0,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": true,
+      "First": {
+        "CreateMilliseconds": 242.7226,
+        "FullValidationMilliseconds": 12.1564,
+        "CreateGitCalls": 0,
+        "ValidationGitCalls": 0
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 50.5049,
+          "FullValidationMilliseconds": 9.7381,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 54.479,
+          "FullValidationMilliseconds": 7.9597,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 29.884,
+          "FullValidationMilliseconds": 9.3852,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "many-small",
+      "Mode": "git-native",
+      "SourceBytes": 25790,
+      "PackageBytes": 7462,
+      "GitPayloadBytes": 3158,
+      "SelectiveReadBytes": 3582,
+      "SelectiveGitPayloadBytes": 40,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": false,
+      "First": {
+        "CreateMilliseconds": 11278.5947,
+        "FullValidationMilliseconds": 7454.0503,
+        "CreateGitCalls": 69,
+        "ValidationGitCalls": 44
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 11222.9196,
+          "FullValidationMilliseconds": 7184.04,
+          "CreateGitCalls": 69,
+          "ValidationGitCalls": 44
+        },
+        {
+          "CreateMilliseconds": 11313.7847,
+          "FullValidationMilliseconds": 7939.3706,
+          "CreateGitCalls": 69,
+          "ValidationGitCalls": 44
+        },
+        {
+          "CreateMilliseconds": 17442.885,
+          "FullValidationMilliseconds": 9808.6075,
+          "CreateGitCalls": 69,
+          "ValidationGitCalls": 44
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "large",
+      "Mode": "snapshot",
+      "SourceBytes": 1648948,
+      "PackageBytes": 243464,
+      "GitPayloadBytes": 0,
+      "SelectiveReadBytes": 122144,
+      "SelectiveGitPayloadBytes": 0,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": true,
+      "First": {
+        "CreateMilliseconds": 530.8151,
+        "FullValidationMilliseconds": 251.1978,
+        "CreateGitCalls": 0,
+        "ValidationGitCalls": 0
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 535.7114,
+          "FullValidationMilliseconds": 283.2963,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 567.6144,
+          "FullValidationMilliseconds": 231.5395,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 544.516,
+          "FullValidationMilliseconds": 246.2296,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "large",
+      "Mode": "git-native",
+      "SourceBytes": 1648948,
+      "PackageBytes": 398997,
+      "GitPayloadBytes": 154454,
+      "SelectiveReadBytes": 123264,
+      "SelectiveGitPayloadBytes": 41,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": false,
+      "First": {
+        "CreateMilliseconds": 4936.3047,
+        "FullValidationMilliseconds": 2764.5548,
+        "CreateGitCalls": 15,
+        "ValidationGitCalls": 8
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 7341.9212,
+          "FullValidationMilliseconds": 4403.1078,
+          "CreateGitCalls": 15,
+          "ValidationGitCalls": 8
+        },
+        {
+          "CreateMilliseconds": 8683.4734,
+          "FullValidationMilliseconds": 9638.2947,
+          "CreateGitCalls": 15,
+          "ValidationGitCalls": 8
+        },
+        {
+          "CreateMilliseconds": 16691.3488,
+          "FullValidationMilliseconds": 3387.0919,
+          "CreateGitCalls": 15,
+          "ValidationGitCalls": 8
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "similar",
+      "Mode": "snapshot",
+      "SourceBytes": 1780250,
+      "PackageBytes": 299794,
+      "GitPayloadBytes": 0,
+      "SelectiveReadBytes": 17290,
+      "SelectiveGitPayloadBytes": 0,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": true,
+      "First": {
+        "CreateMilliseconds": 828.0786,
+        "FullValidationMilliseconds": 336.3027,
+        "CreateGitCalls": 0,
+        "ValidationGitCalls": 0
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 689.3965,
+          "FullValidationMilliseconds": 221.8833,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 1225.9157,
+          "FullValidationMilliseconds": 449.0034,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 1043.8034,
+          "FullValidationMilliseconds": 352.7202,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        }
+      ]
+    },
+    {
+      "Os": "Microsoft Windows 10.0.19045",
+      "Runtime": "10.0.8",
+      "Shape": "similar",
+      "Mode": "git-native",
+      "SourceBytes": 1780250,
+      "PackageBytes": 319078,
+      "GitPayloadBytes": 18203,
+      "SelectiveReadBytes": 18412,
+      "SelectiveGitPayloadBytes": 41,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": false,
+      "First": {
+        "CreateMilliseconds": 33171.4922,
+        "FullValidationMilliseconds": 29155.9824,
+        "CreateGitCalls": 69,
+        "ValidationGitCalls": 44
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 20572.7188,
+          "FullValidationMilliseconds": 14655.267,
+          "CreateGitCalls": 69,
+          "ValidationGitCalls": 44
+        },
+        {
+          "CreateMilliseconds": 44917.0299,
+          "FullValidationMilliseconds": 10510.3203,
+          "CreateGitCalls": 69,
+          "ValidationGitCalls": 44
+        },
+        {
+          "CreateMilliseconds": 20683.1477,
+          "FullValidationMilliseconds": 24456.8603,
+          "CreateGitCalls": 69,
+          "ValidationGitCalls": 44
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "tiny",
+      "Mode": "snapshot",
+      "SourceBytes": 1289,
+      "PackageBytes": 610,
+      "GitPayloadBytes": 0,
+      "SelectiveReadBytes": 693,
+      "SelectiveGitPayloadBytes": 0,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": true,
+      "First": {
+        "CreateMilliseconds": 870.5024,
+        "FullValidationMilliseconds": 15.4555,
+        "CreateGitCalls": 0,
+        "ValidationGitCalls": 0
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 47.4448,
+          "FullValidationMilliseconds": 4.4398,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 67.9284,
+          "FullValidationMilliseconds": 1.3419,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 65.4415,
+          "FullValidationMilliseconds": 1.5694,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "tiny",
+      "Mode": "git-native",
+      "SourceBytes": 1289,
+      "PackageBytes": 3208,
+      "GitPayloadBytes": 1518,
+      "SelectiveReadBytes": 1814,
+      "SelectiveGitPayloadBytes": 41,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": false,
+      "First": {
+        "CreateMilliseconds": 334.6205,
+        "FullValidationMilliseconds": 81.5358,
+        "CreateGitCalls": 12,
+        "ValidationGitCalls": 6
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 213.1044,
+          "FullValidationMilliseconds": 72.9243,
+          "CreateGitCalls": 12,
+          "ValidationGitCalls": 6
+        },
+        {
+          "CreateMilliseconds": 172.0606,
+          "FullValidationMilliseconds": 85.1793,
+          "CreateGitCalls": 12,
+          "ValidationGitCalls": 6
+        },
+        {
+          "CreateMilliseconds": 180.9508,
+          "FullValidationMilliseconds": 62.9673,
+          "CreateGitCalls": 12,
+          "ValidationGitCalls": 6
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "many-small",
+      "Mode": "snapshot",
+      "SourceBytes": 25790,
+      "PackageBytes": 3224,
+      "GitPayloadBytes": 0,
+      "SelectiveReadBytes": 2461,
+      "SelectiveGitPayloadBytes": 0,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": true,
+      "First": {
+        "CreateMilliseconds": 84.3457,
+        "FullValidationMilliseconds": 36.5543,
+        "CreateGitCalls": 0,
+        "ValidationGitCalls": 0
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 66.1413,
+          "FullValidationMilliseconds": 60.6129,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 132.4897,
+          "FullValidationMilliseconds": 51.908,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 122.4225,
+          "FullValidationMilliseconds": 48.2096,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "many-small",
+      "Mode": "git-native",
+      "SourceBytes": 25790,
+      "PackageBytes": 7462,
+      "GitPayloadBytes": 3158,
+      "SelectiveReadBytes": 3582,
+      "SelectiveGitPayloadBytes": 40,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": false,
+      "First": {
+        "CreateMilliseconds": 785.7971,
+        "FullValidationMilliseconds": 400.0709,
+        "CreateGitCalls": 69,
+        "ValidationGitCalls": 44
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 670.1547,
+          "FullValidationMilliseconds": 409.0913,
+          "CreateGitCalls": 69,
+          "ValidationGitCalls": 44
+        },
+        {
+          "CreateMilliseconds": 730.6925,
+          "FullValidationMilliseconds": 479.6978,
+          "CreateGitCalls": 69,
+          "ValidationGitCalls": 44
+        },
+        {
+          "CreateMilliseconds": 619.8355,
+          "FullValidationMilliseconds": 422.7386,
+          "CreateGitCalls": 69,
+          "ValidationGitCalls": 44
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "large",
+      "Mode": "snapshot",
+      "SourceBytes": 1648948,
+      "PackageBytes": 243464,
+      "GitPayloadBytes": 0,
+      "SelectiveReadBytes": 122144,
+      "SelectiveGitPayloadBytes": 0,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": true,
+      "First": {
+        "CreateMilliseconds": 1731.0327,
+        "FullValidationMilliseconds": 999.6531,
+        "CreateGitCalls": 0,
+        "ValidationGitCalls": 0
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 1681.6766,
+          "FullValidationMilliseconds": 848.2765,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 1360.1726,
+          "FullValidationMilliseconds": 347.8534,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 766.2501,
+          "FullValidationMilliseconds": 237.5997,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "large",
+      "Mode": "git-native",
+      "SourceBytes": 1648948,
+      "PackageBytes": 398997,
+      "GitPayloadBytes": 154454,
+      "SelectiveReadBytes": 123264,
+      "SelectiveGitPayloadBytes": 41,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": false,
+      "First": {
+        "CreateMilliseconds": 1334.7183,
+        "FullValidationMilliseconds": 783.6927,
+        "CreateGitCalls": 15,
+        "ValidationGitCalls": 8
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 1467.0757,
+          "FullValidationMilliseconds": 722.8216,
+          "CreateGitCalls": 15,
+          "ValidationGitCalls": 8
+        },
+        {
+          "CreateMilliseconds": 1432.8677,
+          "FullValidationMilliseconds": 680.6842,
+          "CreateGitCalls": 15,
+          "ValidationGitCalls": 8
+        },
+        {
+          "CreateMilliseconds": 1384.8007,
+          "FullValidationMilliseconds": 643.427,
+          "CreateGitCalls": 15,
+          "ValidationGitCalls": 8
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "similar",
+      "Mode": "snapshot",
+      "SourceBytes": 1780250,
+      "PackageBytes": 299794,
+      "GitPayloadBytes": 0,
+      "SelectiveReadBytes": 17290,
+      "SelectiveGitPayloadBytes": 0,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": true,
+      "First": {
+        "CreateMilliseconds": 642.7101,
+        "FullValidationMilliseconds": 256.6719,
+        "CreateGitCalls": 0,
+        "ValidationGitCalls": 0
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 516.1833,
+          "FullValidationMilliseconds": 296.8376,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 503.53,
+          "FullValidationMilliseconds": 342.5607,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        },
+        {
+          "CreateMilliseconds": 599.0612,
+          "FullValidationMilliseconds": 242.4395,
+          "CreateGitCalls": 0,
+          "ValidationGitCalls": 0
+        }
+      ]
+    },
+    {
+      "Os": "Ubuntu 24.04.4 LTS",
+      "Runtime": "10.0.12",
+      "Shape": "similar",
+      "Mode": "git-native",
+      "SourceBytes": 1780250,
+      "PackageBytes": 319078,
+      "GitPayloadBytes": 18203,
+      "SelectiveReadBytes": 18412,
+      "SelectiveGitPayloadBytes": 41,
+      "SelectivePackBytes": 0,
+      "FullHashLimitRejected": false,
+      "First": {
+        "CreateMilliseconds": 1572.5873,
+        "FullValidationMilliseconds": 872.8081,
+        "CreateGitCalls": 69,
+        "ValidationGitCalls": 44
+      },
+      "Warm": [
+        {
+          "CreateMilliseconds": 1286.4212,
+          "FullValidationMilliseconds": 752.133,
+          "CreateGitCalls": 69,
+          "ValidationGitCalls": 44
+        },
+        {
+          "CreateMilliseconds": 1410.2729,
+          "FullValidationMilliseconds": 618.0175,
+          "CreateGitCalls": 69,
+          "ValidationGitCalls": 44
+        },
+        {
+          "CreateMilliseconds": 1355.7939,
+          "FullValidationMilliseconds": 697.4641,
+          "CreateGitCalls": 69,
+          "ValidationGitCalls": 44
+        }
+      ]
+    }
+  ]
+}

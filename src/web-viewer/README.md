@@ -1,5 +1,9 @@
 # Markdown Package viewer
 
+The current source uses the single breaking draft 2 schema: typed snapshot/commit
+state, default history-free creation, and explicit materialization before published
+successors. See [the release notes](../../docs/releases/draft-2.md).
+
 Open a local `.mdpkg` through the file picker, drag/drop or paste. The picker has
 no `accept` restriction so iOS can select packages typed as `public.data`.
 Documents stay on the device. The viewer lists the current view, renders it with
@@ -141,7 +145,7 @@ block boundaries, nested containers, inline safety and the unchanged inventory.
    **Comment** or **Change request**, and save the feedback. A change request is prose,
    not an executable patch. Replies each have their own kind; thread state is
    open/resolved/obsolete and does not claim an edit was applied.
-3. **Prepare review file** builds and structurally validates a snapshot. Then
+3. **Prepare review file** builds and fully validates the returned snapshot. Then
    **Download review** saves `<original>-review.mdpkg`. **Share review** appears when
    file sharing is supported; cancelling or failing share retains the download.
    Preparation is separate so the share gesture keeps browser user activation.
@@ -494,3 +498,20 @@ this slice conservatively returns unconfirmed even when an `observedAt` is
 supplied. Touched queries, eager history loading and imported-review thread
 display remain in their later slices. Authored threads and selectors are available
 in the Review panel; resolution against newer snapshots remains deferred.
+
+## Integrated draft-2 acceptance
+
+The acceptance driver creates fresh CLI inputs, authors and downloads actual browser
+reviews, validates them through CLI/Core/Reviews, then materializes and appends a
+successor and checks origin-aware resolution. It also rejects repaired-CRC feedback
+tampering. This uses both history modes under the same schema.
+
+From the repository root, after building dependencies and installing Playwright:
+
+```powershell
+python src/generator-cli/tests/prove-deferred-history.py --work .antiphon/integrated-acceptance
+```
+
+`--prepare-only` and `--verify-only` split the native and browser phases when using
+the Linux Playwright image. Set `MDPKG_ACCEPTANCE_DIR` to the shared output directory
+for `npx playwright test tests/integration.spec.js --project=chromium` in the viewer.

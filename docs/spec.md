@@ -1,6 +1,6 @@
 # markdown-package format specification, version 1
 
-Status: consolidated specification, draft 2, breaking pre-release revision, 2026-09-12. The revised rules below are adopted; application implementation is still in progress under [CARD-0052 S2–S6](superpowers/plans/2026-09-12-card-0052-deferred-history-breaking-spec-plan.md). Existing released CLI/Core/Reader/Reviews/browser code does not yet implement this draft. S1 changes the specification and documentation fixtures only; these artifacts are not a claim of product readiness.
+Status: consolidated specification, draft 2, breaking pre-release revision, 2026-09-12. The revised rules are implemented by the current CLI/Core/Reader/Reviews and browser source, with [integrated acceptance](investigations/2026-09-12-card-0052-integrated-acceptance.md) and [one breaking release note](releases/draft-2.md). The browser supports current reading and snapshot review export, with historical/origin verification explicitly unavailable. Coordinated NuGet publication remains a separate release action; older published binaries are not covered by this acceptance.
 
 Historical sources: their always-Git findings and measurements retain their original interpretation. The revised normative mode rules supersede unconditional repository/history claims. Sources, all in `docs/investigations/`, each with its reproducible evidence directory beside it:
 
@@ -11,7 +11,7 @@ Historical sources: their always-Git findings and measurements retain their orig
 | [addressing.md](investigations/addressing.md) (CARD-0004) | `4b12c42`, `d0590d0`, `381b874` | Section identity is a computed default anchor plus a sparse, Git-tracked table of producer-confirmed exceptions; digests are computed at read time; the zero-metadata read-time Git-walking alternative measured in `381b874` is closed and rejected (§9) |
 | [container.md](investigations/container.md) (CARD-0001) | `8d05889`, `d49793e` | One manifest-first ZIP; `.mdpkg/` and `.git/` reserved; two-tier reader (79-byte offset-0 typing, central-directory fallback); the EOCD comment is rejected as a version carrier in both its variable-length and fixed-length forms |
 
-Non-normative: [`docs/spec/generator-cli.md`](spec/generator-cli.md) is a tool reference for the current CLI and proposed revised behavior; it describes one producer, not the format, and this document governs wherever the two differ.
+Non-normative: [`docs/spec/generator-cli.md`](spec/generator-cli.md) is a tool reference for the current CLI behavior; it describes one producer, not the format, and this document governs wherever the two differ.
 
 The words MUST, MUST NOT, SHOULD and MAY are used in their usual normative sense. "Producer" means whatever writes a package; "reader" means whatever opens one; "validator" means a reader that additionally proves internal consistency. Snapshot mode means `current.kind: snapshot` with `history.mode: none`; Git mode means `current.kind: commit` with `history.mode: git`.
 

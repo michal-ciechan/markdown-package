@@ -1,5 +1,11 @@
 # Mdpkg.Reviews
 
+This source targets **draft 2**, the breaking `markdown-package/1` revision in
+**0.1.0-preview.3**. Typed state and history modes replace the earlier string-valued
+manifest; there is no compatibility parser. Use a fresh local package feed until
+the coordinated public release gate succeeds. The older preview.2 publication
+does not establish acceptance of this revision.
+
 Extract review comments and authored change requests from returned `.mdpkg` files in
 .NET 10. The only direct package dependency is **Mdpkg.Reader**; there is no Core, CLI,
 native Git, network, model SDK, writer or automatic edit application.

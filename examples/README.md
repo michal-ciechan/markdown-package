@@ -1,5 +1,9 @@
 # Examples
 
+The current source uses the single breaking draft 2 schema: typed snapshot/commit
+state, default history-free creation, and explicit materialization before published
+successors. See [the release notes](../docs/releases/draft-2.md).
+
 Realistic markdown content exercising the addressing edge cases from
 [`docs/investigations/addressing.md`](../docs/investigations/addressing.md) and
 [`docs/spec.md`](../docs/spec.md) section 6 (Addressing).

@@ -22,32 +22,26 @@ that:
 
 ## Status
 
-The format spec is drafted, the web viewer browses packages, and the .NET generator creates
-and validates real packages. `pack` supports snapshots, Git history, path projection, depth
-and confirmed addressing exceptions. `validate --deep` checks native Git integrity and
-current-view agreement, and substantiates complete correspondence against retained history.
-Git imports preserve legacy-encoded commit metadata. Report destinations are checked for
-filesystem aliases to protect inputs and package output. `update` and `address` remain
-explicit exit-70 placeholders.
+The current source implements **draft 2**, one breaking pre-release update of
+`markdown-package/1`. Default `pack` and browser delta reviews are history-free
+snapshots with typed `{kind, id}` state. Snapshot creation and full validation need
+no Git. Explicit `--history git`, history import, materialization and updates use
+committed packages; `update --materialize` records a deterministic bootstrap origin,
+and `update --tree` appends a successor while preserving that origin.
 
-[Mdpkg.Core](src/generator-cli/src/Mdpkg.Core/README.md) exposes directory and in-memory
-creation, stream validation, typed correspondence and immutable results for .NET consumers.
-The CLI delegates engine work through Core's public API. The dependency graph is
-`Mdpkg.Cli -> Mdpkg.Core -> Mdpkg.Reader`, with `Mdpkg.Reviews -> Mdpkg.Reader`.
+CLI, [Core](src/generator-cli/src/Mdpkg.Core/README.md),
+[Reader](src/generator-cli/src/Mdpkg.Reader/README.md),
+[Reviews](src/generator-cli/src/Mdpkg.Reviews/README.md) and the web viewer use the
+same schema. Old string-valued manifests are rejected. Reviews can resolve an
+original snapshot review against verified materialized history; the browser's
+historical/origin backend remains unsupported. General squash/truncate construction
+and `address` remain explicit exit-70 placeholders.
 
-The .NET solution also provides [Mdpkg.Reader](src/generator-cli/src/Mdpkg.Reader/README.md)
-and [Mdpkg.Reviews](src/generator-cli/src/Mdpkg.Reviews/README.md): bounded read-only package
-access and typed v1/v2 review-feedback extraction/resolution. Structural extraction and
-current-view resolution require no native Git; full verification is an injected capability.
-The [external consumer](examples/review-consumer/) restores Reviews from local preview
-packages. Reader and Core are published on nuget.org at **0.1.0-preview.2**, with both
-public consumer gates passing in the coordinated [NuGet release workflow](docs/releases/mdpkg.md). Reviews
-is still distributed as a local preview.
-
-```powershell
-dotnet add package Mdpkg.Core --version 0.1.0-preview.2 --source https://api.nuget.org/v3/index.json
-# For read-only consumers, install Mdpkg.Reader instead.
-```
+The coordinated source package version is **0.1.0-preview.3**. Use the source or a
+fresh local feed for this revision; the historical preview.2 release predates it.
+See the [breaking release notes](docs/releases/draft-2.md) and
+[integrated acceptance evidence](docs/investigations/2026-09-12-card-0052-integrated-acceptance.md).
+NuGet publication is a separate release-workflow action.
 
 ## Repository layout
 
@@ -60,26 +54,20 @@ dotnet add package Mdpkg.Core --version 0.1.0-preview.2 --source https://api.nug
 
 ## Getting started
 
-Install the published preview global tool (.NET 10 and Git required):
-
-```powershell
-dotnet tool install -g mdpkg --version 0.1.0-preview.2 --source https://api.nuget.org/v3/index.json
-mdpkg --version
-mdpkg pack ./my-docs --out ./my-docs.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8
-mdpkg validate ./my-docs.mdpkg --deep
-```
-
-Install .NET 10 SDK and Git first, and put the global tools directory on PATH
-(`$HOME/.dotnet/tools` on Linux/macOS, `%USERPROFILE%\.dotnet\tools` on Windows).
-`my-docs` must be an existing directory of Markdown files; keep output outside it.
-Use `dotnet tool update -g mdpkg --prerelease` for newer previews. After a stable
-release exists, `dotnet tool install -g mdpkg` selects the latest stable version.
-
-Requires .NET 10 and Git on PATH. From the repository root:
+Requires .NET 10 SDK. Git is needed for explicit Git output, materialization,
+updates and their deep validation. From the repository root:
 
 ```powershell
 dotnet run --project src/generator-cli/src/Mdpkg.Cli -- pack examples/guide-and-notes --out guide.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8
 dotnet run --project src/generator-cli/src/Mdpkg.Cli -- validate guide.mdpkg --deep
+dotnet run --project src/generator-cli/src/Mdpkg.Cli -- update guide.mdpkg --materialize --out guide-git.mdpkg
+```
+
+To exercise the installed candidate, build a fresh local feed:
+
+```powershell
+dotnet pack src/generator-cli/src/Mdpkg.Cli -c Release -o src/generator-cli/artifacts/package
+dotnet tool install mdpkg --tool-path .antiphon/tools --version 0.1.0-preview.3 --add-source src/generator-cli/artifacts/package
 ```
 
 Use your own lowercase UUID for a new package lineage. See the [tool guide](src/generator-cli/README.md)

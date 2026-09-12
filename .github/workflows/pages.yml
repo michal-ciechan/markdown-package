@@ -8,6 +8,7 @@ on:
     branches: [master]
     paths:
       - 'src/web-viewer/**'
+      - 'src/generator-cli/**'
       # V-1 pins the app's remaining dependencies against
       # this evidence, so a change here can turn the build red on its own.
       - 'docs/investigations/viewer-app/**'
@@ -65,6 +66,11 @@ jobs:
           python tests/validate-export.py test-results/browser-review.mdpkg
           python tests/validate-export.py test-results/browser-commit-target.mdpkg
         working-directory: src/web-viewer
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: src/generator-cli/global.json
+      - name: Prove fresh CLI to browser to Core and origin-aware Reviews pipeline
+        run: python src/generator-cli/tests/prove-deferred-history.py --work .antiphon/integrated-acceptance
       - uses: actions/upload-pages-artifact@v3
         with:
           path: src/web-viewer/dist

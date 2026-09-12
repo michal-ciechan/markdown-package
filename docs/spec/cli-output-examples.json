@@ -1,0 +1,112 @@
+{
+  "description": "Selected fields from actual CLI results for guide.md containing # Guide followed by LF; package paths, archive digests, checks and diagnostics omitted.",
+  "examples": {
+    "snapshot": {
+      "exitCode": 0,
+      "current": {
+        "kind": "snapshot",
+        "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+      },
+      "manifest": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "history": {
+        "mode": "none"
+      },
+      "mode": "none",
+      "assurance": "snapshot-verified",
+      "materialized": false
+    },
+    "git": {
+      "exitCode": 0,
+      "current": {
+        "kind": "commit",
+        "id": "sha1-2480a02e1cdaebbb4be1a751e491f53df3935baf"
+      },
+      "manifest": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha1-2480a02e1cdaebbb4be1a751e491f53df3935baf",
+          "kind": "commit"
+        },
+        "history": {
+          "coverage": "complete",
+          "detail": ".mdpkg/history.json",
+          "mode": "git",
+          "transform": []
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "history": {
+        "mode": "git",
+        "coverage": "complete",
+        "transform": [],
+        "retainedCommits": 1,
+        "ranges": 0,
+        "patches": 0
+      },
+      "mode": "git",
+      "assurance": "git-verified",
+      "materialized": false
+    },
+    "materialize": {
+      "exitCode": 0,
+      "current": {
+        "kind": "commit",
+        "id": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9"
+      },
+      "manifest": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+          "kind": "commit"
+        },
+        "history": {
+          "coverage": "complete",
+          "detail": ".mdpkg/history.json",
+          "mode": "git",
+          "transform": []
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "history": {
+        "mode": "git",
+        "coverage": "complete",
+        "transform": [],
+        "retainedCommits": 1,
+        "ranges": 0,
+        "patches": 0
+      },
+      "mode": "git",
+      "assurance": "git-verified",
+      "materialized": true,
+      "bootstrapCommit": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9"
+    }
+  }
+}

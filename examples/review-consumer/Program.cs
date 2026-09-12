@@ -10,6 +10,10 @@ using var returned = File.OpenRead(args[0]);
 var review = await extractor.ExtractAsync(returned, new() { RequireFullVerification = full,
     VerificationProvider = full ? new ReviewVerificationProvider(backend) : null });
 Console.WriteLine($"{review.Outcome}: {review.ContainerStatus}/{review.SchemaStatus}/{review.VerificationLevel}");
+if (review.ReviewIdentity is { } artifact)
+    Console.WriteLine($"Artifact: {artifact.Namespace} / {artifact.Current.Kind} / {artifact.Current.Id}");
+if (review.ReviewedIdentity is { } reviewed)
+    Console.WriteLine($"Reviewed: {reviewed.Identity.Namespace} / {reviewed.Identity.Current.Kind} / {reviewed.Identity.Current.Id}");
 Console.WriteLine($"Required: {review.RequiredChecks}; completed: {review.CompletedChecks}; not applicable: {review.NotApplicableChecks}");
 foreach (var diagnostic in review.Diagnostics) Console.Error.WriteLine(diagnostic);
 var exitCode = review.Outcome == ReviewOutcome.Success ? 0 : 2;

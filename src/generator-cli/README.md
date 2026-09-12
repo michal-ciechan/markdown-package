@@ -1,8 +1,14 @@
 # mdpkg generator CLI
 
-`pack` creates real `.mdpkg` packages. `validate` checks them, and `validate --deep`
-verifies the curated repository with native Git and compares every current-view file
-with its tip-tree blob. `update --materialize` emits deterministic bootstrap history;
+This source targets **draft 2**, the breaking `markdown-package/1` revision in
+**0.1.0-preview.3**. Typed state and history modes replace the earlier string-valued
+manifest; there is no compatibility parser. Use a fresh local package feed until
+the coordinated public release gate succeeds. The older preview.2 publication
+does not establish acceptance of this revision.
+
+`pack` creates history-free `.mdpkg` snapshots by default. `validate` hashes every
+current file and verifies the snapshot identity without Git. In explicit Git mode,
+`validate --deep` additionally proves the repository, current tree and any origin. `update --materialize` emits deterministic bootstrap history;
 `update --tree ... --message ...` appends to a supported lineage, materializing a
 snapshot base first. General transforms and `address` remain exit-70 placeholders.
 An internal managed snapshot candidate is implemented but **not enabled in release
@@ -16,11 +22,13 @@ The [format specification](https://github.com/michal-ciechan/markdown-package/bl
 
 ## Install from NuGet.org
 
-Version **0.1.0-preview.2** is published on nuget.org and passed the public-feed proof.
-Install the preview with .NET 10 SDK and Git on PATH:
+The following installation command applies after the preview.3 public-feed gate
+succeeds. For local acceptance, add `--add-source artifacts/package` and use an
+isolated `--tool-path` instead of `-g`. Snapshot operations require .NET 10; Git is
+required for explicit Git operations:
 
 ```powershell
-dotnet tool install -g mdpkg --version 0.1.0-preview.2 --source https://api.nuget.org/v3/index.json
+dotnet tool install -g mdpkg --version 0.1.0-preview.3 --source https://api.nuget.org/v3/index.json
 mdpkg --version
 mdpkg pack ./my-docs --out ./my-docs.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8
 mdpkg validate ./my-docs.mdpkg --deep --format json
@@ -39,7 +47,8 @@ for the shared version, Trusted Publishing policy and public-feed acceptance gat
 
 ## Build and run
 
-Requires .NET 10 (SDK selected by `global.json`) and Git on PATH. From this directory:
+Requires .NET 10 (SDK selected by `global.json`); the complete test suite also needs
+Git on PATH. From this directory:
 
 ```powershell
 dotnet restore
@@ -74,7 +83,7 @@ These source commands also work before the first public release.
   fail before output publication. Failures and cancellation clean staging and preserve
   an existing destination. `--accept-recoverable` reports tier 2 but still exits 3.
 
-Snapshot metadata is fixed for repeatability; imported author/committer/message bytes
+Explicit Git-mode initial commit metadata is fixed for repeatability; imported author/committer/message bytes
 are retained, including legacy non-UTF-8 encodings, with signatures removed when their
 signed commits change. UTF-8 requirements apply to document blobs and package JSON,
 not verbatim Git commit metadata. Outputs are
@@ -168,5 +177,22 @@ The public proof uses `python tests/prove-tool.py --attempts 20 --retry-delay 18
 nuget.org alone, fresh caches, exact version, installed global shim, real pack and
 deep validate. The library matrix entry runs `python tests/prove-libraries.py
 --attempts 20 --retry-delay 180` to restore the exact Core/Reader versions, create,
-deep-validate with Git, and read without Git. Both passing entries establish release
+fully validate a default snapshot and read it without Git. Both passing entries establish release
 completion; see the [release guide](../../docs/releases/mdpkg.md).
+
+## Integrated draft-2 acceptance
+
+The acceptance driver creates fresh CLI inputs, authors and downloads actual browser
+reviews, validates them through CLI/Core/Reviews, then materializes and appends a
+successor and checks origin-aware resolution. It also rejects repaired-CRC feedback
+tampering. This uses both history modes under the same schema.
+
+From the repository root, after building dependencies and installing Playwright:
+
+```powershell
+python src/generator-cli/tests/prove-deferred-history.py --work .antiphon/integrated-acceptance
+```
+
+`--prepare-only` and `--verify-only` split the native and browser phases when using
+the Linux Playwright image. Set `MDPKG_ACCEPTANCE_DIR` to the shared output directory
+for `npx playwright test tests/integration.spec.js --project=chromium` in the viewer.

@@ -246,7 +246,7 @@ def main():
             assert (case['expectedId']==v['snapshotId'])==(case['expected']=='same'),case['name']
         requests=operation_inputs(vectors,transitions,w)
         assert set(requests)=={n for n,_,_ in operations}
-        result=dict(purpose='S1 shared draft-2 conformance data; product implementation pending. Historical source measurements remain unchanged.',
+        result=dict(purpose='Shared draft-2 conformance data used by CLI, Core, Reader, Reviews and browser acceptance. Historical source measurements remain unchanged.',
             sourceRevision=prior['sourceRevision'],vectors=vectors,transitions=transitions,invalidCases=cases,
             operations=[dict(name=n,operation=o,input=requests[n],expected=e) for n,o,e in operations],hashCases=hash_cases,packages=packages)
         VECTORS.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')

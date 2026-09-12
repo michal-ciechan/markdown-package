@@ -1,5 +1,6 @@
 import {defineConfig} from '@playwright/test';
 export default defineConfig({testDir: './tests', testMatch: '*.spec.js', workers: 1,
+  testIgnore: process.env.MDPKG_ACCEPTANCE_DIR ? [] : ['integration.spec.js'],
   use: {baseURL: 'http://127.0.0.1:8138'},
   projects: [
     {name: 'chromium', use: {browserName: 'chromium'}},

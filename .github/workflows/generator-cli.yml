@@ -10,6 +10,8 @@ on:
       # SpecConsistencyTests reads the tool reference and fails when the verb tree, exit
       # codes or diagnostic table drift from it, so a spec edit can turn this red on its own.
       - 'docs/spec/generator-cli.md'
+      - 'docs/spec/generate-cli-examples.py'
+      - 'docs/spec/cli-output-examples.json'
       - 'docs/spec.md'
       - 'docs/spec/worked-example.json'
       - 'docs/investigations/deferred-history/breaking-revision-vectors.json'
@@ -25,6 +27,8 @@ on:
     paths:
       - 'src/generator-cli/**'
       - 'docs/spec/generator-cli.md'
+      - 'docs/spec/generate-cli-examples.py'
+      - 'docs/spec/cli-output-examples.json'
       - 'docs/spec.md'
       - 'docs/spec/worked-example.json'
       - 'docs/investigations/deferred-history/breaking-revision-vectors.json'
@@ -85,6 +89,11 @@ jobs:
         run: dotnet build --no-restore -c Release
       - name: Test
         run: dotnet test --no-build -c Release
+      - name: Verify generated draft-2 CLI JSON and independent fixtures
+        run: |
+          python ../../docs/spec/generate-cli-examples.py --check
+          python ../../docs/spec/verify-fixtures.py
+          python ../../docs/spec/verify-operation-fixtures.py
       - name: Pack the tool
         run: dotnet pack src/Mdpkg.Cli/Mdpkg.Cli.csproj --no-build -c Release -o artifacts/package
       - name: Prove global tool installation

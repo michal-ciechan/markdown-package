@@ -72,4 +72,5 @@ const destinations = [
 for (const href of ['../a.md', '%2e%2e/a.md', '%2f%2fevil/a.md', '//evil/a.md', 'a%5cb.md',
   '.Git/a.md', '%2emdpkg/a.md', 'a.md?q=x', 'a.md%3fq=x', 'a%00.md', '%zz', 'a.md#%zz', 'javascript:alert(1)'])
   destinations.push({source: 'guide.md', href, invalid: true});
-await fs.writeFile(new URL('../../../docs/spec/link-fixtures.json', import.meta.url), JSON.stringify({namespace, current, cases, destinations}, null, 2) + '\n');
+await fs.writeFile(process.argv[2] ?? new URL('../../../docs/spec/link-fixtures.json', import.meta.url),
+  JSON.stringify({namespace, current: {id: current, kind: 'commit'}, cases, destinations}, null, 2) + '\n');

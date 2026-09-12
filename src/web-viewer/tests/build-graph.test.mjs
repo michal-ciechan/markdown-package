@@ -1,6 +1,17 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {budgetClosure} from '../build-graph.mjs';
+import {build} from 'esbuild';
+
+test('the actual snapshot export graph has no Git, Buffer or external imports', async () => {
+  const result = await build({entryPoints: ['src/review/emit.js'], bundle: true, splitting: true,
+    format: 'esm', platform: 'browser', outdir: 'graph-check', write: false, metafile: true});
+  const inputs = Object.keys(result.metafile.inputs);
+  assert(inputs.includes('src/container/snapshot.js'));
+  assert(inputs.includes('src/container/writer.js'));
+  assert.deepEqual(inputs.filter(name => /isomorphic-git|(?:^|\/)buffer(?:\/|\.)|review\/(?:git|memory-fs|buffer-shim)\.js/.test(name)), []);
+  assert.deepEqual(Object.values(result.metafile.inputs).flatMap(record => record.imports).filter(edge => edge.external), []);
+});
 
 test('budget counts nested startup imports, their shared dependencies and CSS once', () => {
   const edge = (path, kind = 'import-statement') => ({path, kind});

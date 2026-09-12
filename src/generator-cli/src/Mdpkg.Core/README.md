@@ -1,17 +1,23 @@
 # Mdpkg.Core
 
-Create `.mdpkg` packages and run full or native-Git deep validation from .NET 10 on
+This source targets **draft 2**, the breaking `markdown-package/1` revision in
+**0.1.0-preview.3**. Typed state and history modes replace the earlier string-valued
+manifest; there is no compatibility parser. Use a fresh local package feed until
+the coordinated public release gate succeeds. The older preview.2 publication
+does not establish acceptance of this revision.
+
+Create, materialize and update `.mdpkg` packages; run full snapshot or native-Git deep validation from .NET 10 on
 Windows and Linux. `Mdpkg.Cli -> Mdpkg.Core -> Mdpkg.Reader`; Reviews depends only on
 Reader. Core does not reference Reviews, the CLI, or System.CommandLine.
 
-Install the coordinated preview from NuGet.org after the [public release gate](https://github.com/michal-ciechan/markdown-package/actions/workflows/publish-nuget.yml) succeeds:
+Install this coordinated preview from NuGet.org only after the [public release gate](https://github.com/michal-ciechan/markdown-package/actions/workflows/publish-nuget.yml) succeeds:
 
 ```sh
-dotnet add package Mdpkg.Core --version 0.1.0-preview.2 --source https://api.nuget.org/v3/index.json
+dotnet add package Mdpkg.Core --version 0.1.0-preview.3 --source https://api.nuget.org/v3/index.json
 ```
 
 Core uses Reader internals and carries an **exact** `Mdpkg.Reader` dependency on
-`0.1.0-preview.2`. NuGet restores Reader automatically. Reader is published first
+`0.1.0-preview.3`. NuGet restores Reader automatically. Reader is published first
 from the same verified release; never substitute different bytes under that version.
 See the [release guide](https://github.com/michal-ciechan/markdown-package/blob/master/docs/releases/mdpkg.md)
 for policy setup, publication status and local-feed verification.
@@ -26,8 +32,8 @@ history mode it supports current-file capture without `Scope`/`Depth`, including
 correspondence, metadata, compression, descriptors and reverse indexes, with no Git
 process or temporary Git repository. It captures the same current files and uses
 the same normalization, ledger preparation and publication flow. Stream creation
-still spools a private package before copying to the caller-owned stream. Import,
-scope, depth and standalone deep validation keep using native Git. See the
+still spools a private package before copying to the caller-owned stream. Git import,
+scope, depth and Git-mode deep validation keep using native Git. See the
 [delta report](https://github.com/michal-ciechan/markdown-package/blob/master/docs/investigations/2026-09-12-card-0050-managed-delta-results.md)
 for cross-file compression measurements. The managed writer uses full blobs or
 smaller depth-one blob deltas; its independent verifier reconstructs and hashes
