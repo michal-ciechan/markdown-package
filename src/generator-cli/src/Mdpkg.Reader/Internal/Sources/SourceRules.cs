@@ -10,12 +10,13 @@ internal static class SourceRules
         var dirs = new HashSet<string>(StringComparer.Ordinal);
         foreach (var name in names)
         {
-            ValidatePath(name, outcome);
-            var key = CaseFold.Key(name);
-            if (!seen.Add(key)) throw new EngineException(outcome, "MDPK1001", "Entry names collide under NFC and simple case folding.", name);
+            var directory = container && name.EndsWith('/');
+            ValidatePath(directory ? name[..^1] : name, outcome);
+            var key = CaseFold.Key(directory ? name[..^1] : name);
+            if (!seen.Add(key + (directory ? "/" : ""))) throw new EngineException(outcome, "MDPK1001", "Entry names collide under NFC and simple case folding.", name);
             if (!container && Reserved(name)) throw new EngineException(outcome, "MDPK1002", "Source path uses a reserved prefix.", name);
-            if (dirs.Contains(key)) throw new EngineException(outcome, "MDPK1001", "A file collides with a directory.", name);
-            files.Add(key);
+            if (directory ? files.Contains(key) : dirs.Contains(key)) throw new EngineException(outcome, "MDPK1001", "A file collides with a directory.", name);
+            if (directory) dirs.Add(key); else files.Add(key);
             var parts = key.Split('/');
             for (var i = 1; i < parts.Length; i++)
             {

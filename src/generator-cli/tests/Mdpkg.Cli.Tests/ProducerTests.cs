@@ -30,6 +30,6 @@ public class ProducerTests
         var line = Assert.Single(cli.Stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries)).TrimEnd('\r'); Assert.Equal(File.ReadAllText(report), line);
         using var json = JsonDocument.Parse(line); Assert.Equal(0, json.RootElement.GetProperty("exitCode").GetInt32());
         var mismatch = CliRunner.Run("validate", f.Output, "--namespace", "00000000-0000-0000-0000-000000000000"); Assert.Equal(3, mismatch.Exit);
-        var sha256 = CliRunner.Run("pack", f.Source, "--out", f.Output, "--namespace", CliRunner.Namespace, "--object-format", "sha256"); Assert.Equal(2, sha256.Exit); Assert.Contains("MDPK4001", sha256.Stderr, StringComparison.Ordinal);
+        var sha256 = CliRunner.Run("pack", f.Source, "--out", f.Output, "--namespace", CliRunner.Namespace, "--history", "git", "--object-format", "sha256"); Assert.Equal(2, sha256.Exit); Assert.Contains("MDPK4001", sha256.Stderr, StringComparison.Ordinal);
     }
 }

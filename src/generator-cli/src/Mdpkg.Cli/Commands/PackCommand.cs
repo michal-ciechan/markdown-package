@@ -34,7 +34,10 @@ internal static class PackCommand
             }
         });
 
-        var command = new Command("pack", "Emit a fresh package from current files (§7). Release builds currently require Git; import, scope and depth always use Git.");
+        var command = new Command("pack", "Emit a history-free initial snapshot from current files (§7). Choose --history git for committed output.");
+        var history = new Option<string?>("--history") { Description = "Output history mode: none (default), or git. --from-git defaults to git.", HelpName = "mode" };
+        history.AcceptOnlyFromAmong("none", "git");
+        command.Options.Add(history);
         command.Arguments.Add(sourceDir);
         var output = OutOption.Create(required: true);
         command.Options.Add(output);
@@ -51,6 +54,11 @@ internal static class PackCommand
         // §2: --namespace is required for pack only; the other verbs read it from the input manifest.
         command.Validators.Add(result =>
         {
+            var selectedHistory = result.GetResult(history)?.Tokens.LastOrDefault()?.Value;
+            var gitMode = selectedHistory == "git" || selectedHistory is null && result.GetValue(fromGit);
+            if (!gitMode && (result.GetValue(fromGit) || result.GetValue(scope) is not null || result.GetResult(depth) is { Implicit: false } ||
+                result.GetValue(globals.ReverseIndex) || result.GetResult(message) is { Implicit: false } || result.GetResult(globals.ObjectFormat) is { Implicit: false }))
+                result.AddError("Import, scope, depth, reverse index and explicit commit metadata/object-format options require --history git.");
             if (result.GetResult(globals.Namespace) is null)
             {
                 result.AddError("--namespace <uuid> is required for pack (§2).");
@@ -68,7 +76,9 @@ internal static class PackCommand
             {
                 Mode = parse.GetValue(fromGit) ? CreationMode.GitImport : CreationMode.Snapshot,
                 Scope = parse.GetValue(scope), Depth = parse.GetValue(depth), Correspondence = records,
-                Metadata = SnapshotMetadata.CliDefault with { Message = parse.GetValue(message)! },
+                History = parse.GetValue(history) == "git" || parse.GetValue(history) is null && parse.GetValue(fromGit) ? HistoryMode.Git : HistoryMode.None,
+                Metadata = parse.GetValue(history) == "git" || parse.GetValue(history) is null && parse.GetValue(fromGit)
+                    ? SnapshotMetadata.CliDefault with { Message = parse.GetValue(message)! } : null,
                 Options = new()
                 {
                     RequireComplete = parse.GetValue(requireComplete), Warnings = parse.GetValue(globals.FailOnWarning) ? WarningPolicy.Fail : WarningPolicy.Report,

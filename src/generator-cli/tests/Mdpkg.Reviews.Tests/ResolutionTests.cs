@@ -148,8 +148,8 @@ public class ResolutionTests
     [Fact]
     public async Task UnknownOriginalIdentityCannotBePromotedByQuoteMatchingInANewerTarget()
     {
-        var review = await Review(); var root = review.Threads[0].Anchor.Root;
-        using var input = new MemoryStream(Fixtures.Rewrite(Fixtures.Bytes("original.mdpkg"), e =>
+        var review = await Review(Fixtures.Bytes("delta-snapshot-target-commit.mdpkg")); var root = review.Threads[0].Anchor.Root;
+        using var input = new MemoryStream(Fixtures.Rewrite(Fixtures.Bytes("original-git.mdpkg"), e =>
         {
             var manifest = JsonNode.Parse(e[Profile.Manifest])!; manifest["addressing"]!["coverage"] = "partial";
             manifest["addressing"]!["overrides"] = Profile.Ledger; e[Profile.Manifest] = CanonicalJson.Bytes(manifest, true);

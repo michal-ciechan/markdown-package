@@ -14,14 +14,19 @@ public class LooseReferenceTests
     public async Task LooseUrisMatchSharedBrowserContract(string name, string json)
     {
         var c = JsonNode.Parse(json)!;
-        var bytes = Fixtures.Rewrite(Fixtures.Bytes("original.mdpkg"), entries => {
+        var bytes = Fixtures.Rewrite(Fixtures.Bytes("original-git.mdpkg"), entries => {
             foreach (var key in entries.Keys.Where(k => !k.StartsWith(".", StringComparison.Ordinal)).ToArray()) entries.Remove(key);
             foreach (var (path, text) in c["documents"]!.AsObject()) entries[path] = Profile.Utf8.GetBytes(text!.GetValue<string>());
             var manifest = JsonNode.Parse(entries[Profile.Manifest])!;
             manifest["namespace"] = Fixture["namespace"]!.GetValue<string>();
-            manifest["current"] = Fixture["current"]!.GetValue<string>();
+            manifest["current"] = Fixture["current"]!.DeepClone();
             manifest["addressing"]!["coverage"] = c["coverage"]!.GetValue<string>();
             var history = JsonNode.Parse(entries[Profile.History])!;
+            var current = Fixture["current"]!["id"]!.GetValue<string>();
+            history["sourceBase"] = current; history["sourceTip"] = current;
+            history["addressingCoverage"]![0]!["from"] = current;
+            history["addressingCoverage"]![0]!["to"] = current;
+            entries[".git/refs/heads/main"] = Profile.Utf8.GetBytes(current[5..] + "\n");
             history["addressingCoverage"]![0]!["coverage"] = c["coverage"]!.GetValue<string>();
             entries[Profile.History] = CanonicalJson.Bytes(history);
             var ledger = c["ledger"]!.AsObject();

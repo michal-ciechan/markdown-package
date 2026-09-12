@@ -63,7 +63,7 @@ internal static class MalformedHistoryFixture
     {
         for (var dir = new DirectoryInfo(AppContext.BaseDirectory); dir is not null; dir = dir.Parent)
         {
-            var path = Path.Combine(dir.FullName, "docs/spec/review-fixtures/original.mdpkg");
+            var path = Path.Combine(dir.FullName, "docs/spec/review-fixtures/original-git.mdpkg");
             if (File.Exists(path)) return path;
         }
         throw new FileNotFoundException("Independent original.mdpkg fixture not found.");

@@ -12,10 +12,10 @@ public class ApiParityTests
     public async Task PublicApiAndCliAgreeOnBytesDiagnosticsAndReport(bool crlf, bool depth)
     {
         using var f = new EngineFixture(); f.Write("x.md", crlf ? "# X\r\n" : "# X\n");
-        var request = f.Request with { Depth = depth ? 1 : null };
+        var request = f.Request with { Depth = depth ? 1 : null, History = depth ? HistoryMode.Git : HistoryMode.None };
         var api = await new PackageBuilder().CreateFromDirectoryAsync(request, f.Output, TestContext.Current.CancellationToken);
         EngineFixture.Success(api); var bytes = File.ReadAllBytes(f.Output);
-        var cli = CliRunner.Run(["pack", f.Source, "--out", f.Output, "--namespace", CliRunner.Namespace, "--format", "json", .. depth ? new[] { "--depth", "1" } : []]);
+        var cli = CliRunner.Run(["pack", f.Source, "--out", f.Output, "--namespace", CliRunner.Namespace, "--format", "json", .. depth ? new[] { "--history", "git", "--depth", "1" } : []]);
         Assert.Equal(0, cli.Exit); Assert.Equal(bytes, File.ReadAllBytes(f.Output));
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(ResultWriter.ToJson(EngineAction.Map("pack", api))), JsonNode.Parse(cli.Stdout)));
         var manifest = JsonNode.Parse(cli.Stdout)!["manifest"]!;

@@ -40,7 +40,7 @@ public class StubTests
         Assert.Equal(verb, root.GetProperty("verb").GetString());
         Assert.Equal((int)ExitCode.NotImplemented, root.GetProperty("exitCode").GetInt32());
         Assert.Equal(
-            ["verb", "exitCode", "package", "manifest", "current", "addressing", "history", "checks", "diagnostics"],
+            ["verb", "exitCode", "package", "manifest", "current", "addressing", "history", "checks", "diagnostics", "mode", "assurance", "materialized"],
             root.EnumerateObject().Select(p => p.Name).ToArray());
         Assert.Equal(JsonValueKind.Array, root.GetProperty("checks").ValueKind);
         Assert.Equal(JsonValueKind.Array, root.GetProperty("diagnostics").ValueKind);

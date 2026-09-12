@@ -23,6 +23,7 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
         var findings = new List<Finding>();
         var completed = new HashSet<string>(StringComparer.Ordinal);
         Manifest? manifest = null; HistoryDetail? history = null; PackageInfo? package = null; var overrideCount = 0;
+        var assurance = Mdpkg.Reader.IdentityAssurance.Declared;
         var deepRun = false; var deepSucceeded = false; var outcome = Outcome.Nonconforming;
         try
         {
@@ -41,21 +42,21 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
             }
             void Fail(string code, string message, string? name = null) => findings.Add(Findings.Create(code, message, name, "error"));
             var manifestBytes = Need(Profile.Manifest, "MDPK1006");
-            manifest = CanonicalJson.Read<Manifest>(manifestBytes, resources.ReadLimits.MaxJsonDepth);
+            manifest = FormatValidation.ReadManifest(CanonicalJson.Parse(manifestBytes, resources.ReadLimits.MaxJsonDepth, ct));
             FormatValidation.ValidateManifest(manifest, request.Namespace);
-            if (Profile.Utf8.GetString(Need(".git/refs/heads/main", "MDPK2001")) != manifest.Current[5..] + "\n") Fail("MDPK2001", "Manifest current differs from refs/heads/main.");
+            if (manifest.History is Mdpkg.Reader.GitHistory && Profile.Utf8.GetString(Need(".git/refs/heads/main", "MDPK2001")) != manifest.Current.Id[5..] + "\n") Fail("MDPK2001", "Manifest current differs from refs/heads/main.");
             completed.Add("MDPK2001");
             if (!manifestBytes.AsSpan().SequenceEqual(CanonicalJson.Bytes(manifest, manifest: true, maxDepth: resources.ReadLimits.MaxJsonDepth))) Fail("MDPK2007", "Manifest is not canonical JSON.", Profile.Manifest);
             if (!archive.Typed && !request.AcceptRecoverable) Fail("MDPK1006", "Use --accept-recoverable to inspect a tier-2 package.", Profile.Manifest);
-            var historyBytes = Need(manifest.History.Detail, "MDPK2003");
-            history = CanonicalJson.Read<HistoryDetail>(historyBytes, resources.ReadLimits.MaxJsonDepth);
-            FormatValidation.ValidateHistory(manifest, history);
-            completed.Add("MDPK2003");
-            if (!historyBytes.AsSpan().SequenceEqual(CanonicalJson.Bytes(history))) Fail("MDPK2007", "History descriptor is not canonical JSON.", manifest.History.Detail);
-            var control = new HashSet<string>(StringComparer.Ordinal) { Profile.Manifest, Profile.History };
-            if (history.Bindings is not null) control.Add(history.Bindings);
-            foreach (var range in history.Ranges) control.Add(range);
-            foreach (var patch in history.Patches) control.Add(patch.Entry);
+            if (manifest.History is Mdpkg.Reader.GitHistory gitHistory)
+            {
+                var historyBytes = Need(gitHistory.Detail, "MDPK2003");
+                history = FormatValidation.ReadHistory(CanonicalJson.Parse(historyBytes, resources.ReadLimits.MaxJsonDepth, ct));
+                FormatValidation.ValidateHistory(manifest, history);
+                completed.Add("MDPK2003");
+                if (!historyBytes.AsSpan().SequenceEqual(CanonicalJson.Bytes(history))) Fail("MDPK2007", "History descriptor is not canonical JSON.", gitHistory.Detail);
+            }
+            var control = FormatValidation.ValidateInventory(manifest, history, archive.Members.Select(e => (e.Name, (long)e.Size)));
             foreach (var member in archive.Members)
             {
                 if (!member.Name.StartsWith(".git/", StringComparison.Ordinal))
@@ -63,39 +64,41 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
                     try { Profile.Utf8.GetString(member.Bytes); }
                     catch (DecoderFallbackException) { Fail("MDPK4003", "Entry is not strict UTF-8.", member.Name); }
                     if (member.Bytes.Contains((byte)'\r')) Fail("MDPK1004", "Entry contains CR bytes.", member.Name);
-                    if (SourceTree.Reserved(member.Name) && !control.Contains(member.Name)) Fail("MDPK1002", "Unrecognized reserved entry.", member.Name);
                 }
             }
             var gitEntries = archive.Members.Where(m => m.Name.StartsWith(".git/", StringComparison.Ordinal)).ToArray();
             completed.UnionWith(["MDPK1002", "MDPK1004", "MDPK4003"]);
-            var pack = gitEntries.Where(m => m.Name.EndsWith(".pack", StringComparison.Ordinal)).ToArray();
-            string? packStem = pack.Length == 1 ? pack[0].Name[..^5] : null;
-            var allowed = new HashSet<string>(StringComparer.Ordinal) { ".git/HEAD", ".git/config", ".git/refs/heads/main", ".git/shallow" };
-            if (packStem is not null)
+            if (manifest.History is Mdpkg.Reader.GitHistory)
             {
-                if (!packStem.StartsWith(".git/objects/pack/pack-", StringComparison.Ordinal)) throw new EngineException(Outcome.Nonconforming, "MDPK4002", "Invalid pack filename.", packStem);
-                var hash = packStem[".git/objects/pack/pack-".Length..];
-                if (!Profile.Oid("sha1-" + hash)) Fail("MDPK4002", "Invalid pack filename.", packStem);
-                allowed.UnionWith([packStem + ".pack", packStem + ".idx", packStem + ".rev"]);
-                if (!entries.ContainsKey(packStem + ".idx")) Fail("MDPK4002", "Pack index is absent.");
-                if (pack[0].Offset != archive.Members.Max(m => m.Offset)) Fail("MDPK1007", "The Git pack must be the last physical entry.", pack[0].Name);
-                var packBytes = pack[0].Bytes;
-                if (packBytes.Length < 32 || !packBytes.AsSpan(0, 4).SequenceEqual("PACK"u8) ||
-                    Convert.ToHexStringLower(packBytes.AsSpan(packBytes.Length - 20)) != hash ||
-                    !SHA1.HashData(packBytes.AsSpan(0, packBytes.Length - 20)).AsSpan().SequenceEqual(packBytes.AsSpan(packBytes.Length - 20)))
-                    Fail("MDPK4002", "Pack trailer/name/checksum mismatch.", pack[0].Name);
+                var pack = gitEntries.Where(m => m.Name.EndsWith(".pack", StringComparison.Ordinal)).ToArray();
+                string? packStem = pack.Length == 1 ? pack[0].Name[..^5] : null;
+                var allowed = new HashSet<string>(StringComparer.Ordinal) { ".git/HEAD", ".git/config", ".git/refs/heads/main", ".git/shallow" };
+                if (packStem is not null)
+                {
+                    if (!packStem.StartsWith(".git/objects/pack/pack-", StringComparison.Ordinal)) throw new EngineException(Outcome.Nonconforming, "MDPK4002", "Invalid pack filename.", packStem);
+                    var hash = packStem[".git/objects/pack/pack-".Length..];
+                    if (!Profile.Oid("sha1-" + hash)) Fail("MDPK4002", "Invalid pack filename.", packStem);
+                    allowed.UnionWith([packStem + ".pack", packStem + ".idx", packStem + ".rev"]);
+                    if (!entries.ContainsKey(packStem + ".idx")) Fail("MDPK4002", "Pack index is absent.");
+                    if (pack[0].Offset != archive.Members.Max(m => m.Offset)) Fail("MDPK1007", "The Git pack must be the last physical entry.", pack[0].Name);
+                    var packBytes = pack[0].Bytes;
+                    if (packBytes.Length < 32 || !packBytes.AsSpan(0, 4).SequenceEqual("PACK"u8) ||
+                        Convert.ToHexStringLower(packBytes.AsSpan(packBytes.Length - 20)) != hash ||
+                        !SHA1.HashData(packBytes.AsSpan(0, packBytes.Length - 20)).AsSpan().SequenceEqual(packBytes.AsSpan(packBytes.Length - 20)))
+                        Fail("MDPK4002", "Pack trailer/name/checksum mismatch.", pack[0].Name);
+                }
+                else Fail("MDPK4002", "Exactly one Git pack is required.");
+                foreach (var entry in gitEntries) if (!allowed.Contains(entry.Name)) Fail("MDPK4002", "Entry is not in the curated Git allowlist.", entry.Name);
+                if (Profile.Utf8.GetString(Need(".git/HEAD", "MDPK4002")) != "ref: refs/heads/main\n") Fail("MDPK4002", "HEAD must be symbolic to refs/heads/main.");
+                if (Profile.Utf8.GetString(Need(".git/config", "MDPK4002")) != Profile.Config) Fail("MDPK4002", "Curated Git config bytes differ from §5.1.");
+                completed.UnionWith(["MDPK1007", "MDPK4002"]);
+                var shallow = entries.TryGetValue(".git/shallow", out var sh) ? Profile.Utf8.GetString(sh.Bytes).Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(s => "sha1-" + s).ToArray() : [];
+                if (shallow.Distinct(StringComparer.Ordinal).Count() != shallow.Length || shallow.Any(s => !Profile.Oid(s)) ||
+                    !shallow.Order(StringComparer.Ordinal).SequenceEqual(history!.ShallowBoundaries.Order(StringComparer.Ordinal))) Fail("MDPK2004", "Shallow boundaries disagree with .git/shallow.");
+                if (sh is not null && shallow.Length == 0) Fail("MDPK2004", "An empty shallow file declares no genuine boundary.");
+                completed.Add("MDPK2004");
             }
-            else Fail("MDPK4002", "Exactly one Git pack is required.");
-            foreach (var entry in gitEntries) if (!allowed.Contains(entry.Name)) Fail("MDPK4002", "Entry is not in the curated Git allowlist.", entry.Name);
-            if (Profile.Utf8.GetString(Need(".git/HEAD", "MDPK4002")) != "ref: refs/heads/main\n") Fail("MDPK4002", "HEAD must be symbolic to refs/heads/main.");
-            if (Profile.Utf8.GetString(Need(".git/config", "MDPK4002")) != Profile.Config) Fail("MDPK4002", "Curated Git config bytes differ from §5.1.");
-            completed.UnionWith(["MDPK1007", "MDPK4002"]);
-            var shallow = entries.TryGetValue(".git/shallow", out var sh) ? Profile.Utf8.GetString(sh.Bytes).Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(s => "sha1-" + s).ToArray() : [];
-            if (shallow.Distinct(StringComparer.Ordinal).Count() != shallow.Length || shallow.Any(s => !Profile.Oid(s)) ||
-                !shallow.Order(StringComparer.Ordinal).SequenceEqual(history.ShallowBoundaries.Order(StringComparer.Ordinal))) Fail("MDPK2004", "Shallow boundaries disagree with .git/shallow.");
-            if (sh is not null && shallow.Length == 0) Fail("MDPK2004", "An empty shallow file declares no genuine boundary.");
-            completed.Add("MDPK2004");
-            var view = archive.Members.Where(m => !m.Name.StartsWith(".git/", StringComparison.Ordinal) && !control.Contains(m.Name)).Select(m => new EntryData(m.Name, m.Bytes)).ToList();
+            var view = archive.Members.Where(m => !m.Name.EndsWith('/') && !m.Name.StartsWith(".git/", StringComparison.Ordinal) && !control.Contains(m.Name)).Select(m => new EntryData(m.Name, m.Bytes)).ToList();
             var ledger = LedgerEngine.Empty();
             if (manifest.Addressing.Overrides is not null)
             {
@@ -114,14 +117,27 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
                 var targets = ledger.Entries.Values.Where(r => r.To is not null).Select(r => Inventory.Root(manifest.Namespace, r.To!)).ToHashSet(StringComparer.Ordinal);
                 if (inventory.Keys.Any(root => ledger.Entries.ContainsKey(root) && !targets.Contains(root))) Fail("MDPK2002", "Reserved-slot birth lacks a fresh binding.");
             }
-            FormatValidation.ValidateEvidence(manifest, history, entries, resources.ReadLimits.MaxJsonDepth);
+            if (history is not null) FormatValidation.ValidateEvidence(manifest, history, entries, resources.ReadLimits.MaxJsonDepth);
+            else
+            {
+                if (manifest.Review is { } review)
+                {
+                    var bytes = Need(review["detail"]!.GetValue<string>(), "MDPK2007");
+                    var node = CanonicalJson.Parse(bytes, resources.ReadLimits.MaxJsonDepth, ct);
+                    Reject(!bytes.AsSpan().SequenceEqual(CanonicalJson.Bytes(node)), "Review document is not canonical JSON.");
+                }
+                var captured = view.ToDictionary(e => e.Name, e => e.Bytes, StringComparer.Ordinal);
+                Reject(SnapshotHash.Compute(manifest, captured.Keys, name => captured[name], ct) != manifest.Current.Id, "Snapshot state digest differs from current files.", "MDPK2001");
+                if (findings.Count == 0) assurance = Mdpkg.Reader.IdentityAssurance.SnapshotVerified;
+            }
             completed.UnionWith(["MDPK2002", "MDPK2005", "MDPK2006", "MDPK2007"]);
-            if (request.Deep && !findings.Any(f => f.Code is "MDPK4002" or "MDPK1002" or "MDPK2001"))
+            if (request.Deep && history is not null && !findings.Any(f => f.Code is "MDPK4002" or "MDPK1002" or "MDPK2001"))
             {
                 deepRun = true;
                 if (managedSnapshot) ManagedSnapshotVerifier.Verify(manifest, history, gitEntries, view, resources, ct);
                 else await DeepAsync(manifest, history, gitEntries, view, resources, ct);
                 deepSucceeded = true;
+                assurance = Mdpkg.Reader.IdentityAssurance.GitVerified;
             }
             file.Position = 0;
             var hashBytes = await SHA256.HashDataAsync(file, ct);
@@ -136,14 +152,16 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         { outcome = Outcome.Environment; findings.Add(Findings.Create("MDPK5001", ex.Message, severity: "error")); }
         var checks = CheckCodes.Select((code, i) => new Check(code,
+            manifest?.History is Mdpkg.Reader.SnapshotHistory && i is 1 or 11 or 12 or 13 or 14 or 15 or 16 or 17 ? "not-applicable" :
             ((i == 16 || i == 17) && !deepRun) ? "skipped" : findings.Any(f => f.Code == code) ? "fail" :
             (i == 16 || i == 17) ? (deepSucceeded ? "pass" : "skipped") : completed.Contains(code) ? "pass" : "skipped")).ToArray();
-        return new(outcome, package, manifest, history, overrideCount, 0, checks, findings);
+        return new(outcome, package, manifest, history, overrideCount, 0, checks, findings, Assurance: outcome == Outcome.Success ? assurance : Mdpkg.Reader.IdentityAssurance.Declared);
     }
     private static void Reject(bool invalid, string message, string code = "MDPK2007")
     { if (invalid) throw new EngineException(Outcome.Nonconforming, code, message); }
     private async Task DeepAsync(Manifest manifest, HistoryDetail history, ZipMember[] gitEntries, List<EntryData> view, ResourceOptions resources, CancellationToken ct)
     {
+        Reject(history.Origin is not null, "Origin verification requires the materialization capability (S3).", "MDPK4002");
         using var temp = new TemporaryDirectory(settings.TemporaryDirectory);
         long spooled = 0;
         foreach (var entry in gitEntries)
@@ -159,7 +177,7 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
         try { await git.TextAsync(temp.Path, ct, "fsck", "--full", "--strict"); }
         catch (IOException ex) when (ex is not Mdpkg.Reader.ResourceLimitException && ex.InnerException is not System.ComponentModel.Win32Exception)
         { throw new EngineException(Outcome.Nonconforming, "MDPK4002", ex.Message); }
-        var head = manifest.Current[5..];
+        var head = manifest.Current.Id[5..];
         var commits = (await git.TextAsync(temp.Path, ct, "rev-list", "--first-parent", "--reverse", head)).Split('\n');
         Reject(commits.Length != history.RetainedCommits, "Retained commit count disagrees with the pack.");
         var indexes = commits.Select((c, i) => (Id: "sha1-" + c, Index: i)).ToDictionary(x => x.Id, x => x.Index);
@@ -216,7 +234,7 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
             if (review["shape"]!.GetValue<string>() == "delta") Reject(commits.Length != 1 || view.Any(e => !e.Name.StartsWith(".mdpkg/review/", StringComparison.Ordinal)), "Delta review must be a one-commit review-only lineage.");
             else
             {
-                Reject(commits.Length < 2 || "sha1-" + commits[^2] != review["of"]!["current"]!.GetValue<string>(), "Bundled review parent differs from review.of.current.");
+                Reject(commits.Length < 2 || "sha1-" + commits[^2] != review["of"]!["current"]!["id"]!.GetValue<string>(), "Bundled review parent differs from review.of.current.");
                 var changed = await git.TextAsync(temp.Path, ct, "diff-tree", "--no-commit-id", "--name-only", "-r", "-z", "--no-renames", commits[^2], head);
                 Reject(changed.Split('\0', StringSplitOptions.RemoveEmptyEntries).Any(p => !p.StartsWith(".mdpkg/review/", StringComparison.Ordinal)), "Bundled review changes non-review paths.");
             }

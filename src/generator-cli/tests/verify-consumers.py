@@ -58,7 +58,7 @@ with tempfile.TemporaryDirectory(prefix='mdpkg-external-consumers-') as temp:
         program = (ROOT/'examples/review-consumer/Program.cs').read_text(encoding='utf-8') if package.endswith('Reviews') else '''using Mdpkg.Reader;
 using var input = File.OpenRead(args[0]);
 using var archive = await PackageArchive.OpenAsync(input);
-Console.WriteLine(archive.Identity.Current);
+Console.WriteLine(archive.Identity.Current.Id);
 '''
         if package == 'Mdpkg.Core':
             examples = re.findall(r'```csharp\n(.*?)```', (ROOT/'src/generator-cli/src/Mdpkg.Core/README.md').read_text(encoding='utf-8'), re.S)
@@ -93,10 +93,10 @@ if (loose.Category != "identity" || loose.Status != "survives" || loose.Scope is
             assert 'Correlation: Exact' in output and 'ChangeRequest' in output and output.count('TargetIntact')==2,output
             output=run(dll,fixtures/'delta-v2.mdpkg','--full',cwd=work,env=env,expected=2)
             assert 'VerificationUnavailable' in output,output
-        elif package == 'Mdpkg.Reader': assert 'sha1-' in run(dll,fixtures/'original.mdpkg',cwd=work,env=env)
+        elif package == 'Mdpkg.Reader': assert 'sha256-' in run(dll,fixtures/'original.mdpkg',cwd=work,env=env)
         else:
             source = work/'source'; source.mkdir(); (source/'guide.md').write_text('# Guide\n\nHello.\n', encoding='utf-8')
-            assert 'sha1-' in run(dll, source, work/'created.mdpkg', cwd=work)
+            assert 'sha256-' in run(dll, source, work/'created.mdpkg', cwd=work, env=env)
             (project/'Program.cs').write_text(examples[1], encoding='utf-8')
             run('build',csproj,'--no-restore',cwd=work)
             assert re.search(r'[a-f0-9]{64}', run(dll,cwd=work))

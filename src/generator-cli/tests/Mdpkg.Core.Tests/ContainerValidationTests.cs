@@ -83,12 +83,12 @@ public class ContainerValidationTests
         var history = CanonicalJson.Parse(entries[historyIndex].Bytes, ct: TestContext.Current.CancellationToken);
         switch (mutation)
         {
-            case "current": manifest["current"] = "sha1-" + new string('0', 40); break;
+            case "current": manifest["current"]!["id"] = "sha1-" + new string('0', 40); break;
             case "ledger": manifest["addressing"]!["overrides"] = Profile.Ledger; break;
             case "transform": manifest["history"]!["transform"] = new JsonArray("squashed"); break;
             case "shallow": history["shallowBoundaries"] = new JsonArray("sha1-" + new string('0', 40)); break;
             case "summary": history["ranges"] = new JsonArray(".mdpkg/history/ranges/" + new string('0', 64) + ".json"); break;
-            case "patch": history["patches"] = new JsonArray(new JsonObject { ["entry"] = ".mdpkg/history/patches/" + new string('0', 64) + ".patch", ["sha256"] = new string('0', 64), ["from"] = manifest["current"]!.DeepClone(), ["to"] = manifest["current"]!.DeepClone(), ["document"] = new string('0', 64), ["profile"] = "git-myers-u3-v1" }); break;
+            case "patch": history["patches"] = new JsonArray(new JsonObject { ["entry"] = ".mdpkg/history/patches/" + new string('0', 64) + ".patch", ["sha256"] = new string('0', 64), ["from"] = manifest["current"]!["id"]!.DeepClone(), ["to"] = manifest["current"]!["id"]!.DeepClone(), ["document"] = new string('0', 64), ["profile"] = "git-myers-u3-v1" }); break;
             case "config": entries[entries.FindIndex(e => e.Name == ".git/config")] = new(".git/config", "[core]\n\tbare = true\n"u8.ToArray()); break;
             case "hook": entries.Insert(2, new(".git/hooks/post-checkout", "bad"u8.ToArray())); break;
             case "reserved": entries.Insert(2, new(".MDPKG/secret.md", "bad"u8.ToArray())); break;

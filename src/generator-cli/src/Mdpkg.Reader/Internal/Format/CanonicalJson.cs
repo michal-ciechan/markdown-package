@@ -20,6 +20,8 @@ internal static class Profile
     public static string Hash(string text) => Hash(Utf8.GetBytes(text));
     public static bool Root(string? value) => value is { Length: 64 } && value.All(c => c is >= '0' and <= '9' or >= 'a' and <= 'f');
     public static bool Oid(string? value) => value is { Length: 45 } && value.StartsWith("sha1-", StringComparison.Ordinal) && value[5..].All(c => c is >= '0' and <= '9' or >= 'a' and <= 'f');
+    public static bool State(CurrentState? value) => value is not null && (value.Kind == "commit" ? Oid(value.Id) :
+        value.Kind == "snapshot" && value.Id is { Length: 71 } && value.Id.StartsWith("sha256-", StringComparison.Ordinal) && Root(value.Id[7..]));
 }
 
 internal static class CanonicalJson
@@ -31,6 +33,7 @@ internal static class CanonicalJson
         RespectNullableAnnotations = true,
         RespectRequiredConstructorParameters = true,
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+        AllowOutOfOrderMetadataProperties = true,
     };
     public static JsonNode Node<T>(T value) => Node(value, 64);
     public static JsonNode Node<T>(T value, int maxDepth) => JsonSerializer.SerializeToNode(value, DepthOptions(maxDepth))!;

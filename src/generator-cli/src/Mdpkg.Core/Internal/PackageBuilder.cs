@@ -34,10 +34,14 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
             if (destination.StartsWith(sourcePath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, comparison))
                 throw new EngineException(Outcome.InvalidSource, "MDPK1003", "Output must be outside the source directory to avoid packaging prior output.", destination);
             var correspondence = request.CorrespondenceBytes ?? (request.Correspondence is null ? null : await File.ReadAllBytesAsync(request.Correspondence, ct));
-            var managed = settings.ManagedSnapshots && !request.FromGit && request.Scope is null && request.Depth is null
+            if (!Enum.IsDefined(request.History)) throw new EngineException(Outcome.Usage, "MDPK2007", "Unknown history mode.");
+            if (request.History == HistoryMode.None && (request.FromGit || request.Scope is not null || request.Depth is not null || request.ReverseIndex || request.Metadata is not null || request.Message is not null))
+                throw new EngineException(Outcome.Usage, "MDPK2007", "Git source/options and commit metadata require history git.");
+            var snapshot = request.History == HistoryMode.None;
+            var managed = !snapshot && settings.ManagedSnapshots && !request.FromGit && request.Scope is null && request.Depth is null
                 ? new ManagedSnapshot(resources) : null;
-            using var temp = managed is null ? new TemporaryDirectory(settings.TemporaryDirectory) : null;
-            var git = managed is null ? new GitProcess(settings.GitExecutable, resources.MaxSpoolBytes) : null;
+            using var temp = !snapshot && managed is null ? new TemporaryDirectory(settings.TemporaryDirectory) : null;
+            var git = !snapshot && managed is null ? new GitProcess(settings.GitExecutable, resources.MaxSpoolBytes) : null;
             Repository? repo = null;
             if (temp is not null)
             {
@@ -113,10 +117,20 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
                 var roots = LedgerEngine.LiveRoots(ledger, inventory, request.Namespace);
                 var complete = i == 0 ? ledger.Entries.Values.All(r => r.Unknown is null) : LedgerEngine.CompleteTransition(previousRoots, roots, ledger);
                 LedgerEngine.Store(entries, ledger);
+                if (snapshot)
+                {
+                    if (!complete)
+                    {
+                        findings.Add(Findings.Create("MDPK3001", "Snapshot mode requires complete correspondence; choose Git history for unknown records.", severity: "error"));
+                        return Failed(Outcome.Incomplete, findings);
+                    }
+                    currentEntries = entries;
+                    continue;
+                }
                 var tree = managed is null ? await repo!.TreeAsync(entries, ct) : managed.Tree(entries, ct);
                 string commit;
-                if (sourceRepo is null) commit = managed is null ? await repo!.CommitAsync(tree, null, request.Message, ct, request.Metadata)
-                    : managed.Commit(tree, request.Message, request.Metadata);
+                if (sourceRepo is null) commit = managed is null ? await repo!.CommitAsync(tree, null, request.Message ?? "Initial package", ct, request.Metadata)
+                    : managed.Commit(tree, request.Message ?? "Initial package", request.Metadata);
                 else
                 {
                     var original = await sourceRepo.ReadObjectAsync("commit", sourceCommits[i], ct);
@@ -126,27 +140,45 @@ internal sealed class PackageBuilder(EngineSettings? settings = null)
                 else ranges.Add(new("sha1-" + head, "sha1-" + commit, complete ? "complete" : "partial"));
                 retained.Add(commit); head = commit; previousRoots = roots; currentEntries = entries;
             }
-            var coverage = ranges.All(r => r.Coverage == "complete") ? "complete" : "partial";
-            if (coverage == "complete") ranges = [new("sha1-" + retained[0], "sha1-" + head, "complete")];
+            Manifest manifest;
+            HistoryDetail? history = null;
+            if (snapshot)
+            {
+                if (request.FailOnWarning && findings.Any(d => d.Severity == "warn")) return Failed(Outcome.Nonconforming, findings);
+                manifest = new(Profile.Magic, request.Namespace, new("snapshot", "sha256-" + new string('0', 64)),
+                    new(Profile.Anchor, Profile.Digest, "complete", ledger.Entries.Count == 0 ? null : Profile.Ledger), new Mdpkg.Reader.SnapshotHistory());
+                FormatValidation.ValidateManifest(manifest, null);
+                FormatValidation.ValidateInventory(manifest, null, currentEntries.Select(e => (e.Name, e.Bytes.LongLength)).Prepend((Profile.Manifest, 0L)));
+                var captured = currentEntries.ToDictionary(e => e.Name, e => e.Bytes, StringComparer.Ordinal);
+                manifest = manifest with { Current = new("snapshot", SnapshotHash.Compute(manifest, captured.Keys, name => captured[name], ct)) };
+            }
             else
             {
-                findings.Add(Findings.Create("MDPK3001", "Unconfirmed entity removals or unknown records leave correspondence partial.", severity: request.RequireComplete ? "error" : "warn"));
-                if (request.RequireComplete) return Failed(Outcome.Incomplete, findings);
+                var coverage = ranges.All(r => r.Coverage == "complete") ? "complete" : "partial";
+                if (coverage == "complete") ranges = [new("sha1-" + retained[0], "sha1-" + head, "complete")];
+                else
+                {
+                    findings.Add(Findings.Create("MDPK3001", "Unconfirmed entity removals or unknown records leave correspondence partial.", severity: request.RequireComplete ? "error" : "warn"));
+                    if (request.RequireComplete) return Failed(Outcome.Incomplete, findings);
+                }
+                if (request.FailOnWarning && findings.Any(d => d.Severity == "warn")) return Failed(Outcome.Nonconforming, findings);
+                var sourceBase = "sha1-" + (request.FromGit ? sourceCommits[0] : retained[0]);
+                var sourceTip = "sha1-" + (request.FromGit ? sourceCommits[^1] : head);
+                var transformed = request.Scope is not null;
+                manifest = new Manifest(Profile.Magic, request.Namespace, new("commit", "sha1-" + head),
+                    new(Profile.Anchor, Profile.Digest, coverage, ledger.Entries.Count == 0 ? null : Profile.Ledger),
+                    new Mdpkg.Reader.GitHistory(truncated ? "truncated" : "complete", transformed ? ["projected"] : [], Profile.History));
+                history = new HistoryDetail("first-parent", truncated ? "synthetic" : "original", sourceBase, sourceTip,
+                    retained.Count, [], transformed ? [new("projected", sourceBase, sourceTip, manifest.Current.Id)] : [], [], [], ranges.ToArray(),
+                    request.FromGit ? sourcePath.Replace('\\', '/') : null, request.Scope);
             }
-            if (request.FailOnWarning && findings.Any(d => d.Severity == "warn")) return Failed(Outcome.Nonconforming, findings);
-            var sourceBase = "sha1-" + (request.FromGit ? sourceCommits[0] : retained[0]);
-            var sourceTip = "sha1-" + (request.FromGit ? sourceCommits[^1] : head);
-            var transformed = request.Scope is not null;
-            var manifest = new Manifest(Profile.Magic, request.Namespace, "sha1-" + head,
-                new(Profile.Anchor, Profile.Digest, coverage, ledger.Entries.Count == 0 ? null : Profile.Ledger),
-                new(truncated ? "truncated" : "complete", transformed ? ["projected"] : [], Profile.History));
-            var history = new HistoryDetail("first-parent", truncated ? "synthetic" : "original", sourceBase, sourceTip,
-                retained.Count, [], transformed ? [new("projected", sourceBase, sourceTip, manifest.Current)] : [], [], [], ranges.ToArray(),
-                request.FromGit ? sourcePath.Replace('\\', '/') : null, request.Scope);
             var items = new List<EntryData> { new(Profile.Manifest, CanonicalJson.Bytes(manifest, manifest: true)) };
             items.AddRange(currentEntries.OrderBy(e => e.Name, Utf8Comparer.Instance));
-            items.Add(new(Profile.History, CanonicalJson.Bytes(history)));
-            items.AddRange(managed is null ? await repo!.CurateAsync(head!, request.ReverseIndex, ct) : managed.Curate(head!, request.ReverseIndex, ct));
+            if (history is not null)
+            {
+                items.Add(new(Profile.History, CanonicalJson.Bytes(history)));
+                items.AddRange(managed is null ? await repo!.CurateAsync(head!, request.ReverseIndex, ct) : managed.Curate(head!, request.ReverseIndex, ct));
+            }
             stagedOutput = Path.Combine(Path.GetDirectoryName(destination)!, "." + Path.GetFileName(destination) + "." + Guid.NewGuid().ToString("N") + ".tmp");
             await using (var file = new FileStream(stagedOutput, FileMode.CreateNew, FileAccess.Write, FileShare.None))
             {

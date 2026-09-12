@@ -26,9 +26,9 @@ if (!validation.IsConforming || validation.RequestedLevel != ValidationLevel.Dee
     throw new InvalidOperationException("Deep validation failed.");
 using var input = File.OpenRead(args[1]);
 using var archive = await PackageArchive.OpenAsync(input);
-if (archive.Identity.Current != created.Identity!.Current)
+if (archive.Identity != created.Identity || archive.VerifySnapshot() != created.Identity)
     throw new InvalidOperationException("Core and Reader identities disagree.");
-Console.WriteLine("Core create + native-Git deep validate + transitive Reader passed.");
+Console.WriteLine("Core snapshot create + full hash validation + transitive Reader passed without Git.");
 '''
 READER_PROGRAM = '''using Mdpkg.Reader;
 using System.Text;
@@ -52,7 +52,7 @@ def main():
     version = ET.parse(root / 'Mdpkg.Pack.props').findtext('./PropertyGroup/Version')
     assert version and re.fullmatch(r'\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?', version), version
     dotnet = shutil.which('dotnet')
-    assert dotnet and shutil.which('git'), '.NET 10 SDK and Git are required'
+    assert dotnet, '.NET 10 SDK is required'
     with tempfile.TemporaryDirectory(prefix='mdpkg-library-proof-') as temp:
         for attempt in range(1, args.attempts + 1):
             # New projects, CLI home, package cache and HTTP cache on every retry.
@@ -140,9 +140,9 @@ def main():
         source.mkdir()
         (source / 'guide.md').write_text('# Caf\u00e9\n\nPublic library round-trip.\n', encoding='utf-8')
         package_file = work / 'proof.mdpkg'
-        print(run(dotnet, str(work / 'Core/bin/Release/net10.0/CoreConsumer.dll'), str(source), str(package_file)))
         reader_env = dict(env)
         reader_env['PATH'] = str(work / 'no-executables')
+        print(run(dotnet, str(work / 'Core/bin/Release/net10.0/CoreConsumer.dll'), str(source), str(package_file), command_env=reader_env))
         print(run(dotnet, str(work / 'Reader/bin/Release/net10.0/ReaderConsumer.dll'), str(package_file), command_env=reader_env))
         print(f'Reader/Core {version}: 2 isolated consumers passed from '
               f'{args.local_feed.resolve() if args.local_feed else PUBLIC_SOURCE}; 0 failures.')

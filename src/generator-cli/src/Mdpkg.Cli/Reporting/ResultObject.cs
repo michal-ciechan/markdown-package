@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace Mdpkg.Cli.Reporting;
 
@@ -11,11 +12,14 @@ internal sealed record ResultObject(
     ExitCode ExitCode,
     PackageResult? Package,
     JsonObject? Manifest,
-    string? Current,
+    Mdpkg.Reader.CurrentState? Current,
     AddressingResult? Addressing,
     HistoryResult? History,
     IReadOnlyList<CheckResult> Checks,
-    IReadOnlyList<Diagnostic> Diagnostics)
+    IReadOnlyList<Diagnostic> Diagnostics,
+    string? Mode = null,
+    string Assurance = "declared",
+    bool Materialized = false)
 {
     /// <summary>A result with nothing computed: what a stub, or a run that failed before opening anything, reports.</summary>
     public static ResultObject Empty(string verb, ExitCode exitCode) =>
@@ -29,7 +33,12 @@ internal sealed record PackageResult(string Path, long Bytes, string Sha256, int
 internal sealed record AddressingResult(string Coverage, int OverrideCount, int MintedRoots, IReadOnlyList<string> UncoveredRanges);
 
 /// <summary>§6 <c>history</c> (§4, §5.3).</summary>
-internal sealed record HistoryResult(string Coverage, IReadOnlyList<string> Transform, int RetainedCommits, int Ranges, int Patches);
+internal sealed record HistoryResult(string Mode,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? Coverage = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] IReadOnlyList<string>? Transform = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] int? RetainedCommits = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] int? Ranges = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] int? Patches = null);
 
 /// <summary>§6 <c>checks[]</c>: one per §11 check; <c>status</c> is <c>pass</c>, <c>fail</c> or <c>skipped</c>.</summary>
 internal sealed record CheckResult(string Code, string Status);

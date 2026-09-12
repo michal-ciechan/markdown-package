@@ -26,8 +26,8 @@ internal static partial class ReviewParser
         if (detail != ".mdpkg/review/comments.json") throw new UnsupportedReviewException("Unsupported review detail path: " + detail);
         var shape = Text(node, "shape") switch { "delta" => ReviewShape.Delta, "bundled" => ReviewShape.Bundled, _ => throw new UnsupportedReviewException("Unknown review shape.") };
         var of = node["of"]?.AsObject() ?? throw new JsonException("Missing review.of.");
-        var ns = Text(of, "namespace"); var current = Text(of, "current");
-        Require(Uuid(ns) && Profile.Oid(current), "Malformed reviewed identity.");
+        var ns = Text(of, "namespace"); var current = of["current"]?.Deserialize<CurrentState>(CanonicalJson.Options) ?? throw new JsonException("Missing current state.");
+        Require(Uuid(ns) && Profile.State(current), "Malformed reviewed identity.");
         Require((shape == ReviewShape.Bundled) == (ns == identity.Namespace), "Review shape and namespace disagree.");
         var digest = of["packageDigest"]?.GetValue<string>();
         foreach (var optional in new[] { "packageDigest", "packageBytes", "dispatch" })

@@ -60,10 +60,51 @@ public enum ContainerStatus
 /// <param name="Message">Human-readable diagnostic detail.</param>
 /// <param name="Entry">Affected archive entry, or null when not entry-specific.</param>
 public sealed record PackageDiagnostic(string Code, string Message, string? Entry = null);
-/// <summary>Package lineage and current commit identity.</summary>
+/// <summary>Package lineage and typed current-state identity.</summary>
 /// <param name="Namespace">Lowercase UUID identifying the package namespace.</param>
-/// <param name="Current">Current commit object ID including its object-format prefix.</param>
-public sealed record PackageIdentity(string Namespace, string Current);
+/// <param name="Current">Current state kind and its qualified digest or commit ID.</param>
+public sealed record PackageIdentity(string Namespace, CurrentState Current);
+
+/// <summary>A tagged current state: a snapshot digest or a retained Git commit ID.</summary>
+public sealed record CurrentState(string Kind, string Id);
+
+/// <summary>The manifest's history mode, with mode-specific fields.</summary>
+[System.Text.Json.Serialization.JsonPolymorphic(TypeDiscriminatorPropertyName = "mode")]
+[System.Text.Json.Serialization.JsonDerivedType(typeof(SnapshotHistory), "none")]
+[System.Text.Json.Serialization.JsonDerivedType(typeof(GitHistory), "git")]
+public abstract record PackageHistory
+{
+    /// <summary>The wire history mode.</summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public abstract string Mode { get; }
+}
+
+/// <summary>A history-free initial state, without Git declarations.</summary>
+public sealed record SnapshotHistory : PackageHistory
+{
+    /// <inheritdoc />
+    [System.Text.Json.Serialization.JsonIgnore]
+    public override string Mode => "none";
+}
+
+/// <summary>A retained Git lineage and its descriptor.</summary>
+public sealed record GitHistory(string Coverage, IReadOnlyList<string> Transform, string Detail) : PackageHistory
+{
+    /// <inheritdoc />
+    [System.Text.Json.Serialization.JsonIgnore]
+    public override string Mode => "git";
+}
+
+/// <summary>Identity assurance, distinct from selective container admission.</summary>
+public enum IdentityAssurance
+{
+    /// <summary>Identity has been parsed but its complete content has not been verified.</summary>
+    Declared,
+    /// <summary>All current files and the snapshot state digest have been verified.</summary>
+    SnapshotVerified,
+    /// <summary>The retained repository and its current tree have been verified.</summary>
+    GitVerified
+}
 /// <summary>ZIP directory metadata; payload integrity is checked when the entry is read.</summary>
 /// <param name="Name">Case-sensitive archive entry name.</param>
 /// <param name="CompressedBytes">Compressed payload size in bytes.</param>

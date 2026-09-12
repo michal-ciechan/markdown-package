@@ -17,11 +17,12 @@ See the [release guide](https://github.com/michal-ciechan/markdown-package/blob/
 for policy setup, publication status and local-feed verification.
 
 The following examples are compiled and executed by `tests/verify-consumers.py`
-using only package references. Native `git` must be installed for creation and deep
-validation. It is not required for full validation, Reader, or Reviews.
+using only package references. Creation defaults to a history-free initial snapshot.
+Snapshot creation, full/deep validation and Reader access require no Git installation.
+Use `History = HistoryMode.Git` for committed output; source selection is separate.
 
-The internal managed snapshot candidate is gated off in release builds. It supports
-directory snapshots without `Scope`/`Depth` and `SnapshotPackageRequest`, including
+The internal managed Git snapshot candidate is gated off in release builds. In Git
+history mode it supports current-file capture without `Scope`/`Depth`, including
 correspondence, metadata, compression, descriptors and reverse indexes, with no Git
 process or temporary Git repository. It captures the same current files and uses
 the same normalization, ledger preparation and publication flow. Stream creation
@@ -43,10 +44,10 @@ if (created.Status != OperationStatus.Success)
     throw new InvalidOperationException(string.Join("; ", created.Diagnostics.Select(d => d.Message)));
 var validation = await new PackageValidator().ValidateFileAsync(args[1], new() { Deep = true });
 if (!validation.IsConforming) throw new InvalidOperationException("Deep validation failed.");
-Console.WriteLine(created.Identity!.Current);
+Console.WriteLine(created.Identity!.Current.Id);
 ```
 
-Memory creation and stream validation, with explicit deterministic commit metadata:
+Memory creation and stream validation in explicit Git mode, with deterministic commit metadata:
 
 ```csharp
 using Mdpkg.Core;
@@ -56,8 +57,8 @@ var identity = new CommitIdentity("Example Author", "author@example.invalid",
     new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero));
 var request = new SnapshotPackageRequest(
     Guid.Parse("c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"),
-    new(identity, identity, "Initial package"),
-    [new("guide.md", Encoding.UTF8.GetBytes("# Guide\n\nHello.\n"))]);
+    [new("guide.md", Encoding.UTF8.GetBytes("# Guide\n\nHello.\n"))])
+    { History = HistoryMode.Git, Metadata = new(identity, identity, "Initial package") };
 using var output = new MemoryStream();
 var created = await new PackageBuilder().CreateAsync(request, output);
 if (created.Status != OperationStatus.Success) throw new InvalidOperationException("Creation failed.");
@@ -67,11 +68,11 @@ if (!validation.IsConforming) throw new InvalidOperationException("Deep validati
 Console.WriteLine(validation.Package!.Sha256);
 ```
 
-Directory snapshots default to `SnapshotMetadata.CliDefault`: author and committer
-`mdpkg <mdpkg@example.invalid>`, 2000-01-01 UTC, message `Initial package`. Memory
-requests require metadata explicitly. `CreationMode.GitImport`, optional positive
-`Depth`, and Git pathspec `Scope` retain existing import behavior; snapshot scope and
-depth remain supported. Git import preserves legacy metadata bytes while rewriting
+Snapshot mode forbids commit metadata, reverse indexes, scope, depth and Git import.
+In explicit Git mode, omitted metadata uses `SnapshotMetadata.CliDefault`: author and
+committer `mdpkg <mdpkg@example.invalid>`, 2000-01-01 UTC, message `Initial package`.
+`CreationMode.GitImport`, optional positive `Depth`, and Git pathspec `Scope` retain
+existing behavior when `History = HistoryMode.Git`. Git import preserves legacy metadata bytes while rewriting
 trees/parents and removing invalidated signatures. Compression accepts 0–9, default 6;
 data descriptors/reverse indexes default off. Only SHA-1 and the v1 profiles are supported.
 Reserved-slot births intentionally mint random roots; otherwise fixed inputs, metadata,
@@ -87,7 +88,10 @@ always checked; no unsafe option exists.
 
 Results contain typed status, diagnostics with MDPK code/severity/entry/message/spec,
 checks actually performed, archive byte count/SHA-256/entry count, immutable manifest,
-current identity and history metadata. Collections are independently owned; review
+current identity (`CurrentState.Kind` and `.Id`), history mode, identity assurance and
+optional Git history metadata. Snapshot validation reports Git-only checks as
+`NotApplicable`; selective Reader opening exposes declared identity, and
+`PackageArchive.VerifySnapshot` explicitly hashes every current file. Collections are independently owned; review
 declarations are immutable `JsonElement` values, not live archive data. Core does not
 validate review comment schemas. `ValidationResult.RequestedLevel`, `Checks`, package
 typing tier and `IsConforming` are separate: skipped deep checks are never passed, and

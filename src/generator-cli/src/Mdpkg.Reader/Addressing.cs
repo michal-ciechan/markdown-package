@@ -188,7 +188,7 @@ public sealed partial class PackageSnapshot
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (reviewed.Namespace != Identity.Namespace) return new(IdentityStatus.Invalidated, "wrong-lineage");
-        if (!Profile.Root(root) || !Profile.Root(expect) || !Profile.Oid(reviewed.Current)) return new(IdentityStatus.Invalidated, "malformed-anchor");
+        if (!Profile.Root(root) || !Profile.Root(expect) || !Profile.State(reviewed.Current)) return new(IdentityStatus.Invalidated, "malformed-anchor");
         if (Addressing.Coverage == "partial" && reviewed.Current != Identity.Current) return new(IdentityStatus.Unconfirmed, "history-required");
         return ResolveCurrent(root, expect, declared, cancellationToken);
     }

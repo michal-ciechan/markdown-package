@@ -4,15 +4,17 @@ A .NET global tool that emits and checks conforming `.mdpkg` packages. [`../spec
 
 Audience: coding agents driving the tool non-interactively. Implementation: [`src/generator-cli/`](../../src/generator-cli/), a .NET tool on System.CommandLine. `pack` and `validate` are implemented, including Git import, projection, depth, correspondence, controlled ZIP emission and shared post-write validation. `update` and `address` remain explicit `not implemented` actions (exit 70). Their sections below describe the intended contract. Tests read this file and fail when §1, §3, §4 or §10 change without the tool following. Distribution and publishing are separate work; run the project from source today.
 
-## Revised draft-2 behavior — proposed, implementation pending
+## Revised draft-2 behavior — S2 creation and reading implemented
 
-The current `/1` specification is now a breaking two-mode revision. S1 updates
-documentation and fixtures only. Existing binaries still use the superseded
-string-valued manifest; the older implementation reference below is historical
-until S2–S6 replace those contracts together. It does not override this proposal
-or claim compatibility with draft 2. No dual-version reader is planned.
+The current `/1` specification is a breaking two-mode revision. S2 implements the
+typed schema in Reader, Core, CLI and Reviews declarations, plus history-free
+creation and full snapshot validation. The superseded string-valued manifest is
+rejected. Materialization/update, origin-aware review verification and browser
+support remain the S3–S5 slices; integrated release acceptance remains S6.
 
-These are proposed commands/options, not available commands to run today:
+The `pack` and `validate` rows below are implemented by S2. The `update` rows
+remain planned behavior, not available operations. Historical details below this
+revision summary do not override these mode rules.
 
 | Surface | Result / validation |
 | --- | --- |

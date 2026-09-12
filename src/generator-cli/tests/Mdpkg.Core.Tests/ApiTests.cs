@@ -11,7 +11,7 @@ public class ApiTests
 {
     private static CancellationToken Ct => TestContext.Current.CancellationToken;
     private static SnapshotPackageRequest Request(string text = "# X\n") => new(Guid.Parse(EngineFixture.Namespace),
-        SnapshotMetadata.CliDefault, [new("x.md", Encoding.UTF8.GetBytes(text))]);
+        [new("x.md", Encoding.UTF8.GetBytes(text))]) { History = HistoryMode.Git };
     private static void Success(Core.PackageResult result) => Assert.True(result.Status == OperationStatus.Success,
         string.Join("; ", result.Diagnostics.Select(d => d.Code + ": " + d.Message)));
 
@@ -19,7 +19,7 @@ public class ApiTests
     public async Task FullValidationHonorsRaisedJsonDepthWithoutGitAndFreezesReviewMetadata()
     {
         using var f = new EngineFixture();
-        var entries = EngineFixture.Read(EngineFixture.RepoFile("docs/spec/review-fixtures/delta-v2.mdpkg"));
+        var entries = EngineFixture.Read(EngineFixture.RepoFile("docs/spec/review-fixtures/delta-git-target-snapshot.mdpkg"));
         var i = entries.FindIndex(e => e.Name == ".mdpkg/review/comments.json");
         var json = System.Text.Json.Nodes.JsonNode.Parse(entries[i].Bytes)!;
         System.Text.Json.Nodes.JsonNode extension = new System.Text.Json.Nodes.JsonObject { ["leaf"] = "value" };
@@ -65,15 +65,15 @@ public class ApiTests
         var time = new DateTimeOffset(2024, 2, 3, 4, 5, 6, TimeSpan.FromHours(5.5));
         var metadata = new SnapshotMetadata(new("Author é", "author@example.invalid", time),
             new("Committer", "committer@example.invalid", time.AddDays(1)), "Explicit message\n");
-        var result = await new Builder().CreateFromDirectoryAsync(new(f.Source, Guid.Parse(EngineFixture.Namespace)) { Metadata = metadata }, f.Output, Ct);
+        var result = await new Builder().CreateFromDirectoryAsync(new(f.Source, Guid.Parse(EngineFixture.Namespace)) { History = HistoryMode.Git, Metadata = metadata }, f.Output, Ct);
         Success(result);
         using var output = new MemoryStream();
-        var memory = await new Builder().CreateAsync(new(Guid.Parse(EngineFixture.Namespace), metadata, Request().Entries), output, Ct);
+        var memory = await new Builder().CreateAsync(new(Guid.Parse(EngineFixture.Namespace), Request().Entries) { History = HistoryMode.Git, Metadata = metadata }, output, Ct);
         Success(memory); Assert.Null(memory.Package!.Path); Assert.True(output.CanWrite);
         Assert.Equal(File.ReadAllBytes(f.Output), output.ToArray());
         var extracted = Path.Combine(f.Root, "extract"); System.IO.Compression.ZipFile.ExtractToDirectory(f.Output, extracted);
         var commit = await new Core.Internal.Git.Repository(new Core.Internal.Git.GitProcess("git"), extracted)
-            .ReadObjectAsync("commit", result.Manifest!.Current[5..], Ct);
+            .ReadObjectAsync("commit", result.Manifest!.Current.Id[5..], Ct);
         var text = Encoding.UTF8.GetString(commit);
         Assert.Contains("Author é <author@example.invalid> " + time.ToUnixTimeSeconds() + " +0530", text, StringComparison.Ordinal);
         Assert.Contains("committer Committer <committer@example.invalid>", text, StringComparison.Ordinal);
@@ -83,21 +83,21 @@ public class ApiTests
     public async Task EntryCollectionsAndResultsAreIndependentlyOwned()
     {
         var bytes = "# X\n"u8.ToArray(); var entries = new List<PackageInputEntry> { new("x.md", bytes) };
-        var request = new SnapshotPackageRequest(Guid.Parse(EngineFixture.Namespace), SnapshotMetadata.CliDefault, entries);
+        var request = new SnapshotPackageRequest(Guid.Parse(EngineFixture.Namespace), entries) { History = HistoryMode.Git };
         entries.Clear(); Assert.Single(request.Entries);
         using var output = new MemoryStream(); var result = await new Builder().CreateAsync(request, output, Ct); Success(result);
         bytes[0] = (byte)'!';
         Assert.Throws<NotSupportedException>(() => ((IList<ValidationCheck>)result.Checks).Clear());
-        Assert.Throws<NotSupportedException>(() => ((IList<string>)result.Manifest!.History.Transform).Add("projected"));
+        Assert.Throws<NotSupportedException>(() => ((IList<string>)((Mdpkg.Reader.GitHistory)result.Manifest!.History).Transform).Add("projected"));
         Assert.Throws<NotSupportedException>(() => ((IList<CoverageRangeMetadata>)result.History!.AddressingCoverage).Clear());
-        output.Dispose(); Assert.StartsWith("sha1-", result.Identity!.Current, StringComparison.Ordinal);
+        output.Dispose(); Assert.StartsWith("sha1-", result.Identity!.Current.Id, StringComparison.Ordinal);
     }
     [Theory]
     [InlineData(false)][InlineData(true)]
     public async Task NonSeekableAndFileValidationHaveSameChecks(bool deep)
     {
         using var f = new EngineFixture(); f.Write("x.md", "# X\n");
-        Success(await new Builder().CreateFromDirectoryAsync(new(f.Source, Guid.Parse(EngineFixture.Namespace)), f.Output, Ct));
+        Success(await new Builder().CreateFromDirectoryAsync(new(f.Source, Guid.Parse(EngineFixture.Namespace)) { History = HistoryMode.Git }, f.Output, Ct));
         var options = new ValidationOptions { Deep = deep };
         var validator = new Validator(); var file = await validator.ValidateFileAsync(f.Output, options, Ct);
         using var input = new NonSeekable(File.ReadAllBytes(f.Output)); var stream = await validator.ValidateAsync(input, options, Ct);
@@ -124,8 +124,8 @@ public class ApiTests
         };
         var options = new CreationOptions { Resources = resources };
         var builder = new Builder(new(TemporaryDirectory: temp));
-        var file = await builder.CreateFromDirectoryAsync(new(f.Source, Guid.Parse(EngineFixture.Namespace)) { Options = options }, f.Output, Ct);
-        using var output = new MemoryStream(); var memory = await builder.CreateAsync(new(Guid.Parse(EngineFixture.Namespace), SnapshotMetadata.CliDefault, Request().Entries) { Options = options }, output, Ct);
+        var file = await builder.CreateFromDirectoryAsync(new(f.Source, Guid.Parse(EngineFixture.Namespace)) { History = HistoryMode.Git, Options = options }, f.Output, Ct);
+        using var output = new MemoryStream(); var memory = await builder.CreateAsync(new(Guid.Parse(EngineFixture.Namespace), Request().Entries) { History = HistoryMode.Git, Options = options }, output, Ct);
         Assert.Equal(OperationStatus.ResourceLimitExceeded, file.Status); Assert.Equal(file.Status, memory.Status);
         Assert.Equal(0, output.Length); Assert.Equal("prior", File.ReadAllText(f.Output)); Assert.Empty(Directory.GetFileSystemEntries(temp));
         Assert.Empty(Directory.GetFiles(f.Root, "*.tmp"));
@@ -135,7 +135,7 @@ public class ApiTests
     public async Task ValidationLimitsApplyEquallyToFileAndStream(string limit)
     {
         using var f = new EngineFixture(); f.Write("x.md", "# X\n");
-        Success(await new Builder().CreateFromDirectoryAsync(new(f.Source, Guid.Parse(EngineFixture.Namespace)), f.Output, Ct));
+        Success(await new Builder().CreateFromDirectoryAsync(new(f.Source, Guid.Parse(EngineFixture.Namespace)) { History = HistoryMode.Git }, f.Output, Ct));
         var limits = limit switch
         {
             "input" => new ReadLimits { MaxInputBytes = 1 }, "directory" => new ReadLimits { MaxDirectoryBytes = 1 },
@@ -160,13 +160,15 @@ public class ApiTests
         Assert.Equal(OperationStatus.ResourceLimitExceeded, rejected.Status); Assert.Empty(Directory.GetFileSystemEntries(temp));
     }
     [Theory]
-    [InlineData(false)][InlineData(true)]
-    public async Task FailedOrCancelledFinalCopyLeavesPrefixAndNoSuccess(bool cancelCopy)
+    [InlineData(false, HistoryMode.None)][InlineData(true, HistoryMode.None)]
+    [InlineData(false, HistoryMode.Git)][InlineData(true, HistoryMode.Git)]
+    public async Task FailedOrCancelledFinalCopyLeavesPrefixAndNoSuccess(bool cancelCopy, HistoryMode history)
     {
         using var f = new EngineFixture(); var temp = Path.Combine(f.Root, "temp"); Directory.CreateDirectory(temp);
         using var cancel = CancellationTokenSource.CreateLinkedTokenSource(Ct);
         using var output = new InterruptedOutput(cancelCopy ? cancel : null);
-        var task = new Builder(new(TemporaryDirectory: temp)).CreateAsync(Request(), output, cancel.Token);
+        var request = new SnapshotPackageRequest(Guid.Parse(EngineFixture.Namespace), Request().Entries) { History = history };
+        var task = new Builder(new(TemporaryDirectory: temp)).CreateAsync(request, output, cancel.Token);
         if (cancelCopy) await Assert.ThrowsAnyAsync<OperationCanceledException>(() => task);
         else Assert.Equal(OperationStatus.EnvironmentFailure, (await task).Status);
         Assert.True(output.CanWrite); Assert.True(output.Length > 0); Assert.Empty(Directory.GetFileSystemEntries(temp));
@@ -175,10 +177,10 @@ public class ApiTests
     public async Task WarningPromotionAndRequireCompleteHappenBeforeStreamPublication()
     {
         using var output = new MemoryStream();
-        var warning = new SnapshotPackageRequest(Guid.Parse(EngineFixture.Namespace), SnapshotMetadata.CliDefault, Request("# X\r\n").Entries)
-        { Options = new() { Warnings = WarningPolicy.Fail } };
+        var warning = new SnapshotPackageRequest(Guid.Parse(EngineFixture.Namespace), Request("# X\r\n").Entries)
+        { History = HistoryMode.Git, Options = new() { Warnings = WarningPolicy.Fail } };
         Assert.Equal(OperationStatus.Nonconforming, (await new Builder().CreateAsync(warning, output, Ct)).Status); Assert.Equal(0, output.Length);
-        var partial = new SnapshotPackageRequest(Guid.Parse(EngineFixture.Namespace), SnapshotMetadata.CliDefault, Request().Entries)
+        var partial = new SnapshotPackageRequest(Guid.Parse(EngineFixture.Namespace), Request().Entries)
         { Correspondence = new([new UnconfirmedRecord(new(EngineFixture.RootId), "unconfirmed-removal")]), Options = new() { RequireComplete = true } };
         Assert.Equal(OperationStatus.ObligationUnmet, (await new Builder().CreateAsync(partial, output, Ct)).Status); Assert.Equal(0, output.Length);
     }
@@ -190,7 +192,7 @@ public class ApiTests
         trail.Clear();
         var decoded = CorrespondenceCodec.Decode(CorrespondenceCodec.Encode(correspondence));
         Assert.Equal(CorrespondenceCodec.Encode(correspondence), CorrespondenceCodec.Encode(decoded));
-        var request = new SnapshotPackageRequest(Guid.Parse(EngineFixture.Namespace), SnapshotMetadata.CliDefault, Request().Entries) { Correspondence = decoded };
+        var request = new SnapshotPackageRequest(Guid.Parse(EngineFixture.Namespace), Request().Entries) { History = HistoryMode.Git, Correspondence = decoded };
         using var output = new MemoryStream(); var result = await new Builder().CreateAsync(request, output, Ct); Success(result); Assert.Equal(1, result.OverrideCount);
         Assert.Throws<PackageFormatException>(() => CorrespondenceCodec.Decode(Encoding.UTF8.GetBytes("[{\"root\":\"" + EngineFixture.RootId + "\",\"confirmed\":false,\"to\":[\"document\",\"x.md\",[]]}]")));
         Assert.Throws<ArgumentException>(() => new Correspondence([new ConfirmedRetirement(new(EngineFixture.RootId), "invented")]));
@@ -203,9 +205,9 @@ public class ApiTests
         using var readonlyOutput = new MemoryStream([], writable: false);
         await Assert.ThrowsAsync<ArgumentException>(() => builder.CreateAsync(Request(), readonlyOutput, Ct));
         using var empty = new MemoryStream();
-        var invalid = new SnapshotPackageRequest(Guid.NewGuid(), SnapshotMetadata.CliDefault, []) { Options = new() { CompressionLevel = 10 } };
+        var invalid = new SnapshotPackageRequest(Guid.NewGuid(), []) { History = HistoryMode.Git, Options = new() { CompressionLevel = 10 } };
         await Assert.ThrowsAsync<ArgumentException>(() => builder.CreateAsync(invalid, empty, Ct));
-        var unsupported = new SnapshotPackageRequest(Guid.NewGuid(), SnapshotMetadata.CliDefault, []) { Options = new() { ObjectFormat = "sha256" } };
+        var unsupported = new SnapshotPackageRequest(Guid.NewGuid(), []) { History = HistoryMode.Git, Options = new() { ObjectFormat = "sha256" } };
         var rejected = await builder.CreateAsync(unsupported, empty, Ct); Assert.Equal(OperationStatus.SourceRejected, rejected.Status);
         Assert.Contains(rejected.Diagnostics, d => d.Code == "MDPK4001"); Assert.Equal(0, empty.Length);
     }
@@ -214,7 +216,7 @@ public class ApiTests
     public async Task MemoryPathsHaveNoSafetyEscapeHatch(string path)
     {
         using var output = new MemoryStream();
-        var result = await new Builder().CreateAsync(new(Guid.NewGuid(), SnapshotMetadata.CliDefault, [new(path, "text"u8.ToArray())]), output, Ct);
+        var result = await new Builder().CreateAsync(new(Guid.NewGuid(), [new(path, "text"u8.ToArray())]), output, Ct);
         Assert.Equal(OperationStatus.SourceRejected, result.Status); Assert.Equal(0, output.Length);
     }
     private sealed class NonSeekable(byte[] bytes, Action? reading = null) : Stream

@@ -53,9 +53,9 @@ public class ManagedSnapshotStructureTests
         if (fault == "extra-commit") Add(1, Encoding.UTF8.GetBytes($"tree {tree}\nauthor A <a@b> 1 +0000\ncommitter A <a@b> 1 +0000\n\nextra\n"));
         if (fault == "unreachable") Add(3, "unreachable\n"u8.ToArray());
         if (fault == "duplicate-object") Add(3, "text\n"u8.ToArray());
-        var manifest = new Manifest(Profile.Magic, EngineFixture.Namespace, "sha1-" + commit,
-            new(Profile.Anchor, Profile.Digest, "complete", null), new("complete", [], Profile.History));
-        var history = new HistoryDetail("first-parent", "original", manifest.Current, manifest.Current, 1, [], [], [], [], [new(manifest.Current, manifest.Current, "complete")]);
+        var manifest = new Manifest(Profile.Magic, EngineFixture.Namespace, new("commit", "sha1-" + commit),
+            new(Profile.Anchor, Profile.Digest, "complete", null), new Mdpkg.Reader.GitHistory("complete", [], Profile.History));
+        var history = new HistoryDetail("first-parent", "original", manifest.Current.Id, manifest.Current.Id, 1, [], [], [], [], [new(manifest.Current.Id, manifest.Current.Id, "complete")]);
         var entries = new List<EntryData>
         {
             new(Profile.Manifest, CanonicalJson.Bytes(manifest, manifest: true)), new("x", "text\n"u8.ToArray()), new("y", deltaCase ? "text!\n"u8.ToArray() : "text\n"u8.ToArray()),

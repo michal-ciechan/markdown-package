@@ -72,7 +72,7 @@ public class OptionValidationTests
     [InlineData("--digest", "cm0312-source-lf-v1")]
     public void WellFormedGlobalValuesParse(params string[] extra)
     {
-        Assert.Empty(MdpkgCli.Build().Parse([.. Pack, .. extra]).Errors);
+        Assert.Empty(MdpkgCli.Build().Parse([.. Pack, "--history", "git", .. extra]).Errors);
     }
 
     [Fact]

@@ -43,7 +43,7 @@ public class ReaderTests
     [Fact]
     public async Task SelectedPayloadLimitAndCrcAreEnforcedWithoutDecodingPack()
     {
-        var bytes = Fixtures.Bytes("delta-v2.mdpkg");
+        var bytes = Fixtures.Bytes("delta-git-target-snapshot.mdpkg");
         using (var original = new MemoryStream(bytes))
         using (var archive = await PackageArchive.OpenAsync(original, cancellationToken: TestContext.Current.CancellationToken))
             Assert.Throws<ResourceLimitException>(() => archive.ReadEntry(".mdpkg/review/comments.json", 10, TestContext.Current.CancellationToken));

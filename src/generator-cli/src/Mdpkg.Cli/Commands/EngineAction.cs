@@ -35,19 +35,22 @@ internal static class EngineAction
             m is null ? null : Manifest(m), m?.Current,
             m is null ? null : new(m.Addressing.Coverage, engine.OverrideCount, engine.MintedRoots,
                 h?.AddressingCoverage.Where(r => r.Coverage == "partial").Select(r => r.From + ".." + r.To).ToArray() ?? []),
-            h is null || m is null ? null : new(m.History.Coverage, m.History.Transform, h.RetainedCommits, h.DeclaredRangeCount, h.DeclaredPatchCount),
-            engine.Checks.Select(c => new CheckResult(c.Code, c.Status switch { CheckStatus.Passed => "pass", CheckStatus.Failed => "fail", _ => "skipped" })).ToArray(),
+            m is null ? null : h is not null && m.History is GitHistory git ? new("git", git.Coverage, git.Transform, h.RetainedCommits, h.DeclaredRangeCount, h.DeclaredPatchCount) : new("none"),
+            engine.Checks.Select(c => new CheckResult(c.Code, c.Status switch { CheckStatus.Passed => "pass", CheckStatus.Failed => "fail", CheckStatus.NotApplicable => "not-applicable", _ => "skipped" })).ToArray(),
             engine.Diagnostics.Select(d => new Reporting.Diagnostic(d.Code, d.Severity switch
-            { DiagnosticSeverity.Warning => "warn", DiagnosticSeverity.Error => "error", _ => "info" }, d.Entry, d.Message, d.Spec)).ToArray());
+            { DiagnosticSeverity.Warning => "warn", DiagnosticSeverity.Error => "error", _ => "info" }, d.Entry, d.Message, d.Spec)).ToArray(),
+            m?.History.Mode, engine.Assurance switch { IdentityAssurance.SnapshotVerified => "snapshot-verified", IdentityAssurance.GitVerified => "git-verified", _ => "declared" }, engine.Materialized);
     }
     private static JsonObject Manifest(ManifestMetadata m)
     {
         // Preserve canonical property order and omission rules without Reader internals.
         var addressing = new JsonObject { ["anchor"] = m.Addressing.Anchor, ["coverage"] = m.Addressing.Coverage, ["digest"] = m.Addressing.Digest };
         addressing["overrides"] = m.Addressing.Overrides;
-        var result = new JsonObject { ["mdpkg"] = m.Mdpkg, ["addressing"] = addressing, ["current"] = m.Current,
-            ["history"] = new JsonObject { ["coverage"] = m.History.Coverage, ["detail"] = m.History.Detail,
-                ["transform"] = new JsonArray(m.History.Transform.Select(t => (JsonNode)JsonValue.Create(t)!).ToArray()) }, ["namespace"] = m.Namespace };
+        var history = m.History is GitHistory git ? new JsonObject { ["coverage"] = git.Coverage, ["detail"] = git.Detail, ["mode"] = "git",
+            ["transform"] = new JsonArray(git.Transform.Select(t => (JsonNode)JsonValue.Create(t)!).ToArray()) } : new JsonObject { ["mode"] = "none" };
+        var result = new JsonObject { ["mdpkg"] = m.Mdpkg, ["addressing"] = addressing,
+            ["current"] = new JsonObject { ["id"] = m.Current.Id, ["kind"] = m.Current.Kind },
+            ["history"] = history, ["namespace"] = m.Namespace };
         if (m.Review is { } review) result["review"] = JsonNode.Parse(review.GetRawText());
         return result;
     }
@@ -66,7 +69,7 @@ internal static class EngineAction
             { stderr.WriteLine($"mdpkg {verb}: cannot write --report {report}: {ex.Message}"); result = result with { ExitCode = ExitCode.Environment }; }
         }
         if (parse.GetValue(globals.Format) == GlobalOptions.JsonFormat) parse.InvocationConfiguration.Output.WriteLine(ResultWriter.ToJson(result));
-        else if (!parse.GetValue(globals.Quiet) && result.ExitCode == ExitCode.Success) stderr.WriteLine($"mdpkg {verb}: {result.Package?.Entries} entries; {result.Current}; validated.");
+        else if (!parse.GetValue(globals.Quiet) && result.ExitCode == ExitCode.Success) stderr.WriteLine($"mdpkg {verb}: {result.Package?.Entries} entries; {result.Current?.Id}; validated.");
         return (int)result.ExitCode;
     }
 }

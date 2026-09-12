@@ -30,7 +30,7 @@ public sealed partial class PackageSnapshot
         catch (Exception ex) when (ex is FormatException or System.Text.Json.JsonException or ArgumentException or EngineException or InvalidOperationException or OverflowException)
         { return new("identity", "invalidated", "malformed-reference"); }
         if (uri.Namespace != Identity.Namespace) return new("identity", "invalidated", "wrong-lineage");
-        if (uri.Locator is null || (uri.At is not null && uri.At != Identity.Current))
+        if (uri.Locator is null || (uri.At is not null && (Identity.Current.Kind != "commit" || uri.At != Identity.Current.Id)))
             return new("capability", "unsupported", "history-reader-required");
         if (uri.Expect is null)
         {

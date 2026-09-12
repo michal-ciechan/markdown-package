@@ -95,7 +95,8 @@ internal static class ZipReader
             var nameBytes = At(stream, pos + 46, U16(header, 28));
             var name = Profile.Utf8.GetString(nameBytes);
             if (nameBytes.Any(b => b > 127) && (flags & 0x800) == 0) throw Bad("Non-ASCII name lacks UTF-8 flag.", name);
-            SourceRules.ValidatePath(name, Outcome.Nonconforming);
+            SourceRules.ValidatePath(name.EndsWith('/') ? name[..^1] : name, Outcome.Nonconforming);
+            if (name.EndsWith('/') && usize != 0) throw Bad("Directory record contains data.", name);
             Extras(At(stream, pos + 46 + nameBytes.Length, U16(header, 30)));
             pos += 46L + nameBytes.Length + U16(header, 30) + U16(header, 32);
             if (pos > (long)cd + cdSize) throw Bad("Central directory overrun.");

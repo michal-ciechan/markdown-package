@@ -12,6 +12,7 @@ on:
       - 'docs/spec/generator-cli.md'
       - 'docs/spec.md'
       - 'docs/spec/worked-example.json'
+      - 'docs/investigations/deferred-history/breaking-revision-vectors.json'
       - 'docs/spec/review-comments.schema.json'
       - 'docs/spec/review-fixtures/**'
       - 'src/web-viewer/tests/fixtures/browser-v2.mdpkg'
@@ -26,6 +27,7 @@ on:
       - 'docs/spec/generator-cli.md'
       - 'docs/spec.md'
       - 'docs/spec/worked-example.json'
+      - 'docs/investigations/deferred-history/breaking-revision-vectors.json'
       - 'docs/spec/review-comments.schema.json'
       - 'docs/spec/review-fixtures/**'
       - 'src/web-viewer/tests/fixtures/browser-v2.mdpkg'
@@ -87,6 +89,8 @@ jobs:
         run: dotnet pack src/Mdpkg.Cli/Mdpkg.Cli.csproj --no-build -c Release -o artifacts/package
       - name: Prove global tool installation
         run: python tests/prove-tool.py --local-feed artifacts/package
+      - name: Prove history-free snapshots with absent and poison Git
+        run: python tests/prove-managed-snapshot.py --local-feed artifacts/package --history-free
       - name: Pack read-only libraries
         run: |
           dotnet pack src/Mdpkg.Reader/Mdpkg.Reader.csproj --no-build -c Release -o artifacts/package

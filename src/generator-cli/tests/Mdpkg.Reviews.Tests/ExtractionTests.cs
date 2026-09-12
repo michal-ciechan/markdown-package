@@ -196,6 +196,12 @@ public class ExtractionTests
         var bytes = Fixtures.Bytes(file);
         using var structural = new MemoryStream(bytes);
         var read = await new ReviewExtractor().ExtractAsync(structural, cancellationToken: TestContext.Current.CancellationToken);
+        if (file == "invalid-delta-history.mdpkg")
+        {
+            Assert.Equal(ReviewOutcome.Malformed, read.Outcome);
+            Assert.NotEqual(VerificationLevel.Full, read.VerificationLevel);
+            return;
+        }
         Assert.Equal(ReviewOutcome.Success, read.Outcome); Assert.Equal(VerificationLevel.Structural, read.VerificationLevel);
         using var full = new MemoryStream(bytes);
         var checkedResult = await new ReviewExtractor().ExtractAsync(full, new() { RequireFullVerification = true, VerificationProvider = new Provider(false, VerificationChecks.None) }, TestContext.Current.CancellationToken);

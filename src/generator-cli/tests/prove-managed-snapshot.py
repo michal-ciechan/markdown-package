@@ -1,7 +1,8 @@
-"""Prove an installed managed candidate packs with absent Git and a logging poison Git.
+"""Prove installed snapshot creation with absent Git and a logging poison Git.
 
-Build the local feed with -p:MdpkgManagedSnapshotCandidate=true first. This does
-not publish packages or change the production default. Uses an isolated tool path.
+Use --history-free for ordinary release snapshots. Without it, build the feed with
+-p:MdpkgManagedSnapshotCandidate=true to prove explicit Git-mode snapshots.
+Neither proof publishes packages. Both use an isolated tool path.
 """
 import argparse
 import json
@@ -10,12 +11,14 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+import zipfile
 import xml.etree.ElementTree as ET
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--local-feed', required=True, type=Path)
+    parser.add_argument('--history-free', action='store_true', help='Prove ordinary history-free snapshots from a release feed instead of the managed Git candidate.')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     version = ET.parse(root / 'Mdpkg.Pack.props').findtext('./PropertyGroup/Version')
@@ -62,10 +65,21 @@ def main():
         first = None
         for path in ('', str(work / 'shim')):
             child['PATH'] = path
+            mode_options = [] if args.history_free else ['--history', 'git', '--reverse-index']
             result = json.loads(run([tool, 'pack', str(source), '--out', str(output), '--namespace',
-                'c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8', '--reverse-index', '--data-descriptors', '--format', 'json'], child_env=child))
+                'c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8', *mode_options, '--data-descriptors', '--format', 'json'], child_env=child))
             assert output.is_file() and not sentinel.exists(); assertions += 2
-            assert all(check['status'] == 'pass' for check in result['checks']); assertions += 1
+            expected_statuses = {'pass', 'not-applicable'} if args.history_free else {'pass'}
+            assert all(check['status'] in expected_statuses for check in result['checks']); assertions += 1
+            if args.history_free:
+                assert result['manifest']['history'] == {'mode': 'none'}; assertions += 1
+                assert result['current']['kind'] == 'snapshot' and result['assurance'] == 'snapshot-verified'; assertions += 1
+                with zipfile.ZipFile(output) as archive:
+                    assert not any(n.startswith('.git/') or n == '.mdpkg/history.json' for n in archive.namelist()); assertions += 1
+                for deep in ([], ['--deep']):
+                    verified = json.loads(run([tool, 'validate', str(output), *deep, '--format', 'json'], child_env=child))
+                    assert verified['current'] == result['current'] and verified['assurance'] == 'snapshot-verified'; assertions += 1
+                    assert not sentinel.exists(); assertions += 1
             if first is not None:
                 assert output.read_bytes() == first; assertions += 1
             first = output.read_bytes()
@@ -73,10 +87,11 @@ def main():
         assert (source / '.git').read_text() == 'gitdir: deliberately-nonexistent'; assertions += 1
         # Explicit native-only options must hit the same poison executable.
         run([tool, 'pack', str(source), '--out', str(work / 'depth.mdpkg'), '--namespace',
-             'c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8', '--depth', '1', '--format', 'json'], expected=5, child_env=child)
+             'c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8', '--history', 'git', '--depth', '1', '--format', 'json'], expected=5, child_env=child)
         assert sentinel.read_text() == 'called\n'; assertions += 1
         assert not (work / 'depth.mdpkg').exists(); assertions += 1
-    print(f'{assertions} installed-candidate assertions passed; 0 failures; 0 Git invocations for eligible snapshots.')
+    mode = 'history-free' if args.history_free else 'managed-Git-candidate'
+    print(f'{assertions} installed {mode} assertions passed; 0 failures; 0 Git invocations for eligible snapshots.')
 
 
 if __name__ == '__main__':

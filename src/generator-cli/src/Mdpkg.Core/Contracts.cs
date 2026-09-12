@@ -5,23 +5,23 @@ namespace Mdpkg.Core;
 
 public enum OperationStatus { Success, SourceRejected, Nonconforming, ObligationUnmet, EnvironmentFailure, ResourceLimitExceeded }
 public enum DiagnosticSeverity { Info, Warning, Error }
-public enum CheckStatus { Passed, Failed, Skipped }
+public enum CheckStatus { Passed, Failed, Skipped, NotApplicable }
 public enum ValidationLevel { Full, Deep }
 public enum WarningPolicy { Report, Fail }
 public enum CreationMode { Snapshot, GitImport }
+public enum HistoryMode { None, Git }
 public sealed record Diagnostic(string Code, DiagnosticSeverity Severity, string? Entry, string Message, string Spec);
 public sealed record ValidationCheck(string Code, CheckStatus Status);
 public sealed record PackageMetadata(string? Path, long Bytes, string Sha256, int Entries, ContainerStatus Tier);
-public sealed record HistoryDeclarationMetadata(string Coverage, IReadOnlyList<string> Transform, string Detail);
-public sealed record ManifestMetadata(string Mdpkg, string Namespace, string Current, AddressingProfile Addressing,
-    HistoryDeclarationMetadata History, JsonElement? Review);
+public sealed record ManifestMetadata(string Mdpkg, string Namespace, CurrentState Current, AddressingProfile Addressing,
+    PackageHistory History, JsonElement? Review);
 public sealed record CoverageRangeMetadata(string From, string To, string Coverage);
 public sealed record TransformationMetadata(string Kind, string SourceBase, string SourceTip, string Emitted, string? Summary);
 public sealed record PatchBindingMetadata(string Entry, string Sha256, string From, string To, string Document, string Profile);
 public sealed record HistoryMetadata(string Walk, string Root, string SourceBase, string SourceTip, int RetainedCommits,
     IReadOnlyList<string> ShallowBoundaries, IReadOnlyList<TransformationMetadata> Transformations, IReadOnlyList<string> Ranges,
     IReadOnlyList<PatchBindingMetadata> Patches, IReadOnlyList<CoverageRangeMetadata> AddressingCoverage,
-    string? SourceRepository, string? Scope, string? Bindings)
+    string? SourceRepository, string? Scope, string? Bindings, JsonElement? Origin = null)
 {
     /// <summary>Declared count, including null entries omitted from rejected partial metadata.</summary>
     public int DeclaredRangeCount { get; init; } = Ranges.Count;
@@ -37,6 +37,9 @@ public abstract class PackageResult
     public ManifestMetadata? Manifest { get; }
     public HistoryMetadata? History { get; }
     public PackageIdentity? Identity => Manifest is { } m ? new(m.Namespace, m.Current) : null;
+    public IdentityAssurance Assurance { get; }
+    public HistoryMode? Mode => Manifest is null ? null : Manifest.History is SnapshotHistory ? HistoryMode.None : HistoryMode.Git;
+    public bool Materialized { get; }
     public int OverrideCount { get; }
     public int MintedRoots { get; }
     public IReadOnlyList<ValidationCheck> Checks { get; }
@@ -55,7 +58,7 @@ public abstract class PackageResult
             p.Tier == "conforming" ? ContainerStatus.Conforming : ContainerStatus.Recoverable);
         if (result.Manifest is { } m) Manifest = new(m.Mdpkg, m.Namespace, m.Current,
             new(m.Addressing.Anchor, m.Addressing.Digest, m.Addressing.Coverage, m.Addressing.Overrides),
-            new(m.History.Coverage, Freeze(m.History.Transform), m.History.Detail),
+            m.History is GitHistory git ? new GitHistory(git.Coverage, Freeze(git.Transform), git.Detail) : new SnapshotHistory(),
             m.Review is null ? null : JsonSerializer.SerializeToElement(m.Review, new JsonSerializerOptions { MaxDepth = 256 }));
         // Validation can reject a parsed history containing null collection entries. Preserve
         // its failure and all safely representable metadata without dereferencing rejected records.
@@ -64,11 +67,13 @@ public abstract class PackageResult
             Freeze(h.Transformations.Where(t => t is not null).Select(t => new TransformationMetadata(t.Kind, t.SourceBase, t.SourceTip, t.Emitted, t.Summary))),
             Freeze(h.Ranges.Where(r => r is not null)),
             Freeze(h.Patches.Where(p => p is not null).Select(p => new PatchBindingMetadata(p.Entry, p.Sha256, p.From, p.To, p.Document, p.Profile))),
-            Freeze(h.AddressingCoverage.Where(r => r is not null).Select(r => new CoverageRangeMetadata(r.From, r.To, r.Coverage))), h.SourceRepository, h.Scope, h.Bindings)
+            Freeze(h.AddressingCoverage.Where(r => r is not null).Select(r => new CoverageRangeMetadata(r.From, r.To, r.Coverage))), h.SourceRepository, h.Scope, h.Bindings,
+            h.Origin is null ? null : JsonSerializer.SerializeToElement(h.Origin, new JsonSerializerOptions { MaxDepth = 256 }))
         { DeclaredRangeCount = h.Ranges.Length, DeclaredPatchCount = h.Patches.Length };
+        Assurance = result.Assurance; Materialized = result.Materialized;
         OverrideCount = result.OverrideCount; MintedRoots = result.MintedRoots; Error = result.Error;
         Checks = Freeze(result.Checks.Select(c => new ValidationCheck(c.Code, c.Status switch
-        { "pass" => CheckStatus.Passed, "fail" => CheckStatus.Failed, _ => CheckStatus.Skipped })));
+        { "pass" => CheckStatus.Passed, "fail" => CheckStatus.Failed, "not-applicable" => CheckStatus.NotApplicable, _ => CheckStatus.Skipped })));
         Diagnostics = Freeze(result.Diagnostics.Select(d => new Diagnostic(d.Code, d.Severity switch
         { "warn" => DiagnosticSeverity.Warning, "error" => DiagnosticSeverity.Error, _ => DiagnosticSeverity.Info }, d.Entry, d.Message, d.Spec)));
     }
@@ -112,9 +117,10 @@ public sealed record CreationOptions
 public sealed record DirectoryPackageRequest(string SourceDirectory, Guid Namespace)
 {
     public CreationMode Mode { get; init; }
+    public HistoryMode History { get; init; } = HistoryMode.None;
     public string? Scope { get; init; }
     public int? Depth { get; init; }
-    public SnapshotMetadata Metadata { get; init; } = SnapshotMetadata.CliDefault;
+    public SnapshotMetadata? Metadata { get; init; }
     public CreationOptions Options { get; init; } = new();
     public Correspondence? Correspondence { get; init; }
 }
@@ -123,14 +129,15 @@ public sealed record PackageInputEntry(string Path, ReadOnlyMemory<byte> Content
 public sealed class SnapshotPackageRequest
 {
     public Guid Namespace { get; }
-    public SnapshotMetadata Metadata { get; }
+    public SnapshotMetadata? Metadata { get; init; }
+    public HistoryMode History { get; init; } = HistoryMode.None;
     public IReadOnlyList<PackageInputEntry> Entries { get; }
     public CreationOptions Options { get; init; } = new();
     public Correspondence? Correspondence { get; init; }
-    public SnapshotPackageRequest(Guid @namespace, SnapshotMetadata metadata, IEnumerable<PackageInputEntry> entries)
+    public SnapshotPackageRequest(Guid @namespace, IEnumerable<PackageInputEntry> entries)
     {
-        ArgumentNullException.ThrowIfNull(metadata); ArgumentNullException.ThrowIfNull(entries);
-        Namespace = @namespace; Metadata = metadata;
+        ArgumentNullException.ThrowIfNull(entries);
+        Namespace = @namespace;
         // Bound enumeration as well as the eventual archive; infinite sequences cannot exhaust memory.
         var copy = new List<PackageInputEntry>();
         foreach (var entry in entries)

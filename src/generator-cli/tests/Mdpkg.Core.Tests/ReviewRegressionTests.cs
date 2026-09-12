@@ -35,7 +35,7 @@ public class ReviewRegressionTests
         if (wholeHistory)
         {
             manifest = manifest with { Addressing = manifest.Addressing with { Coverage = "complete" } };
-            history = history with { AddressingCoverage = [new(history.AddressingCoverage[0].From, manifest.Current, "complete")] };
+            history = history with { AddressingCoverage = [new(history.AddressingCoverage[0].From, manifest.Current.Id, "complete")] };
         }
         else
         {
@@ -60,8 +60,8 @@ public class ReviewRegressionTests
         var first = await repo.CommitAsync(await repo.TreeAsync([new("x.md", "# Old\n"u8.ToArray())], ct), null, "first", ct);
         var tree = new List<EntryData> { new("x.md", "# New\n"u8.ToArray()) };
         var last = await repo.CommitAsync(await repo.TreeAsync(tree, ct), first, "last", ct);
-        var manifest = new Manifest(Profile.Magic, EngineFixture.Namespace, "sha1-" + last,
-            new(Profile.Anchor, Profile.Digest, "complete", null), new("complete", [], Profile.History));
+        var manifest = new Manifest(Profile.Magic, EngineFixture.Namespace, new("commit", "sha1-" + last),
+            new(Profile.Anchor, Profile.Digest, "complete", null), new Mdpkg.Reader.GitHistory("complete", [], Profile.History));
         var history = new HistoryDetail("first-parent", "original", "sha1-" + first, "sha1-" + last, 2,
             [], [], [], [], [new("sha1-" + first, "sha1-" + last, "complete")]);
         var entries = new List<EntryData> { new(Profile.Manifest, CanonicalJson.Bytes(manifest, true)) };
@@ -86,10 +86,10 @@ public class ReviewRegressionTests
         await git.TextAsync(f.Source, ct, "fsck", "--full", "--strict");
         EngineFixture.Success(await new PackageBuilder().PackAsync(f.Request with { FromGit = true }, ct));
         var validated = await new PackageValidator().ValidateAsync(new(f.Output, Deep: true), ct); EngineFixture.Success(validated);
-        if (normalize) Assert.NotEqual("sha1-" + head, validated.Manifest!.Current);
-        else Assert.Equal("sha1-" + head, validated.Manifest!.Current);
+        if (normalize) Assert.NotEqual("sha1-" + head, validated.Manifest!.Current.Id);
+        else Assert.Equal("sha1-" + head, validated.Manifest!.Current.Id);
         var extracted = Path.Combine(f.Root, "extracted"); System.IO.Compression.ZipFile.ExtractToDirectory(f.Output, extracted);
-        var retained = await new Repository(git, extracted).ReadObjectAsync("commit", validated.Manifest.Current[5..], ct);
+        var retained = await new Repository(git, extracted).ReadObjectAsync("commit", validated.Manifest.Current.Id[5..], ct);
         Assert.True(retained.AsSpan().EndsWith(metadata));
         if (!normalize) Assert.Equal(original, retained);
     }

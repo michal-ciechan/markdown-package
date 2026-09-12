@@ -20,10 +20,10 @@ public class MalformedHistoryTests
         Assert.Equal(File.ReadAllText(report), result.Stdout.TrimEnd('\r', '\n'));
         Assert.Equal(bytes, File.ReadAllBytes(fixture.Output));
         var json = JsonNode.Parse(result.Stdout)!.AsObject();
-        Assert.Equal(["verb", "exitCode", "package", "manifest", "current", "addressing", "history", "checks", "diagnostics"], json.Select(p => p.Key));
+        Assert.Equal(["verb", "exitCode", "package", "manifest", "current", "addressing", "history", "checks", "diagnostics", "mode", "assurance", "materialized"], json.Select(p => p.Key));
         Assert.Equal("validate", json["verb"]!.GetValue<string>()); Assert.Equal(3, json["exitCode"]!.GetValue<int>());
         Assert.Null(json["package"]); Assert.NotNull(json["manifest"]);
-        Assert.Equal(json["manifest"]!["current"]!.GetValue<string>(), json["current"]!.GetValue<string>());
+        Assert.Equal(json["manifest"]!["current"]!["id"]!.GetValue<string>(), json["current"]!["id"]!.GetValue<string>());
         Assert.Empty(json["addressing"]!["uncoveredRanges"]!.AsArray());
         var history = json["history"]!;
         Assert.Equal("complete", history["coverage"]!.GetValue<string>()); Assert.Empty(history["transform"]!.AsArray());

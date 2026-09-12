@@ -69,11 +69,11 @@ public class ManagedSnapshotTests
         GitProcess.BeforeStart.Value = _ => throw new InvalidOperationException("Git invocation");
         try
         {
-            var directory = await builder.CreateFromDirectoryAsync(new(f.Source, Guid.Parse(EngineFixture.Namespace)), f.Output, Ct);
+            var directory = await builder.CreateFromDirectoryAsync(new(f.Source, Guid.Parse(EngineFixture.Namespace)) { History = HistoryMode.Git }, f.Output, Ct);
             Assert.Equal(OperationStatus.Success, directory.Status);
             using var output = new MemoryStream();
-            var memory = await builder.CreateAsync(new(Guid.Parse(EngineFixture.Namespace), SnapshotMetadata.CliDefault,
-                [new("x.txt", File.ReadAllBytes(Path.Combine(f.Source, "x.txt")))]), output, Ct);
+            var memory = await builder.CreateAsync(new(Guid.Parse(EngineFixture.Namespace),
+                [new("x.txt", File.ReadAllBytes(Path.Combine(f.Source, "x.txt")))]) { History = HistoryMode.Git }, output, Ct);
             Assert.Equal(OperationStatus.Success, memory.Status); Assert.True(output.CanWrite);
             Assert.Equal(File.ReadAllBytes(f.Output), output.ToArray());
             Assert.Equal("gitdir: missing", File.ReadAllText(Path.Combine(f.Source, ".git")));

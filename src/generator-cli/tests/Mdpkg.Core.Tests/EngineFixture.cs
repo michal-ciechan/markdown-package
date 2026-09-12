@@ -19,7 +19,7 @@ internal sealed class EngineFixture : IDisposable
     public void Write(string path, string text) => Write(path, Profile.Utf8.GetBytes(text));
     public void Write(string path, byte[] bytes)
     { var full = Path.Combine(Source, path); Directory.CreateDirectory(Path.GetDirectoryName(full)!); File.WriteAllBytes(full, bytes); }
-    public PackRequest Request => new(Source, Output, EngineFixture.Namespace);
+    public PackRequest Request => new(Source, Output, EngineFixture.Namespace, History: Mdpkg.Core.HistoryMode.Git);
     public static string RepoFile(string path)
     {
         for (var dir = new DirectoryInfo(AppContext.BaseDirectory); dir != null; dir = dir.Parent)

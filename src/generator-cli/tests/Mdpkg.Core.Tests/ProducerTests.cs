@@ -63,7 +63,7 @@ public class ProducerTests
         var head = await repo.CommitAsync(tree, null, "executable", TestContext.Current.CancellationToken);
         File.WriteAllText(Path.Combine(f.Source, "refs", "heads", "main"), head + "\n");
         var result = await new PackageBuilder().PackAsync(f.Request with { FromGit = true }, TestContext.Current.CancellationToken);
-        EngineFixture.Success(result); Assert.NotEqual("sha1-" + head, result.Manifest!.Current);
+        EngineFixture.Success(result); Assert.NotEqual("sha1-" + head, result.Manifest!.Current.Id);
         var extracted = Path.Combine(f.Root, "extracted"); System.IO.Compression.ZipFile.ExtractToDirectory(f.Output, extracted);
         Assert.StartsWith("100644 blob ", await git.TextAsync(extracted, TestContext.Current.CancellationToken, "ls-tree", "HEAD", "x.md"), StringComparison.Ordinal);
     }
@@ -139,7 +139,7 @@ public class ProducerTests
         for (var i = 0; i < 3; i++) Assert.Equal(EngineFixture.Recorded["commits"]!["c" + i]!.GetValue<string>(), commits[i]);
         var result = await new PackageBuilder().PackAsync(f.Request with { Source = repo.Path, FromGit = true }, TestContext.Current.CancellationToken);
         EngineFixture.Success(result);
-        Assert.Equal("sha1-" + commits[^1], result.Manifest!.Current);
+        Assert.Equal("sha1-" + commits[^1], result.Manifest!.Current.Id);
         Assert.Equal(3, result.History!.RetainedCommits);
         Assert.Equal("complete", result.Manifest.Addressing.Coverage);
         Assert.Equal(1, result.OverrideCount);
@@ -162,11 +162,11 @@ public class ProducerTests
         using var f = new EngineFixture(); var (repo, commits) = await f.WorkedRepositoryAsync();
         var result = await new PackageBuilder().PackAsync(f.Request with { Source = repo.Path, FromGit = true, Scope = ":(glob)notes.*", Depth = 2 }, TestContext.Current.CancellationToken);
         EngineFixture.Success(result);
-        Assert.Equal("truncated", result.Manifest!.History.Coverage); Assert.Equal("synthetic", result.History!.Root);
+        Assert.Equal("truncated", ((Mdpkg.Reader.GitHistory)result.Manifest!.History).Coverage); Assert.Equal("synthetic", result.History!.Root);
         Assert.Equal(2, result.History.RetainedCommits); Assert.Equal("sha1-" + commits[1], result.History.SourceBase);
-        Assert.Equal(["projected"], result.Manifest.History.Transform);
+        Assert.Equal(["projected"], ((Mdpkg.Reader.GitHistory)result.Manifest.History).Transform);
         Assert.DoesNotContain(EngineFixture.Read(f.Output), e => e.Name is "guide.md" or ".git/shallow" or Profile.Ledger);
-        Assert.NotEqual("sha1-" + commits[^1], result.Manifest.Current);
+        Assert.NotEqual("sha1-" + commits[^1], result.Manifest.Current.Id);
     }
     [Fact]
     public async Task SnapshotScopeUsesGitPathspecs()
@@ -186,7 +186,7 @@ public class ProducerTests
         var c2 = await repo.CommitAsync(tree2, c1, "tip", TestContext.Current.CancellationToken);
         File.WriteAllText(Path.Combine(f.Source, "refs", "heads", "main"), c2 + "\n");
         var result = await new PackageBuilder().PackAsync(f.Request with { FromGit = true }, TestContext.Current.CancellationToken); EngineFixture.Success(result);
-        Assert.NotEqual("sha1-" + c2, result.Manifest!.Current);
+        Assert.NotEqual("sha1-" + c2, result.Manifest!.Current.Id);
         Assert.Equal("sha1-" + c2, result.History!.SourceTip);
         Assert.Contains(result.Diagnostics, d => d.Code == "MDPK1004");
     }

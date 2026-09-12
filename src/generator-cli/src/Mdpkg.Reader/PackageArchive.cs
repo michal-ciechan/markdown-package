@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Mdpkg.Reader.Internal;
+using Mdpkg.Reader.Internal.Addressing;
 using Mdpkg.Reader.Internal.Container;
 using Mdpkg.Reader.Internal.Format;
 using Mdpkg.Reader.Internal.Sources;
@@ -18,11 +19,16 @@ public sealed class PackageArchive : IDisposable
     private long decodedBytes;
     private bool disposed;
     internal Manifest Manifest { get; private set; } = null!;
-    internal HistoryDetail History { get; private set; } = null!;
+    internal HistoryDetail? History { get; private set; }
     /// <summary>Resource limits applied to this archive.</summary>
     public ReadLimits Limits { get; }
-    /// <summary>Validated manifest namespace and current commit.</summary>
+    /// <summary>Validated manifest namespace and declared current state.</summary>
     public PackageIdentity Identity { get; private set; } = null!;
+    /// <summary>Declared history capabilities.</summary>
+    public PackageHistory HistoryMode => Manifest.History is GitHistory git
+        ? new GitHistory(git.Coverage, Array.AsReadOnly(git.Transform.ToArray()), git.Detail) : new SnapshotHistory();
+    /// <summary>Whether the complete current state has been verified.</summary>
+    public IdentityAssurance Assurance { get; private set; } = IdentityAssurance.Declared;
     /// <summary>Manifest addressing profiles, coverage and optional ledger path.</summary>
     public AddressingProfile Addressing { get; private set; } = null!;
     /// <summary>Owned review declaration JSON, or null for a package without a review declaration.</summary>
@@ -92,29 +98,25 @@ public sealed class PackageArchive : IDisposable
             var manifestBytes = archive.ReadEntry(Profile.Manifest, limits.MaxManifestBytes, cancellationToken);
             var node = archive.ReadCanonicalJson(manifestBytes, manifest: true, cancellationToken);
             if (node["mdpkg"]?.GetValue<string>() != Profile.Magic || node["addressing"]?["anchor"]?.GetValue<string>() != Profile.Anchor ||
-                node["addressing"]?["digest"]?.GetValue<string>() != Profile.Digest || node["current"]?.GetValue<string>()?.StartsWith("sha256-", StringComparison.Ordinal) == true)
+                node["addressing"]?["digest"]?.GetValue<string>() != Profile.Digest)
                 throw new PackageFormatException("UnsupportedVersionOrProfile", "Unsupported package version, object format or addressing profile.");
             if (node["review"] is { } declaration && declaration["detail"]?.GetValue<string>() is { } detail && detail != ".mdpkg/review/comments.json")
                 throw new PackageFormatException("UnsupportedVersionOrProfile", "Unsupported review detail path: " + detail);
-            archive.Manifest = node.Deserialize<Manifest>(CanonicalJson.Options) ?? throw new JsonException("Expected manifest.");
+            archive.Manifest = FormatValidation.ReadManifest(node);
             FormatValidation.ValidateManifest(archive.Manifest, null);
             var m = archive.Manifest;
             archive.Identity = new(m.Namespace, m.Current);
             archive.Addressing = new(m.Addressing.Anchor, m.Addressing.Digest, m.Addressing.Coverage, m.Addressing.Overrides);
             if (m.Review is not null) archive.Review = JsonSerializer.SerializeToElement(m.Review).Clone();
-            var historyBytes = archive.ReadEntry(m.History.Detail, limits.MaxManifestBytes, cancellationToken);
-            archive.History = archive.ReadCanonicalJson(historyBytes, false, cancellationToken).Deserialize<HistoryDetail>(CanonicalJson.Options) ?? throw new JsonException("Expected history.");
-            FormatValidation.ValidateHistory(m, archive.History);
-            if (Profile.Utf8.GetString(archive.ReadEntry(".git/refs/heads/main", 64, cancellationToken)) != m.Current[5..] + "\n")
-                throw new PackageFormatException("MDPK2001", "Manifest current differs from the branch reference.");
-            if ((m.Addressing.Overrides is null) == archive.Contains(Profile.Ledger))
-                throw new PackageFormatException("MDPK2002", "Manifest and ledger presence disagree.");
-            var controls = new HashSet<string>(archive.History.Ranges, StringComparer.Ordinal) { Profile.Manifest, Profile.History };
-            if (archive.History.Bindings is { } binding) controls.Add(binding);
-            foreach (var patch in archive.History.Patches) controls.Add(patch.Entry);
-            foreach (var entry in archive.Entries)
-                if (!entry.Name.StartsWith(".git/", StringComparison.Ordinal) && SourceRules.Reserved(entry.Name) && !controls.Contains(entry.Name))
-                    throw new PackageFormatException("MDPK1002", "Unrecognized reserved entry.", entry.Name);
+            if (m.History is GitHistory git)
+            {
+                var historyBytes = archive.ReadEntry(git.Detail, limits.MaxManifestBytes, cancellationToken);
+                archive.History = FormatValidation.ReadHistory(archive.ReadCanonicalJson(historyBytes, false, cancellationToken));
+                FormatValidation.ValidateHistory(m, archive.History);
+                if (Profile.Utf8.GetString(archive.ReadEntry(".git/refs/heads/main", 64, cancellationToken)) != m.Current.Id[5..] + "\n")
+                    throw new PackageFormatException("MDPK2001", "Manifest current differs from the branch reference.");
+            }
+            FormatValidation.ValidateInventory(m, archive.History, archive.Entries.Select(e => (e.Name, e.DecodedBytes)));
             return archive;
         }
         catch (EngineException ex) { archive?.Dispose(); source?.Dispose(); throw new PackageFormatException(ex.Code, ex.Message, ex.Entry); }
@@ -127,6 +129,51 @@ public sealed class PackageArchive : IDisposable
     /// <param name="name">Case-sensitive archive entry name.</param>
     /// <returns>True when the entry exists.</returns>
     public bool Contains(string name) => entries.ContainsKey(name);
+    /// <summary>Reads every current file and verifies the snapshot digest. Selective opening alone does not do this.</summary>
+    /// <param name="cancellationToken">Cancellation for payload reads and hashing.</param>
+    /// <returns>The verified snapshot identity.</returns>
+    public PackageIdentity VerifySnapshot(CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(disposed, this);
+        if (Manifest.History is not SnapshotHistory) throw new InvalidOperationException("Snapshot verification requires history mode none.");
+        Assurance = IdentityAssurance.Declared;
+        try
+        {
+            var controls = FormatValidation.ValidateInventory(Manifest, null, Entries.Select(e => (e.Name, e.DecodedBytes)));
+            Ledger? ledger = null;
+            var inventory = new Dictionary<string, Entity>(StringComparer.Ordinal);
+            byte[] ReadCurrent(string name)
+            {
+                var bytes = ReadEntry(name, name == Profile.Ledger ? Limits.MaxManifestBytes : null, cancellationToken);
+                if (name == Profile.Ledger)
+                {
+                    ReadCanonicalJson(bytes, false, cancellationToken);
+                    ledger = LedgerReader.Read(bytes, Outcome.Nonconforming, Limits.MaxJsonDepth);
+                    if (ledger.Entries.Count == 0 || ledger.Entries.Values.Any(r => r.Unknown is not null))
+                        throw new PackageFormatException("MDPK2002", "Snapshot ledger must be nonempty and authoritative.", name);
+                }
+                if (name == ".mdpkg/review/comments.json") ReadCanonicalJson(bytes, false, cancellationToken);
+                if (name.EndsWith(".md", StringComparison.OrdinalIgnoreCase) || name.EndsWith(".markdown", StringComparison.OrdinalIgnoreCase))
+                    foreach (var entity in Inventory.Document(bytes, name, Manifest.Namespace, cancellationToken)) inventory.Add(entity.Root, entity);
+                return bytes;
+            }
+            var id = SnapshotHash.Compute(Manifest, Entries.Where(e => !e.Name.EndsWith('/') && !controls.Contains(e.Name)).Select(e => e.Name),
+                ReadCurrent, cancellationToken);
+            if (ledger is not null)
+            {
+                LedgerReader.ValidateTargets(ledger, inventory, Manifest.Namespace, Outcome.Nonconforming);
+                var targets = ledger.Entries.Values.Where(r => r.To is not null).Select(r => Inventory.Root(Manifest.Namespace, r.To!)).ToHashSet(StringComparer.Ordinal);
+                if (inventory.Keys.Any(root => ledger.Entries.ContainsKey(root) && !targets.Contains(root)))
+                    throw new PackageFormatException("MDPK2002", "Reserved-slot birth lacks a fresh binding.");
+            }
+            if (id != Identity.Current.Id) throw new PackageFormatException("MDPK2001", "Snapshot state digest differs from current files.");
+            Assurance = IdentityAssurance.SnapshotVerified;
+            return Identity;
+        }
+        catch (EngineException ex) { throw new PackageFormatException(ex.Code, ex.Message, ex.Entry); }
+        catch (DecoderFallbackException ex) { throw new PackageFormatException("MDPK4003", ex.Message); }
+        catch (JsonException ex) { throw new PackageFormatException("MDPK2007", ex.Message); }
+    }
     /// <summary>Decodes and checks one entry within per-read and aggregate budgets.</summary>
     /// <param name="name">Case-sensitive archive entry name.</param>
     /// <param name="maximumBytes">Decoded byte cap for this read; null uses the document limit.</param>

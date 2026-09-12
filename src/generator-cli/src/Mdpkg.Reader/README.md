@@ -32,6 +32,14 @@ Markdown view and ledger, computes file corroboration, and caches scopes on dema
 Snapshot data remains usable after the input is disposed. No historical Git tree is
 materialized; partial correspondence to a different reviewed commit returns history-required.
 
+`PackageIdentity.Current` is a `CurrentState` with `Kind` (`snapshot` or `commit`) and
+`Id`. The revised schema requires an explicit history mode. Selective opening reports
+`IdentityAssurance.Declared`; it does not trust the declared snapshot digest as proof.
+For history-free packages, call `PackageArchive.VerifySnapshot(cancellationToken)` to
+read every current file, including non-Markdown files, the ledger and review document,
+and verify the exact state hash. Success sets `Assurance` to `SnapshotVerified`.
+This explicit operation consumes the archive's remaining read budgets and needs no Git.
+
 For loose author links, `snapshot.ResolveReference(uri, cancellationToken)` parses
 strict v2 `mdpkg://` URIs and returns `LooseReferenceResolution`. Its `Category`
 distinguishes `navigation`, `identity` and `capability`; `Status`/`Reason` retain
@@ -41,7 +49,7 @@ With `expect`, partial coverage always returns `unconfirmed /
 incomplete-correspondence`, even when `at` equals current. A historical `at`,
 commit, diff or hunk URI returns `unsupported / history-reader-required` and
 never falls forward. Retirement successor roots are not locators. The existing
-review-oriented `Resolve(PackageIdentity, ...)` contract is unchanged.
+review-oriented `Resolve(PackageIdentity, ...)` accepts the typed current identity.
 
 Shared executable cases are in `docs/spec/link-fixtures.json`. This API works
 on the already bounded snapshot; it does not change snapshot loading to a

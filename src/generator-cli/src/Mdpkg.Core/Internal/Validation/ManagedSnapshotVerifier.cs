@@ -30,13 +30,13 @@ internal static class ManagedSnapshotVerifier
     internal static void Verify(Manifest manifest, HistoryDetail history, ZipMember[] gitEntries,
         List<EntryData> view, ResourceOptions resources, CancellationToken ct)
     {
-        Require(manifest.Review is null && manifest.History.Coverage == "complete" && manifest.History.Transform.Length == 0 &&
-            history.Root == "original" && history.RetainedCommits == 1 && history.SourceBase == manifest.Current && history.SourceTip == manifest.Current &&
+        Require(manifest.Review is null && ((Mdpkg.Reader.GitHistory)manifest.History).Coverage == "complete" && ((Mdpkg.Reader.GitHistory)manifest.History).Transform.Count == 0 &&
+            history.Root == "original" && history.RetainedCommits == 1 && history.SourceBase == manifest.Current.Id && history.SourceTip == manifest.Current.Id &&
             history.Transformations.Length == 0 && history.ShallowBoundaries.Length == 0 && history.Ranges.Length == 0 && history.Patches.Length == 0 &&
             history.Bindings is null && history.Scope is null && history.SourceRepository is null && !gitEntries.Any(e => e.Name == ".git/shallow"),
             "Unsupported managed snapshot history shape.", "MDPK2003");
-        Require(history.AddressingCoverage.Length == 1 && history.AddressingCoverage[0].From == manifest.Current &&
-            history.AddressingCoverage[0].To == manifest.Current && history.AddressingCoverage[0].Coverage == manifest.Addressing.Coverage,
+        Require(history.AddressingCoverage.Length == 1 && history.AddressingCoverage[0].From == manifest.Current.Id &&
+            history.AddressingCoverage[0].To == manifest.Current.Id && history.AddressingCoverage[0].Coverage == manifest.Addressing.Coverage,
             "Snapshot coverage disagrees with its sole commit.", "MDPK2007");
         var packEntry = gitEntries.Single(e => e.Name.EndsWith(".pack", StringComparison.Ordinal));
         var stem = packEntry.Name[..^5];
@@ -49,7 +49,7 @@ internal static class ManagedSnapshotVerifier
         var maximumObjects = 2L + view.Count + view.Sum(e => (long)e.Name.Count(c => c == '/'));
         var maximumBlobBytes = view.Count == 0 ? 0 : view.Max(e => e.Bytes.LongLength);
         var objects = Decode(pack, index, reverse, resources, maximumObjects, maximumBlobBytes, ct);
-        Require(objects.TryGetValue(manifest.Current[5..], out var commit) && commit.Kind == 1 && objects.Values.Count(o => o.Kind == 1) == 1,
+        Require(objects.TryGetValue(manifest.Current.Id[5..], out var commit) && commit.Kind == 1 && objects.Values.Count(o => o.Kind == 1) == 1,
             "Snapshot must contain exactly one current commit.");
         var text = Profile.Utf8.GetString(commit!.Bytes);
         var split = text.IndexOf("\n\n", StringComparison.Ordinal);

@@ -3,7 +3,7 @@ using Mdpkg.Core.Internal.IO;
 
 namespace Mdpkg.Core;
 
-/// <summary>Creates and verifies packages before publication. Release builds use isolated native Git; managed snapshot candidates have an independent in-process verifier.</summary>
+/// <summary>Creates and verifies packages before publication. History-free snapshots need no Git; committed output retains the native/managed Git backend policy.</summary>
 public sealed class PackageBuilder
 {
     private readonly Internal.EngineSettings settings;
@@ -14,7 +14,9 @@ public sealed class PackageBuilder
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request); ArgumentException.ThrowIfNullOrWhiteSpace(request.SourceDirectory);
-        ArgumentException.ThrowIfNullOrWhiteSpace(destinationPath); ApiSupport.Creation(request.Options, request.Metadata);
+        ArgumentException.ThrowIfNullOrWhiteSpace(destinationPath); ApiSupport.Creation(request.Options, request.Metadata, request.History);
+        if (request.History == HistoryMode.None && (request.Mode == CreationMode.GitImport || request.Scope is not null || request.Depth is not null))
+            throw new ArgumentException("Import, scope and depth require Git history.", nameof(request));
         if (!Enum.IsDefined(request.Mode) || request.Depth is < 1) throw new ArgumentException("Invalid mode or depth.", nameof(request));
         return new(await new Internal.PackageBuilder(settings).PackAsync(ToInternal(request, destinationPath), cancellationToken));
     }
@@ -24,7 +26,7 @@ public sealed class PackageBuilder
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request); ArgumentNullException.ThrowIfNull(destination);
-        ApiSupport.Creation(request.Options, request.Metadata);
+        ApiSupport.Creation(request.Options, request.Metadata, request.History);
         if (!destination.CanWrite || (destination.CanSeek && (destination.Length != 0 || destination.Position != 0)))
             throw new ArgumentException("Output must be writable and initially empty at position zero.", nameof(destination));
         cancellationToken.ThrowIfCancellationRequested();
@@ -33,7 +35,7 @@ public sealed class PackageBuilder
             using var temp = new TemporaryDirectory(settings.TemporaryDirectory);
             var path = Path.Combine(temp.Path, "snapshot.mdpkg");
             var directoryRequest = new DirectoryPackageRequest(Path.Combine(temp.Path, "input"), request.Namespace)
-            { Metadata = request.Metadata, Options = request.Options, Correspondence = request.Correspondence };
+            { History = request.History, Metadata = request.Metadata, Options = request.Options, Correspondence = request.Correspondence };
             var result = await new Internal.PackageBuilder(settings).PackAsync(ToInternal(directoryRequest, path) with { InputEntries = request.Entries }, cancellationToken);
             if (result.Outcome != Outcome.Success) return new(result);
             await using var input = File.OpenRead(path);
@@ -46,9 +48,9 @@ public sealed class PackageBuilder
     }
     private static PackRequest ToInternal(DirectoryPackageRequest r, string destination) => new(
         r.SourceDirectory, destination, r.Namespace.ToString("D"), r.Mode == CreationMode.GitImport, r.Scope, r.Depth,
-        r.Metadata.Message, RequireComplete: r.Options.RequireComplete, FailOnWarning: r.Options.Warnings == WarningPolicy.Fail,
+        r.Metadata?.Message, RequireComplete: r.Options.RequireComplete, FailOnWarning: r.Options.Warnings == WarningPolicy.Fail,
         CompressionLevel: r.Options.CompressionLevel, DataDescriptors: r.Options.DataDescriptors, ReverseIndex: r.Options.ReverseIndex,
         ObjectFormat: r.Options.ObjectFormat, Anchor: r.Options.Anchor, Digest: r.Options.Digest,
         CorrespondenceBytes: r.Correspondence is null ? null : CorrespondenceCodec.Encode(r.Correspondence),
-        Metadata: r.Metadata, Resources: r.Options.Resources);
+        Metadata: r.Metadata, Resources: r.Options.Resources, History: r.History);
 }
