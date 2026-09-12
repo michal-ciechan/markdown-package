@@ -21,7 +21,9 @@ public class ManagedSnapshotBenchmarks
         if (string.IsNullOrEmpty(output)) return;
         var measurements = new List<Measurement>();
         var ct = TestContext.Current.CancellationToken;
-        foreach (var shape in new[] { "tiny", "many-small", "large", "similar" })
+        var shapes = Environment.GetEnvironmentVariable("MDPKG_SNAPSHOT_BENCHMARK_SHAPES")?.Split(',') ?? ["tiny", "many-small", "large", "similar"];
+        Assert.All(shapes, shape => Assert.Contains(shape, new[] { "tiny", "many-small", "large", "similar" }));
+        foreach (var shape in shapes)
         {
             using var f = new EngineFixture();
             var count = shape == "tiny" ? 1 : shape == "large" ? 2 : 20;

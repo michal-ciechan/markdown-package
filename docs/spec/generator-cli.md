@@ -19,6 +19,8 @@ Install `dotnet tool install -g mdpkg`; also invokable as `dotnet mdpkg`. Curren
 
 The managed snapshot candidate remains internally gated pending the [CARD-0050 acceptance decision](../investigations/2026-09-12-card-0050-managed-snapshot-results.md). In candidate builds, ordinary snapshots without `--scope` or `--depth` use managed object/pack/index creation and independent in-process repository verification, including `--reverse-index`, descriptors, compression, messages and correspondence. `--from-git`, snapshot scope/depth and standalone `validate --deep` retain native Git. No new CLI flag selects a backend and eligible managed failures never fall back to Git. Release behavior remains native until the gate is resolved.
 
+The user chose to improve compression before reconsidering activation. The candidate now supports depth-one cross-file blob deltas with independent reconstruction and integrity checks; the [follow-up measurements](../investigations/2026-09-12-card-0050-managed-delta-results.md) replace the initial full-object size comparison. Native Git remains the default.
+
 Snapshots read current disk contents, including untracked and ignored UTF-8 files, without staging or committing. Only the exact root `.git` directory/gitfile is skipped; it is never read. Text is normalized to LF and path/content rules apply. The generated single-commit repository is included in the package. Files are captured sequentially once for both the current view and Git blobs; this is not an atomic filesystem snapshot of concurrent edits.
 
 | Verb | Writes a package | Reads `.git/` pack | Mutates input | Spec path |

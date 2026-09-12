@@ -12,11 +12,12 @@ using Mdpkg.Reader.Internal.Sources;
 
 namespace Mdpkg.Core.Internal.Validation;
 
-/// <summary>Restricted full-object snapshot decoder; never uses the writer's tables or serializer.
+/// <summary>Restricted snapshot decoder for full objects and depth-one blob OFS_DELTA;
+/// never uses the writer's tables or serializer.
 /// Container, ledger and inventory checks remain in PackageValidator. Binary failures are MDPK4002.</summary>
 internal static class ManagedSnapshotVerifier
 {
-    private sealed record ObjectData(string Id, int Kind, byte[] Bytes, int Offset, uint Crc);
+    private sealed record ObjectData(string Id, int Kind, byte[] Bytes, int Offset, uint Crc, bool Delta);
     private static EngineException Bad(string message, string code = "MDPK4002") => new(Outcome.Nonconforming, code, message);
     private static void Require(bool condition, string message, string code = "MDPK4002")
     { if (!condition) throw Bad(message, code); }
@@ -46,7 +47,8 @@ internal static class ManagedSnapshotVerifier
         // tree per directory occurrence. Reject excessive object tables before
         // allocating them, even if their declared decoded payloads are tiny.
         var maximumObjects = 2L + view.Count + view.Sum(e => (long)e.Name.Count(c => c == '/'));
-        var objects = Decode(pack, index, reverse, resources, maximumObjects, ct);
+        var maximumBlobBytes = view.Count == 0 ? 0 : view.Max(e => e.Bytes.LongLength);
+        var objects = Decode(pack, index, reverse, resources, maximumObjects, maximumBlobBytes, ct);
         Require(objects.TryGetValue(manifest.Current[5..], out var commit) && commit.Kind == 1 && objects.Values.Count(o => o.Kind == 1) == 1,
             "Snapshot must contain exactly one current commit.");
         var text = Profile.Utf8.GetString(commit!.Bytes);
@@ -121,7 +123,7 @@ internal static class ManagedSnapshotVerifier
         // reserved births and coverage checks apply to every retained blob as well.
     }
 
-    private static Dictionary<string, ObjectData> Decode(byte[] pack, byte[] index, byte[]? reverse, ResourceOptions resources, long maximumObjects, CancellationToken ct)
+    private static Dictionary<string, ObjectData> Decode(byte[] pack, byte[] index, byte[]? reverse, ResourceOptions resources, long maximumObjects, long maximumBlobBytes, CancellationToken ct)
     {
         Require(pack.Length >= 32 && pack.AsSpan(0, 4).SequenceEqual("PACK"u8) && U32(pack, 4) == 2, "Unsupported pack header.");
         Checksum(pack); Checksum(index);
@@ -131,6 +133,7 @@ internal static class ManagedSnapshotVerifier
         Require(index.LongLength == 1072L + 28L * count && index.AsSpan(0, 4).SequenceEqual(new byte[] { 255, 116, 79, 99 }) &&
             U32(index, 4) == 2 && index.AsSpan(index.Length - 40, 20).SequenceEqual(pack.AsSpan(pack.Length - 20)), "Invalid index layout or pack binding.");
         var objects = new Dictionary<string, ObjectData>(StringComparer.Ordinal);
+        var offsets = new Dictionary<int, ObjectData>();
         var byOffset = new List<ObjectData>(); var position = 12; long decodedBytes = 0;
         var buffer = new byte[65536];
         for (var i = 0; i < count; i++)
@@ -138,14 +141,31 @@ internal static class ManagedSnapshotVerifier
             ct.ThrowIfCancellationRequested();
             Require(position < pack.Length - 20, "Truncated pack object.");
             var offset = position; var b = pack[position++]; var kind = (b >> 4) & 7; long length = b & 15; var shift = 4;
-            Require(kind is 1 or 2 or 3, "Unsupported object kind or delta.");
+            Require(kind is 1 or 2 or 3 or 6, "Unsupported object kind or delta representation.");
             while ((b & 128) != 0)
             {
                 Require(position < pack.Length - 20 && shift <= 25, "Invalid object size header.");
                 b = pack[position++]; length |= (long)(b & 127) << shift; shift += 7;
                 Require((b & 128) != 0 || b != 0, "Noncanonical object size header.");
             }
-            if (length > Array.MaxLength || length > resources.ReadLimits.MaxDecodedBytes - decodedBytes)
+            ObjectData? basis = null;
+            if (kind == 6)
+            {
+                Require(position < pack.Length - 20, "Missing delta base distance.");
+                var part = pack[position++]; long distance = part & 127; var distanceBytes = 1;
+                while ((part & 128) != 0)
+                {
+                    Require(position < pack.Length - 20 && distanceBytes++ < 5, "Truncated or overflowing delta base distance.");
+                    part = pack[position++]; distance = ((distance + 1) << 7) | (uint)(part & 127);
+                }
+                Require(distance > 0 && distance <= offset && offsets.TryGetValue((int)(offset - distance), out basis) &&
+                    basis.Kind == 3 && !basis.Delta, "Delta must reference an earlier full blob at its exact object boundary.");
+            }
+            // A copy instruction uses at most eight bytes and produces at least
+            // one byte; the two size headers use at most ten bytes. Bound delta
+            // work by the independently read current view before inflating it.
+            if (length > Array.MaxLength || length > resources.ReadLimits.MaxDecodedBytes - decodedBytes ||
+                (kind == 6 && length > 8 * maximumBlobBytes + 10))
                 throw new ResourceLimitException("Decoded Git objects exceed their byte limit.");
             decodedBytes += length;
             var inflater = new Inflater(noHeader: false);
@@ -166,13 +186,19 @@ internal static class ManagedSnapshotVerifier
             Require(payload.Length == length, "Object decoded length mismatch.");
             position = pack.Length - 20 - inflater.RemainingInput;
             var bytes = payload.ToArray();
+            if (basis is not null)
+            {
+                bytes = SnapshotDeltaDecoder.Apply(bytes, basis.Bytes, Math.Min(maximumBlobBytes, resources.ReadLimits.MaxDecodedBytes - decodedBytes), ct);
+                decodedBytes += bytes.LongLength;
+                kind = 3;
+            }
             var type = kind == 1 ? "commit" : kind == 2 ? "tree" : "blob";
             using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA1);
-            hash.AppendData(System.Text.Encoding.ASCII.GetBytes(type + " " + length.ToString(CultureInfo.InvariantCulture) + "\0")); hash.AppendData(bytes);
+            hash.AppendData(System.Text.Encoding.ASCII.GetBytes(type + " " + bytes.Length.ToString(CultureInfo.InvariantCulture) + "\0")); hash.AppendData(bytes);
             var id = Convert.ToHexStringLower(hash.GetHashAndReset());
             var crc = new Crc32(); crc.Update(new ArraySegment<byte>(pack, offset, position - offset));
-            var obj = new ObjectData(id, kind, bytes, offset, (uint)crc.Value);
-            Require(objects.TryAdd(id, obj), "Duplicate object identity."); byOffset.Add(obj);
+            var obj = new ObjectData(id, kind, bytes, offset, (uint)crc.Value, basis is not null);
+            Require(objects.TryAdd(id, obj), "Duplicate object identity."); byOffset.Add(obj); offsets.Add(offset, obj);
         }
         Require(position == pack.Length - 20, "Trailing pack data or incorrect object count.");
         var sorted = objects.Values.OrderBy(o => o.Id, StringComparer.Ordinal).ToArray(); var cumulative = 0;

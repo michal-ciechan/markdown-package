@@ -9,7 +9,8 @@ using Mdpkg.Reader.Internal.Sources;
 
 namespace Mdpkg.Core.Internal.Git;
 
-/// <summary>Full-object PACK v2 writer. Object order is ascending SHA-1; zlib uses Optimal.
+/// <summary>PACK v2 writer with optional depth-one blob OFS_DELTA entries.
+/// Object order is ascending SHA-1; zlib uses Optimal.
 /// All payloads use the existing byte-array entry contract (below 2 GiB), so index
 /// large offsets cannot occur. No filesystem or process operations occur here.</summary>
 internal sealed class ManagedSnapshot(ResourceOptions resources)
@@ -86,25 +87,39 @@ internal sealed class ManagedSnapshot(ResourceOptions resources)
         using var pack = new BoundedBuffer(limit);
         pack.Write("PACK"u8); U32(pack, 2); U32(pack, checked((uint)sorted.Length));
         var offsets = new uint[sorted.Length]; var crcs = new uint[sorted.Length];
+        var bases = new List<(ObjectData Object, uint Offset, SnapshotDelta? Index)>();
         for (var i = 0; i < sorted.Length; i++)
         {
             ct.ThrowIfCancellationRequested();
             offsets[i] = checked((uint)pack.Position);
-            var obj = sorted[i]; var size = obj.Bytes.Length;
-            var first = (obj.Kind << 4) | (size & 15); size >>= 4;
-            pack.WriteByte((byte)(first | (size > 0 ? 128 : 0)));
-            while (size > 0) { var next = size & 127; size >>= 7; pack.WriteByte((byte)(next | (size > 0 ? 128 : 0))); }
-            // .NET emits no zlib bytes when no input is supplied, even for an empty
-            // Write. Encode the canonical empty stream (including Adler-32 = 1).
-            if (obj.Bytes.Length == 0) pack.Write([0x78, 0x9c, 0x03, 0x00, 0x00, 0x00, 0x00, 0x01]);
-            else using (var zlib = new ZLibStream(pack, CompressionLevel.Optimal, leaveOpen: true))
+            var obj = sorted[i]; var representation = Compress(obj.Bytes, limit, ct);
+            var kind = obj.Kind; var size = obj.Bytes.Length; byte[] distance = [];
+            if (obj.Kind == 3 && obj.Bytes.Length >= 64)
             {
-                for (var start = 0; start < obj.Bytes.Length; start += Math.Min(65536, obj.Bytes.Length - start))
+                for (var candidate = bases.Count - 1; candidate >= 0; candidate--)
                 {
                     ct.ThrowIfCancellationRequested();
-                    zlib.Write(obj.Bytes.AsSpan(start, Math.Min(65536, obj.Bytes.Length - start)));
+                    var basis = bases[candidate];
+                    if (basis.Object.Bytes.LongLength > obj.Bytes.LongLength * 2 || obj.Bytes.LongLength > basis.Object.Bytes.LongLength * 2) continue;
+                    var matcher = basis.Index ?? new SnapshotDelta(basis.Object.Bytes, ct);
+                    bases[candidate] = (basis.Object, basis.Offset, matcher);
+                    var delta = matcher.Encode(obj.Bytes, limit, ct);
+                    if (delta is null) continue;
+                    var compressed = Compress(delta, limit, ct);
+                    var encodedDistance = Distance(offsets[i] - basis.Offset);
+                    if (HeaderSize(delta.Length) + encodedDistance.Length + compressed.Length >= HeaderSize(size) + distance.Length + representation.Length) continue;
+                    representation = compressed; kind = 6; size = delta.Length; distance = encodedDistance;
+                }
+                if (kind == 3)
+                {
+                    bases.Add((obj, offsets[i], null));
+                    if (bases.Count > 10) bases.RemoveAt(0);
                 }
             }
+            var first = (kind << 4) | (size & 15); size >>= 4;
+            pack.WriteByte((byte)(first | (size > 0 ? 128 : 0)));
+            while (size > 0) { var next = size & 127; size >>= 7; pack.WriteByte((byte)(next | (size > 0 ? 128 : 0))); }
+            pack.Write(distance); pack.Write(representation);
             var crc = new Crc32();
             crc.Update(new ArraySegment<byte>(pack.GetBuffer(), (int)offsets[i], (int)(pack.Position - offsets[i])));
             crcs[i] = (uint)crc.Value;
@@ -143,6 +158,28 @@ internal sealed class ManagedSnapshot(ResourceOptions resources)
 
     private static void U32(Stream stream, uint value)
     { Span<byte> bytes = stackalloc byte[4]; BinaryPrimitives.WriteUInt32BigEndian(bytes, value); stream.Write(bytes); }
+    private static int HeaderSize(int size)
+    { var count = 1; for (size >>= 4; size > 0; size >>= 7) count++; return count; }
+    private static byte[] Distance(uint value)
+    {
+        Span<byte> bytes = stackalloc byte[5]; var position = bytes.Length;
+        bytes[--position] = (byte)(value & 127);
+        while ((value >>= 7) != 0) bytes[--position] = (byte)(128 | (--value & 127));
+        return bytes[position..].ToArray();
+    }
+    private static byte[] Compress(byte[] bytes, long limit, CancellationToken ct)
+    {
+        // ZLibStream emits no stream for an empty input.
+        if (bytes.Length == 0) return [0x78, 0x9c, 0x03, 0x00, 0x00, 0x00, 0x00, 0x01];
+        using var compressed = new BoundedBuffer(limit);
+        using (var zlib = new ZLibStream(compressed, CompressionLevel.Optimal, leaveOpen: true))
+            for (var start = 0; start < bytes.Length; start += Math.Min(65536, bytes.Length - start))
+            {
+                ct.ThrowIfCancellationRequested();
+                zlib.Write(bytes.AsSpan(start, Math.Min(65536, bytes.Length - start)));
+            }
+        return compressed.ToArray();
+    }
     private static byte[] Finish(MemoryStream stream)
     {
         var checksum = SHA1.HashData(stream.GetBuffer().AsSpan(0, checked((int)stream.Length)));

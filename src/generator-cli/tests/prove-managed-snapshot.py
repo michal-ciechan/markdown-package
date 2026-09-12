@@ -53,6 +53,10 @@ def main():
         assert sentinel.read_text() == 'called\n'; sentinel.unlink(); assertions += 1
         source = work / 'source'; source.mkdir()
         (source / 'doc.txt').write_bytes(b'current\r\ntext\r')
+        # Related, distinct blobs exercise the candidate's cross-file delta path.
+        common = ''.join(f'Line {i}: {i * 7919:016x} common text.\n' for i in range(2048))
+        for i in range(3):
+            (source / f'similar{i}.txt').write_text(common + f'Variant {i}\n', encoding='utf-8', newline='\n')
         (source / '.git').write_text('gitdir: deliberately-nonexistent')
         output = work / 'output.mdpkg'
         first = None

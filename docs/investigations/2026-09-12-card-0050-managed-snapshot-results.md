@@ -3,6 +3,11 @@
 Date: 2026-09-12. Implements the writer/verifier candidate from the
 [approved plan](2026-09-12-card-0050-git-independent-snapshot-plan.md).
 
+**Historical full-object baseline:** the user subsequently chose to improve
+compression first. See the [delta follow-up](2026-09-12-card-0050-managed-delta-results.md)
+for the current implementation and measurements. Native Git remains the default;
+the initial request to decide whether to accept size inflation is resolved.
+
 **The managed candidate works, but the default switch is blocked by the measured
 compression tradeoff and incomplete performance acceptance. Production builds
 continue using native Git.** Similar-file packages increased from 319,042 to

@@ -27,8 +27,10 @@ process or temporary Git repository. It captures the same current files and uses
 the same normalization, ledger preparation and publication flow. Stream creation
 still spools a private package before copying to the caller-owned stream. Import,
 scope, depth and standalone deep validation keep using native Git. See the
-[acceptance report](https://github.com/michal-ciechan/markdown-package/blob/master/docs/investigations/2026-09-12-card-0050-managed-snapshot-results.md)
-for the measured size tradeoff preventing default activation.
+[delta report](https://github.com/michal-ciechan/markdown-package/blob/master/docs/investigations/2026-09-12-card-0050-managed-delta-results.md)
+for cross-file compression measurements. The managed writer uses full blobs or
+smaller depth-one blob deltas; its independent verifier reconstructs and hashes
+each delta. Native Git remains the default pending separate acceptance and review.
 
 Directory creation (arguments: source directory, destination outside that directory):
 
