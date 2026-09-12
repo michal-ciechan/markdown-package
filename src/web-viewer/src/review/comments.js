@@ -19,17 +19,17 @@ export async function newThread(pkg, model, anchor, comment) {
     state: 'open', select: anchor.select, comments: [comment]};
 }
 
-export function validateComments(value) {
+export function validateComments(value, {reading = false} = {}) {
   const fail = message => { throw new Error('Invalid review: ' + message); };
-  if (value?.version !== 2 || value.anchor !== ANCHOR || value.profile !== DIGEST || value.selector !== SELECTOR ||
+  if (!(value?.version === 2 || reading && value?.version === 1) || value.anchor !== ANCHOR || value.profile !== DIGEST || value.selector !== SELECTOR ||
       !Array.isArray(value.threads)) fail('unsupported comments document');
   if (value.threads.length > 5000) fail('too many threads (maximum 5,000)');
   const ids = new Set();
-  const unique = id => { if (!UUID.test(id) || ids.has(id)) fail('invalid or duplicate ID'); ids.add(id); };
+  const unique = id => { if (typeof id !== 'string' || !UUID.test(id) || ids.has(id)) fail('invalid or duplicate ID'); ids.add(id); };
   let count = 0;
   for (const thread of value.threads) {
     unique(thread.id);
-    if (!HASH.test(thread.root) || !HASH.test(thread.expect) || !['open', 'resolved', 'obsolete'].includes(thread.state)) fail('thread anchor or state');
+    if (typeof thread.root !== 'string' || typeof thread.expect !== 'string' || !HASH.test(thread.root) || !HASH.test(thread.expect) || !['open', 'resolved', 'obsolete'].includes(thread.state)) fail('thread anchor or state');
     validateLocator(decodeLocator(thread.loc));
     const s = thread.select;
     if (!s || !Number.isSafeInteger(s.start) || !Number.isSafeInteger(s.end) || s.start < 0 || s.end <= s.start ||
@@ -40,11 +40,13 @@ export function validateComments(value) {
     for (const comment of thread.comments) {
       unique(comment.id);
       if (++count > 20000) fail('too many comments (maximum 20,000)');
-      if (!['comment', 'change-request'].includes(comment.kind) || !text(comment.author) || !text(comment.body) || !comment.body.length ||
+      if ((value.version === 2 ? !['comment', 'change-request'].includes(comment.kind) : comment.kind !== undefined) || !text(comment.author) || !text(comment.body) || !comment.body.length ||
           utf8.encode(comment.body).length > 65536) fail('comment kind, author or body (maximum 64 KiB)');
-      // Authoring emits this strict RFC 3339 subset, retaining millisecond precision.
-      if (typeof comment.at !== 'string' || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(comment.at) ||
-          comment.at.startsWith('0000') || !Number.isFinite(Date.parse(comment.at)) || new Date(comment.at).toISOString() !== comment.at) fail('timestamp');
+      // Read RFC 3339, including the S1 seconds-only fixtures. Authoring still
+      // emits ISO timestamps with milliseconds; reject normalized invalid dates.
+      const date = typeof comment.at === 'string' && /^(\d{4})-(\d\d)-(\d\d)T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(?:\.\d+)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/.exec(comment.at);
+      if (!date || +date[1] === 0 || +date[2] < 1 || +date[2] > 12 || +date[3] < 1 ||
+          +date[3] > new Date(Date.UTC(+date[1], +date[2], 0)).getUTCDate() || !Number.isFinite(Date.parse(comment.at))) fail('timestamp');
       const visited = new Set([comment.id]);
       for (let next = comment.inReplyTo; next !== undefined; next = siblings.get(next).inReplyTo) {
         if (!siblings.has(next) || visited.has(next)) fail('dangling, cross-thread or cyclic reply');
@@ -68,4 +70,4 @@ export async function validateAnchors(value, pkg) {
   }
 }
 
-export const readComments = bytes => validateComments(parseCanonicalJson(bytes));
+export const readComments = bytes => validateComments(parseCanonicalJson(bytes), {reading: true});

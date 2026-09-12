@@ -14,7 +14,7 @@ export async function openPackage(blob, options = {}) {
   // file opened, and current addressing reads zero Git bytes.
   let cachedName, cachedDocument, ledger, previewName, previewDocument;
   const pkg = {
-    ...container, documents, name: blob.name || 'Untitled package',
+    ...container, get assurance() { return container.assurance; }, documents, name: blob.name || 'Untitled package',
     document(name) {
       if (!documents.some(document => document.name === name)) throw new Error('Not a package document: ' + name);
       if (cachedName !== name) {

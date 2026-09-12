@@ -1,34 +1,45 @@
-# Actual browser return
+# Actual browser snapshot returns
 
-`browser-v2.mdpkg` was downloaded by the production viewer in Playwright Chromium
-on 2026-09-10, opening `docs/spec/review-fixtures/original.mdpkg`. It is a real
-authoring/download artifact, not a manually assembled backend fixture.
+These files were downloaded from the production S5 viewer in Playwright Chromium
+on 2026-09-12. Both are two-file, history-free delta snapshots using the revised
+`markdown-package/1` schema and version-2 comments. They replace the superseded
+string-current browser fixture; no compatibility parser is retained.
 
-- 4,645 bytes; SHA-256 `535affaee163200cda69d14977529f668d18428173b35095b7d471048b5ce94a`.
-- Original SHA-256 `66089e1aceae16eeb758ed827d0fb3f290aca9f90b26139d3f2270e5f8932984`.
-- One resolved thread, source quote `target words`, UTF-16 range `[28,40)`,
-  path `guide.md`, section trail `[["# Guide",0]]`.
-- Ordered change request `Explain these words.` and ordinary reply
-  `This reply keeps source order.`; both authored by `Browser Reviewer`.
-- Its own fresh namespace and parentless commit; eight ZIP entries with only
-  `.mdpkg/review/comments.json` tracked by Git.
+| Artifact | Reviewed original | Bytes | Archive SHA-256 |
+| --- | --- | ---: | --- |
+| `browser-v2.mdpkg` | `docs/spec/review-fixtures/original.mdpkg` (snapshot) | 1,421 | `6b4d48eaccf01dcdc7175f2016884b045109329b98c24473f5984c6b20a7177f` |
+| `browser-commit-target.mdpkg` | `docs/spec/review-fixtures/original-git.mdpkg` (commit) | 1,294 | `a66b94c55074fef51efe321110d6c9e1945722101590a0bc92ed4746fe78e32a` |
 
-The existing PackageReference consumer returned `Success: Conforming/Valid/Structural`,
-`Correlation: Exact`, and `TargetIntact` for both items with kinds/states preserved.
-Independent Python/native Git validation passed 25 checks. The CLI's deep validator
-passed 23 checks with zero diagnostics. Original bytes were preserved.
+The first has one resolved thread quoting `target words`, UTF-16 range `[28,40)`,
+path `guide.md`, section trail `[["# Guide",0]]`. It preserves an authored change
+request `Explain these words.` and ordered comment reply `This reply keeps source
+order.`, both by `Browser Reviewer`. The second has one open document thread with
+comment `Preserve my IDs` by `Reviewer`.
 
-Rerun from the repository root (restore/build the local feed first if needed,
-following `src/generator-cli/src/Mdpkg.Reviews/README.md`):
+Each has a fresh artifact namespace independent of its private editing workspace
+and a typed reviewed target. Retry/reload tests compare the prepared ZIP bytes
+exactly; changed revisions rotate the artifact namespace while preserving IDs.
+
+`BrowserFixtureTests` uses both artifacts to assert Core deep conformance, Reviews
+Full assurance and Exact/TargetIntact resolution. Snapshot original verification
+uses Reader; committed original verification uses Core's explicit Git backend.
+Independent Python ZIP/snapshot-hash validation passed 14 checks per artifact.
+
+From `src/web-viewer`, rerun:
 
 ```powershell
-python src/web-viewer/tests/validate-export.py src/web-viewer/tests/fixtures/browser-v2.mdpkg
-dotnet run --no-restore --project examples/review-consumer -- src/web-viewer/tests/fixtures/browser-v2.mdpkg docs/spec/review-fixtures/original.mdpkg
-dotnet run --no-restore --project src/generator-cli/src/Mdpkg.Cli -- validate src/web-viewer/tests/fixtures/browser-v2.mdpkg --deep --format json
+npm run test:browser
+python tests/validate-export.py tests/fixtures/browser-v2.mdpkg
+python tests/validate-export.py tests/fixtures/browser-commit-target.mdpkg
 ```
 
-`npm run test:browser` in `src/web-viewer/` produces a new
-`test-results/browser-review.mdpkg`. IDs and timestamps intentionally vary; compare
-the contract and resolved content, not whole-file equality. This proves the
-automated browser-to-backend file workflow; real-device share destinations and a
+The browser tests produce fresh actual downloads under `test-results/`. IDs and
+timestamps vary between runs; only retries of the same prepared artifact must be
+byte-identical. From `src/generator-cli`, rerun the committed-fixture acceptance:
+
+```powershell
+dotnet test -c Release --project tests/Mdpkg.Reviews.Tests/Mdpkg.Reviews.Tests.csproj --filter-class Mdpkg.Reviews.Tests.BrowserFixtureTests
+```
+
+These are automated browser-to-backend files. Native share destinations and a
 human transport round trip have not been tested.

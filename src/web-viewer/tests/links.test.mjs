@@ -76,16 +76,21 @@ test('navigation does not consult ledger or compute identity and resource errors
   assert.equal(failed.category, 'resource'); assert.equal(failed.status, undefined);
 });
 
-test('preview reads enforce metadata and decoded caps, deduplicate and read zero Git bytes', async () => {
-  const original = await openPackage(new Blob([await fs.readFile(new URL('../../../docs/spec/review-fixtures/original.mdpkg', import.meta.url))]));
+test('preview reads enforce metadata and decoded caps, deduplicate and read zero Git bytes', async t => {
+  const original = await openPackage(new Blob([await fs.readFile(new URL('../../../docs/spec/review-fixtures/original-git.mdpkg', import.meta.url))]));
   const entries = await Promise.all(original.entries.map(async e => ({name: e.name, bytes: await original.read(e.name), stored: e.method === 0})));
   entries.splice(1, 0, {name: 'target.md', bytes: utf8.encode('# Target\n\nContent.\n')},
     {name: 'other.bin', bytes: new Uint8Array([0, 1, 2])},
     {name: 'large.md', bytes: utf8.encode('x'.repeat(2 * 1024 * 1024 + 1))},
     {name: 'large-stored.md', bytes: utf8.encode('x'.repeat(2 * 1024 * 1024 + 1)), stored: true});
   const bytes = await writePackage(entries), reads = [];
-  class TrackedBlob extends Blob { slice(start, end) { reads.push([start, end]); return super.slice(start, end); } }
-  const pkg = await openPackage(new TrackedBlob([bytes]));
+  // Observe the native Blob captures rather than overriding the caller Blob's
+  // methods (which verification must not trust). Skip the metadata-only capture.
+  const slice = Blob.prototype.slice;
+  Blob.prototype.slice = function(start, end) { if (start !== undefined) reads.push([start, end]); return slice.call(this, start, end); };
+  t.after(() => { Blob.prototype.slice = slice; });
+  const pkg = await openPackage(new Blob([bytes]));
+  assert.ok(pkg.entries.some(e => e.name.startsWith('.git/')));
   await pkg.document('guide.md'); reads.length = 0;
   const first = pkg.previewDocument('target.md'); assert.equal(first, pkg.previewDocument('target.md'));
   const doc = await first; assert.equal(await pkg.previewDocument('target.md'), doc);

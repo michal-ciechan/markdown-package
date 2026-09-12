@@ -99,7 +99,7 @@ export async function openStore(base = location.href, factory = globalThis.index
       const revision = expected.review + 1;
       await s('reviews').put({version: 1, id: reviewId, packageKey, namespace: snapshot.namespace,
         revision, review: snapshot.review, sourceDigests: snapshot.sourceDigests,
-        exportRevision: snapshot.exportRevision, contentRevision: snapshot.revision});
+        exportRevision: snapshot.exportRevision, contentRevision: snapshot.revision, artifact: snapshot.artifact});
       let draftRevision = 0;
       if (oldDraftId && (!draftId || oldDraftId[1] !== draftId[1]))
         await s('drafts').put({version: 1, id: oldDraftId, packageKey, revision: expected.draft + 1, tombstone: true});

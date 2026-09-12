@@ -1,14 +1,16 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {packageKey, databaseName, validateDraft, debounce, encodeDraft, recoveryText} from '../src/persistence/model.js';
+import {packageKey, databaseName, validateDraft, validateReview, debounce, encodeDraft, recoveryText} from '../src/persistence/model.js';
 
-const manifest = {mdpkg: 'markdown-package/1', namespace: 'one', current: 'snapshot', addressing: {anchor: 'a', digest: 'd'}};
+const manifest = {mdpkg: 'markdown-package/1', namespace: 'one', current: {kind: 'snapshot', id: 'sha256-' + 'a'.repeat(64)}, addressing: {anchor: 'a', digest: 'd'}};
 test('package identity is an unambiguous tuple and ignores filenames', () => {
   assert.equal(packageKey(manifest), packageKey({...manifest, filename: 'renamed.mdpkg'}));
-  for (const field of ['mdpkg', 'namespace', 'current']) assert.notEqual(packageKey(manifest), packageKey({...manifest, [field]: 'different'}));
+  for (const field of ['mdpkg', 'namespace']) assert.notEqual(packageKey(manifest), packageKey({...manifest, [field]: 'different'}));
+  for (const field of ['kind', 'id']) assert.notEqual(packageKey(manifest), packageKey({...manifest, current: {...manifest.current, [field]: 'different'}}));
+  assert.equal(packageKey(manifest), packageKey(structuredClone(manifest)));
   assert.notEqual(packageKey(manifest), packageKey({...manifest, addressing: {...manifest.addressing, digest: 'other'}}));
-  assert.notEqual(packageKey({...manifest, namespace: 'a|b', current: 'c'}), packageKey({...manifest, namespace: 'a', current: 'b|c'}));
-  assert.equal(databaseName('https://example.com/viewer/index.html'), 'mdpkg-viewer:/viewer/');
+  assert.notEqual(packageKey({...manifest, namespace: 'a|b', current: {kind: 'snapshot', id: 'c'}}), packageKey({...manifest, namespace: 'a', current: {kind: 'snapshot', id: 'b|c'}}));
+  assert.equal(databaseName('https://example.com/viewer/index.html'), 'mdpkg-viewer:snapshot-draft2:/viewer/');
   assert.notEqual(databaseName('https://example.com/a/'), databaseName('https://example.com/b/'));
 });
 test('unfinished editors preserve incomplete names, whitespace and Unicode with bounded bodies', () => {
@@ -46,4 +48,11 @@ test('malformed cyclic recovery data cannot prevent an otherwise valid package o
   const record = {body: 'Recover exactly this text'}; record.cycle = record;
   assert.equal(recoveryText(record), record.body);
   assert.match(recoveryText({deep: record}), /retained in browser storage/);
+});
+
+test('saved workspace identities and revisions cannot rely on coercion', async () => {
+  const saved = {version: 1, namespace: '11111111-1111-1111-1111-111111111111', revision: 0};
+  for (const changed of [{namespace: [saved.namespace]}, {contentRevision: '1'}, {exportRevision: Number.NaN}])
+    await assert.rejects(validateReview({...saved, ...changed}), /Invalid saved review/);
+  assert.throws(() => validateDraft({...saved, namespace: [saved.namespace], target: [], author: '', kind: 'comment', body: ''}), /Saved editor/);
 });

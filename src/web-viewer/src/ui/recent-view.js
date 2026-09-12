@@ -30,7 +30,7 @@ export function recentView(host, actions) {
         const position = positions.find(x => x.packageKey === p.id && x.documentPath === p.documentPath);
         const trail = position?.locator?.[2];
         const section = (Array.isArray(trail) ? trail.at(-1)?.[0] : undefined) ?? position?.locator?.[0] ?? '';
-        info.textContent = `${p.documentPath ?? ''} ${section} · ${new Date(p.lastRead ?? p.lastOpened).toLocaleString()} · ${p.namespace ?? ''} · ${p.current ?? ''}`;
+        info.textContent = `${p.documentPath ?? ''} ${section} · ${new Date(p.lastRead ?? p.lastOpened).toLocaleString()} · ${p.namespace ?? ''} · ${p.current?.kind ?? ''} ${p.current?.id ?? ''}`;
         row.append(info);
         for (const position of positions.filter(x => x.packageKey === p.id).sort((a, b) => b.lastViewed - a.lastViewed).slice(0, 20))
           button(row, position.documentPath, () => actions.open(p, position.documentPath));

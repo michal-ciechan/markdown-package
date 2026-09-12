@@ -1,4 +1,4 @@
-import {ANCHOR, DIGEST, MANIFEST, UUID, OID, isObject, decode, utf8} from '../format.js';
+import {ANCHOR, DIGEST, MANIFEST, UUID, keysAre, validState, isObject, decode, utf8} from '../format.js';
 import {simpleCaseFold} from './case-fold.js';
 
 export const nameKey = name => simpleCaseFold(name.normalize('NFC'));
@@ -54,35 +54,56 @@ export function checkNames(entries) {
   }
 }
 
-export function validateManifest(manifest, byName) {
+export function validateManifest(manifest, byName, entries = [...byName.values()]) {
   const fail = message => { throw new Error('Invalid manifest: ' + message); };
-  if (!isObject(manifest) || manifest.mdpkg !== 'markdown-package/1') fail('unsupported format');
-  if (!UUID.test(manifest.namespace)) fail('namespace must be a lowercase UUID');
-  if (!/^sha1-[a-f0-9]{40}$/.test(manifest.current)) fail('version 1 requires a SHA-1 current commit');
+  if (!keysAre(manifest, ['mdpkg', 'namespace', 'current', 'addressing', 'history'], ['review']) || manifest.mdpkg !== 'markdown-package/1') fail('unsupported format or fields');
+  if (typeof manifest.namespace !== 'string' || !UUID.test(manifest.namespace)) fail('namespace must be a lowercase UUID');
+  if (!validState(manifest.current)) fail('invalid typed current state');
+  const snapshot = manifest.current.kind === 'snapshot';
   const a = manifest.addressing, h = manifest.history;
-  if (!isObject(a) || a.anchor !== ANCHOR || a.digest !== DIGEST ||
+  if (!keysAre(a, ['anchor', 'digest', 'coverage', 'overrides']) || a.anchor !== ANCHOR || a.digest !== DIGEST ||
       !['complete', 'partial'].includes(a.coverage)) fail('unsupported addressing declaration');
   if (a.overrides !== null && a.overrides !== '.mdpkg/address/overrides.json') fail('invalid override path');
   if ((a.overrides !== null) !== byName.has('.mdpkg/address/overrides.json')) fail('override entry disagrees with declaration');
-  if (!isObject(h) || !['complete', 'truncated', 'unknown'].includes(h.coverage) ||
+  if (snapshot) {
+    if (!keysAre(h, ['mode']) || h.mode !== 'none' || a.coverage !== 'complete') fail('snapshot requires history none and complete correspondence');
+  } else {
+  if (!keysAre(h, ['mode', 'coverage', 'transform', 'detail']) || h.mode !== 'git' || !['complete', 'truncated', 'unknown'].includes(h.coverage) ||
       !Array.isArray(h.transform) || h.transform.some(t => !['projected', 'squashed'].includes(t)) ||
       h.detail !== '.mdpkg/history.json') fail('invalid history declaration');
   if (!byName.has(h.detail)) fail('missing history descriptor');
+  const packs = [...byName.keys()].filter(name => /^\.git\/objects\/pack\/pack-[a-f0-9]{40}\.pack$/.test(name));
+  if (packs.length !== 1) fail('exactly one Git pack is required');
+  const stem = packs[0].slice(0, -5);
+  const allowed = ['.git/HEAD', '.git/config', '.git/refs/heads/main', '.git/shallow', stem + '.pack', stem + '.idx', stem + '.rev'];
+  if ([...allowed.slice(0, 3), stem + '.idx'].some(name => !byName.has(name)) ||
+      [...byName.keys()].some(name => name.startsWith('.git/') && !allowed.includes(name))) fail('invalid curated Git inventory');
+  }
   if (manifest.review !== undefined) {
     const r = manifest.review;
-    if (!isObject(r) || !isObject(r.of) || !UUID.test(r.of.namespace) || !OID.test(r.of.current) ||
+    if (!keysAre(r, ['of', 'shape', 'detail']) || !keysAre(r.of, ['namespace', 'current'], ['packageDigest', 'packageBytes', 'dispatch']) || typeof r.of.namespace !== 'string' || !UUID.test(r.of.namespace) || !validState(r.of.current) ||
         !['delta', 'bundled'].includes(r.shape) || r.detail !== '.mdpkg/review/comments.json' ||
         !byName.has(r.detail)) fail('invalid review declaration');
     if ((r.shape === 'bundled') !== (manifest.namespace === r.of.namespace)) fail('review namespace contradicts shape');
-    if (r.of.packageDigest !== undefined && !/^sha256-[a-f0-9]{64}$/.test(r.of.packageDigest)) fail('invalid package digest');
+    if (snapshot && r.shape === 'bundled') fail('bundled review requires Git history');
+    if (r.of.packageDigest !== undefined && (typeof r.of.packageDigest !== 'string' || !/^sha256-[a-f0-9]{64}$/.test(r.of.packageDigest))) fail('invalid package digest');
     if (r.of.packageBytes !== undefined && (!Number.isSafeInteger(r.of.packageBytes) || r.of.packageBytes < 0)) fail('invalid package length');
     if (r.of.dispatch !== undefined && typeof r.of.dispatch !== 'string') fail('invalid dispatch');
+  }
+  if (byName.has('.mdpkg/review/comments.json') !== (manifest.review !== undefined)) fail('undeclared review document');
+  for (const entry of entries) {
+    const name = entry.name;
+    if (snapshot && (name.startsWith('.git/') || name.startsWith('.mdpkg/history'))) fail('snapshot contains Git or history entries');
+    if (entry.directory) continue;
+    const control = name === MANIFEST || (!snapshot && (name.startsWith('.git/') || name.startsWith('.mdpkg/history')));
+    if (isReserved(name) && !control && name !== a.overrides && name !== manifest.review?.detail) fail('undeclared reserved entry');
+    if (manifest.review?.shape === 'delta' && !control && name !== manifest.review.detail) fail('delta contains unrelated current files');
   }
 }
 
 // These findings do not make byte-exact in-memory reading ambiguous. Report
 // them separately from §3.7's typing tier; this reader is not a Git validator.
-export function conformanceFindings(entries, end, typing) {
+export function conformanceFindings(entries, end, typing, manifest) {
   const issues = [];
   const add = (code, message, entry) => issues.push({code, message, ...(entry ? {entry} : {})});
   if (!typing.conforming) add('recoverable-container', 'Recovered through the central directory; re-emit with a package-aware producer.');
@@ -95,6 +116,7 @@ export function conformanceFindings(entries, end, typing) {
   }
   const ordered = entries.filter(e => !e.directory).slice().sort((a, b) => a.localHeaderOffset - b.localHeaderOffset);
   const packs = ordered.filter(e => e.name.endsWith('.pack') && e.name.startsWith('.git/'));
+  if (manifest.history.mode === 'none') return issues;
   if (packs.length !== 1) add('pack-count', 'The curated repository must contain exactly one pack.');
   else if (ordered[ordered.length - 1] !== packs[0]) add('pack-order', 'The Git pack must be the last entry.');
   return issues;

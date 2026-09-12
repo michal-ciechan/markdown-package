@@ -1,5 +1,5 @@
 // Production build and slice-0 gates, using the investigation's esbuild/gzip
-// method. The isolated git-read measurement is never a deployable app asset.
+// method. Historical Git calibration stays in the investigation, outside this app.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -15,7 +15,7 @@ const slash = value => value.replace(/\\/g, '/');
 const readJson = async file => JSON.parse(await fs.readFile(file, 'utf8'));
 const measure = bytes => ({bytes: bytes.length, gzip_bytes: gzipSync(bytes, {level: 9}).length,
   sha256: createHash('sha256').update(bytes).digest('hex')});
-const dependencies = ['buffer', 'commonmark', 'fflate', 'isomorphic-git', 'esbuild'];
+const dependencies = ['commonmark', 'fflate', 'esbuild'];
 
 // Plan §4 fixes both components of each milestone's ceiling. Library baselines
 // use bundle-results.json's commonmark-parse-render (48,014), git-read (53,773)
@@ -28,14 +28,15 @@ const LIBRARY_BUDGETS = {Review: 100377, M1: 48014, M2: 48014, M3: 101787, M4: 1
 // counted graph measured 138,602 bytes (1,398 headroom). Keep library baselines
 // fixed; the 6,855-byte increase belongs to owned app code. See plan §4.
 // User-approved CARD-0049 increase: 140,000 -> 145,000 for inline comments.
-// The complete counted graph measures 143,357 gzip bytes: 4,748 over CARD-0048's
+// That checkpoint's complete graph measured 143,357 gzip bytes: 4,748 over CARD-0048's
 // 138,609-byte checkpoint, leaving 1,643 headroom. The additional 5,000 bytes
 // belong to the app allowance; library baselines and accounting stay fixed (§4).
 const REVIEW_BUDGET = 145000;
 const APP_BUDGETS = {Review: REVIEW_BUDGET - LIBRARY_BUDGETS.Review, M1: 12 * 1024, M2: 16 * 1024, M3: 24 * 1024,
   M4: 32 * 1024, M5: 40 * 1024, M6: 48 * 1024};
 // CARD-0038 ships authoring independently of the deferred history milestone.
-// Review = CommonMark + Git writer baselines, plus browse/review/persistence.
+// S5 removes the Git writer. Retain the approved historical ceiling and measure
+// the real remaining graph; the old library allowance is not a claimed app cost.
 const options = {milestone: 'Review', report: false};
 for (const arg of process.argv.slice(2)) {
   if (arg === '--report') options.report = true;
@@ -96,27 +97,7 @@ async function run() {
   const common = {absWorkingDir: root, bundle: true, minify: true, format: 'esm',
     platform: 'browser', target: 'es2020', metafile: true, write: false};
 
-  const result = await build({...common, entryPoints: ['src/main.js'], outdir, splitting: true, inject: ['src/review/buffer-shim.js']});
-  // V-1: same exports, direct ESM input and Buffer injection as build_web.mjs.
-  // A virtual shim keeps all calibration artifacts out of dist and the source tree.
-  const calibration = await build({...common,
-    stdin: {contents: "export { log, readBlob } from './node_modules/isomorphic-git/index.js';\n",
-      resolveDir: root, sourcefile: 'git-read-entry.js'},
-    inject: ['v1-buffer-shim'],
-    plugins: [{name: 'v1-buffer-shim', setup(builder) {
-      builder.onResolve({filter: /^v1-buffer-shim$/}, () => ({path: 'buffer-shim.js', namespace: 'v1'}));
-      builder.onLoad({filter: /.*/, namespace: 'v1'}, () => ({
-        contents: "export { Buffer } from './node_modules/buffer/index.js';\n", resolveDir: root,
-      }));
-    }}],
-  });
-  const expected = baseline.assets.find(asset => asset.name === 'git-read');
-  if (!expected) throw new Error('V-1 git-read baseline is absent from bundle-results.json');
-  const actual = measure(calibration.outputFiles[0].contents);
-  const differences = ['bytes', 'gzip_bytes', 'sha256'].filter(key => actual[key] !== expected[key]);
-  if (differences.length) failures.push('V-1 git-read differs from bundle-results.json: ' +
-    differences.map(key => `${key} ${actual[key]} (expected ${expected[key]})`).join(', '));
-
+  const result = await build({...common, entryPoints: ['src/main.js'], outdir, splitting: true});
   const outputs = new Map(Object.entries(result.metafile.outputs).map(([file, meta]) => [slash(file), meta]));
   const chunks = result.outputFiles.map(file => {
     const name = slash(path.relative(root, file.path)), meta = outputs.get(name);
@@ -150,8 +131,8 @@ async function run() {
   };
   if (!components.commonmark || !components.reader) failures.push('V-2 eager graph must include CommonMark and the container reader');
   const historyRequired = Number(options.milestone.slice(1)) >= 3;
-  if (options.milestone === 'Review' && (!gitChunks.length || !bootInputs.has('src/review/emit.js') || !bootInputs.has('src/review/selection.js'))) {
-    failures.push('V-2 Review requires selection, emission and a separate Git writer chunk');
+  if (options.milestone === 'Review' && (gitChunks.length || !bootInputs.has('src/review/emit.js') || !bootInputs.has('src/review/selection.js'))) {
+    failures.push('V-2 Review requires selection and snapshot emission without any Git writer chunk');
   }
   if (historyRequired && (!components.historyDescriptor || !gitChunks.length)) {
     failures.push('V-2 M3+ requires an eager history descriptor and a separate Git chunk');
@@ -165,7 +146,7 @@ async function run() {
   }
 
   // Count ALL reachable imports by default, including startup capability chunks
-  // and Review's on-export Git writer. The existing DEFLATE fallback is the only
+  // and any future on-demand feature. The existing DEFLATE fallback is the only
   // exception: inflateRaw requests it only for an opened compressed entry when
   // native DecompressionStream('deflate-raw') is unavailable. Never exclude a
   // startup import merely because esbuild emitted it as a separate chunk.
@@ -189,9 +170,8 @@ async function run() {
 
   const report = {
     node: process.version, esbuild: esbuildVersion, versions, chunks,
-    v1: {passed: versionChecks.every(check => check.passed) && !differences.length && esbuildVersion === versions.esbuild,
-      dependencies: versionChecks,
-      gitRead: {name: 'git-read', ...actual, expected: {bytes: expected.bytes, gzip_bytes: expected.gzip_bytes, sha256: expected.sha256}, differences}},
+    v1: {passed: versionChecks.every(check => check.passed) && esbuildVersion === versions.esbuild,
+      dependencies: versionChecks},
     deploy: {passed: !nonRelative.length, page: 'index.html', assetPaths},
     v2: {passed: !failures.some(failure => failure.startsWith('V-2')), milestone: options.milestone,
       library_budget_gzip_bytes: libraryBudget, app_budget_gzip_bytes: appBudget,

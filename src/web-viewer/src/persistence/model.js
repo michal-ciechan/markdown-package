@@ -1,4 +1,5 @@
-import {canonicalJson, utf8, UUID} from '../format.js';
+import {canonicalJson, utf8, UUID, sameIdentity} from '../format.js';
+import {validateExport} from '../review/emit.js';
 import {sha256} from '../address/digest.js';
 import {referenceFor} from '../address/resolve.js';
 import {parseReference, decodeLocator} from '../address/reference.js';
@@ -7,8 +8,8 @@ import {validateAnchors} from '../review/comments.js';
 import {sourceDigest} from './position.js';
 
 export const packageKey = manifest => canonicalJson([manifest.mdpkg, manifest.namespace,
-  manifest.current, manifest.addressing.anchor, manifest.addressing.digest]);
-export const databaseName = base => 'mdpkg-viewer:' + new URL('.', base).pathname;
+  manifest.current.kind, manifest.current.id, manifest.addressing.anchor, manifest.addressing.digest]);
+export const databaseName = base => 'mdpkg-viewer:snapshot-draft2:' + new URL('.', base).pathname;
 export function recoveryText(value) {
   try {
     const text = JSON.stringify(value, null, 2);
@@ -24,7 +25,7 @@ export function envelope(value, maximum = 12 * 1024 * 1024) {
 }
 export function validateDraft(draft) {
   envelope(draft, 8 * 1024 * 1024);
-  if (!UUID.test(draft.namespace) || typeof draft.author !== 'string' || draft.author.length > 200 ||
+  if (typeof draft.namespace !== 'string' || !UUID.test(draft.namespace) || typeof draft.author !== 'string' || draft.author.length > 200 ||
       !['comment', 'change-request'].includes(draft.kind) || typeof draft.body !== 'string' ||
       utf8.encode(draft.body).length > 256 * 1024 || !Array.isArray(draft.target) ||
       (draft.revision !== undefined && (!Number.isSafeInteger(draft.revision) || draft.revision < 0)))
@@ -68,11 +69,21 @@ export async function decodeDraft(pkg, draft, review, namespace) {
 }
 export async function validateReview(saved, pkg) {
   envelope(saved);
-  if (!UUID.test(saved.namespace) || !Number.isSafeInteger(saved.revision) || saved.revision < 0)
+  if (typeof saved.namespace !== 'string' || !UUID.test(saved.namespace) || !Number.isSafeInteger(saved.revision) || saved.revision < 0 ||
+      (saved.contentRevision !== undefined && (!Number.isSafeInteger(saved.contentRevision) || saved.contentRevision < 0)) ||
+      (saved.exportRevision !== undefined && (!Number.isSafeInteger(saved.exportRevision) || saved.exportRevision < -1)))
     throw new Error('Invalid saved review session.');
   await validateAnchors(saved.review, pkg);
   for (const path of new Set(saved.review.threads.map(t => decodeLocator(t.loc)[1])))
     if (saved.sourceDigests?.[path] !== await sourceDigest(await pkg.document(path))) throw new Error('A saved review document has changed.');
+  if (saved.artifact) {
+    const a = saved.artifact;
+    if (typeof a.namespace !== 'string' || !UUID.test(a.namespace) || a.namespace === saved.namespace || a.revision !== saved.contentRevision ||
+        !sameIdentity(a.target, pkg.manifest) || !(a.bytes instanceof ArrayBuffer) || a.bytes.byteLength > 16 * 1024 * 1024)
+      throw new Error('Saved prepared artifact does not match its workspace revision and target.');
+    const checked = await validateExport(new Uint8Array(a.bytes), pkg, saved.review);
+    if (checked.manifest.namespace !== a.namespace) throw new Error('Saved prepared namespace differs from its bytes.');
+  }
   return saved;
 }
 

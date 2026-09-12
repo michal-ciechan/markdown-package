@@ -89,7 +89,7 @@ test('reject source evidence mutations and cross-thread replies', async () => {
 });
 test('writer round trip, snapshot identity, original preservation and corruption refusal', async () => {
   const doc = await authored();
-  const bytes = await emitReview(pkg, doc, {namespace: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', timestamp: 1788998400});
+  const bytes = await emitReview(pkg, doc, {namespace: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'});
   const opened = await validateExport(bytes, pkg, doc);
   assert.equal(opened.manifest.review.shape, 'delta');
   assert.deepEqual(original, new Uint8Array(await fs.readFile(fixture)));

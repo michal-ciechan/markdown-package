@@ -11,6 +11,16 @@ export const utf8 = new TextEncoder();
 export const decode = bytes => new TextDecoder('utf-8', {fatal: true, ignoreBOM: true}).decode(bytes);
 export const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 export const hasOwn = (value, key) => Object.prototype.hasOwnProperty.call(value, key);
+export const keysAre = (value, required, optional = []) => isObject(value) &&
+  required.every(key => hasOwn(value, key)) && Object.keys(value).every(key => required.includes(key) || optional.includes(key));
+export const validState = value => keysAre(value, ['kind', 'id']) && typeof value.id === 'string' &&
+  (value.kind === 'snapshot' ? /^sha256-[a-f0-9]{64}$/.test(value.id) : value.kind === 'commit' && /^sha1-[a-f0-9]{40}$/.test(value.id));
+export const sameState = (a, b) => validState(a) && validState(b) && a.kind === b.kind && a.id === b.id;
+export const sameIdentity = (a, b) => !!a && !!b && a.namespace === b.namespace && sameState(a.current, b.current);
+export function freezeJson(value) {
+  if (value && typeof value === 'object') { Object.values(value).forEach(freezeJson); Object.freeze(value); }
+  return value;
+}
 
 export function byteOrder(a, b) {
   const x = utf8.encode(a), y = utf8.encode(b);
@@ -20,9 +30,10 @@ export function byteOrder(a, b) {
 
 // Write keys directly, since JSON.stringify reorders integer-like object keys.
 function json(value) {
+  if (typeof value === 'string' && decode(utf8.encode(value)) !== value) throw new Error('Invalid Unicode in JSON');
   if (Array.isArray(value)) return '[' + value.map(json).join(',') + ']';
   if (isObject(value)) return '{' + Object.keys(value).sort(byteOrder)
-    .map(key => JSON.stringify(key) + ':' + json(value[key])).join(',') + '}';
+    .map(key => json(key) + ':' + json(value[key])).join(',') + '}';
   return JSON.stringify(value);
 }
 export const canonicalJson = value => json(value) + '\n';

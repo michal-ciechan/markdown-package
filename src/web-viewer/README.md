@@ -239,20 +239,23 @@ Closing or replacing a package warns while local feedback is pending or failed.
 Download is the handoff to the recipient; the app cannot confirm that a browser
 saved the file. Changes invalidate prepared
 files, including changes made while preparation is in flight. Thread/comment IDs
-and the review namespace persist across this tab's exports; each export is a new
-parentless, one-commit snapshot. The original Blob is read-only. Optional dispatch
+and the private editing workspace persist. A distinct prepared revision receives a
+fresh artifact namespace; unchanged download/share retries and reloads reuse its
+persisted bytes and namespace. The original Blob is read-only. Optional dispatch
 and original-file digest/length metadata are not emitted; correlation uses the
-required original namespace/current pair.
+required original namespace and typed current state (kind and ID).
 
 The writer emits canonical v2 `.mdpkg/review/comments.json` in a **delta** return:
-fresh namespace, review-only tracked tree, its own manifest/history and one Git
-pack/index. Native raw DEFLATE is used when available; ZIP entries fall back to
-STORE otherwise. Self-validation reopens the ZIP, reads every payload for CRCs,
-checks review identity, entries, history/refs, schema, reply graph and each
-anchor/selector against the original source. It makes no deep Git verification
-claim. Limits are 5,000 threads, 20,000 comments, 64 KiB UTF-8 per body and 8 MiB
-comments JSON, with explicit rejection and no truncation. The writer's timestamp
-validator accepts its generated UTC millisecond RFC 3339 subset.
+exactly two files (manifest and comments), typed snapshot identity and history mode
+`none`. No Git writer or Buffer dependency is loaded. Native raw DEFLATE is used
+when available; ZIP entries fall back to STORE otherwise. Self-validation reopens
+the ZIP, reads payloads for CRCs, checks schema/inventory, recomputes the complete
+snapshot state hash, and checks every anchor/selector against the opened source.
+This verifies the returned artifact; it does not establish Git integrity or a
+relationship to a materialized source. Limits are 5,000 threads, 20,000 comments,
+64 KiB UTF-8 per body and 8 MiB comments JSON, with explicit rejection and no
+truncation. Authoring emits version 2; read validation accepts both comments
+versions and RFC 3339 timestamps from the shared spec fixtures.
 
 Bundled returns, v1 export, imported-review display/editing, quote relocation
 against newer packages, retained Git-history browsing and real
@@ -265,7 +268,7 @@ part of this change.
 **Recently opened** lists up to 20 packages and 20 documents per package. It
 remembers successful opens, section selection, actual scrolling, and source/render
 mode. Renamed copies of the same declared snapshot share work; a different
-namespace or commit gets its own record even when the filename is identical.
+namespace, state kind or state ID gets its own record even when the filename is identical.
 Reattachment checks normalized document digests and exact review/draft selectors.
 Changed or missing text is retained in recovery with copy/discard controls instead
 of being attached to a different target. A draft in another document has a
@@ -274,7 +277,9 @@ Explicit document/reference navigation takes precedence over a saved destination
 
 The standard picker, drop and paste work without file-handle support. On reload,
 **Choose file again** asks for the package; matching state restores automatically.
-No package File/Blob, source document, prepared export or object URL is cached.
+Original package Blobs, source documents and object URLs are not cached. Prepared
+review artifact ArrayBuffers are saved with their namespace, typed target and revision,
+and fully rechecked before restore. They are bounded to 16 MiB.
 Where a secure-context `showOpenFilePicker` is available, **Open package** uses
 that unrestricted picker and stores its read-only handle separately. The standard
 picker remains available and has no `accept` restriction. Already granted read
@@ -291,10 +296,14 @@ transaction committed. Only that checkpoint is recoverable after a crash; final
 keystrokes or in-flight writes can be lost. **Could not save; keep this tab open**
 offers retry, while in-memory reading, authoring and export continue to work.
 **Review not exported** is independent of browser saving. Submitted thread/reply
-IDs, state and review namespace survive reload; submission and draft deletion
+IDs, state and private workspace ID survive reload; submission and draft deletion
 commit together. Cancel deletes the editor draft, including pending writes.
 
-Storage is IndexedDB schema version 1, named `mdpkg-viewer:<deployment base path>`.
+Storage is IndexedDB schema version 1, named `mdpkg-viewer:snapshot-draft2:<deployment base path>`.
+This fresh development domain neither opens, converts nor automatically deletes
+the old database. Package keys are canonical tuples of format, namespace, state
+kind, state ID, anchor and digest profiles. S0 and materialized C0/C1 remain
+separate saved packages; their drafts never move implicitly.
 It contains package metadata, optional handles, positions, review graphs, drafts,
 resume pointers and conflict recovery records. Session storage optionally remembers
 each tab's own last document. Draft/review writes compare revisions transactionally;
@@ -337,7 +346,7 @@ plus click/tap selection, exact expansion/collapse, manual selection, source
 fallback, toolbar lifecycle, keyboard controls and mobile viewport positioning.
 Mobile viewport and touch coverage uses Chromium emulation only; physical devices
 remain untested.
-The Python acceptance test uses independent ZIP and native Git checks. Pages CI
+The Python acceptance test uses independent ZIP and exact snapshot-hash checks. Pages CI
 runs these tests before publishing. The browser fixture and .NET rerun commands
 are in [tests/fixtures/README.md](tests/fixtures/README.md).
 Persistence/fallback cases run in all three browser projects; existing authoring
@@ -358,28 +367,26 @@ Actions". The workflow token cannot do it -- `actions/configure-pages` with
 integration". Until that setting is made, the build job still runs as the
 check and only the deploy job fails.
 
-Every build first cleans `src/web-viewer/dist/` and checks the five dependency pins against
-`docs/investigations/viewer-app/package.json`, including installed versions. V-1
-also rebuilds the isolated Git reader using the investigation's ESM exports and
-Buffer shim, comparing its raw size, gzip size and SHA-256 with
-`bundle-results.json`. This calibration bundle is not published in `dist/`.
+Every build first cleans `src/web-viewer/dist/` and checks the three remaining
+dependency pins (CommonMark, fflate and esbuild) against the investigation records,
+including installed versions. Historical Git calibration remains investigation
+evidence; the application no longer installs Git or its Buffer dependency.
 
 V-2 defaults to **Review**, the CARD-0038 branch of the milestone plan. Its
 48,014-byte CommonMark plus 52,363-byte Git writer library baselines and 44,623-byte
 app allowance give a **145,000-byte gzip ceiling**. The user approved increases
 from 133,145 to 140,000 for CARD-0046's measured browser-persistence cost after
 startup consolidation, then to 145,000 for CARD-0049's inline-comment display.
-The gate conservatively counts
-the writer's complete graph, although Git is only loaded on preparation. The
+S5 retains this approved ceiling; it does not claim or allocate new headroom
+without measuring the actual build. Snapshot export has no Git writer graph. The
 older milestone app allowances are fixed per
 milestone at 12/16/24/32/40/48 KiB for M1–M6, with their library baselines, total
 ceilings and rationale in [plan §4](../../docs/superpowers/plans/2026-09-09-card-0018-viewer-app-build-plan.md#4-milestones).
 The gate counts shared chunks and CSS once, following all dynamic imports by
-default, including nested startup capabilities and the Git writer. The only
+default, including nested startup capabilities. The only
 explicit exclusion is the existing DEFLATE fallback, requested when an opened
 compressed entry needs it and native raw decompression is unavailable. The
-graph rejects Git in the initial static closure and requires exactly one dynamic
-Git import site in that closure. M3+ additionally requires the history descriptor
+Review graph requires snapshot emission and rejects every Git chunk. M3+ additionally requires the history descriptor
 and Git reader components, which are not yet shipped. Select a later milestone explicitly
 with `npm run build -- --milestone=M3` when implementing it; the ceiling does not
 grow automatically with the bundle. Changing an allowance requires amending
@@ -436,8 +443,18 @@ deployable assets. Redirected `dist/` directories are rejected before deletion.
   [Unicode data](https://www.unicode.org/Public/17.0.0/ucd/CaseFolding.txt), with
   its license in `UNICODE-LICENSE.txt`; it is never downloaded at runtime.
 
-The reader does not validate the Git tree against the current-view payloads,
-walk retained history, or scan every stored payload for LF-only conformance.
+Opening is selective and reports `assurance: declared`; typing and current-source
+matches are not full identity verification. Explicit `pkg.verifySnapshot()` reads
+every current file, checks UTF-8/LF, schema/ledger/review payloads and the exact S1
+state hash before reporting `snapshot-verified`. It uses per-entry limits and a
+128 MiB aggregate decoded budget (including repeated validation reads); entry
+metadata is capped at 10,000 records. Hashing preserves exact file bytes, BOMs,
+trailing whitespace and UTF-8 path ordering. The immutable Blob or owned byte
+source backs both verification and current reads. No whole-archive hash preimage
+is buffered. Full verification accepts only the built-in immutable Blob/owned-byte
+sources; custom random-access adapters remain selective. Caller Blob instance
+methods cannot override the native capture. Git verification remains unsupported in this browser: it never
+validates the retained tree or origin merely by reading declarations.
 Strict UTF-8 decoding preserves the BOM and digest canonicalization defensively
 normalizes CRLF/CR as required by section 6.1. Raw HTML and automatic image
 fetches are disabled in the reading view. Ordinary external links open only on
@@ -464,7 +481,7 @@ locator and snapshot validation still apply, and a present but empty or malforme
 `expect` is rejected.
 
 CARD-0021 shipped browse and current addressing; retained Git history remains deferred.
-Historical `at=` (except `at=current`), commit, diff and hunk references are
+Historical `at=` (except an exact `at=current.id` on a commit), commit, diff and hunk references are
 parsed and validated but return the application capability result
 `unsupported / history-reader-required`; this is deliberately distinct from
 the spec's `invalidated / history-unavailable`, which requires checking shipped

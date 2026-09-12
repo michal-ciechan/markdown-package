@@ -131,14 +131,19 @@ test('draft mutation during preparation cannot offer a stale download', async ({
   await page.getByLabel('Your name').fill('Reviewer');
   await page.getByLabel('Feedback', {exact: true}).fill('Initial feedback');
   await page.getByRole('button', {name: 'Save comment', exact: true}).click();
-  // Stall only the dynamic Git writer load, after the export snapshot is taken.
-  let release;
-  const blocked = new Promise(resolve => { release = resolve; });
-  await page.route(/\/git-[^/]+\.js$/, async route => { await blocked; await route.continue(); });
+  // Stall snapshot hashing after the export snapshot is taken; no Git chunk loads.
+  await page.evaluate(() => {
+    const digest = crypto.subtle.digest.bind(crypto.subtle);
+    let once = true;
+    crypto.subtle.digest = async (...args) => {
+      if (once) { once = false; await new Promise(resolve => { window.releaseHash = resolve; }); }
+      return digest(...args);
+    };
+  });
   await page.getByRole('button', {name: 'Prepare review file'}).click();
   await expect(page.locator('.review-status')).toContainText('Building');
   await page.getByLabel('Thread state', {exact: true}).selectOption('obsolete');
-  release();
+  await page.evaluate(() => window.releaseHash());
   await expect(page.locator('.review-status')).toContainText('Draft changed');
   await expect(page.getByRole('button', {name: 'Download review'})).toBeHidden();
   await page.getByRole('button', {name: 'Prepare review file'}).click();

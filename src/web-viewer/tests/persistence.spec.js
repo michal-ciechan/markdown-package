@@ -368,7 +368,7 @@ test('quota retry is bounded and keeps the previous committed input', async ({pa
 test('newer draft versions are preserved and surfaced for explicit recovery', async ({page}) => {
   await open(page); await edit(page, 'Future version text'); await saved(page);
   await page.evaluate(async () => {
-    const opening = indexedDB.open('mdpkg-viewer:/', 1);
+    const opening = indexedDB.open('mdpkg-viewer:snapshot-draft2:/', 1);
     const db = await new Promise(resolve => { opening.onsuccess = () => resolve(opening.result); });
     const tx = db.transaction('drafts', 'readwrite'), store = tx.objectStore('drafts'), request = store.openCursor();
     request.onsuccess = () => { const cursor = request.result; if (cursor) { cursor.update({...cursor.value, version: 999}); cursor.continue(); } };
@@ -408,7 +408,7 @@ test('blocked database open fails promptly; version changes close old connection
     try { await openStore(location.href, {open() { const req = {}; queueMicrotask(() => req.onblocked()); return req; }}); }
     catch (e) { message = e.message; }
     const db = await openStore(new URL('/isolated/', location.href).href);
-    const upgrade = indexedDB.open('mdpkg-viewer:/isolated/', 2);
+    const upgrade = indexedDB.open('mdpkg-viewer:snapshot-draft2:/isolated/', 2);
     await new Promise((resolve, reject) => { upgrade.onsuccess = resolve; upgrade.onerror = reject; });
     upgrade.result.close(); let closed = false;
     try { await db.all('packages'); } catch { closed = true; }
@@ -461,10 +461,12 @@ test('same-tab document pointer wins over another tab last-used document', async
 test('a slow older open cannot replace a newer package or add a recent entry', async ({page}) => {
   await page.goto('/');
   await page.evaluate(() => {
-    const slice = File.prototype.slice;
-    File.prototype.slice = function(...args) {
+    const slice = Blob.prototype.slice, delayed = new WeakSet();
+    window.restoreBlobReads = () => { Blob.prototype.slice = slice; };
+    Blob.prototype.slice = function(...args) {
       const blob = slice.apply(this, args);
-      if (this.name === 'slow.mdpkg') {
+      if (this.name === 'slow.mdpkg' || delayed.has(this)) {
+        delayed.add(blob);
         const read = blob.arrayBuffer.bind(blob);
         blob.arrayBuffer = async () => { await new Promise(resolve => { window.releaseOldOpen = resolve; }); return read(); };
       }
@@ -476,7 +478,7 @@ test('a slow older open cannot replace a newer package or add a recent entry', a
   const other = await packageWith({'guide.md': '# Newest\n\nKeep this package\n'}, {namespace: '33333333-3333-3333-3333-333333333333'});
   await page.locator('#package-file').setInputFiles(file(other, 'newest.mdpkg'));
   await expect(page.locator('#reader article')).toContainText('Keep this package');
-  await page.evaluate(() => { File.prototype.slice = Blob.prototype.slice; window.releaseOldOpen(); });
+  await page.evaluate(() => { window.restoreBlobReads(); window.releaseOldOpen(); });
   await expect(page.locator('#package-details strong')).toHaveText('newest.mdpkg');
   expect((await rows(page, 'packages')).map(p => p.filename)).toEqual(['newest.mdpkg']);
 });
@@ -498,7 +500,9 @@ test('explicit section navigation wins over a delayed scroll restore', async ({p
   await page.reload(); await page.locator('#package-file').setInputFiles(input);
   await expect.poll(() => page.evaluate(() => typeof window.releaseResume)).toBe('function');
   await page.getByLabel('Document section').selectOption({label: '## Part 2'});
-  const before = await page.evaluate(() => scrollY);
+  // Let the explicit navigation paint before comparing it with delayed restore.
+  const before = await page.evaluate(() => new Promise(resolve =>
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve(scrollY)))));
   await page.evaluate(() => window.releaseResume());
   await expect.poll(async () => (await rows(page, 'positions'))[0]?.locator?.[2]?.at(-1)?.[0]).toBe('## Part 2');
   expect(await page.evaluate(() => scrollY)).toBeCloseTo(before, 0);
@@ -517,9 +521,9 @@ test('cleared site data starts empty without a restore claim', async ({page}) =>
   await open(page); await edit(page, 'Deliberately clear'); await saved(page);
   await page.evaluate(async () => {
     await new Promise((resolve, reject) => {
-      const request = indexedDB.deleteDatabase('mdpkg-viewer:/'); request.onsuccess = resolve; request.onerror = reject;
+      const request = indexedDB.deleteDatabase('mdpkg-viewer:snapshot-draft2:/'); request.onsuccess = resolve; request.onerror = reject;
     });
-    sessionStorage.removeItem('mdpkg-viewer:/:resume');
+    sessionStorage.removeItem('mdpkg-viewer:snapshot-draft2:/:resume');
   });
   await page.reload();
   await expect(page.locator('.recent-list')).toHaveText('No recently opened packages.');

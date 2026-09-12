@@ -128,9 +128,9 @@ async function receive(source, expectedKey, documentPath) {
     detail.replaceChildren();
     const name = document.createElement('strong'), metadata = document.createElement('span');
     name.textContent = pkg.name;
-    metadata.textContent = `${pkg.documents.length} documents · ${pkg.entries.length} entries · ${pkg.tier} typing tier`;
+    metadata.textContent = `${pkg.documents.length} documents · ${pkg.entries.length} entries · ${pkg.tier} typing tier · identity not verified`;
     const lineage = document.createElement('small');
-    lineage.textContent = `Lineage ${pkg.manifest.namespace} · ${pkg.manifest.current}`;
+    lineage.textContent = `Lineage ${pkg.manifest.namespace} · ${pkg.manifest.current.kind} ${pkg.manifest.current.id}`;
     detail.append(name, metadata, lineage);
     detail.hidden = false;
     const findings = element('conformance');

@@ -4,7 +4,7 @@ import path from 'node:path';
 import {build} from 'esbuild';
 const root = process.cwd(), repo = path.resolve(root, '../..');
 const testBundle = await build({entryPoints: ['tests/browser-entry.js'], bundle: true, format: 'esm', platform: 'browser',
-  inject: ['src/review/buffer-shim.js'], write: false});
+  write: false});
 http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url, 'http://localhost');

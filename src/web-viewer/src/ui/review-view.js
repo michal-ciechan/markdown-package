@@ -22,13 +22,14 @@ export function reviewView(host, getContext, onNavigate) {
     <div class="review-actions"><button type="button" data-action="prepare">Prepare review file</button><button type="button" data-action="download" hidden>Download review</button><button type="button" data-action="share" hidden>Share review</button></div>`;
   const find = selector => host.querySelector(selector), action = name => find(`[data-action="${name}"]`);
   const form = find('form'), author = form.elements.author, kind = form.elements.kind, body = form.elements.body;
-  let pkg, review = newReview(), namespace, composing, prepared, revision = 0, dirty = false, savedAuthor = '', preparing = false;
+  // namespace is the private editing workspace ID, never an exported namespace.
+  let pkg, review = newReview(), namespace, composing, prepared, artifact, revision = 0, dirty = false, savedAuthor = '', preparing = false;
   let listener = () => {}, presentation = () => {}, exportRevision = 0, deferredDraft = false;
   const threadElements = new Map(), targetLabel = find('.review-target'), targetQuote = form.querySelector('.review-quote');
   const notify = kind => { listener(kind); presentation(kind); };
   const status = (message, error = false) => { find('.review-status').textContent = message; find('.review-status').classList.toggle('error', error); };
   function invalidate() {
-    revision++; dirty = true; prepared = undefined;
+    revision++; dirty = true; prepared = artifact = undefined;
     action('download').hidden = action('share').hidden = true;
   }
   function closeEditor() { composing = undefined; form.hidden = true; body.value = ''; }
@@ -42,7 +43,7 @@ export function reviewView(host, getContext, onNavigate) {
     targetLabel.textContent = target.thread ? 'Reply to this thread' :
       `${target.model.path} · ${target.anchor.scope.title.replace(/\n/g, ' ')} · Exact source quote`;
     targetQuote.textContent = target.thread?.select.quote ?? target.anchor.select.quote;
-    if (focus) { revision++; notify('edit'); body.focus(); }
+    if (focus) { revision++; prepared = artifact = undefined; action('download').hidden = action('share').hidden = true; notify('edit'); body.focus(); }
     else presentation('restore');
   }
   function draw() {
@@ -85,7 +86,7 @@ export function reviewView(host, getContext, onNavigate) {
     });
   }
   action('cancel').addEventListener('click', () => { closeEditor(); revision++; notify('cancel'); });
-  const input = () => { prepared = undefined; revision++; action('download').hidden = action('share').hidden = true; notify('input'); };
+  const input = () => { prepared = artifact = undefined; revision++; action('download').hidden = action('share').hidden = true; notify('input'); };
   form.addEventListener('input', input); form.addEventListener('change', input);
   form.addEventListener('focusout', () => listener('flush'));
   form.addEventListener('submit', async event => {
@@ -112,12 +113,18 @@ export function reviewView(host, getContext, onNavigate) {
     const opened = pkg, generation = revision;
     preparing = true; draw(); status('Building and validating review file…');
     try {
-      const bytes = await emitReview(opened, review, {namespace});
+      const candidate = artifact ?? {namespace: crypto.randomUUID(), revision: generation,
+        target: {namespace: opened.manifest.namespace, current: structuredClone(opened.manifest.current)}};
+      // Persist plain bytes: some IndexedDB implementations cannot store Blobs.
+      const bytes = candidate.bytes ?? (await emitReview(opened, review, {namespace: candidate.namespace})).slice().buffer;
       if (opened !== pkg || generation !== revision) { if (opened === pkg) status('Draft changed. Prepare the review file again.'); return; }
+      artifact = {...candidate, bytes};
+      await listener('prepare');
+      if (opened !== pkg || generation !== revision) return;
       prepared = reviewFile(bytes, opened.name);
       action('download').hidden = false;
       action('share').hidden = !(navigator.canShare?.({files: [prepared]}) && navigator.share);
-      status(`Review ready: ${review.threads.length} threads. Structural checks passed. Download or share the file.`);
+      status(`Review ready: ${review.threads.length} threads. Snapshot hash, payloads and selectors checked. Download or share the file.`);
     } catch (error) { if (opened === pkg) status('Could not prepare review: ' + error.message, true); }
     finally { preparing = false; draw(); }
   });
@@ -127,10 +134,10 @@ export function reviewView(host, getContext, onNavigate) {
     catch (error) { status('Download failed: ' + error.message, true); }
   });
   action('share').addEventListener('click', async () => {
-    const file = prepared, generation = revision;
+    const file = prepared, generation = revision, opened = pkg;
     if (!file) return;
-    try { await navigator.share({files: [file]}); if (generation === revision) { dirty = false; exportRevision = revision; listener('export'); status('Review shared.'); } }
-    catch (error) { if (generation === revision) status(error.name === 'AbortError' ? 'Sharing cancelled. Your review is ready to download.' : 'Sharing failed. Download the review file instead.', error.name !== 'AbortError'); }
+    try { await navigator.share({files: [file]}); if (opened === pkg && generation === revision) { dirty = false; exportRevision = revision; listener('export'); status('Review shared.'); } }
+    catch (error) { if (opened === pkg && generation === revision) status(error.name === 'AbortError' ? 'Sharing cancelled. Your review is ready to download.' : 'Sharing failed. Download the review file instead.', error.name !== 'AbortError'); }
   });
   return {
     display(listener) { presentation = listener; },
@@ -138,14 +145,17 @@ export function reviewView(host, getContext, onNavigate) {
     subscribe(value) { listener = value; },
     revision: () => revision,
     snapshot() {
-      return {namespace, review: structuredClone(review), revision, exportRevision, dirty,
+      return {namespace, review: structuredClone(review), revision, exportRevision, dirty, artifact: artifact && structuredClone(artifact),
         draft: composing ? {context: composing, author: author.value, kind: kind.value, body: body.value} : undefined};
     },
     hydrate(saved, draft) {
       review = structuredClone(saved.review); namespace = saved.namespace;
       revision = saved.contentRevision ?? 0; exportRevision = saved.exportRevision ?? -1;
       dirty = review.threads.length > 0 && exportRevision !== revision;
-      closeEditor(); prepared = undefined; draw();
+      closeEditor(); artifact = saved.artifact; prepared = artifact ? reviewFile(artifact.bytes, pkg.name) : undefined;
+      action('download').hidden = !prepared;
+      action('share').hidden = !prepared || !(navigator.canShare?.({files: [prepared]}) && navigator.share);
+      draw();
       if (draft) edit(draft.context, draft.fields, false);
     },
     deferDraft(value) { deferredDraft = value; },
@@ -153,7 +163,7 @@ export function reviewView(host, getContext, onNavigate) {
     hasUnsaved: () => dirty || !!composing,
     setPackage(value) {
       pkg = value; review = newReview(); namespace = value ? crypto.randomUUID() : undefined;
-      revision++; exportRevision = revision; dirty = false; prepared = undefined; deferredDraft = false; closeEditor();
+      revision++; exportRevision = revision; dirty = false; prepared = artifact = undefined; deferredDraft = false; closeEditor();
       action('download').hidden = action('share').hidden = true;
       host.hidden = !value; status(''); draw();
     },

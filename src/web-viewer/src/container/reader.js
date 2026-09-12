@@ -1,7 +1,8 @@
-import {decode, MAGIC, MANIFEST, parseCanonicalJson} from '../format.js';
-import {readExact, checkRange} from './source.js';
+import {decode, MAGIC, MANIFEST, parseCanonicalJson, freezeJson} from '../format.js';
+import {readExact, checkRange, isImmutableSource} from './source.js';
 import {checkNames, validateManifest, conformanceFindings} from './conformance.js';
 import {inflateRaw} from './inflate.js';
+import {verifySnapshot} from './snapshot.js';
 
 export const DEFAULT_LIMITS = Object.freeze({
   maxDirectoryBytes: 16 * 1024 * 1024,
@@ -164,8 +165,8 @@ export async function openContainer(source, options = {}) {
   bound(entry.uncompressedSize, limits.maxManifestBytes, 'Manifest');
   const {bytes, header} = await readEntry(source, entry, limits);
   if (!decode(bytes).startsWith(MAGIC)) throw new Error('The manifest does not begin with the version-1 magic');
-  const manifest = parseCanonicalJson(bytes, true);
-  validateManifest(manifest, byName);
+  const manifest = freezeJson(parseCanonicalJson(bytes, true));
+  validateManifest(manifest, byName, entries);
   for (const match of end.comment.matchAll(/(?:MDPKG|markdown-package)\/([0-9]+)(?![0-9])/gi)) {
     if (match[1] !== '1') throw new Error('Archive comment version disagrees with the manifest');
   }
@@ -173,13 +174,22 @@ export async function openContainer(source, options = {}) {
   if (typing.conforming && (entry.localHeaderOffset !== 0 || entry.method !== 0 || entry.flags & 8)) {
     throw new Error('Directory manifest disagrees with the offset-0 typing entry');
   }
-  const issues = conformanceFindings(entries, end, typing);
+  const issues = conformanceFindings(entries, end, typing, manifest);
   if (typing.conforming && (u32(header, 14) !== entry.crc32 || u32(header, 18) !== entry.compressedSize ||
       u32(header, 22) !== entry.uncompressedSize)) {
     issues.push({code: 'manifest-local-metadata', entry: MANIFEST, message: 'The manifest local header must carry its true CRC and sizes.'});
   }
-  return {
-    source, manifest, entries, byName, typing, end, issues,
+  let assurance = 'declared';
+  const container = {
+    source, manifest, entries: Object.freeze(entries), byName, typing, end, issues,
+    get assurance() { return assurance; },
+    async verifySnapshot(options) {
+      if (!isImmutableSource(source)) throw new Error('Snapshot verification requires an immutable Blob or owned byte source');
+      const proof = await verifySnapshot(container, options);
+      assurance = proof.assurance;
+      return proof;
+    },
+    async readDirectory(entry) { return (await readEntry(source, entry, limits)).bytes; },
     tier: typing.conforming ? 'conforming' : 'recoverable',
     async read(name, maximumBytes) {
       const target = byName.get(name);
@@ -189,6 +199,7 @@ export async function openContainer(source, options = {}) {
       return (await readEntry(source, target, bounded)).bytes;
     },
   };
+  return container;
 }
 
 const CRC_TABLE = Uint32Array.from({length: 256}, (_, i) => {

@@ -8,10 +8,11 @@ on:
     branches: [master]
     paths:
       - 'src/web-viewer/**'
-      # V-1 pins the app's dependencies and the Git calibration bundle against
+      # V-1 pins the app's remaining dependencies against
       # this evidence, so a change here can turn the build red on its own.
       - 'docs/investigations/viewer-app/**'
       - 'docs/spec/review-fixtures/**'
+      - 'docs/investigations/deferred-history/breaking-revision-vectors.json'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -44,7 +45,7 @@ jobs:
       - name: Install pinned dependencies
         run: npm ci
         working-directory: src/web-viewer
-      # The build is the check: V-1 (dependency and calibration pins), V-2
+      # The build is the check: V-1 (dependency pins), V-2
       # (eager graph and gzip budget) and D-1 (relative asset paths) all exit
       # nonzero and withhold dist/ assets on failure.
       - name: Test review schema, selectors and writer
@@ -59,8 +60,10 @@ jobs:
       - name: Test browser authoring and download
         run: npx playwright test
         working-directory: src/web-viewer
-      - name: Validate browser download with independent ZIP and Git tools
-        run: python tests/validate-export.py test-results/browser-review.mdpkg
+      - name: Validate browser snapshots with independent ZIP and hash checks
+        run: |
+          python tests/validate-export.py test-results/browser-review.mdpkg
+          python tests/validate-export.py test-results/browser-commit-target.mdpkg
         working-directory: src/web-viewer
       - uses: actions/upload-pages-artifact@v3
         with:

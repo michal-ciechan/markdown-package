@@ -3,8 +3,8 @@ export default defineConfig({testDir: './tests', testMatch: '*.spec.js', workers
   use: {baseURL: 'http://127.0.0.1:8138'},
   projects: [
     {name: 'chromium', use: {browserName: 'chromium'}},
-    {name: 'firefox', testMatch: ['persistence.spec.js', 'inline-comment-regressions.spec.js'], use: {browserName: 'firefox'}},
-    {name: 'webkit', testMatch: ['persistence.spec.js', 'inline-comment-regressions.spec.js'], use: {browserName: 'webkit'}},
+    {name: 'firefox', testMatch: ['persistence.spec.js', 'inline-comment-regressions.spec.js', 'snapshot.spec.js'], use: {browserName: 'firefox'}},
+    {name: 'webkit', testMatch: ['persistence.spec.js', 'inline-comment-regressions.spec.js', 'snapshot.spec.js'], use: {browserName: 'webkit'}},
   ],
   webServer: {command: 'node tests/server.mjs', url: 'http://127.0.0.1:8138', reuseExistingServer: false},
 });

@@ -1,4 +1,4 @@
-import {ANCHOR, DIGEST, HASH, OID, canonicalJson, isObject, parseCanonicalJson, hasOwn} from '../format.js';
+import {ANCHOR, DIGEST, HASH, validState, sameState, canonicalJson, isObject, parseCanonicalJson, hasOwn} from '../format.js';
 import {defaultRoot} from './root.js';
 import {parseReference, validateLocator, formatReference} from './reference.js';
 
@@ -23,10 +23,11 @@ export async function readLedger(container) {
       targets.add(target);
     } else if (disposition === 'dead') {
       if (!['split', 'merge', 'deleted'].includes(entry.dead) ||
-          (entry.next !== undefined && (!Array.isArray(entry.next) || entry.next.some(root => !HASH.test(root))))) {
+          (entry.next !== undefined && (!Array.isArray(entry.next) || entry.next.some(root => typeof root !== 'string' || !HASH.test(root)) || new Set(entry.next).size !== entry.next.length))) {
         throw new Error('Malformed retirement record');
       }
     } else if (typeof entry.unknown !== 'string' || !entry.unknown) throw new Error('Malformed unknown record');
+    if (entry.unknown && container.manifest.addressing.coverage === 'complete') throw new Error('Complete coverage contradicts unknown correspondence');
     ledger.set(root, entry);
   }
   return ledger;
@@ -41,7 +42,7 @@ export async function resolveReference(pkg, value, {observedAt, document: readDo
   catch (error) { return {status: 'invalidated', reason: 'malformed-reference', detail: error.message}; }
   const {manifest} = pkg;
   if (ref.namespace !== manifest.namespace) return {status: 'invalidated', reason: 'wrong-lineage'};
-  if (!['document', 'section'].includes(ref.kind) || (ref.at && ref.at !== manifest.current)) {
+  if (!['document', 'section'].includes(ref.kind) || (ref.at && (manifest.current.kind !== 'commit' || ref.at !== manifest.current.id))) {
     return {status: 'unsupported', reason: 'history-reader-required', reference: ref};
   }
   if (ref.anchor !== manifest.addressing.anchor || ref.profile !== manifest.addressing.digest ||
@@ -63,7 +64,9 @@ export async function resolveReference(pkg, value, {observedAt, document: readDo
       return {navigation: true, detail: error.message};
     }
   }
-  if (observedAt !== undefined && !OID.test(observedAt)) return {status: 'invalidated', reason: 'malformed-observed-at'};
+  if (observedAt !== undefined && !validState(observedAt)) return {status: 'invalidated', reason: 'malformed-observed-at'};
+  if (observedAt !== undefined && !sameState(observedAt, manifest.current)) return {status: 'unconfirmed',
+    reason: manifest.current.kind === 'snapshot' ? 'history-unavailable' : observedAt.kind === 'snapshot' ? 'origin-unverified' : 'history-required'};
   // A loose reference has no observedAt. Establishing coverage of a historical
   // checkpoint requires the history slice; do not claim correspondence without
   // that evidence, even when the expected source happens to match.

@@ -108,7 +108,7 @@ export async function persistence({host, reviews, reader, article, receive, navi
     intent++; restoring = false; workSequence++; lossGuard(true);
     ui.notice('Saving…'); ui.exported(reviews.snapshot().dirty);
     workTimer.schedule();
-    if (['cancel', 'submit', 'state', 'export'].includes(kind)) void workTimer.flush();
+    if (['cancel', 'submit', 'state', 'export', 'prepare'].includes(kind)) return workTimer.flush();
   });
   function position() {
     if (!active || restoring || !getModel()) return;
