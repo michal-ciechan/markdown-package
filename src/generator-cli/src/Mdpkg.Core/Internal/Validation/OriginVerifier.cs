@@ -52,6 +52,7 @@ internal static class OriginVerifier
         using var input = File.OpenRead(path);
         var snapshot = await PackageSnapshot.ReadAsync(input, resources.ReadLimits, ct);
         snapshot.HasOriginalArchiveBytes = false;
+        snapshot.Assurance = IdentityAssurance.SnapshotVerified;
         return new(snapshot, JsonSerializer.SerializeToElement(header), files.ToDictionary(e => e.Name, e => e.Bytes, StringComparer.Ordinal));
     }
 }

@@ -150,4 +150,5 @@ checks the target archive SHA-256 and length as well as typed identity. Pass tha
 context to Reader's `Resolve` to translate a verified S0 checkpoint and check all
 intervening correspondence intervals. `OriginalSnapshot.HasOriginalArchiveBytes`
 is false: reconstruction supplies exact state, not the original ZIP encoding or
-its optional transport evidence. Reviews integration remains a separate slice.
+its optional transport evidence. Reviews consumes these proof objects explicitly through
+its mode-aware verification provider and reviewed/target history context.

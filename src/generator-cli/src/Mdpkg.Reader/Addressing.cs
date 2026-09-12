@@ -93,6 +93,8 @@ public sealed partial class PackageSnapshot
     private readonly System.Collections.Concurrent.ConcurrentDictionary<string, IReadOnlyList<SourceScope>> scopes = new(StringComparer.Ordinal);
     /// <summary>Selected snapshot namespace and current commit.</summary>
     public PackageIdentity Identity { get; }
+    /// <summary>Snapshot hash assurance established by an explicit verified read.</summary>
+    public IdentityAssurance Assurance { get; internal set; } = IdentityAssurance.Declared;
     /// <summary>Snapshot addressing profiles and correspondence coverage.</summary>
     public AddressingProfile Addressing { get; }
     /// <summary>SHA-256 digest of package bytes with a sha256- prefix.</summary>
@@ -108,7 +110,7 @@ public sealed partial class PackageSnapshot
 
     private PackageSnapshot(PackageArchive archive, Dictionary<string, byte[]> documents, Ledger ledger, string digest)
     {
-        Identity = archive.Identity; Addressing = archive.Addressing; PackageDigest = digest; PackageBytes = archive.PackageBytes;
+        Identity = archive.Identity; Assurance = archive.Assurance; Addressing = archive.Addressing; PackageDigest = digest; PackageBytes = archive.PackageBytes;
         IsReviewPackage = archive.Review is not null;
         hasDeclaredOrigin = archive.History?.Origin is not null;
         this.documents = documents; this.ledger = ledger;
@@ -118,14 +120,27 @@ public sealed partial class PackageSnapshot
     /// <param name="input">Readable stream starting at the package; remains caller-owned.</param>
     /// <param name="limits">Resource budgets, or null to use the standard defaults.</param>
     /// <param name="cancellationToken">Token used to cancel the operation; cancellation is propagated to the caller.</param>
+    /// <param name="verifySnapshot">Explicitly verify all snapshot files and their state hash; Git input requires a history backend instead.</param>
     /// <returns>An owned snapshot usable after the input is disposed.</returns>
     /// <remarks>Uses strict container acceptance. Validates current ledger targets but does not materialize historical Git trees or establish full Git/review-lineage verification.</remarks>
     /// <exception cref="PackageFormatException">Package data, Markdown encoding or ledger targets are invalid.</exception>
     /// <exception cref="ResourceLimitException">A configured budget is exceeded.</exception>
     /// <exception cref="OperationCanceledException">Cancellation was requested.</exception>
-    public static async Task<PackageSnapshot> ReadAsync(Stream input, ReadLimits? limits = null, CancellationToken cancellationToken = default)
+    public static async Task<PackageSnapshot> ReadAsync(Stream input, ReadLimits? limits = null, CancellationToken cancellationToken = default, bool verifySnapshot = false)
+    {
+        if (!verifySnapshot) return await ReadCapturedAsync(input, limits, cancellationToken, false);
+        // Verification and the returned scopes must describe the same immutable bytes,
+        // even when a caller supplies a seekable stream that changes between reads.
+        using var captured = new MemoryStream();
+        using (var source = await PackageArchive.OpenAsync(input, limits, cancellationToken: cancellationToken))
+            await source.CopyToAsync(captured, cancellationToken);
+        captured.Position = 0;
+        return await ReadCapturedAsync(captured, limits, cancellationToken, true);
+    }
+    private static async Task<PackageSnapshot> ReadCapturedAsync(Stream input, ReadLimits? limits, CancellationToken cancellationToken, bool verifySnapshot)
     {
         using var archive = await PackageArchive.OpenAsync(input, limits, cancellationToken: cancellationToken);
+        if (verifySnapshot) archive.VerifySnapshot(cancellationToken);
         var docs = new Dictionary<string, byte[]>(StringComparer.Ordinal);
         foreach (var entry in archive.Entries.Where(e => !e.Name.StartsWith(".git/", StringComparison.Ordinal) && !e.Name.StartsWith(".mdpkg/", StringComparison.Ordinal) &&
             (e.Name.EndsWith(".md", StringComparison.OrdinalIgnoreCase) || e.Name.EndsWith(".markdown", StringComparison.OrdinalIgnoreCase))))

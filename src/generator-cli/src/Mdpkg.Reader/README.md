@@ -50,6 +50,10 @@ its ZIP encoding and optional original transport evidence have not been recovere
 For history-free packages, call `PackageArchive.VerifySnapshot(cancellationToken)` to
 read every current file, including non-Markdown files, the ledger and review document,
 and verify the exact state hash. Success sets `Assurance` to `SnapshotVerified`.
+`PackageSnapshot.ReadAsync(..., verifySnapshot: true)` captures bounded private bytes,
+verifies the same complete snapshot, and returns owned scopes with that assurance.
+This option requires snapshot mode; Git source assurance uses an explicit history
+backend proof bound to the selected archive. The default read remains selective.
 This explicit operation consumes the archive's remaining read budgets and needs no Git.
 
 For loose author links, `snapshot.ResolveReference(uri, cancellationToken)` parses

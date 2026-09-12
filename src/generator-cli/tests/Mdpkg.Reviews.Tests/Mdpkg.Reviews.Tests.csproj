@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType><IsTestProject>true</IsTestProject><IsPackable>false</IsPackable></PropertyGroup>
   <ItemGroup><PackageReference Include="xunit.v3" /><PackageReference Include="xunit.runner.visualstudio" /></ItemGroup>
-  <ItemGroup><ProjectReference Include="../../src/Mdpkg.Reviews/Mdpkg.Reviews.csproj" /><Using Include="Xunit" /><Compile Include="../FixtureSupport.cs" Link="FixtureSupport.cs" /></ItemGroup>
+  <ItemGroup><ProjectReference Include="../../src/Mdpkg.Reviews/Mdpkg.Reviews.csproj" /><ProjectReference Include="../../src/Mdpkg.Core/Mdpkg.Core.csproj" /><Using Include="Xunit" /><Compile Include="../FixtureSupport.cs" Link="FixtureSupport.cs" /></ItemGroup>
 </Project>

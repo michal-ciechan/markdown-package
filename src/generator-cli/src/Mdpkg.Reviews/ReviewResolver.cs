@@ -9,7 +9,7 @@ public sealed partial class ReviewExtractor
     /// <param name="context">Backend-selected exact reviewed snapshot and optional explicitly selected newer target.</param>
     /// <param name="cancellationToken">Token used to cancel the operation; cancellation is propagated to the caller.</param>
     /// <returns>All feedback items with separate identity, target and correlation assessments.</returns>
-    /// <remarks>Never opens dispatch paths or URLs. Newer targets require the exact reviewed snapshot; review-package context requires caller-established full verification. Quote relocation searches only a live changed scope and refuses ties. Ranges use UTF-16 code units relative to canonical scope source.</remarks>
+    /// <remarks>Never opens dispatch paths or URLs. Newer targets require verified original context and an explicit selection. Origin and Git context use archive-bound backend proof. Quote relocation searches only a live changed scope and refuses ties. Ranges use UTF-16 code units relative to canonical scope source.</remarks>
     /// <exception cref="ArgumentNullException">Review or context is null.</exception>
     /// <exception cref="OperationCanceledException">Cancellation was requested.</exception>
     public Task<ReviewResolutionResult> ResolveAsync(ReviewExtractionResult review, ReviewedPackageContext context, CancellationToken cancellationToken = default)
@@ -20,7 +20,15 @@ public sealed partial class ReviewExtractor
         if (review.SchemaStatus != SchemaStatus.Valid || review.ReviewedIdentity is null)
             return Finish(CorrelationStatus.NotChecked, IdentityStatus.Invalidated, TargetStatus.Invalidated, "review-schema-unavailable");
         var reviewed = review.ReviewedIdentity;
-        var target = context.Target ?? context.ReviewedSnapshot;
+        var basis = context.ReviewedSnapshot;
+        var target = context.Target ?? basis;
+        var targetHistory = context.TargetHistory ?? (target is not null && context.ReviewedHistory?.Matches(target) == true ? context.ReviewedHistory : null);
+        if ((targetHistory is not null && target is not null && !targetHistory.Matches(target)) ||
+            (context.ReviewedHistory is not null && (basis is null || !context.ReviewedHistory.Matches(basis))))
+            return Finish(CorrelationStatus.NotChecked, IdentityStatus.Unconfirmed, TargetStatus.VerificationUnavailable, "verification-context-mismatch");
+        if (basis is null && targetHistory?.OriginalSnapshot is { } reconstructed && reconstructed.Identity == reviewed.Identity)
+            basis = reconstructed;
+        target ??= basis;
         if (target is null) return Finish(CorrelationStatus.OriginalUnavailable, IdentityStatus.NotResolved, TargetStatus.TargetUnavailable, "target-unavailable");
         if (target.Identity.Namespace != reviewed.Identity.Namespace || context.ReviewedSnapshot is { } supplied && supplied.Identity.Namespace != reviewed.Identity.Namespace)
             return Finish(CorrelationStatus.WrongLineage, IdentityStatus.Invalidated, TargetStatus.Invalidated, "wrong-lineage");
@@ -29,16 +37,21 @@ public sealed partial class ReviewExtractor
         var newer = target.Identity != reviewed.Identity;
         if (newer && !context.UseNewerTarget)
             return Finish(CorrelationStatus.WrongSnapshot, IdentityStatus.Invalidated, TargetStatus.Invalidated, "newer-target-not-selected");
-        var basis = context.ReviewedSnapshot ?? (!newer ? target : null);
+        basis ??= !newer ? target : null;
         if (basis is null) return Finish(CorrelationStatus.OriginalUnavailable, IdentityStatus.Unconfirmed, TargetStatus.HistoryRequired, "reviewed-snapshot-unavailable");
-        if ((target.IsReviewPackage || basis.IsReviewPackage) && context.ContextVerification != VerificationLevel.Full)
+        if (target.IsReviewPackage && targetHistory?.Matches(target) != true && target.Assurance != IdentityAssurance.SnapshotVerified)
             return Finish(CorrelationStatus.NotChecked, IdentityStatus.NotResolved, TargetStatus.VerificationUnavailable, "bundled-context-requires-full-verification");
+        if (basis.Assurance != IdentityAssurance.SnapshotVerified && context.ReviewedHistory?.Matches(basis) != true && targetHistory?.Matches(basis) != true)
+            return Finish(CorrelationStatus.NotChecked, IdentityStatus.NotResolved, TargetStatus.VerificationUnavailable, "reviewed-source-unverified");
         if (basis.Addressing.Anchor != review.AnchorProfile || basis.Addressing.Digest != review.DigestProfile)
             return Finish(CorrelationStatus.NotChecked, IdentityStatus.Invalidated, TargetStatus.Invalidated, "reviewed-profile-mismatch");
-        var repacked = (reviewed.PackageDigest is not null && basis.PackageDigest != reviewed.PackageDigest) ||
-            (reviewed.PackageBytes is not null && basis.PackageBytes != reviewed.PackageBytes);
+        var repacked = basis.HasOriginalArchiveBytes && ((reviewed.PackageDigest is not null && basis.PackageDigest != reviewed.PackageDigest) ||
+            (reviewed.PackageBytes is not null && basis.PackageBytes != reviewed.PackageBytes));
+        if (!basis.HasOriginalArchiveBytes) diagnostics.Add(new("OriginalArchiveUnavailable", "Verified origin reconstructs the original state, not its ZIP encoding or transport evidence."));
         if (repacked) diagnostics.Add(new("ReemittedPackage", "The reviewed identity matches; optional digest/length differ. Dispatch metadata was not used as authority."));
-        var correlation = newer ? CorrelationStatus.NewerTarget : repacked ? CorrelationStatus.Reemitted : CorrelationStatus.Exact;
+        var relationshipVerified = targetHistory?.Matches(target) == true && targetHistory.GetRelationship(reviewed.Identity.Current).Status == CheckpointStatus.Verified;
+        var correlation = newer ? relationshipVerified ? CorrelationStatus.NewerTarget : CorrelationStatus.NotChecked
+            : !basis.HasOriginalArchiveBytes ? CorrelationStatus.Reconstructed : repacked ? CorrelationStatus.Reemitted : CorrelationStatus.Exact;
         var resolved = new Dictionary<string, ThreadResolution>(StringComparer.Ordinal);
         foreach (var thread in review.Threads)
         {
@@ -58,7 +71,7 @@ public sealed partial class ReviewExtractor
                 resolved.Add(thread.Id, new(IdentityStatus.Invalidated, TargetStatus.Invalidated, "invalid-reviewed-selector-or-digest", null, originalScope.Digest, []));
                 continue;
             }
-            var identity = target.Resolve(reviewed.Identity, a.Root, a.Expect, a.Locator, cancellationToken);
+            var identity = target.Resolve(reviewed.Identity, a.Root, a.Expect, a.Locator, cancellationToken, targetHistory?.Matches(target) == true ? targetHistory : null);
             var scope = identity.Scope;
             var targetStatus = identity.Status switch { IdentityStatus.Unconfirmed => identity.Reason == "history-required" ? TargetStatus.HistoryRequired : TargetStatus.Unconfirmed,
                 IdentityStatus.Invalidated => TargetStatus.Invalidated, _ => TargetStatus.TargetDetached };

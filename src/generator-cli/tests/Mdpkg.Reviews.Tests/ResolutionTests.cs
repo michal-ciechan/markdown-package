@@ -8,7 +8,7 @@ namespace Mdpkg.Reviews.Tests;
 public class ResolutionTests
 {
     private static async Task<PackageSnapshot> Snapshot(string name = "original.mdpkg")
-    { using var input = Fixtures.Stream(name); return await PackageSnapshot.ReadAsync(input, cancellationToken: TestContext.Current.CancellationToken); }
+    { using var input = Fixtures.Stream(name); return await PackageSnapshot.ReadAsync(input, cancellationToken: TestContext.Current.CancellationToken, verifySnapshot: name == "original.mdpkg"); }
     private static async Task<ReviewExtractionResult> Review(byte[]? bytes = null)
     {
         using var input = bytes is null ? Fixtures.Stream() : new MemoryStream(bytes);
@@ -32,6 +32,7 @@ public class ResolutionTests
         {
             if (file != "original.mdpkg")
             {
+                Assert.Equal(CorrelationStatus.NotChecked, result.Correlation);
                 Assert.Equal(IdentityStatus.Unconfirmed, i.IdentityStatus); Assert.Equal(TargetStatus.Unconfirmed, i.TargetStatus);
                 Assert.Equal("origin-unverified", i.Reason); Assert.Null(i.ResolvedLocation);
                 // Current ledger/digest behavior still works when no cross-checkpoint claim is made.
@@ -174,8 +175,8 @@ public class ResolutionTests
         }));
         var original = await PackageSnapshot.ReadAsync(input, cancellationToken: TestContext.Current.CancellationToken);
         var result = await new ReviewExtractor().ResolveAsync(review, new(original, await Snapshot("changed.mdpkg"), true), TestContext.Current.CancellationToken);
-        Assert.Equal(IdentityStatus.Unconfirmed, result.Items[0].IdentityStatus); Assert.Null(result.Items[0].ResolvedLocation);
-        Assert.Equal("unconfirmed-removal", result.Items[0].Reason);
+        Assert.Equal(TargetStatus.VerificationUnavailable, result.Items[0].TargetStatus); Assert.Null(result.Items[0].ResolvedLocation);
+        Assert.Equal("reviewed-source-unverified", result.Items[0].Reason);
     }
     [Fact]
     public async Task BundledCurrentViewIsNotAnAutomaticallyTrustedOriginal()

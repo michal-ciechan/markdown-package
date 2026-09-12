@@ -181,13 +181,14 @@ public class ExtractionTests
         Assert.Equal(VerificationLevel.Structural, result.VerificationLevel);
     }
     [Theory]
-    [InlineData(false, VerificationChecks.None)][InlineData(true, VerificationChecks.GitIntegrity)][InlineData(true, VerificationChecks.Full)]
+    [InlineData(false, VerificationChecks.None)][InlineData(true, VerificationChecks.GitIntegrity)]
+    [InlineData(true, VerificationChecks.AllPayloads | VerificationChecks.CurrentView | VerificationChecks.ReviewLineage | VerificationChecks.GitIntegrity | VerificationChecks.BootstrapOrigin)]
     public async Task ProviderMustExplicitlyEstablishEveryFullCheck(bool accepted, VerificationChecks checks)
     {
         using var input = Fixtures.Stream("bundled-v2.mdpkg"); var provider = new Provider(accepted, checks);
         var result = await new ReviewExtractor().ExtractAsync(input, new() { RequireFullVerification = true, VerificationProvider = provider }, TestContext.Current.CancellationToken);
-        Assert.True(provider.Called); Assert.Equal(accepted && checks == VerificationChecks.Full ? ReviewOutcome.Success : ReviewOutcome.VerificationFailed, result.Outcome);
-        Assert.Equal(accepted && checks == VerificationChecks.Full ? VerificationLevel.Full : VerificationLevel.Structural, result.VerificationLevel);
+        Assert.True(provider.Called); Assert.Equal(ReviewOutcome.VerificationFailed, result.Outcome);
+        Assert.Equal(VerificationLevel.Structural, result.VerificationLevel);
     }
     [Theory]
     [InlineData("invalid-bundled-parent.mdpkg")][InlineData("invalid-bundled-document.mdpkg")][InlineData("invalid-bundled-ledger.mdpkg")][InlineData("invalid-delta-history.mdpkg")]
@@ -210,7 +211,7 @@ public class ExtractionTests
     private sealed class Provider(bool accepted, VerificationChecks checks) : IReviewVerificationProvider
     {
         public bool Called { get; private set; }
-        public Task<VerificationReport> VerifyAsync(PackageArchive package, ReviewShape shape, ReviewedIdentity reviewedIdentity, CancellationToken cancellationToken)
+        public Task<VerificationReport> VerifyAsync(PackageArchive package, VerificationChecks requiredChecks, CancellationToken cancellationToken)
         { cancellationToken.ThrowIfCancellationRequested(); Called = true; return Task.FromResult(new VerificationReport(accepted, checks, [])); }
     }
     [Fact]

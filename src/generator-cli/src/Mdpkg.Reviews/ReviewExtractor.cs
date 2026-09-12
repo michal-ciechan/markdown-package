@@ -26,12 +26,23 @@ public sealed partial class ReviewExtractor
             VerificationLevel.None, null, null, null, null, [], [], [], []);
         try
         {
-            using var archive = await PackageArchive.OpenAsync(returnedPackage, options.Limits, options.AcceptRecoverable, cancellationToken);
+            // Parse feedback and verify its package from the same private bytes.
+            // A caller-owned seekable stream may otherwise change during provider work.
+            using var captured = options.VerificationProvider is null ? null : new MemoryStream();
+            if (captured is not null)
+            {
+                using var source = await PackageArchive.OpenAsync(returnedPackage, options.Limits, options.AcceptRecoverable, cancellationToken);
+                await source.CopyToAsync(captured, cancellationToken);
+                captured.Position = 0;
+            }
+            using var archive = await PackageArchive.OpenAsync(captured ?? returnedPackage, options.Limits, options.AcceptRecoverable, cancellationToken);
             result = result with { ContainerStatus = archive.ContainerStatus, VerificationLevel = VerificationLevel.Structural,
-                ReviewIdentity = archive.Identity, Checks = Array.AsReadOnly(new[] { "zip-directory-and-extents", "manifest", "history-declaration", "branch-reference" }) };
+                ReviewIdentity = archive.Identity, Checks = Array.AsReadOnly(new[] { "zip-directory-and-extents", "manifest", "history-declaration",
+                    archive.HistoryMode is SnapshotHistory ? "branch-reference:not-applicable" : "branch-reference" }) };
             if (archive.Review is null) return result with { Outcome = ReviewOutcome.NotReview };
             var (shape, of) = ReviewParser.Declaration(archive.Review.Value, archive.Identity);
-            result = result with { Shape = shape, ReviewedIdentity = of };
+            var required = VerificationObligations.Required(archive);
+            result = result with { Shape = shape, ReviewedIdentity = of, RequiredChecks = required, NotApplicableChecks = VerificationObligations.All & ~required };
             var bytes = archive.ReadEntry(".mdpkg/review/comments.json", options.MaxCommentsBytes, cancellationToken);
             var node = archive.ReadCanonicalJson(bytes, false, cancellationToken);
             var (version, threads, extensions) = ReviewParser.Document(node, of.Identity, options, cancellationToken);
@@ -43,12 +54,14 @@ public sealed partial class ReviewExtractor
             if (options.ComputePackageDigest) result = result with { PackageDigest = await archive.ComputeDigestAsync(cancellationToken) };
             if (options.VerificationProvider is { } provider)
             {
-                var report = await provider.VerifyAsync(archive, shape, of, cancellationToken);
+                var report = await provider.VerifyAsync(archive, required, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
-                var full = report.Accepted && (report.CompletedChecks & VerificationChecks.Full) == VerificationChecks.Full;
+                var full = report.Accepted && (report.CompletedChecks & required) == required &&
+                    (report.CompletedChecks & ~required) == VerificationChecks.None && await VerificationObligations.HasProofAsync(archive, report, cancellationToken);
                 result = result with { Outcome = full ? ReviewOutcome.Success : ReviewOutcome.VerificationFailed,
                     VerificationLevel = full ? VerificationLevel.Full : VerificationLevel.Structural,
-                    Checks = Array.AsReadOnly(result.Checks.Concat(Enum.GetValues<VerificationChecks>().Where(c => c is not (VerificationChecks.None or VerificationChecks.Full) && report.CompletedChecks.HasFlag(c)).Select(c => "provider:" + c)).ToArray()),
+                    CompletedChecks = full ? report.CompletedChecks : VerificationChecks.None,
+                    Checks = Array.AsReadOnly(result.Checks.Concat(Enum.GetValues<VerificationChecks>().Where(c => c != VerificationChecks.None && full && report.CompletedChecks.HasFlag(c)).Select(c => "provider:" + c)).ToArray()),
                     Diagnostics = Array.AsReadOnly(report.Diagnostics.Concat(full ? [] : new[] { new ReviewDiagnostic("VerificationFailed", "Provider did not establish every required full verification check.") }).ToArray()) };
             }
             else if (options.RequireFullVerification)

@@ -10,8 +10,9 @@ The current `/1` specification is a breaking two-mode revision. S2 implements th
 typed schema in Reader, Core, CLI and Reviews declarations, plus history-free
 creation and full snapshot validation. The superseded string-valued manifest is
 rejected. S3 implements deterministic materialization, native Git origin proof,
-archive-bound Reader checkpoint contexts and bounded append. Origin-aware Reviews
-integration and browser support remain S4–S5; integrated release acceptance remains S6.
+archive-bound Reader checkpoint contexts and bounded append. S4 adds mode-specific
+Reviews verification and origin-aware resolution; browser support remains S5 and
+integrated release acceptance remains S6.
 
 The `pack`, `validate`, `update --materialize` and bounded `update --tree` rows below
 are implemented. Historical transform details below this revision summary do not

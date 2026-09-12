@@ -106,11 +106,11 @@ public enum CorrelationStatus
 {
     /// <summary>Correlation could not be established.</summary>
     NotChecked,
-    /// <summary>Namespace and current commit match, with no optional digest or length mismatch.</summary>
+    /// <summary>Namespace, state kind and ID match, with no optional digest or length mismatch.</summary>
     Exact,
     /// <summary>Identity matches but optional package digest or length differs.</summary>
     Reemitted,
-    /// <summary>The caller explicitly selected a newer target in the same namespace.</summary>
+    /// <summary>The caller explicitly selected a different target with a verified checkpoint relationship.</summary>
     NewerTarget,
     /// <summary>A supplied snapshot belongs to another namespace.</summary>
     WrongLineage,
@@ -118,6 +118,8 @@ public enum CorrelationStatus
     WrongSnapshot,
     /// <summary>The exact reviewed snapshot is unavailable.</summary>
     OriginalUnavailable,
+    /// <summary>The exact original state was reconstructed from verified origin; old archive bytes remain unavailable.</summary>
+    Reconstructed,
 }
 
 /// <summary>A review finding with optional thread and comment attribution.</summary>
@@ -127,7 +129,7 @@ public enum CorrelationStatus
 /// <param name="CommentId">Affected comment ID, if known.</param>
 public sealed record ReviewDiagnostic(string Code, string Message, string? ThreadId = null, string? CommentId = null);
 /// <summary>Declared reviewed package identity and optional corroborating metadata.</summary>
-/// <param name="Identity">Namespace and current commit of the reviewed package.</param>
+/// <param name="Identity">Namespace, state kind and state ID of the reviewed package.</param>
 /// <param name="PackageDigest">Optional sha256-prefixed digest of the reviewed package bytes.</param>
 /// <param name="PackageBytes">Optional reviewed package length in bytes.</param>
 /// <param name="Dispatch">Untrusted dispatch metadata; never authority for opening a path or URL.</param>
@@ -229,11 +231,15 @@ public sealed record ReviewItem(PackageIdentity ReviewIdentity, string ThreadId,
 /// <param name="DigestProfile">Validated source digest profile identifier.</param>
 /// <param name="SelectorProfile">Validated quote selector profile identifier.</param>
 /// <param name="Extensions">Preserved unknown non-semantic document properties.</param>
+/// <param name="RequiredChecks">Full verification obligations derived from this package.</param>
+/// <param name="CompletedChecks">Applicable provider checks actually accepted.</param>
+/// <param name="NotApplicableChecks">Checks excluded by the package mode and origin declaration.</param>
 public sealed record ReviewExtractionResult(ReviewOutcome Outcome, ContainerStatus ContainerStatus, SchemaStatus SchemaStatus,
     VerificationLevel VerificationLevel, PackageIdentity? ReviewIdentity, ReviewShape? Shape, ReviewedIdentity? ReviewedIdentity,
     int? DocumentVersion, IReadOnlyList<ReviewThread> Threads, IReadOnlyList<ReviewItem> Items, IReadOnlyList<ReviewDiagnostic> Diagnostics,
     IReadOnlyList<string> Checks, string? PackageDigest = null, string? AnchorProfile = null, string? DigestProfile = null, string? SelectorProfile = null,
-    IReadOnlyDictionary<string, JsonElement>? Extensions = null);
+    IReadOnlyDictionary<string, JsonElement>? Extensions = null, VerificationChecks RequiredChecks = VerificationChecks.None,
+    VerificationChecks CompletedChecks = VerificationChecks.None, VerificationChecks NotApplicableChecks = VerificationChecks.None);
 
 /// <summary>Extraction budgets and explicit verification choices; exceeding a cap rejects data without truncation.</summary>
 public sealed record ReviewReadOptions
@@ -272,34 +278,38 @@ public enum VerificationChecks
     CurrentView = 4,
     /// <summary>The declared delta or bundled review lineage was verified.</summary>
     ReviewLineage = 8,
-    /// <summary>All required full verification obligations.</summary>
-    Full = AllPayloads | GitIntegrity | CurrentView | ReviewLineage,
+    /// <summary>The current snapshot state hash was verified.</summary>
+    SnapshotIdentity = 16,
+    /// <summary>The complete bootstrap origin and original snapshot were verified.</summary>
+    BootstrapOrigin = 32,
 }
 /// <summary>A provider decision with explicit evidence of completed obligations.</summary>
 /// <param name="Accepted">Whether the provider accepts the package.</param>
-/// <param name="CompletedChecks">Obligations actually completed; full assurance requires all full checks.</param>
+/// <param name="CompletedChecks">Obligations actually completed; full assurance requires every applicable check.</param>
 /// <param name="Diagnostics">Provider findings.</param>
-public sealed record VerificationReport(bool Accepted, VerificationChecks CompletedChecks, IReadOnlyList<ReviewDiagnostic> Diagnostics);
+/// <param name="HistoryContext">Archive-bound native history proof; required for Git assurance.</param>
+public sealed record VerificationReport(bool Accepted, VerificationChecks CompletedChecks, IReadOnlyList<ReviewDiagnostic> Diagnostics,
+    VerifiedHistoryContext? HistoryContext = null);
 /// <summary>Caller-supplied full verification of payloads, Git integrity, current view and review lineage.</summary>
 /// <remarks>No provider is invoked implicitly. Implementations must impose their own CPU, temporary-disk and subprocess budgets in addition to bounded archive access.</remarks>
 public interface IReviewVerificationProvider
 {
     /// <summary>Verifies the package against every required full verification obligation.</summary>
     /// <param name="package">Borrowed bounded archive; do not dispose or retain it after this call.</param>
-    /// <param name="shape">Validated declared review shape.</param>
-    /// <param name="reviewedIdentity">Declared reviewed identity and untrusted correlation metadata.</param>
+    /// <param name="requiredChecks">Obligations derived by Reviews from the parsed mode and origin.</param>
     /// <param name="cancellationToken">Token used to cancel the operation; cancellation is propagated to the caller.</param>
-    /// <returns>Acceptance and completed obligations; full assurance requires acceptance plus all Full checks.</returns>
-    Task<VerificationReport> VerifyAsync(PackageArchive package, ReviewShape shape, ReviewedIdentity reviewedIdentity, CancellationToken cancellationToken);
+    /// <returns>Acceptance, completed obligations and any archive-bound history proof.</returns>
+    Task<VerificationReport> VerifyAsync(PackageArchive package, VerificationChecks requiredChecks, CancellationToken cancellationToken);
 }
 
 /// <summary>Backend-selected snapshots; dispatch metadata is never used to locate context.</summary>
 /// <param name="ReviewedSnapshot">Exact reviewed snapshot used to validate original selectors.</param>
 /// <param name="Target">Selected resolution target; defaults to the reviewed snapshot.</param>
-/// <param name="UseNewerTarget">Explicitly permits a different current commit in the same namespace.</param>
-/// <param name="ContextVerification">Caller-established assurance of context; review-package snapshots require full verification.</param>
+/// <param name="UseNewerTarget">Explicitly selects a different current state; verified relationship evidence is still required.</param>
+/// <param name="ReviewedHistory">Archive-bound proof of a supplied Git original.</param>
+/// <param name="TargetHistory">Archive-bound target proof, also usable to reconstruct its original S0.</param>
 public sealed record ReviewedPackageContext(PackageSnapshot? ReviewedSnapshot = null, PackageSnapshot? Target = null,
-    bool UseNewerTarget = false, VerificationLevel ContextVerification = VerificationLevel.Structural);
+    bool UseNewerTarget = false, VerifiedHistoryContext? ReviewedHistory = null, VerifiedHistoryContext? TargetHistory = null);
 /// <summary>Feedback preserved with correlation and current-view resolution evidence.</summary>
 /// <param name="Correlation">Correlation of supplied context with the reviewed package.</param>
 /// <param name="Items">All input feedback items with updated resolution fields.</param>

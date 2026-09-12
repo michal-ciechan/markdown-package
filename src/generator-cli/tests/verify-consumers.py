@@ -55,7 +55,7 @@ with tempfile.TemporaryDirectory(prefix='mdpkg-external-consumers-') as temp:
         project = work/package; project.mkdir()
         csproj = project/'Consumer.csproj'
         csproj.write_text(f'''<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><PackageReference Include="{package}" Version="{packages[package][1]}" /></ItemGroup></Project>''', encoding='utf-8')
-        program = (ROOT/'examples/review-consumer/Program.cs').read_text(encoding='utf-8') if package.endswith('Reviews') else '''using Mdpkg.Reader;
+        program = re.findall(r'```csharp\n(.*?)```', (ROOT/'src/generator-cli/src/Mdpkg.Reviews/README.md').read_text(encoding='utf-8'), re.S)[0] if package.endswith('Reviews') else '''using Mdpkg.Reader;
 using var input = File.OpenRead(args[0]);
 using var archive = await PackageArchive.OpenAsync(input);
 Console.WriteLine(archive.Identity.Current.Id);
@@ -91,8 +91,24 @@ if (loose.Category != "identity" || loose.Status != "survives" || loose.Scope is
         if package.endswith('Reviews'):
             output=run(dll,fixtures/'delta-v2.mdpkg',fixtures/'original.mdpkg',cwd=work,env=env)
             assert 'Correlation: Exact' in output and 'ChangeRequest' in output and output.count('TargetIntact')==2,output
-            output=run(dll,fixtures/'delta-v2.mdpkg','--full',cwd=work,env=env,expected=2)
-            assert 'VerificationUnavailable' in output,output
+            output=run(dll,fixtures/'delta-v2.mdpkg','--full',cwd=work,env=env)
+            assert '/Full' in output and output.count('TargetUnavailable')==2,output
+            # The standalone Reviews package above has no Core dependency. The full
+            # example opts into Core separately to demonstrate the S3 native bridge.
+            project_xml=ET.parse(csproj)
+            ET.SubElement(project_xml.getroot().find('ItemGroup'),'PackageReference',Include='Mdpkg.Core',Version=core_version)
+            project_xml.write(csproj,encoding='utf-8',xml_declaration=True)
+            (project/'Program.cs').write_text((ROOT/'examples/review-consumer/Program.cs').read_text(encoding='utf-8'),encoding='utf-8')
+            run('restore',csproj,'--configfile',work/'NuGet.Config','--packages',work/'packages',cwd=work)
+            run('build',csproj,'--no-restore',cwd=work)
+            output=run(dll,fixtures/'delta-v2.mdpkg','--full',cwd=work,env=env)
+            assert '/Full' in output,output
+            output=run(dll,fixtures/'delta-v2.mdpkg','--target',fixtures/'changed.mdpkg','--newer','--git','--full',cwd=work)
+            assert 'Correlation: NewerTarget' in output and output.count('TargetRelocated')==2,output
+            output=run(dll,fixtures/'delta-v2.mdpkg','--target',fixtures/'original-git.mdpkg','--git',cwd=work)
+            assert 'newer-target-not-selected' in output and output.count('Invalidated')==2,output
+            output=run(dll,fixtures/'invalid-bundled-document.mdpkg','--full','--git',cwd=work,expected=2)
+            assert '/Full' not in output and 'Explain these words.' in output,output
         elif package == 'Mdpkg.Reader': assert 'sha256-' in run(dll,fixtures/'original.mdpkg',cwd=work,env=env)
         else:
             source = work/'source'; source.mkdir(); (source/'guide.md').write_text('# Guide\n\nHello.\n', encoding='utf-8')
