@@ -1,0 +1,1150 @@
+{
+  "inspectedRevision": "96281d5b8e54ae0323dbf94d467de22e53dc03a9",
+  "method": "Eight existing v1 CLI pack invocations using pre-existing post-delta Release binaries; no v2 implementation or timing claim. Source recipes, earlier archive SHA-256/CRC/accounting and current entry accounting independently checked.",
+  "priorArchivesVerified": 8,
+  "gitVersion": "git version 2.50.1.windows.1",
+  "binarySha256": {
+    "native": {
+      "mdpkg.dll": "65723939b350b7f1b935601ac4eab2aabc701471d1c37db5b8cefce7c57c01b0",
+      "Mdpkg.Core.dll": "09e5541a53dbc92519aee9922ff0fe69cab216f1897b9d8e1124e500bff5dd8d",
+      "Mdpkg.Reader.dll": "895cfdda99b2692d712b4e26ac807c954329738698cc009064aa250321d20719"
+    },
+    "managed-delta": {
+      "mdpkg.dll": "5b17acfcf64b9964e1233cf01e0b7d9c8eb35c91dd2df320942cdef21119c608",
+      "Mdpkg.Core.dll": "19804a58eaeb37053715604df0c0821932e55d4da84fc620e127c0b28132ee82",
+      "Mdpkg.Reader.dll": "1397a4fcfc59a071ed7254335826373c79a4f1796ce350f8d2d864858386f2b6"
+    }
+  },
+  "packages": [
+    {
+      "shape": "tiny",
+      "backend": "native",
+      "packageBytes": 3172,
+      "sourceBytes": 1289,
+      "gitZipBytes": 2248,
+      "historyZipBytes": 311,
+      "withoutGitAndHistorySameManifestBytes": 613,
+      "removedFractionPercent": 80.6747,
+      "sha256": "e7078bcee6e30bbbcef086e6cffb3e4a6e4a3892f1469095dec294c8b0a24c60",
+      "current": "sha1-97dbbe66d09bbe12c9ae31f7d85fbbf9a963bdb2",
+      "checksPassed": 23,
+      "checksFailed": 0,
+      "retainedCommits": 1,
+      "entries": [
+        {
+          "name": ".mdpkg/manifest.json",
+          "decodedBytes": 339,
+          "compressedBytes": 339,
+          "zipBytes": 455,
+          "method": 0
+        },
+        {
+          "name": "file0.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": ".mdpkg/history.json",
+          "decodedBytes": 407,
+          "compressedBytes": 197,
+          "zipBytes": 311,
+          "method": 8
+        },
+        {
+          "name": ".git/HEAD",
+          "decodedBytes": 21,
+          "compressedBytes": 21,
+          "zipBytes": 115,
+          "method": 0
+        },
+        {
+          "name": ".git/config",
+          "decodedBytes": 50,
+          "compressedBytes": 50,
+          "zipBytes": 148,
+          "method": 0
+        },
+        {
+          "name": ".git/refs/heads/main",
+          "decodedBytes": 41,
+          "compressedBytes": 41,
+          "zipBytes": 157,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-d8770ba213b28157347a69a8caf23666267c13f5.idx",
+          "decodedBytes": 1156,
+          "compressedBytes": 1156,
+          "zipBytes": 1366,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-d8770ba213b28157347a69a8caf23666267c13f5.pack",
+          "decodedBytes": 250,
+          "compressedBytes": 250,
+          "zipBytes": 462,
+          "method": 0
+        }
+      ]
+    },
+    {
+      "shape": "tiny",
+      "backend": "managed-delta",
+      "packageBytes": 3176,
+      "sourceBytes": 1289,
+      "gitZipBytes": 2252,
+      "historyZipBytes": 311,
+      "withoutGitAndHistorySameManifestBytes": 613,
+      "removedFractionPercent": 80.699,
+      "sha256": "312fe8749761b39482f91940a0428623268bf56e892d9040bec858cb5b26c5c1",
+      "current": "sha1-97dbbe66d09bbe12c9ae31f7d85fbbf9a963bdb2",
+      "checksPassed": 23,
+      "checksFailed": 0,
+      "retainedCommits": 1,
+      "entries": [
+        {
+          "name": ".mdpkg/manifest.json",
+          "decodedBytes": 339,
+          "compressedBytes": 339,
+          "zipBytes": 455,
+          "method": 0
+        },
+        {
+          "name": "file0.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": ".mdpkg/history.json",
+          "decodedBytes": 407,
+          "compressedBytes": 197,
+          "zipBytes": 311,
+          "method": 8
+        },
+        {
+          "name": ".git/HEAD",
+          "decodedBytes": 21,
+          "compressedBytes": 21,
+          "zipBytes": 115,
+          "method": 0
+        },
+        {
+          "name": ".git/config",
+          "decodedBytes": 50,
+          "compressedBytes": 50,
+          "zipBytes": 148,
+          "method": 0
+        },
+        {
+          "name": ".git/refs/heads/main",
+          "decodedBytes": 41,
+          "compressedBytes": 41,
+          "zipBytes": 157,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-089b0b796c75adf9fa0e79de665b238ecc162621.idx",
+          "decodedBytes": 1156,
+          "compressedBytes": 1156,
+          "zipBytes": 1366,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-089b0b796c75adf9fa0e79de665b238ecc162621.pack",
+          "decodedBytes": 254,
+          "compressedBytes": 254,
+          "zipBytes": 466,
+          "method": 0
+        }
+      ]
+    },
+    {
+      "shape": "many-small",
+      "backend": "native",
+      "packageBytes": 7426,
+      "sourceBytes": 25790,
+      "gitZipBytes": 3887,
+      "historyZipBytes": 312,
+      "withoutGitAndHistorySameManifestBytes": 3227,
+      "removedFractionPercent": 56.5446,
+      "sha256": "b6f88ed1999f4343494067c8de5244412f438fed15f1fc616a153519505fd94f",
+      "current": "sha1-58913649c27f72ed265e961dae849c73c52dcc4b",
+      "checksPassed": 23,
+      "checksFailed": 0,
+      "retainedCommits": 1,
+      "entries": [
+        {
+          "name": ".mdpkg/manifest.json",
+          "decodedBytes": 339,
+          "compressedBytes": 339,
+          "zipBytes": 455,
+          "method": 0
+        },
+        {
+          "name": "file0.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file1.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file10.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file11.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file12.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file13.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file14.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file15.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file16.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file17.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file18.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file19.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file2.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file3.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file4.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file5.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file6.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file7.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file8.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file9.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": ".mdpkg/history.json",
+          "decodedBytes": 407,
+          "compressedBytes": 198,
+          "zipBytes": 312,
+          "method": 8
+        },
+        {
+          "name": ".git/HEAD",
+          "decodedBytes": 21,
+          "compressedBytes": 21,
+          "zipBytes": 115,
+          "method": 0
+        },
+        {
+          "name": ".git/config",
+          "decodedBytes": 50,
+          "compressedBytes": 50,
+          "zipBytes": 148,
+          "method": 0
+        },
+        {
+          "name": ".git/refs/heads/main",
+          "decodedBytes": 41,
+          "compressedBytes": 40,
+          "zipBytes": 156,
+          "method": 8
+        },
+        {
+          "name": ".git/objects/pack/pack-afc0869e8d9b45891c2a9fdbf868fc2088a1cf6a.idx",
+          "decodedBytes": 1688,
+          "compressedBytes": 1688,
+          "zipBytes": 1898,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-afc0869e8d9b45891c2a9fdbf868fc2088a1cf6a.pack",
+          "decodedBytes": 1358,
+          "compressedBytes": 1358,
+          "zipBytes": 1570,
+          "method": 0
+        }
+      ]
+    },
+    {
+      "shape": "many-small",
+      "backend": "managed-delta",
+      "packageBytes": 7565,
+      "sourceBytes": 25790,
+      "gitZipBytes": 4026,
+      "historyZipBytes": 312,
+      "withoutGitAndHistorySameManifestBytes": 3227,
+      "removedFractionPercent": 57.343,
+      "sha256": "3861a21d86ca3995bbe7c3761c61f4072b540369075848b83cbbd9b2cd195fd7",
+      "current": "sha1-58913649c27f72ed265e961dae849c73c52dcc4b",
+      "checksPassed": 23,
+      "checksFailed": 0,
+      "retainedCommits": 1,
+      "entries": [
+        {
+          "name": ".mdpkg/manifest.json",
+          "decodedBytes": 339,
+          "compressedBytes": 339,
+          "zipBytes": 455,
+          "method": 0
+        },
+        {
+          "name": "file0.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file1.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file10.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file11.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file12.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file13.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file14.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file15.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file16.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file17.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file18.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file19.md",
+          "decodedBytes": 1290,
+          "compressedBytes": 45,
+          "zipBytes": 139,
+          "method": 8
+        },
+        {
+          "name": "file2.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file3.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file4.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file5.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file6.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file7.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file8.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": "file9.md",
+          "decodedBytes": 1289,
+          "compressedBytes": 44,
+          "zipBytes": 136,
+          "method": 8
+        },
+        {
+          "name": ".mdpkg/history.json",
+          "decodedBytes": 407,
+          "compressedBytes": 198,
+          "zipBytes": 312,
+          "method": 8
+        },
+        {
+          "name": ".git/HEAD",
+          "decodedBytes": 21,
+          "compressedBytes": 21,
+          "zipBytes": 115,
+          "method": 0
+        },
+        {
+          "name": ".git/config",
+          "decodedBytes": 50,
+          "compressedBytes": 50,
+          "zipBytes": 148,
+          "method": 0
+        },
+        {
+          "name": ".git/refs/heads/main",
+          "decodedBytes": 41,
+          "compressedBytes": 40,
+          "zipBytes": 156,
+          "method": 8
+        },
+        {
+          "name": ".git/objects/pack/pack-deccd92eb872863d69d312151bd2fb3f24bdb793.idx",
+          "decodedBytes": 1688,
+          "compressedBytes": 1688,
+          "zipBytes": 1898,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-deccd92eb872863d69d312151bd2fb3f24bdb793.pack",
+          "decodedBytes": 1497,
+          "compressedBytes": 1497,
+          "zipBytes": 1709,
+          "method": 0
+        }
+      ]
+    },
+    {
+      "shape": "large",
+      "backend": "native",
+      "packageBytes": 398961,
+      "sourceBytes": 1648948,
+      "gitZipBytes": 155184,
+      "historyZipBytes": 310,
+      "withoutGitAndHistorySameManifestBytes": 243467,
+      "removedFractionPercent": 38.9747,
+      "sha256": "467aa78b040c85253c4a9554f85d9a729da36f61a85e327e5c7b6218c59ca494",
+      "current": "sha1-58e4ad32c3e1dea5ccac00af623f931ac407d300",
+      "checksPassed": 23,
+      "checksFailed": 0,
+      "retainedCommits": 1,
+      "entries": [
+        {
+          "name": ".mdpkg/manifest.json",
+          "decodedBytes": 339,
+          "compressedBytes": 339,
+          "zipBytes": 455,
+          "method": 0
+        },
+        {
+          "name": "file0.md",
+          "decodedBytes": 824474,
+          "compressedBytes": 121403,
+          "zipBytes": 121495,
+          "method": 8
+        },
+        {
+          "name": "file1.md",
+          "decodedBytes": 824474,
+          "compressedBytes": 121403,
+          "zipBytes": 121495,
+          "method": 8
+        },
+        {
+          "name": ".mdpkg/history.json",
+          "decodedBytes": 407,
+          "compressedBytes": 196,
+          "zipBytes": 310,
+          "method": 8
+        },
+        {
+          "name": ".git/HEAD",
+          "decodedBytes": 21,
+          "compressedBytes": 21,
+          "zipBytes": 115,
+          "method": 0
+        },
+        {
+          "name": ".git/config",
+          "decodedBytes": 50,
+          "compressedBytes": 50,
+          "zipBytes": 148,
+          "method": 0
+        },
+        {
+          "name": ".git/refs/heads/main",
+          "decodedBytes": 41,
+          "compressedBytes": 41,
+          "zipBytes": 157,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-7ae4b3de75e09d615ad9b1d48e664bc7cdf5a477.idx",
+          "decodedBytes": 1184,
+          "compressedBytes": 1184,
+          "zipBytes": 1394,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-7ae4b3de75e09d615ad9b1d48e664bc7cdf5a477.pack",
+          "decodedBytes": 153158,
+          "compressedBytes": 153158,
+          "zipBytes": 153370,
+          "method": 0
+        }
+      ]
+    },
+    {
+      "shape": "large",
+      "backend": "managed-delta",
+      "packageBytes": 397646,
+      "sourceBytes": 1648948,
+      "gitZipBytes": 153869,
+      "historyZipBytes": 310,
+      "withoutGitAndHistorySameManifestBytes": 243467,
+      "removedFractionPercent": 38.7729,
+      "sha256": "ed7fbaa5391d47273d1574fcc627a5d9208d4c97f27ea192527fabcdeef0f2a2",
+      "current": "sha1-58e4ad32c3e1dea5ccac00af623f931ac407d300",
+      "checksPassed": 23,
+      "checksFailed": 0,
+      "retainedCommits": 1,
+      "entries": [
+        {
+          "name": ".mdpkg/manifest.json",
+          "decodedBytes": 339,
+          "compressedBytes": 339,
+          "zipBytes": 455,
+          "method": 0
+        },
+        {
+          "name": "file0.md",
+          "decodedBytes": 824474,
+          "compressedBytes": 121403,
+          "zipBytes": 121495,
+          "method": 8
+        },
+        {
+          "name": "file1.md",
+          "decodedBytes": 824474,
+          "compressedBytes": 121403,
+          "zipBytes": 121495,
+          "method": 8
+        },
+        {
+          "name": ".mdpkg/history.json",
+          "decodedBytes": 407,
+          "compressedBytes": 196,
+          "zipBytes": 310,
+          "method": 8
+        },
+        {
+          "name": ".git/HEAD",
+          "decodedBytes": 21,
+          "compressedBytes": 21,
+          "zipBytes": 115,
+          "method": 0
+        },
+        {
+          "name": ".git/config",
+          "decodedBytes": 50,
+          "compressedBytes": 50,
+          "zipBytes": 148,
+          "method": 0
+        },
+        {
+          "name": ".git/refs/heads/main",
+          "decodedBytes": 41,
+          "compressedBytes": 41,
+          "zipBytes": 157,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-4102c1623464f1b9edca5293d01e090f774cbb6f.idx",
+          "decodedBytes": 1184,
+          "compressedBytes": 1184,
+          "zipBytes": 1394,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-4102c1623464f1b9edca5293d01e090f774cbb6f.pack",
+          "decodedBytes": 151843,
+          "compressedBytes": 151843,
+          "zipBytes": 152055,
+          "method": 0
+        }
+      ]
+    },
+    {
+      "shape": "similar",
+      "backend": "native",
+      "packageBytes": 319042,
+      "sourceBytes": 1780250,
+      "gitZipBytes": 18933,
+      "historyZipBytes": 312,
+      "withoutGitAndHistorySameManifestBytes": 299797,
+      "removedFractionPercent": 6.0321,
+      "sha256": "a49b6ad6c81e83a3aa65574b1d089522f282e60c4bbabc0a83e832575e04dfe6",
+      "current": "sha1-6b194d41dc51e58e8607956f893ee69ef3343103",
+      "checksPassed": 23,
+      "checksFailed": 0,
+      "retainedCommits": 1,
+      "entries": [
+        {
+          "name": ".mdpkg/manifest.json",
+          "decodedBytes": 339,
+          "compressedBytes": 339,
+          "zipBytes": 455,
+          "method": 0
+        },
+        {
+          "name": "file0.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file1.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file10.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file11.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file12.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file13.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file14.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file15.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file16.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file17.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file18.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file19.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file2.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file3.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file4.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file5.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file6.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file7.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file8.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file9.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": ".mdpkg/history.json",
+          "decodedBytes": 407,
+          "compressedBytes": 198,
+          "zipBytes": 312,
+          "method": 8
+        },
+        {
+          "name": ".git/HEAD",
+          "decodedBytes": 21,
+          "compressedBytes": 21,
+          "zipBytes": 115,
+          "method": 0
+        },
+        {
+          "name": ".git/config",
+          "decodedBytes": 50,
+          "compressedBytes": 50,
+          "zipBytes": 148,
+          "method": 0
+        },
+        {
+          "name": ".git/refs/heads/main",
+          "decodedBytes": 41,
+          "compressedBytes": 41,
+          "zipBytes": 157,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-dc28a6cfe410d68fe9239a53c3e0b40e72549f23.idx",
+          "decodedBytes": 1688,
+          "compressedBytes": 1688,
+          "zipBytes": 1898,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-dc28a6cfe410d68fe9239a53c3e0b40e72549f23.pack",
+          "decodedBytes": 16403,
+          "compressedBytes": 16403,
+          "zipBytes": 16615,
+          "method": 0
+        }
+      ]
+    },
+    {
+      "shape": "similar",
+      "backend": "managed-delta",
+      "packageBytes": 318670,
+      "sourceBytes": 1780250,
+      "gitZipBytes": 18561,
+      "historyZipBytes": 312,
+      "withoutGitAndHistorySameManifestBytes": 299797,
+      "removedFractionPercent": 5.9224,
+      "sha256": "4a1c826428f4c1b85d82c70735449311c23279d9fc4a4676dbcb99e5f919fcd2",
+      "current": "sha1-6b194d41dc51e58e8607956f893ee69ef3343103",
+      "checksPassed": 23,
+      "checksFailed": 0,
+      "retainedCommits": 1,
+      "entries": [
+        {
+          "name": ".mdpkg/manifest.json",
+          "decodedBytes": 339,
+          "compressedBytes": 339,
+          "zipBytes": 455,
+          "method": 0
+        },
+        {
+          "name": "file0.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file1.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file10.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file11.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file12.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file13.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file14.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file15.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file16.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file17.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file18.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file19.md",
+          "decodedBytes": 89013,
+          "compressedBytes": 14873,
+          "zipBytes": 14967,
+          "method": 8
+        },
+        {
+          "name": "file2.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file3.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file4.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file5.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file6.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file7.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file8.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": "file9.md",
+          "decodedBytes": 89012,
+          "compressedBytes": 14873,
+          "zipBytes": 14965,
+          "method": 8
+        },
+        {
+          "name": ".mdpkg/history.json",
+          "decodedBytes": 407,
+          "compressedBytes": 198,
+          "zipBytes": 312,
+          "method": 8
+        },
+        {
+          "name": ".git/HEAD",
+          "decodedBytes": 21,
+          "compressedBytes": 21,
+          "zipBytes": 115,
+          "method": 0
+        },
+        {
+          "name": ".git/config",
+          "decodedBytes": 50,
+          "compressedBytes": 50,
+          "zipBytes": 148,
+          "method": 0
+        },
+        {
+          "name": ".git/refs/heads/main",
+          "decodedBytes": 41,
+          "compressedBytes": 41,
+          "zipBytes": 157,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-4ca4e94fe61bd6220d81e31622121caa80913bc4.idx",
+          "decodedBytes": 1688,
+          "compressedBytes": 1688,
+          "zipBytes": 1898,
+          "method": 0
+        },
+        {
+          "name": ".git/objects/pack/pack-4ca4e94fe61bd6220d81e31622121caa80913bc4.pack",
+          "decodedBytes": 16031,
+          "compressedBytes": 16031,
+          "zipBytes": 16243,
+          "method": 0
+        }
+      ]
+    }
+  ]
+}
