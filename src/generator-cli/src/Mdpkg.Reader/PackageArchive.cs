@@ -74,23 +74,7 @@ public sealed class PackageArchive : IDisposable
             if (input.CanSeek)
                 source = new RelativeStream(input);
             else
-            {
-                var path = Path.Combine(limits.TemporaryDirectory ?? Path.GetTempPath(), "mdpkg-read-" + Guid.NewGuid().ToString("N") + ".tmp");
-                var options = new FileStreamOptions { Mode = FileMode.CreateNew, Access = FileAccess.ReadWrite, Share = FileShare.None,
-                    Options = FileOptions.Asynchronous | FileOptions.DeleteOnClose };
-                if (!OperatingSystem.IsWindows()) options.UnixCreateMode = UnixFileMode.UserRead | UnixFileMode.UserWrite;
-                source = new FileStream(path, options);
-                var buffer = new byte[65536]; long length = 0;
-                while (true)
-                {
-                    var n = await input.ReadAsync(buffer, cancellationToken);
-                    if (n == 0) break;
-                    length += n;
-                    if (length > limits.MaxInputBytes) throw new ResourceLimitException("Non-seekable input exceeds its spool limit.");
-                    await source.WriteAsync(buffer.AsMemory(0, n), cancellationToken);
-                }
-                source.Position = 0;
-            }
+                source = await InputSpool.CaptureAsync(input, limits, cancellationToken);
             var index = ZipReader.Index(source, limits, cancellationToken);
             if (index.Findings.Any(f => f.Code != "MDPK1006") || (!acceptRecoverable && (!index.Typed || index.Findings.Count > 0)))
                 throw new PackageFormatException(index.Findings.FirstOrDefault()?.Code ?? "MDPK1006", "ZIP profile checks failed.");

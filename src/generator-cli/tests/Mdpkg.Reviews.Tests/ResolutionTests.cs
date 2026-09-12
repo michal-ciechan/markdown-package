@@ -33,8 +33,8 @@ public class ResolutionTests
             if (file != "original.mdpkg")
             {
                 Assert.Equal(CorrelationStatus.NotChecked, result.Correlation);
-                Assert.Equal(IdentityStatus.Unconfirmed, i.IdentityStatus); Assert.Equal(TargetStatus.Unconfirmed, i.TargetStatus);
-                Assert.Equal("origin-unverified", i.Reason); Assert.Null(i.ResolvedLocation);
+                Assert.Equal(IdentityStatus.NotResolved, i.IdentityStatus); Assert.Equal(TargetStatus.VerificationUnavailable, i.TargetStatus);
+                Assert.Equal("target-source-unverified", i.Reason); Assert.Null(i.ResolvedLocation);
                 // Current ledger/digest behavior still works when no cross-checkpoint claim is made.
                 var anchor = review.Threads.First(t => t.Id == i.ThreadId).Anchor;
                 var current = selected.Resolve(selected.Identity, anchor.Root, anchor.Expect, anchor.Locator, TestContext.Current.CancellationToken);
@@ -114,8 +114,8 @@ public class ResolutionTests
             _ => "# Guide\n\nNo matching text.\n"
         }));
         var result = await new ReviewExtractor().ResolveAsync(review, new(original, target, true), TestContext.Current.CancellationToken);
-        Assert.Equal(TargetStatus.Unconfirmed, result.Items[0].TargetStatus); Assert.Equal(IdentityStatus.Unconfirmed, result.Items[0].IdentityStatus);
-        Assert.Equal("origin-unverified", result.Items[0].Reason); Assert.Null(result.Items[0].ResolvedLocation);
+        Assert.Equal(TargetStatus.VerificationUnavailable, result.Items[0].TargetStatus); Assert.Equal(IdentityStatus.NotResolved, result.Items[0].IdentityStatus);
+        Assert.Equal("target-source-unverified", result.Items[0].Reason); Assert.Null(result.Items[0].ResolvedLocation);
     }
     [Theory]
     [InlineData("deleted")][InlineData("split")][InlineData("merge")]
@@ -131,8 +131,8 @@ public class ResolutionTests
             e["other.md"] = Fixtures.Bytes("comments-v2.json"); // Contains the quote too; never searched.
         });
         var result = await new ReviewExtractor().ResolveAsync(review, new(original, target, true), TestContext.Current.CancellationToken);
-        var item = result.Items[0]; Assert.Equal(IdentityStatus.Unconfirmed, item.IdentityStatus); Assert.Equal(TargetStatus.Unconfirmed, item.TargetStatus);
-        Assert.Null(item.ResolvedLocation); Assert.Empty(item.Successors!); Assert.Equal("origin-unverified", item.Reason);
+        var item = result.Items[0]; Assert.Equal(IdentityStatus.NotResolved, item.IdentityStatus); Assert.Equal(TargetStatus.VerificationUnavailable, item.TargetStatus);
+        Assert.Null(item.ResolvedLocation); Assert.Empty(item.Successors!); Assert.Equal("target-source-unverified", item.Reason);
         var anchor = review.Threads[0].Anchor;
         var current = target.Resolve(target.Identity, root, anchor.Expect, anchor.Locator, TestContext.Current.CancellationToken);
         Assert.Equal(IdentityStatus.FlaggedChanged, current.Status); Assert.Null(current.Scope);
@@ -149,8 +149,8 @@ public class ResolutionTests
             e["guide.md"] = Profile.Utf8.GetBytes(Fixtures.Json("vectors.json")["source"]!.GetValue<string>());
         });
         var result = await new ReviewExtractor().ResolveAsync(review, new(original, target, true), TestContext.Current.CancellationToken);
-        Assert.Equal(IdentityStatus.Unconfirmed, result.Items[0].IdentityStatus); Assert.Equal(TargetStatus.Unconfirmed, result.Items[0].TargetStatus);
-        Assert.Equal("origin-unverified", result.Items[0].Reason);
+        Assert.Equal(IdentityStatus.NotResolved, result.Items[0].IdentityStatus); Assert.Equal(TargetStatus.VerificationUnavailable, result.Items[0].TargetStatus);
+        Assert.Equal("target-source-unverified", result.Items[0].Reason);
         Assert.Null(result.Items[0].ResolvedLocation);
     }
     [Fact]

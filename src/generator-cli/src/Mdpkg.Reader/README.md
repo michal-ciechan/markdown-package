@@ -29,6 +29,8 @@ payloads. Other entries are CRC/decompression checked only when read. Container 
 does not certify untouched payloads or Git graph/current-view agreement. Recoverable
 typing requires explicit opt-in. `PackageSnapshot.ReadAsync` loads the bounded current
 Markdown view and ledger, computes file corroboration, and caches scopes on demand.
+Every snapshot read first captures the input to a private disk spool, so the identity,
+scopes and archive digest describe the same bytes even if the caller changes its stream.
 Snapshot data remains usable after the input is disposed. No historical Git tree is
 materialized. A different reviewed checkpoint returns an unconfirmed result before
 ledger or digest matching: `history-unavailable` for snapshot targets,
@@ -50,10 +52,10 @@ its ZIP encoding and optional original transport evidence have not been recovere
 For history-free packages, call `PackageArchive.VerifySnapshot(cancellationToken)` to
 read every current file, including non-Markdown files, the ledger and review document,
 and verify the exact state hash. Success sets `Assurance` to `SnapshotVerified`.
-`PackageSnapshot.ReadAsync(..., verifySnapshot: true)` captures bounded private bytes,
+`PackageSnapshot.ReadAsync(..., verifySnapshot: true)` uses that private disk capture,
 verifies the same complete snapshot, and returns owned scopes with that assurance.
 This option requires snapshot mode; Git source assurance uses an explicit history
-backend proof bound to the selected archive. The default read remains selective.
+backend proof bound to the selected archive. The default read still verifies only selected payloads.
 This explicit operation consumes the archive's remaining read budgets and needs no Git.
 
 For loose author links, `snapshot.ResolveReference(uri, cancellationToken)` parses
@@ -75,7 +77,9 @@ the live ledger root (the browser's `referenceFor` does this).
 
 Streams remain caller-owned. Reading starts at the current position and advances it.
 Non-seekable input is spooled to a private, size-limited, delete-on-close file; dispose
-the archive to release it. Failed opens and cancellation remove spools. Archive instances
+the archive to release it. Snapshot reads also spool seekable input, using a 64 KiB copy
+buffer, `ReadLimits.MaxInputBytes` and `ReadLimits.TemporaryDirectory`. Their spool is
+deleted before returning the owned snapshot. Failures and cancellation remove spools. Archive instances
 are not thread-safe. Cancellation is propagated, never converted to a malformed result.
 
 Default `ReadLimits`: input 128 MiB, central directory 16 MiB, 10,000 entries, manifest/

@@ -1,6 +1,7 @@
 using System.Text.Json.Nodes;
 using Mdpkg.Reader.Internal;
 using Mdpkg.Reader.Internal.Addressing;
+using Mdpkg.Reader.Internal.Container;
 using Mdpkg.Reader.Internal.Format;
 using Mdpkg.Reader.Internal.Sources;
 
@@ -116,7 +117,7 @@ public sealed partial class PackageSnapshot
         this.documents = documents; this.ledger = ledger;
         DocumentPaths = Array.AsReadOnly(documents.Keys.ToArray());
     }
-    /// <summary>Loads the bounded current Markdown view and ledger and hashes the package bytes.</summary>
+    /// <summary>Captures the package to bounded temporary storage, then loads its current Markdown view and ledger and hashes the same bytes.</summary>
     /// <param name="input">Readable stream starting at the package; remains caller-owned.</param>
     /// <param name="limits">Resource budgets, or null to use the standard defaults.</param>
     /// <param name="cancellationToken">Token used to cancel the operation; cancellation is propagated to the caller.</param>
@@ -128,14 +129,11 @@ public sealed partial class PackageSnapshot
     /// <exception cref="OperationCanceledException">Cancellation was requested.</exception>
     public static async Task<PackageSnapshot> ReadAsync(Stream input, ReadLimits? limits = null, CancellationToken cancellationToken = default, bool verifySnapshot = false)
     {
-        if (!verifySnapshot) return await ReadCapturedAsync(input, limits, cancellationToken, false);
-        // Verification and the returned scopes must describe the same immutable bytes,
-        // even when a caller supplies a seekable stream that changes between reads.
-        using var captured = new MemoryStream();
-        using (var source = await PackageArchive.OpenAsync(input, limits, cancellationToken: cancellationToken))
-            await source.CopyToAsync(captured, cancellationToken);
-        captured.Position = 0;
-        return await ReadCapturedAsync(captured, limits, cancellationToken, true);
+        // Every returned scope and its archive digest must derive from the same private
+        // bytes, including selective Git reads later matched against backend proof.
+        limits ??= new();
+        using var captured = await InputSpool.CaptureAsync(input, limits, cancellationToken);
+        return await ReadCapturedAsync(captured, limits, cancellationToken, verifySnapshot);
     }
     private static async Task<PackageSnapshot> ReadCapturedAsync(Stream input, ReadLimits? limits, CancellationToken cancellationToken, bool verifySnapshot)
     {

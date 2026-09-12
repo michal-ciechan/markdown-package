@@ -79,7 +79,10 @@ Snapshot identity replaces Git integrity in snapshot mode; Git origin adds a boo
 verification obligation. A provider cannot narrow the required mask or earn Full by
 echoing check flags: Reader must actually verify the snapshot, or an S3 history proof
 must match the archive bytes, length and typed identity. Nonapplicable Git checks cannot
-be reported as passed. Parsing and verification use one private, bounded byte capture.
+be reported as passed. Parsing and verification use one private disk capture with a
+64 KiB copy buffer, bounded by `ReadLimits.MaxInputBytes` and stored under
+`ReadLimits.TemporaryDirectory` (the system temporary directory by default). The spool
+is deleted on success, failure or cancellation; verification needs no whole-archive RAM copy.
 
 `ReviewVerificationProvider` verifies snapshots through Reader and accepts an explicit
 `IHistoryVerificationBackend` for Git packages, such as Core's `GitHistoryBackend`.
@@ -94,6 +97,9 @@ target requires `UseNewerTarget: true`, the same namespace and the exact reviewe
 as context, or S0 reconstructed from verified origin. C0 is a different target key from S0
 and still needs explicit selection. Supply `ReviewedHistory`/`TargetHistory` as S3 proof
 objects; there is no caller-set Full flag. Git proofs must match the actual archive bytes.
+The selected target must have its own verified snapshot assurance or matching Git proof,
+even when it declares the same identity as the verified original. An unverified target
+returns `VerificationUnavailable` / `target-source-unverified` without a resolved location.
 Snapshot source reads use `PackageSnapshot.ReadAsync(..., verifySnapshot: true)`; selective
 unverified source reads cannot produce verified selector/location claims. A missing origin,
 wrong original, incomplete correspondence or non-selected target preserves all feedback

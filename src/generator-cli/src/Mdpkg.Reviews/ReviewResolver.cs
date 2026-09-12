@@ -43,6 +43,8 @@ public sealed partial class ReviewExtractor
             return Finish(CorrelationStatus.NotChecked, IdentityStatus.NotResolved, TargetStatus.VerificationUnavailable, "bundled-context-requires-full-verification");
         if (basis.Assurance != IdentityAssurance.SnapshotVerified && context.ReviewedHistory?.Matches(basis) != true && targetHistory?.Matches(basis) != true)
             return Finish(CorrelationStatus.NotChecked, IdentityStatus.NotResolved, TargetStatus.VerificationUnavailable, "reviewed-source-unverified");
+        if (target.Assurance != IdentityAssurance.SnapshotVerified && targetHistory?.Matches(target) != true)
+            return Finish(CorrelationStatus.NotChecked, IdentityStatus.NotResolved, TargetStatus.VerificationUnavailable, "target-source-unverified");
         if (basis.Addressing.Anchor != review.AnchorProfile || basis.Addressing.Digest != review.DigestProfile)
             return Finish(CorrelationStatus.NotChecked, IdentityStatus.Invalidated, TargetStatus.Invalidated, "reviewed-profile-mismatch");
         var repacked = basis.HasOriginalArchiveBytes && ((reviewed.PackageDigest is not null && basis.PackageDigest != reviewed.PackageDigest) ||

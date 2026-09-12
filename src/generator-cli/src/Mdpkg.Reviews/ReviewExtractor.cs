@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using Mdpkg.Reader;
 using Mdpkg.Reader.Internal;
+using Mdpkg.Reader.Internal.Container;
 
 namespace Mdpkg.Reviews;
 
@@ -28,13 +29,8 @@ public sealed partial class ReviewExtractor
         {
             // Parse feedback and verify its package from the same private bytes.
             // A caller-owned seekable stream may otherwise change during provider work.
-            using var captured = options.VerificationProvider is null ? null : new MemoryStream();
-            if (captured is not null)
-            {
-                using var source = await PackageArchive.OpenAsync(returnedPackage, options.Limits, options.AcceptRecoverable, cancellationToken);
-                await source.CopyToAsync(captured, cancellationToken);
-                captured.Position = 0;
-            }
+            using var captured = options.VerificationProvider is null ? null :
+                await InputSpool.CaptureAsync(returnedPackage, options.Limits, cancellationToken);
             using var archive = await PackageArchive.OpenAsync(captured ?? returnedPackage, options.Limits, options.AcceptRecoverable, cancellationToken);
             result = result with { ContainerStatus = archive.ContainerStatus, VerificationLevel = VerificationLevel.Structural,
                 ReviewIdentity = archive.Identity, Checks = Array.AsReadOnly(new[] { "zip-directory-and-extents", "manifest", "history-declaration",
