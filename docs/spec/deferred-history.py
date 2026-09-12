@@ -7,6 +7,9 @@ import copy, hashlib, importlib.util, json, tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+operation_spec = importlib.util.spec_from_file_location('operations', HERE / 'deferred_history_operations.py')
+operation_module = importlib.util.module_from_spec(operation_spec); operation_spec.loader.exec_module(operation_module)
+operation_inputs = operation_module.operation_inputs
 VECTORS = HERE.parent / 'investigations/deferred-history/breaking-revision-vectors.json'
 spec = importlib.util.spec_from_file_location('worked', HERE / 'worked-example.py')
 w = importlib.util.module_from_spec(spec); spec.loader.exec_module(w)
@@ -170,7 +173,15 @@ def main():
         for case in cases:
             if case['name'] in edits:
                 fixture,edit=edits[case['name']];case['target']='archive-edit';case['value']=dict(fixture=fixture,edit=edit)
-            else:case['base']='guide-snapshot.mdpkg' if case['target']!='origin' else 'guide-materialized.mdpkg'
+            else:
+                is_review=case['target']=='manifest' and 'review' in case['value']
+                case['base']='delta-review-snapshot.mdpkg' if is_review else 'guide-snapshot.mdpkg' if case['target']!='origin' else 'guide-materialized.mdpkg'
+                # Repair identity after semantic edits, so hash mismatch is not a
+                # second rejection. Malformed review.of cannot form a preimage.
+                if is_review and case['name'] not in ('invalid-review-of','string-reviewed-current'):
+                    m=case['value'];files={p:b.encode() for p,b in vectors[2]['sources'].items()}
+                    repaired,_=state(m['namespace'],files,m['addressing'],m['review'])
+                    m['current']=repaired['current']
         operations=[
             ('initial-publication','snapshot','allowed'),('identical-resend','snapshot','same-identity'),
             ('private-edit','snapshot','rehash'),('changed-published-successor','git','materialize-exact-S0-then-append'),
@@ -233,9 +244,11 @@ def main():
             _,preimage=state(header['namespace'],files,header['addressing'],header['review'])
             case['expectedId']=digest(canonical(preimage))
             assert (case['expectedId']==v['snapshotId'])==(case['expected']=='same'),case['name']
+        requests=operation_inputs(vectors,transitions,w)
+        assert set(requests)=={n for n,_,_ in operations}
         result=dict(purpose='S1 shared draft-2 conformance data; product implementation pending. Historical source measurements remain unchanged.',
             sourceRevision=prior['sourceRevision'],vectors=vectors,transitions=transitions,invalidCases=cases,
-            operations=[dict(name=n,operation=o,expected=e) for n,o,e in operations],hashCases=hash_cases,packages=packages)
+            operations=[dict(name=n,operation=o,input=requests[n],expected=e) for n,o,e in operations],hashCases=hash_cases,packages=packages)
         VECTORS.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
     print(f'{len(vectors)} state/bootstrap vectors; {len(transitions)} changed-child vector; {len(cases)} invalid cases; {len(operations)} operation cases; {len(hash_cases)} identity mutations')
 

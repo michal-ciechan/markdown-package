@@ -749,7 +749,7 @@
           "overrides": null
         },
         "current": {
-          "id": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a",
+          "id": "sha256-4780fc5701fffdcb146ce4c5e76e3e3f39f0332651b29877be018027f5b289ef",
           "kind": "snapshot"
         },
         "history": {
@@ -770,7 +770,7 @@
       },
       "expected": "reject",
       "reason": "fixed review contract or mode",
-      "base": "guide-snapshot.mdpkg"
+      "base": "delta-review-snapshot.mdpkg"
     },
     {
       "name": "invalid-review-detail",
@@ -784,7 +784,7 @@
           "overrides": null
         },
         "current": {
-          "id": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a",
+          "id": "sha256-d77e10debc36561264a67fad815d25a4015ad78c0538d0d94f51d8089548ae7f",
           "kind": "snapshot"
         },
         "history": {
@@ -805,7 +805,7 @@
       },
       "expected": "reject",
       "reason": "fixed review contract or mode",
-      "base": "guide-snapshot.mdpkg"
+      "base": "delta-review-snapshot.mdpkg"
     },
     {
       "name": "invalid-review-of",
@@ -834,7 +834,7 @@
       },
       "expected": "reject",
       "reason": "fixed review contract or mode",
-      "base": "guide-snapshot.mdpkg"
+      "base": "delta-review-snapshot.mdpkg"
     },
     {
       "name": "delta-same-namespace",
@@ -848,7 +848,7 @@
           "overrides": null
         },
         "current": {
-          "id": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a",
+          "id": "sha256-d27a90177ffce89ccef5a357dbf8b3e0c5c8954ec6f18906e78f256a8b4c6e09",
           "kind": "snapshot"
         },
         "history": {
@@ -869,7 +869,7 @@
       },
       "expected": "reject",
       "reason": "independent delta namespace",
-      "base": "guide-snapshot.mdpkg"
+      "base": "delta-review-snapshot.mdpkg"
     },
     {
       "name": "string-reviewed-current",
@@ -901,7 +901,7 @@
       },
       "expected": "reject",
       "reason": "typed reviewed state",
-      "base": "guide-snapshot.mdpkg"
+      "base": "delta-review-snapshot.mdpkg"
     },
     {
       "name": "extra-reviewed-key",
@@ -937,7 +937,7 @@
       },
       "expected": "reject",
       "reason": "exact reviewed field set",
-      "base": "guide-snapshot.mdpkg"
+      "base": "delta-review-snapshot.mdpkg"
     },
     {
       "name": "wrong-origin-snapshot",
@@ -1280,181 +1280,727 @@
     {
       "name": "initial-publication",
       "operation": "snapshot",
+      "input": {
+        "sources": {
+          "guide.md": "# Guide\n"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+        "publishedStates": [],
+        "history": "none"
+      },
       "expected": "allowed"
     },
     {
       "name": "identical-resend",
       "operation": "snapshot",
+      "input": {
+        "baseFixture": "guide-snapshot.mdpkg",
+        "sources": {
+          "guide.md": "# Guide\n"
+        },
+        "publishedStates": [
+          {
+            "kind": "snapshot",
+            "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+          }
+        ]
+      },
       "expected": "same-identity"
     },
     {
       "name": "private-edit",
       "operation": "snapshot",
+      "input": {
+        "baseFixture": "guide-snapshot.mdpkg",
+        "sources": {
+          "guide.md": "# Guide\n\nPublished change.\n"
+        },
+        "publishedStates": [],
+        "publish": false
+      },
       "expected": "rehash"
     },
     {
       "name": "changed-published-successor",
       "operation": "git",
+      "input": {
+        "baseFixture": "guide-snapshot.mdpkg",
+        "sources": {
+          "guide.md": "# Guide\n\nPublished change.\n"
+        },
+        "publishedStates": [
+          {
+            "kind": "snapshot",
+            "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+          }
+        ],
+        "originalSnapshotFixture": "guide-snapshot.mdpkg",
+        "commitMetadata": {
+          "message": "Publish changed guide",
+          "unixTime": 1700000400,
+          "author": {
+            "name": "Example Author",
+            "email": "author@example.invalid"
+          },
+          "committer": {
+            "name": "Example Author",
+            "email": "author@example.invalid"
+          },
+          "timezone": "+0000"
+        }
+      },
       "expected": "materialize-exact-S0-then-append"
     },
     {
       "name": "missing-S0",
       "operation": "update",
+      "input": {
+        "priorState": {
+          "kind": "snapshot",
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+        "originalSnapshotFixture": null,
+        "sources": {
+          "guide.md": "# Guide\n\nPublished change.\n"
+        },
+        "destinationBefore": "existing destination\n"
+      },
       "expected": "reject-without-output"
     },
     {
       "name": "committed-successor",
       "operation": "git",
+      "input": {
+        "baseFixture": "guide-materialized.mdpkg",
+        "sources": {
+          "guide.md": "# Guide\n\nPublished change.\n"
+        },
+        "commitMetadata": {
+          "message": "Publish changed guide",
+          "unixTime": 1700000400,
+          "author": {
+            "name": "Example Author",
+            "email": "author@example.invalid"
+          },
+          "committer": {
+            "name": "Example Author",
+            "email": "author@example.invalid"
+          },
+          "timezone": "+0000"
+        }
+      },
       "expected": "append"
     },
     {
       "name": "snapshot-current-reference",
       "operation": "resolve",
+      "input": {
+        "targetFixture": "guide-snapshot.mdpkg",
+        "reference": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=0d8e9f3bd912533ae6bdae357202d3182f8a256341f71eb46459f19623eff44f&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdXV0K"
+      },
       "expected": "current-view"
     },
     {
       "name": "snapshot-at-reference",
       "operation": "resolve",
+      "input": {
+        "targetFixture": "guide-snapshot.mdpkg",
+        "reference": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=0d8e9f3bd912533ae6bdae357202d3182f8a256341f71eb46459f19623eff44f&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdXV0K",
+        "referenceKind": "section-at",
+        "at": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9"
+      },
       "expected": "invalidated / history-unavailable"
     },
     {
       "name": "snapshot-touched",
       "operation": "resolve",
+      "input": {
+        "targetFixture": "guide-snapshot.mdpkg",
+        "reference": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=0d8e9f3bd912533ae6bdae357202d3182f8a256341f71eb46459f19623eff44f&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdXV0K",
+        "query": "touched-since",
+        "observedAt": {
+          "kind": "snapshot",
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+        }
+      },
       "expected": "unknown"
     },
     {
       "name": "different-snapshot-observedAt",
       "operation": "resolve",
+      "input": {
+        "targetFixture": "guide-snapshot.mdpkg",
+        "reference": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=0d8e9f3bd912533ae6bdae357202d3182f8a256341f71eb46459f19623eff44f&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdXV0K",
+        "observedAt": {
+          "kind": "snapshot",
+          "id": "sha256-cff1d5fdb47839059d75d12970c14eceedbaf57161992f03d9e081ff6ea60c14"
+        }
+      },
       "expected": "unconfirmed / history-unavailable"
     },
     {
       "name": "git-unverified-origin",
       "operation": "resolve",
+      "input": {
+        "targetFixture": "guide-materialized.mdpkg",
+        "reference": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=0d8e9f3bd912533ae6bdae357202d3182f8a256341f71eb46459f19623eff44f&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdXV0K",
+        "observedAt": {
+          "kind": "snapshot",
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+        },
+        "originProof": {
+          "action": "do-not-verify",
+          "suppliedProof": null
+        }
+      },
       "expected": "unconfirmed / origin-unverified"
     },
     {
       "name": "git-missing-origin",
       "operation": "resolve",
+      "input": {
+        "targetFixture": "guide-materialized.mdpkg",
+        "reference": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=0d8e9f3bd912533ae6bdae357202d3182f8a256341f71eb46459f19623eff44f&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdXV0K",
+        "observedAt": {
+          "kind": "snapshot",
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+        },
+        "jsonEdits": [
+          {
+            "entry": ".mdpkg/history.json",
+            "path": [
+              "origin"
+            ],
+            "remove": true
+          },
+          {
+            "entry": ".mdpkg/history.json",
+            "path": [
+              "root"
+            ],
+            "value": "original"
+          }
+        ],
+        "rebuildCommit": {
+          "commitBytes": "tree a2cee25e07384988b388900d21dd2c9bd32ed487\nauthor mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\ncommitter mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\n\nInitial guide\n",
+          "repairObjectBindings": true
+        },
+        "originProof": {
+          "action": "do-not-verify",
+          "suppliedProof": null
+        }
+      },
       "expected": "unconfirmed / origin-unavailable"
     },
     {
       "name": "partial-without-observedAt",
       "operation": "resolve",
+      "input": {
+        "targetFixture": "guide-changed-child.mdpkg",
+        "reference": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=0d8e9f3bd912533ae6bdae357202d3182f8a256341f71eb46459f19623eff44f&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdXV0K",
+        "jsonEdits": [
+          {
+            "entry": ".mdpkg/manifest.json",
+            "path": [
+              "addressing",
+              "coverage"
+            ],
+            "value": "partial"
+          },
+          {
+            "entry": ".mdpkg/history.json",
+            "path": [
+              "addressingCoverage",
+              0,
+              "coverage"
+            ],
+            "value": "partial"
+          }
+        ],
+        "observedAt": null
+      },
       "expected": "unconfirmed / incomplete-correspondence"
     },
     {
       "name": "verified-origin",
       "operation": "resolve",
+      "input": {
+        "targetFixture": "guide-materialized.mdpkg",
+        "reference": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=0d8e9f3bd912533ae6bdae357202d3182f8a256341f71eb46459f19623eff44f&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdXV0K",
+        "observedAt": {
+          "kind": "snapshot",
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+        },
+        "originProof": {
+          "action": "verify-origin",
+          "fixture": "guide-materialized.mdpkg",
+          "claimedOrigin": {
+            "profile": "mdpkg-bootstrap-v1",
+            "snapshot": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+            "commit": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+            "header": {
+              "addressing": {
+                "anchor": "cm0312-trail-source-v1",
+                "coverage": "complete",
+                "digest": "cm0312-source-lf-v1",
+                "overrides": null
+              },
+              "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+              "review": null
+            }
+          },
+          "expectedCheckpoint": {
+            "kind": "commit",
+            "id": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9"
+          }
+        }
+      },
       "expected": "C0-checkpoint; typed identities remain distinct"
     },
     {
       "name": "exact-at",
       "operation": "resolve",
+      "input": {
+        "targetFixture": "guide-materialized.mdpkg",
+        "reference": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=0d8e9f3bd912533ae6bdae357202d3182f8a256341f71eb46459f19623eff44f&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdXV0K",
+        "at": "sha1-e8756a61892f4b6ce266f0622899ad562c65bed9",
+        "historyBackend": true,
+        "originProof": {
+          "action": "verify-origin",
+          "fixture": "guide-materialized.mdpkg",
+          "claimedOrigin": {
+            "profile": "mdpkg-bootstrap-v1",
+            "snapshot": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+            "commit": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+            "header": {
+              "addressing": {
+                "anchor": "cm0312-trail-source-v1",
+                "coverage": "complete",
+                "digest": "cm0312-source-lf-v1",
+                "overrides": null
+              },
+              "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+              "review": null
+            }
+          },
+          "expectedCheckpoint": {
+            "kind": "commit",
+            "id": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9"
+          }
+        }
+      },
       "expected": "never redirect"
     },
     {
       "name": "newer-review-target",
       "operation": "review",
+      "input": {
+        "reviewFixture": "delta-v2.mdpkg",
+        "originalFixture": "original.mdpkg",
+        "targetFixture": "changed.mdpkg",
+        "explicitlySelectedNewerTarget": false
+      },
       "expected": "explicit selection required"
     },
     {
       "name": "delta-external-source-absent",
       "operation": "verify",
+      "input": {
+        "targetFixture": "delta-v2.mdpkg",
+        "externalSourceFixture": null,
+        "requestAssurance": "Full",
+        "checkResults": {
+          "container": "passed",
+          "modeManifest": "passed",
+          "everyPayload": "passed",
+          "pathsUtf8Lf": "passed",
+          "ledgerReview": "passed",
+          "snapshotHash": "passed",
+          "gitIntegrityTree": "not-applicable",
+          "bootstrapOrigin": "not-applicable",
+          "reviewShape": "passed"
+        }
+      },
       "expected": "artifact-full; selectors unverified"
     },
     {
       "name": "changed-delta-export",
       "operation": "export",
+      "input": {
+        "baseFixture": "delta-v2.mdpkg",
+        "preparedExport": {
+          "fixture": "delta-v2.mdpkg",
+          "published": true
+        },
+        "jsonEdits": [
+          {
+            "entry": ".mdpkg/review/comments.json",
+            "path": [
+              "threads",
+              0,
+              "comments",
+              0,
+              "body"
+            ],
+            "value": "Please clarify the target words."
+          }
+        ],
+        "namespaceCandidate": "a1234567-1234-4321-8123-123456789abc"
+      },
       "expected": "fresh namespace; retain thread IDs"
     },
     {
       "name": "unchanged-delta-retry",
       "operation": "export",
+      "input": {
+        "baseFixture": "delta-v2.mdpkg",
+        "preparedExport": {
+          "fixture": "delta-v2.mdpkg",
+          "published": true
+        },
+        "jsonEdits": []
+      },
       "expected": "reuse namespace and bytes"
     },
     {
       "name": "remove-C0",
       "operation": "transform",
+      "input": {
+        "baseFixture": "guide-changed-child.mdpkg",
+        "retainCommits": [
+          "sha1-e8756a61892f4b6ce266f0622899ad562c65bed9"
+        ],
+        "transform": "truncate",
+        "originPolicy": "remove",
+        "outputHistoryRoot": "synthetic",
+        "outputHistoryCoverage": "truncated",
+        "rewriteFirstRetainedAsParentless": true
+      },
       "expected": "remove origin; synthetic/truncated or fresh namespace"
     },
     {
       "name": "retained-C0-repack",
       "operation": "transform",
+      "input": {
+        "baseFixture": "guide-changed-child.mdpkg",
+        "retainCommits": [
+          "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+          "sha1-e8756a61892f4b6ce266f0622899ad562c65bed9"
+        ],
+        "transform": "repack",
+        "originPolicy": "retain"
+      },
       "expected": "retain origin"
     },
     {
       "name": "unchanged-tree-semantic-edit",
       "operation": "update",
+      "input": {
+        "baseFixture": "delta-review-materialized.mdpkg",
+        "sources": {
+          ".mdpkg/review/comments.json": "{\"anchor\":\"cm0312-trail-source-v1\",\"profile\":\"cm0312-source-lf-v1\",\"selector\":\"cm0312-quote-context-v1\",\"threads\":[],\"version\":2}\n"
+        },
+        "manifestEdits": [
+          {
+            "path": [
+              "review",
+              "of",
+              "current"
+            ],
+            "value": {
+              "kind": "commit",
+              "id": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9"
+            }
+          }
+        ],
+        "commitMetadata": {
+          "message": "Retarget review to C0",
+          "unixTime": 1700000400,
+          "author": {
+            "name": "Example Author",
+            "email": "author@example.invalid"
+          },
+          "committer": {
+            "name": "Example Author",
+            "email": "author@example.invalid"
+          },
+          "timezone": "+0000"
+        }
+      },
       "expected": "new C1; freeze origin.header"
     },
     {
       "name": "snapshot-full",
       "operation": "verify",
+      "input": {
+        "targetFixture": "delta-v2.mdpkg",
+        "externalSourceFixture": "original.mdpkg",
+        "requestAssurance": "Full",
+        "checkResults": {
+          "container": "passed",
+          "modeManifest": "passed",
+          "everyPayload": "passed",
+          "pathsUtf8Lf": "passed",
+          "ledgerReview": "passed",
+          "snapshotHash": "passed",
+          "gitIntegrityTree": "not-applicable",
+          "bootstrapOrigin": "not-applicable",
+          "reviewShape": "passed"
+        }
+      },
       "expected": "all files/hash; Git not applicable"
     },
     {
       "name": "required-check-skipped",
       "operation": "verify",
+      "input": {
+        "targetFixture": "delta-v2.mdpkg",
+        "externalSourceFixture": "original.mdpkg",
+        "requestAssurance": "Full",
+        "checkResults": {
+          "container": "passed",
+          "modeManifest": "passed",
+          "everyPayload": "passed",
+          "pathsUtf8Lf": "passed",
+          "ledgerReview": "passed",
+          "snapshotHash": "skipped",
+          "gitIntegrityTree": "not-applicable",
+          "bootstrapOrigin": "not-applicable",
+          "reviewShape": "passed"
+        },
+        "providerRequiredChecks": [
+          "container",
+          "modeManifest",
+          "everyPayload",
+          "pathsUtf8Lf",
+          "ledgerReview",
+          "gitIntegrityTree",
+          "bootstrapOrigin",
+          "reviewShape"
+        ],
+        "providerClaimedAssurance": "Full"
+      },
       "expected": "not Full"
     },
     {
       "name": "explicit-import",
       "operation": "pack --from-git --history none",
+      "input": {
+        "sourceGitFixture": "guide-materialized.mdpkg",
+        "argv": [
+          "pack",
+          "--from-git",
+          "source",
+          "--history",
+          "none"
+        ]
+      },
       "expected": "option error"
     },
     {
       "name": "scope-snapshot",
       "operation": "pack --history none --scope guide.md",
+      "input": {
+        "sources": {
+          "guide.md": "# Guide\n"
+        },
+        "argv": [
+          "pack",
+          "--history",
+          "none",
+          "--scope",
+          "guide.md"
+        ]
+      },
       "expected": "option error"
     },
     {
       "name": "depth-snapshot",
       "operation": "pack --history none --depth 1",
+      "input": {
+        "sources": {
+          "guide.md": "# Guide\n"
+        },
+        "argv": [
+          "pack",
+          "--history",
+          "none",
+          "--depth",
+          "1"
+        ]
+      },
       "expected": "option error"
     },
     {
       "name": "reverse-snapshot",
       "operation": "pack --history none --reverse-index",
+      "input": {
+        "sources": {
+          "guide.md": "# Guide\n"
+        },
+        "argv": [
+          "pack",
+          "--history",
+          "none",
+          "--reverse-index"
+        ]
+      },
       "expected": "option error"
     },
     {
       "name": "metadata-snapshot",
       "operation": "pack --history none --message text",
+      "input": {
+        "sources": {
+          "guide.md": "# Guide\n"
+        },
+        "argv": [
+          "pack",
+          "--history",
+          "none",
+          "--message",
+          "text"
+        ]
+      },
       "expected": "option error"
     },
     {
       "name": "partial-correspondence",
       "operation": "pack --history none",
+      "input": {
+        "sources": {
+          "guide.md": "# Guide\n\nPublished change.\n"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+        "addressingCoverage": "partial",
+        "correspondence": [
+          {
+            "root": "9148e4f95e631e65fac95fc410ac036cbed7efa1328a1caabe5bc29a2bac488f",
+            "unknown": "unconfirmed-removal"
+          }
+        ],
+        "argv": [
+          "pack",
+          "--history",
+          "none"
+        ]
+      },
       "expected": "obligation-unmet; no output"
     },
     {
       "name": "materialize-Git",
       "operation": "update --materialize",
+      "input": {
+        "baseFixture": "guide-materialized.mdpkg",
+        "argv": [
+          "update",
+          "--materialize"
+        ]
+      },
       "expected": "identity-preserving re-emission"
     },
     {
       "name": "materialize-with-tree",
       "operation": "update --materialize --tree tree",
+      "input": {
+        "baseFixture": "guide-snapshot.mdpkg",
+        "sources": {
+          "guide.md": "# Guide\n\nPublished change.\n"
+        },
+        "argv": [
+          "update",
+          "--materialize",
+          "--tree",
+          "tree"
+        ]
+      },
       "expected": "option error"
     },
     {
       "name": "unsupported-append-transform",
       "operation": "update --tree tree",
+      "input": {
+        "baseFixture": "guide-changed-child.mdpkg",
+        "sources": {
+          "guide.md": "# Guide\n\nSecond published change.\n"
+        },
+        "argv": [
+          "update",
+          "--tree",
+          "tree"
+        ],
+        "producerCapabilities": {
+          "append": false
+        }
+      },
       "expected": "capability failure; no output"
     },
     {
       "name": "source-ledger-conflict",
       "operation": "update --tree tree",
+      "input": {
+        "baseFixture": "ledger-materialized.mdpkg",
+        "sources": {
+          "guide.md": "# Guide\n",
+          "replacement.md": "# Replacement\n",
+          ".mdpkg/address/overrides.json": "{\"anchor\":\"cm0312-trail-source-v1\",\"entries\":{\"2d2dad82b7cdb7c450aac71fcc14a4d89dd5cb93d6f45c94b958dd89fe27d850\":{\"dead\":\"deleted\"},\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\":{\"to\":[\"section\",\"guide.md\",[[\"# Guide\",0]]]},\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\":{\"to\":[\"section\",\"replacement.md\",[[\"# Replacement\",0]]]}},\"version\":1}\n"
+        },
+        "sourceJsonEdits": [
+          {
+            "entry": ".mdpkg/address/overrides.json",
+            "path": [
+              "entries",
+              "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            ],
+            "value": {
+              "dead": "deleted"
+            }
+          }
+        ],
+        "correspondence": [
+          {
+            "root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "to": [
+              "section",
+              "guide.md",
+              [
+                [
+                  "# Guide",
+                  0
+                ]
+              ]
+            ]
+          }
+        ],
+        "argv": [
+          "update",
+          "--tree",
+          "tree"
+        ]
+      },
       "expected": "reject conflicting ledger edit"
     },
     {
       "name": "snapshot-native-export",
       "operation": "export",
+      "input": {
+        "baseFixture": "guide-snapshot.mdpkg",
+        "format": "native-git-working-tree"
+      },
       "expected": "materialize first"
     },
     {
       "name": "cancel-before-publication",
       "operation": "update",
+      "input": {
+        "baseFixture": "guide-snapshot.mdpkg",
+        "sources": {
+          "guide.md": "# Guide\n\nPublished change.\n"
+        },
+        "destinationBefore": "existing destination\n",
+        "cancelAt": "before-atomic-replace"
+      },
       "expected": "preserve destination"
     }
   ],

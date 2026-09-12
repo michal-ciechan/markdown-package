@@ -836,7 +836,7 @@ The following narrow rules apply to both versions unless explicitly qualified:
 - `at` uses RFC 3339 calendar-date/time syntax with uppercase `T` and `Z`, an explicit `Z` or numeric offset, and optional fractional seconds; its original text/offset is preserved. Dates must exist, time fields and offsets must be in range. Leap-second spelling `60` is retained as display metadata, not used to order comments. The reader supports up to 128 characters for this field.
 - Every thread requires `root`, `loc`, `expect`, `state`, an explicit `select` and a `comments` array. Every comment requires `id`, `at`, `author` and `body` strings. Empty top-level `threads` is a valid empty review; an ordinary package without `review` is not an empty review. Version 2 requires nonempty comment arrays and nonempty bodies. Version 1 permits empty bodies/arrays without inventing missing content.
 - Locators are unpadded canonical base64url of canonical JSON (§6.2), including its final LF. A selector has integer offsets/occurrence, nonempty quote, and quote UTF-16 length `end-start`; prefix/suffix obey the 40-unit bound above. All strings must be valid Unicode. Source-dependent bounds and equality remain unverified until the reviewed source is available.
-- Duplicate JSON properties are rejected at every nesting level. Canonical serialization is required. Unknown non-semantic properties on the document, threads, comments and selectors may be retained as bounded extension data; they do not alter identity, intent or resolution. Unknown semantic discriminators are not extensions.
+- Duplicate JSON properties are rejected at every nesting level. Canonical serialization is required. Unknown non-semantic properties on the document, threads, comments and selectors may be retained as bounded extension data; they preserve thread/comment identity, intent and resolution semantics. Their exact stored bytes nevertheless contribute to overall package-state identity, including the snapshot hash in §4.1. Unknown semantic discriminators are not extensions.
 - Resource ceilings are reader/service policy, not format maxima. Exceeding one must reject the operation explicitly rather than truncate feedback. JSON Schema validates shape; canonical bytes, ID uniqueness, reply graphs, decoded locators, valid calendar dates and UTF-16/source bounds also require the prose checks above.
 
 Offsets in the current fixtures are independently checked by Python's explicit UTF-16 count, JavaScript string indexing and .NET. Earlier abbreviated investigation snippets are not conforming producer fixtures. No shipped web authoring/export implementation depends on a different offset convention.
@@ -1049,7 +1049,7 @@ Package 1 retains the full graph: 5,022 bytes, 10 entries; SHA-256 `d3d7252af114
 
 ### 8.3 Addressing: three reviews at `c1`, resolved against Package 2
 
-A reviewer working from Package 1's history at `c1` (before the rename) records three reviews. Each carries the entity's root, the locator at review time, the scoped digest at `c1`, and `observedAt = c1`.
+A reviewer working from Package 1's history at `c1` (before the rename) records three reviews. Each carries the entity's root, the locator at review time, the scoped digest at `c1`, and `observedAt = {"id":"sha1-08ae3497de2558fe65f196844a2ec60fe55e5f73","kind":"commit"}` (`c1`).
 
 | Review | Root | Locator at `c1` | Expected digest |
 | --- | --- | --- | --- |
@@ -1083,7 +1083,7 @@ The same three references against the same package **without** the ledger (as if
 
 The resolver never says "deleted", never guesses that `## Installation` is the old `## Setup`, and never moves the reviewed badge; that is the failure mode the confirmed ledger exists to prevent, and it is why the zero-metadata design is rejected (§9).
 
-**Touched-since**, from the range summary in entry 6 and `observedAt = c1` (position 1 in `sourceCommits`): Setup has ordinal 2 in `(1, 2]` → **yes**; Usage has only ordinal 1 → **no**; Todo has no ordinals → **no**. Had the squashed package shipped no summary, all three would be **unknown**, not "no".
+**Touched-since**, from the range summary in entry 6 and `observedAt = {"id":"sha1-08ae3497de2558fe65f196844a2ec60fe55e5f73","kind":"commit"}` (`c1`) (position 1 in `sourceCommits`): Setup has ordinal 2 in `(1, 2]` → **yes**; Usage has only ordinal 1 → **no**; Todo has no ordinals → **no**. Had the squashed package shipped no summary, all three would be **unknown**, not "no".
 
 ### 8.4 Extraction check
 

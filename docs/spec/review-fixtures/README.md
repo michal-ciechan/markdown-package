@@ -9,8 +9,41 @@ Python ZIP/native Git plumbing generates these files without a product writer.
 `vectors.json` records lengths, hashes and expected archive acceptance. The shared
 [state vectors](../../investigations/deferred-history/breaking-revision-vectors.json)
 contain four exact state/bootstrap designs, one changed child, 46 invalid-input
-recipes, 36 operation expectations and 15 identity mutations. Operation expectations
-are follow-on test inputs, not claims of implemented commands.
+recipes, 36 concrete operation requests with expected outcomes and 15 identity
+mutations. Operation requests are follow-on test inputs, not claims of implemented commands.
+
+### Recipe input contract
+
+Fixture names resolve in this directory. Each operation's `input` supplies its
+base/target archive, exact UTF-8 `sources`, reference, request arguments or proof
+and verification-provider inputs. Omitted source edits preserve existing bytes;
+`null` evidence means unavailable. `jsonEdits`, `manifestEdits` and
+`sourceJsonEdits` apply in order to decoded JSON using `path` arrays (`remove`
+deletes a key); write canonical JSON with a final LF. Source edits apply to the
+proposed tree, while archive edits apply to the input package. These request
+fields are fixture-adapter instructions, not new public API or CLI definitions.
+`sourceGitFixture` supplies an extracted Git repository for the `source` operand;
+`sources` supplies the `tree` operand. Publication state, prepared exports,
+capabilities and cancellation points are explicit operation-harness inputs.
+
+`rebuildCommit` supplies exact replacement commit bytes. With
+`repairObjectBindings`, rebuild the pack/index and repair HEAD, refs,
+`current.id` and descriptor endpoints/counts to the new object ID. The
+missing-origin request removes the reserved bootstrap marker too, producing an
+ordinary valid original root without a binding; it does not ask a resolver to
+accept a malformed materialized package. Partial-coverage requests change both
+manifest coverage and the descriptor range without changing the tracked tree.
+Transform requests specify retained commits and the resulting origin/root policy.
+Verification `checkResults` are simulated provider results for §7.1 obligations;
+the consumer derives required checks from the actual archive. The skipped-check
+case deliberately supplies a dishonest requirements mask and Full claim.
+
+Review-manifest negatives replace only the manifest of
+`delta-review-snapshot.mdpkg`, retaining its valid review document. Each starts
+from that same unmodified base. Semantic edits include a repaired state hash
+where the review header remains hashable; malformed reviewed-state shapes are
+rejected before hashing. The namespace and extra-reviewed-key cases therefore
+do not also fail because of an absent review document or stale snapshot hash.
 
 | Fixtures | Meaning |
 | --- | --- |
@@ -47,8 +80,10 @@ python docs/spec/deferred-history.py
 python docs/spec/review-fixtures/generate.py
 node docs/spec/verify-deferred-history.mjs
 node docs/spec/review-fixtures/verify-unicode.mjs
+python docs/spec/verify-operation-fixtures.py
 python docs/spec/verify-fixtures.py
 python docs/spec/render-worked-example.py
+python docs/spec/verify-regeneration.py
 ```
 
 Archive checks cover **20 accepted fixtures and 5 expected rejections**, including
