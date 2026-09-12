@@ -1,6 +1,6 @@
 {
   "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
-  "current": "sha1-4d22851602b61c912a1616962e838147a7777fbf",
+  "current": {"id": "sha1-4d22851602b61c912a1616962e838147a7777fbf", "kind": "commit"},
   "cases": [
     {
       "name": "unchanged",

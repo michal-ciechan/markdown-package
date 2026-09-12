@@ -1,5 +1,5 @@
 {
-  "purpose": "Design vectors for CARD-0052; not a package implementation or conformance suite. Canonical state hashes computed with Python; bootstrap Git trees and commits checked using native Git in isolated scratch repositories.",
+  "purpose": "S1 shared draft-2 conformance data; product implementation pending. Historical source measurements remain unchanged.",
   "sourceRevision": "732f6daf0747292c411e07a53f7dbe0daf7b8a84",
   "vectors": [
     {
@@ -35,6 +35,8 @@
       "bootstrapCommitBytes": "tree a2cee25e07384988b388900d21dd2c9bd32ed487\nauthor mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\ncommitter mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\n\nmdpkg-bootstrap-v1\nnamespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\nsnapshot sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4\n",
       "bootstrapCommitId": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
       "origin": {
+        "profile": "mdpkg-bootstrap-v1",
+        "snapshot": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
         "commit": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
         "header": {
           "addressing": {
@@ -45,9 +47,7 @@
           },
           "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
           "review": null
-        },
-        "profile": "mdpkg-bootstrap-v1",
-        "snapshot": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+        }
       },
       "snapshotManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"current\":{\"id\":\"sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4\",\"kind\":\"snapshot\"},\"history\":{\"mode\":\"none\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"}\n",
       "materializedManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"current\":{\"id\":\"sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9\",\"kind\":\"commit\"},\"history\":{\"coverage\":\"complete\",\"detail\":\".mdpkg/history.json\",\"mode\":\"git\",\"transform\":[]},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"}\n",
@@ -107,6 +107,8 @@
       "bootstrapCommitBytes": "tree 83ecc42cf955e40ff9a033e9fa955f9c371cef95\nauthor mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\ncommitter mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\n\nmdpkg-bootstrap-v1\nnamespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9\nsnapshot sha256-10cb6ff2c4e8842da88586388006e33ef378c991cdd33014c44568d21227cdad\n",
       "bootstrapCommitId": "sha1-5b04e58e556940a2dfad21292ecc9e0050fd87b2",
       "origin": {
+        "profile": "mdpkg-bootstrap-v1",
+        "snapshot": "sha256-10cb6ff2c4e8842da88586388006e33ef378c991cdd33014c44568d21227cdad",
         "commit": "sha1-5b04e58e556940a2dfad21292ecc9e0050fd87b2",
         "header": {
           "addressing": {
@@ -117,9 +119,7 @@
           },
           "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9",
           "review": null
-        },
-        "profile": "mdpkg-bootstrap-v1",
-        "snapshot": "sha256-10cb6ff2c4e8842da88586388006e33ef378c991cdd33014c44568d21227cdad"
+        }
       },
       "snapshotManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"current\":{\"id\":\"sha256-10cb6ff2c4e8842da88586388006e33ef378c991cdd33014c44568d21227cdad\",\"kind\":\"snapshot\"},\"history\":{\"mode\":\"none\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9\"}\n",
       "materializedManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"current\":{\"id\":\"sha1-5b04e58e556940a2dfad21292ecc9e0050fd87b2\",\"kind\":\"commit\"},\"history\":{\"coverage\":\"complete\",\"detail\":\".mdpkg/history.json\",\"mode\":\"git\",\"transform\":[]},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9\"}\n",
@@ -150,14 +150,14 @@
           "namespace": "d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
           "review": {
             "detail": ".mdpkg/review/comments.json",
+            "shape": "delta",
             "of": {
-              "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
               "current": {
                 "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
                 "kind": "snapshot"
-              }
-            },
-            "shape": "delta"
+              },
+              "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+            }
           }
         },
         "profile": "mdpkg-snapshot-v1"
@@ -168,6 +168,8 @@
       "bootstrapCommitBytes": "tree 027e24bff919a0560d666b330bb66d54fb908934\nauthor mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\ncommitter mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\n\nmdpkg-bootstrap-v1\nnamespace d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\nsnapshot sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a\n",
       "bootstrapCommitId": "sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c",
       "origin": {
+        "profile": "mdpkg-bootstrap-v1",
+        "snapshot": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a",
         "commit": "sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c",
         "header": {
           "addressing": {
@@ -179,32 +181,1437 @@
           "namespace": "d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
           "review": {
             "detail": ".mdpkg/review/comments.json",
+            "shape": "delta",
             "of": {
-              "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
               "current": {
                 "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
                 "kind": "snapshot"
-              }
-            },
-            "shape": "delta"
+              },
+              "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+            }
           }
-        },
-        "profile": "mdpkg-bootstrap-v1",
-        "snapshot": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a"
+        }
       },
       "snapshotManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"current\":{\"id\":\"sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a\",\"kind\":\"snapshot\"},\"history\":{\"mode\":\"none\"},\"namespace\":\"d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\",\"review\":{\"detail\":\".mdpkg/review/comments.json\",\"of\":{\"current\":{\"id\":\"sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4\",\"kind\":\"snapshot\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"},\"shape\":\"delta\"}}\n",
       "materializedManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"current\":{\"id\":\"sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c\",\"kind\":\"commit\"},\"history\":{\"coverage\":\"complete\",\"detail\":\".mdpkg/history.json\",\"mode\":\"git\",\"transform\":[]},\"namespace\":\"d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\",\"review\":{\"detail\":\".mdpkg/review/comments.json\",\"of\":{\"current\":{\"id\":\"sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4\",\"kind\":\"snapshot\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"},\"shape\":\"delta\"}}\n",
       "materializedHistoryCanonical": "{\"addressingCoverage\":[{\"coverage\":\"complete\",\"from\":\"sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c\",\"to\":\"sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c\"}],\"origin\":{\"commit\":\"sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c\",\"header\":{\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"namespace\":\"d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\",\"review\":{\"detail\":\".mdpkg/review/comments.json\",\"of\":{\"current\":{\"id\":\"sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4\",\"kind\":\"snapshot\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"},\"shape\":\"delta\"}},\"profile\":\"mdpkg-bootstrap-v1\",\"snapshot\":\"sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a\"},\"patches\":[],\"ranges\":[],\"retainedCommits\":1,\"root\":\"materialized\",\"shallowBoundaries\":[],\"sourceBase\":\"sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c\",\"sourceTip\":\"sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c\",\"transformations\":[],\"walk\":\"first-parent\"}\n"
+    },
+    {
+      "name": "ledger",
+      "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+      "sources": {
+        "guide.md": "# Guide\n",
+        "replacement.md": "# Replacement\n",
+        ".mdpkg/address/overrides.json": "{\"anchor\":\"cm0312-trail-source-v1\",\"entries\":{\"2d2dad82b7cdb7c450aac71fcc14a4d89dd5cb93d6f45c94b958dd89fe27d850\":{\"dead\":\"deleted\"},\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\":{\"to\":[\"section\",\"guide.md\",[[\"# Guide\",0]]]},\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\":{\"to\":[\"section\",\"replacement.md\",[[\"# Replacement\",0]]]}},\"version\":1}\n"
+      },
+      "preimage": {
+        "entries": [
+          {
+            "bytes": 384,
+            "digest": "sha256-5081d3a257f0767f466f109236a6d2236e618f5328e9f2ac87881e8796a433de",
+            "mode": "100644",
+            "path": ".mdpkg/address/overrides.json"
+          },
+          {
+            "bytes": 8,
+            "digest": "sha256-bc553ffe57e544498b12a9865dbf3abc2004c474e349c52c378eaa402287424b",
+            "mode": "100644",
+            "path": "guide.md"
+          },
+          {
+            "bytes": 14,
+            "digest": "sha256-6836583cd3ed2324ebb2a3c3a3f7be8e12819262ad91be4bf2508208e25f5103",
+            "mode": "100644",
+            "path": "replacement.md"
+          }
+        ],
+        "header": {
+          "addressing": {
+            "anchor": "cm0312-trail-source-v1",
+            "digest": "cm0312-source-lf-v1",
+            "coverage": "complete",
+            "overrides": ".mdpkg/address/overrides.json"
+          },
+          "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+          "review": null
+        },
+        "profile": "mdpkg-snapshot-v1"
+      },
+      "preimageCanonical": "{\"entries\":[{\"bytes\":384,\"digest\":\"sha256-5081d3a257f0767f466f109236a6d2236e618f5328e9f2ac87881e8796a433de\",\"mode\":\"100644\",\"path\":\".mdpkg/address/overrides.json\"},{\"bytes\":8,\"digest\":\"sha256-bc553ffe57e544498b12a9865dbf3abc2004c474e349c52c378eaa402287424b\",\"mode\":\"100644\",\"path\":\"guide.md\"},{\"bytes\":14,\"digest\":\"sha256-6836583cd3ed2324ebb2a3c3a3f7be8e12819262ad91be4bf2508208e25f5103\",\"mode\":\"100644\",\"path\":\"replacement.md\"}],\"header\":{\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":\".mdpkg/address/overrides.json\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\",\"review\":null},\"profile\":\"mdpkg-snapshot-v1\"}\n",
+      "snapshotId": "sha256-1a25e8c5a9479821cf99f558dc8d1d9b9336de81845a500e3c03067b963e88ca",
+      "treeId": "sha1-a6e11f122f18ec62959fd41e353a403e2f48d212",
+      "bootstrapCommitBytes": "tree a6e11f122f18ec62959fd41e353a403e2f48d212\nauthor mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\ncommitter mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\n\nmdpkg-bootstrap-v1\nnamespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\nsnapshot sha256-1a25e8c5a9479821cf99f558dc8d1d9b9336de81845a500e3c03067b963e88ca\n",
+      "bootstrapCommitId": "sha1-abcafd3eec33d77fadd4e71e457d4b061b4a5a4d",
+      "origin": {
+        "profile": "mdpkg-bootstrap-v1",
+        "snapshot": "sha256-1a25e8c5a9479821cf99f558dc8d1d9b9336de81845a500e3c03067b963e88ca",
+        "commit": "sha1-abcafd3eec33d77fadd4e71e457d4b061b4a5a4d",
+        "header": {
+          "addressing": {
+            "anchor": "cm0312-trail-source-v1",
+            "digest": "cm0312-source-lf-v1",
+            "coverage": "complete",
+            "overrides": ".mdpkg/address/overrides.json"
+          },
+          "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+          "review": null
+        }
+      },
+      "snapshotManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":\".mdpkg/address/overrides.json\"},\"current\":{\"id\":\"sha256-1a25e8c5a9479821cf99f558dc8d1d9b9336de81845a500e3c03067b963e88ca\",\"kind\":\"snapshot\"},\"history\":{\"mode\":\"none\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"}\n",
+      "materializedManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":\".mdpkg/address/overrides.json\"},\"current\":{\"id\":\"sha1-abcafd3eec33d77fadd4e71e457d4b061b4a5a4d\",\"kind\":\"commit\"},\"history\":{\"coverage\":\"complete\",\"detail\":\".mdpkg/history.json\",\"mode\":\"git\",\"transform\":[]},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"}\n",
+      "materializedHistoryCanonical": "{\"addressingCoverage\":[{\"coverage\":\"complete\",\"from\":\"sha1-abcafd3eec33d77fadd4e71e457d4b061b4a5a4d\",\"to\":\"sha1-abcafd3eec33d77fadd4e71e457d4b061b4a5a4d\"}],\"origin\":{\"commit\":\"sha1-abcafd3eec33d77fadd4e71e457d4b061b4a5a4d\",\"header\":{\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":\".mdpkg/address/overrides.json\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\",\"review\":null},\"profile\":\"mdpkg-bootstrap-v1\",\"snapshot\":\"sha256-1a25e8c5a9479821cf99f558dc8d1d9b9336de81845a500e3c03067b963e88ca\"},\"patches\":[],\"ranges\":[],\"retainedCommits\":1,\"root\":\"materialized\",\"shallowBoundaries\":[],\"sourceBase\":\"sha1-abcafd3eec33d77fadd4e71e457d4b061b4a5a4d\",\"sourceTip\":\"sha1-abcafd3eec33d77fadd4e71e457d4b061b4a5a4d\",\"transformations\":[],\"walk\":\"first-parent\"}\n"
     }
   ],
-  "verification": {
-    "vectors": 3,
-    "javascriptEncodingAndHashAssertionsPassed": 24,
-    "javascriptAssertionsFailed": 0,
-    "nativeGitRepositoriesFsckPassed": 3,
-    "nativeGitRepositoriesFsckFailed": 0,
-    "pythonCommitPayloadAndHashChecks": "passed for all three vectors",
-    "applicationTestsRun": false,
-    "newFormatPackagesBuilt": false
+  "transitions": [
+    {
+      "name": "guide-changed-child",
+      "sources": {
+        "guide.md": "# Guide\n\nPublished change.\n"
+      },
+      "manifest": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha1-e8756a61892f4b6ce266f0622899ad562c65bed9",
+          "kind": "commit"
+        },
+        "history": {
+          "mode": "git",
+          "coverage": "complete",
+          "detail": ".mdpkg/history.json",
+          "transform": []
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "history": {
+        "walk": "first-parent",
+        "root": "materialized",
+        "sourceBase": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+        "sourceTip": "sha1-e8756a61892f4b6ce266f0622899ad562c65bed9",
+        "retainedCommits": 2,
+        "shallowBoundaries": [],
+        "transformations": [],
+        "ranges": [],
+        "patches": [],
+        "addressingCoverage": [
+          {
+            "coverage": "complete",
+            "from": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+            "to": "sha1-e8756a61892f4b6ce266f0622899ad562c65bed9"
+          }
+        ],
+        "origin": {
+          "profile": "mdpkg-bootstrap-v1",
+          "snapshot": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+          "commit": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+          "header": {
+            "addressing": {
+              "anchor": "cm0312-trail-source-v1",
+              "coverage": "complete",
+              "digest": "cm0312-source-lf-v1",
+              "overrides": null
+            },
+            "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+            "review": null
+          }
+        }
+      },
+      "commitBytes": "tree c076c24d2b6e88a1cf0c41f237b9e455ca3b57f5\nparent f02a158c093f5d6867a3527418b1705bb6a5a6f9\nauthor Example Author <author@example.invalid> 1700000400 +0000\ncommitter Example Author <author@example.invalid> 1700000400 +0000\n\nPublish changed guide\n",
+      "treeId": "sha1-c076c24d2b6e88a1cf0c41f237b9e455ca3b57f5",
+      "expected": {
+        "parent": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+        "originSnapshot": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+        "originalSources": {
+          "guide.md": "# Guide\n"
+        }
+      }
+    }
+  ],
+  "invalidCases": [
+    {
+      "name": "string-current",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "current must be typed",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "null-current",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": null,
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "current cannot be null",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "unknown-kind",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+          "kind": "other"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "unknown discriminator",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "missing-kind",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "required kind",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "snapshot-git-mode",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "git"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "mode mismatch",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "commit-none-mode",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "kind": "commit",
+          "id": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "mode mismatch",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "snapshot-history-detail",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none",
+          "detail": null
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "forbidden field, even null",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "partial-snapshot",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "partial",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "snapshot must have complete addressing",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "wrong-state-id",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "state ID algorithm/length",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "extra-current-key",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+          "kind": "snapshot",
+          "extra": true
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "exact current field set",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "invalid-addressing-anchor",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "unknown",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "fixed addressing contract",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "invalid-addressing-digest",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "unknown",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "fixed addressing contract",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "invalid-addressing-coverage",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": null,
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "fixed addressing contract",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "invalid-addressing-overrides",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": ".mdpkg/address/other.json"
+        },
+        "current": {
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "fixed addressing contract",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "extra-manifest-key",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+        "extra": null
+      },
+      "expected": "reject",
+      "reason": "exact manifest field set",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "null-state-id",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": null,
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "nonnull state ID",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "uppercase-state-id",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "SHA256-69B43819687CC0EC576965B514D5D336544966AADDDEC1310B4B7F242FB3ADB4",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+      },
+      "expected": "reject",
+      "reason": "lowercase qualified state ID",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "invalid-review-shape",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+        "review": {
+          "detail": ".mdpkg/review/comments.json",
+          "of": {
+            "current": {
+              "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+              "kind": "snapshot"
+            },
+            "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+          },
+          "shape": "bundled"
+        }
+      },
+      "expected": "reject",
+      "reason": "fixed review contract or mode",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "invalid-review-detail",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+        "review": {
+          "detail": ".mdpkg/review/other.json",
+          "of": {
+            "current": {
+              "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+              "kind": "snapshot"
+            },
+            "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+          },
+          "shape": "delta"
+        }
+      },
+      "expected": "reject",
+      "reason": "fixed review contract or mode",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "invalid-review-of",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+        "review": {
+          "detail": ".mdpkg/review/comments.json",
+          "of": null,
+          "shape": "delta"
+        }
+      },
+      "expected": "reject",
+      "reason": "fixed review contract or mode",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "delta-same-namespace",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+        "review": {
+          "detail": ".mdpkg/review/comments.json",
+          "of": {
+            "current": {
+              "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+              "kind": "snapshot"
+            },
+            "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+          },
+          "shape": "delta"
+        }
+      },
+      "expected": "reject",
+      "reason": "independent delta namespace",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "string-reviewed-current",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+        "review": {
+          "detail": ".mdpkg/review/comments.json",
+          "of": {
+            "current": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+            "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8"
+          },
+          "shape": "delta"
+        }
+      },
+      "expected": "reject",
+      "reason": "typed reviewed state",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "extra-reviewed-key",
+      "target": "manifest",
+      "value": {
+        "mdpkg": "markdown-package/1",
+        "addressing": {
+          "anchor": "cm0312-trail-source-v1",
+          "coverage": "complete",
+          "digest": "cm0312-source-lf-v1",
+          "overrides": null
+        },
+        "current": {
+          "id": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a",
+          "kind": "snapshot"
+        },
+        "history": {
+          "mode": "none"
+        },
+        "namespace": "d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+        "review": {
+          "detail": ".mdpkg/review/comments.json",
+          "of": {
+            "current": {
+              "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+              "kind": "snapshot"
+            },
+            "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+            "extra": null
+          },
+          "shape": "delta"
+        }
+      },
+      "expected": "reject",
+      "reason": "exact reviewed field set",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "wrong-origin-snapshot",
+      "target": "origin",
+      "value": {
+        "profile": "mdpkg-bootstrap-v1",
+        "snapshot": "sha256-0000000000000000000000000000000000000000000000000000000000000000",
+        "commit": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+        "header": {
+          "addressing": {
+            "anchor": "cm0312-trail-source-v1",
+            "coverage": "complete",
+            "digest": "cm0312-source-lf-v1",
+            "overrides": null
+          },
+          "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+          "review": null
+        }
+      },
+      "expected": "reject",
+      "reason": "reconstructed H0 mismatch",
+      "base": "guide-materialized.mdpkg"
+    },
+    {
+      "name": "wrong-origin-commit",
+      "target": "origin",
+      "value": {
+        "profile": "mdpkg-bootstrap-v1",
+        "snapshot": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+        "commit": "sha1-0000000000000000000000000000000000000000",
+        "header": {
+          "addressing": {
+            "anchor": "cm0312-trail-source-v1",
+            "coverage": "complete",
+            "digest": "cm0312-source-lf-v1",
+            "overrides": null
+          },
+          "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+          "review": null
+        }
+      },
+      "expected": "reject",
+      "reason": "missing C0",
+      "base": "guide-materialized.mdpkg"
+    },
+    {
+      "name": "wrong-origin-namespace",
+      "target": "origin",
+      "value": {
+        "profile": "mdpkg-bootstrap-v1",
+        "snapshot": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+        "commit": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+        "header": {
+          "addressing": {
+            "anchor": "cm0312-trail-source-v1",
+            "coverage": "complete",
+            "digest": "cm0312-source-lf-v1",
+            "overrides": null
+          },
+          "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9",
+          "review": null
+        }
+      },
+      "expected": "reject",
+      "reason": "namespace mismatch",
+      "base": "guide-materialized.mdpkg"
+    },
+    {
+      "name": "wrong-origin-profile",
+      "target": "origin",
+      "value": {
+        "profile": "other",
+        "snapshot": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+        "commit": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+        "header": {
+          "addressing": {
+            "anchor": "cm0312-trail-source-v1",
+            "coverage": "complete",
+            "digest": "cm0312-source-lf-v1",
+            "overrides": null
+          },
+          "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+          "review": null
+        }
+      },
+      "expected": "reject",
+      "reason": "unknown bootstrap profile",
+      "base": "guide-materialized.mdpkg"
+    },
+    {
+      "name": "extra-origin-field",
+      "target": "origin",
+      "value": {
+        "profile": "mdpkg-bootstrap-v1",
+        "snapshot": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+        "commit": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+        "header": {
+          "addressing": {
+            "anchor": "cm0312-trail-source-v1",
+            "coverage": "complete",
+            "digest": "cm0312-source-lf-v1",
+            "overrides": null
+          },
+          "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+          "review": null
+        },
+        "extra": null
+      },
+      "expected": "reject",
+      "reason": "exact origin field set",
+      "base": "guide-materialized.mdpkg"
+    },
+    {
+      "name": "snapshot-git-entry",
+      "target": "additionalEntries",
+      "value": {
+        ".git/HEAD": "ref: refs/heads/main\n"
+      },
+      "expected": "reject",
+      "reason": "Git forbidden",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "snapshot-git-directory",
+      "target": "additionalEntries",
+      "value": {
+        ".git/": ""
+      },
+      "expected": "reject",
+      "reason": "Git directory forbidden",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "snapshot-history-entry",
+      "target": "additionalEntries",
+      "value": {
+        ".mdpkg/history.json": "{}\n"
+      },
+      "expected": "reject",
+      "reason": "history forbidden",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "undeclared-review",
+      "target": "additionalEntries",
+      "value": {
+        ".mdpkg/review/comments.json": "{}\n"
+      },
+      "expected": "reject",
+      "reason": "undeclared review",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "undeclared-ledger",
+      "target": "additionalEntries",
+      "value": {
+        ".mdpkg/address/overrides.json": "{\"anchor\":\"cm0312-trail-source-v1\",\"entries\":{\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\":{\"to\":[\"section\",\"guide.md\",[[\"# Guide\",0]]]},\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\":{\"dead\":\"deleted\"},\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\":{\"to\":[\"section\",\"replacement.md\",[[\"# Replacement\",0]]]}},\"version\":1}\n"
+      },
+      "expected": "reject",
+      "reason": "undeclared ledger",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "extra-control",
+      "target": "additionalEntries",
+      "value": {
+        ".mdpkg/other.json": "{}\n"
+      },
+      "expected": "reject",
+      "reason": "unknown control",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "nonempty-directory",
+      "target": "additionalEntries",
+      "value": {
+        "folder/": "content"
+      },
+      "expected": "reject",
+      "reason": "directory data",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "file-directory-conflict",
+      "target": "additionalEntries",
+      "value": {
+        "guide.md/": ""
+      },
+      "expected": "reject",
+      "reason": "file/directory conflict",
+      "base": "guide-snapshot.mdpkg"
+    },
+    {
+      "name": "missing-git-pack",
+      "target": "archive-edit",
+      "value": {
+        "fixture": "guide-materialized.mdpkg",
+        "edit": {
+          "removeSuffix": ".pack"
+        }
+      },
+      "expected": "reject",
+      "reason": "commit mode requires repository"
+    },
+    {
+      "name": "missing-history",
+      "target": "archive-edit",
+      "value": {
+        "fixture": "guide-materialized.mdpkg",
+        "edit": {
+          "removeEntry": ".mdpkg/history.json"
+        }
+      },
+      "expected": "reject",
+      "reason": "commit mode requires descriptor"
+    },
+    {
+      "name": "missing-declared-ledger",
+      "target": "archive-edit",
+      "value": {
+        "fixture": "ledger-snapshot.mdpkg",
+        "edit": {
+          "removeEntry": ".mdpkg/address/overrides.json"
+        }
+      },
+      "expected": "reject",
+      "reason": "declaration/inventory mismatch"
+    },
+    {
+      "name": "missing-declared-review",
+      "target": "archive-edit",
+      "value": {
+        "fixture": "delta-review-snapshot.mdpkg",
+        "edit": {
+          "removeEntry": ".mdpkg/review/comments.json"
+        }
+      },
+      "expected": "reject",
+      "reason": "declaration/inventory mismatch"
+    },
+    {
+      "name": "snapshot-unknown-ledger",
+      "target": "archive-edit",
+      "value": {
+        "fixture": "ledger-snapshot.mdpkg",
+        "edit": {
+          "jsonEntry": ".mdpkg/address/overrides.json",
+          "path": [
+            "entries",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          ],
+          "value": {
+            "unknown": "unconfirmed-removal"
+          },
+          "rehashSnapshot": true
+        }
+      },
+      "expected": "reject",
+      "reason": "unknown correspondence requires Git"
+    },
+    {
+      "name": "materialized-without-origin",
+      "target": "archive-edit",
+      "value": {
+        "fixture": "guide-materialized.mdpkg",
+        "edit": {
+          "jsonEntry": ".mdpkg/history.json",
+          "removeKey": "origin"
+        }
+      },
+      "expected": "reject",
+      "reason": "origin required"
+    },
+    {
+      "name": "original-with-origin",
+      "target": "archive-edit",
+      "value": {
+        "fixture": "guide-materialized.mdpkg",
+        "edit": {
+          "jsonEntry": ".mdpkg/history.json",
+          "path": [
+            "root"
+          ],
+          "value": "original"
+        }
+      },
+      "expected": "reject",
+      "reason": "origin forbidden"
+    },
+    {
+      "name": "bootstrap-marker-without-origin",
+      "target": "archive-edit",
+      "value": {
+        "fixture": "guide-materialized.mdpkg",
+        "edit": {
+          "jsonEntry": ".mdpkg/history.json",
+          "removeKey": "origin",
+          "setRoot": "original"
+        }
+      },
+      "expected": "reject",
+      "reason": "reserved marker requires verified origin"
+    },
+    {
+      "name": "origin-nonroot",
+      "target": "archive-edit",
+      "value": {
+        "fixture": "guide-changed-child.mdpkg",
+        "edit": {
+          "jsonEntry": ".mdpkg/history.json",
+          "path": [
+            "origin",
+            "commit"
+          ],
+          "value": "sha1-e8756a61892f4b6ce266f0622899ad562c65bed9"
+        }
+      },
+      "expected": "reject",
+      "reason": "C0 must be oldest parentless retained root"
+    },
+    {
+      "name": "origin-wrong-payload",
+      "target": "archive-edit",
+      "value": {
+        "fixture": "guide-materialized.mdpkg",
+        "edit": {
+          "rebuildCommit": true,
+          "replaceText": [
+            "946684800",
+            "946684801"
+          ],
+          "repairObjectBindings": true
+        }
+      },
+      "expected": "reject",
+      "reason": "exact bootstrap metadata required"
+    }
+  ],
+  "operations": [
+    {
+      "name": "initial-publication",
+      "operation": "snapshot",
+      "expected": "allowed"
+    },
+    {
+      "name": "identical-resend",
+      "operation": "snapshot",
+      "expected": "same-identity"
+    },
+    {
+      "name": "private-edit",
+      "operation": "snapshot",
+      "expected": "rehash"
+    },
+    {
+      "name": "changed-published-successor",
+      "operation": "git",
+      "expected": "materialize-exact-S0-then-append"
+    },
+    {
+      "name": "missing-S0",
+      "operation": "update",
+      "expected": "reject-without-output"
+    },
+    {
+      "name": "committed-successor",
+      "operation": "git",
+      "expected": "append"
+    },
+    {
+      "name": "snapshot-current-reference",
+      "operation": "resolve",
+      "expected": "current-view"
+    },
+    {
+      "name": "snapshot-at-reference",
+      "operation": "resolve",
+      "expected": "invalidated / history-unavailable"
+    },
+    {
+      "name": "snapshot-touched",
+      "operation": "resolve",
+      "expected": "unknown"
+    },
+    {
+      "name": "different-snapshot-observedAt",
+      "operation": "resolve",
+      "expected": "unconfirmed / history-unavailable"
+    },
+    {
+      "name": "git-unverified-origin",
+      "operation": "resolve",
+      "expected": "unconfirmed / origin-unverified"
+    },
+    {
+      "name": "git-missing-origin",
+      "operation": "resolve",
+      "expected": "unconfirmed / origin-unavailable"
+    },
+    {
+      "name": "partial-without-observedAt",
+      "operation": "resolve",
+      "expected": "unconfirmed / incomplete-correspondence"
+    },
+    {
+      "name": "verified-origin",
+      "operation": "resolve",
+      "expected": "C0-checkpoint; typed identities remain distinct"
+    },
+    {
+      "name": "exact-at",
+      "operation": "resolve",
+      "expected": "never redirect"
+    },
+    {
+      "name": "newer-review-target",
+      "operation": "review",
+      "expected": "explicit selection required"
+    },
+    {
+      "name": "delta-external-source-absent",
+      "operation": "verify",
+      "expected": "artifact-full; selectors unverified"
+    },
+    {
+      "name": "changed-delta-export",
+      "operation": "export",
+      "expected": "fresh namespace; retain thread IDs"
+    },
+    {
+      "name": "unchanged-delta-retry",
+      "operation": "export",
+      "expected": "reuse namespace and bytes"
+    },
+    {
+      "name": "remove-C0",
+      "operation": "transform",
+      "expected": "remove origin; synthetic/truncated or fresh namespace"
+    },
+    {
+      "name": "retained-C0-repack",
+      "operation": "transform",
+      "expected": "retain origin"
+    },
+    {
+      "name": "unchanged-tree-semantic-edit",
+      "operation": "update",
+      "expected": "new C1; freeze origin.header"
+    },
+    {
+      "name": "snapshot-full",
+      "operation": "verify",
+      "expected": "all files/hash; Git not applicable"
+    },
+    {
+      "name": "required-check-skipped",
+      "operation": "verify",
+      "expected": "not Full"
+    },
+    {
+      "name": "explicit-import",
+      "operation": "pack --from-git --history none",
+      "expected": "option error"
+    },
+    {
+      "name": "scope-snapshot",
+      "operation": "pack --history none --scope guide.md",
+      "expected": "option error"
+    },
+    {
+      "name": "depth-snapshot",
+      "operation": "pack --history none --depth 1",
+      "expected": "option error"
+    },
+    {
+      "name": "reverse-snapshot",
+      "operation": "pack --history none --reverse-index",
+      "expected": "option error"
+    },
+    {
+      "name": "metadata-snapshot",
+      "operation": "pack --history none --message text",
+      "expected": "option error"
+    },
+    {
+      "name": "partial-correspondence",
+      "operation": "pack --history none",
+      "expected": "obligation-unmet; no output"
+    },
+    {
+      "name": "materialize-Git",
+      "operation": "update --materialize",
+      "expected": "identity-preserving re-emission"
+    },
+    {
+      "name": "materialize-with-tree",
+      "operation": "update --materialize --tree tree",
+      "expected": "option error"
+    },
+    {
+      "name": "unsupported-append-transform",
+      "operation": "update --tree tree",
+      "expected": "capability failure; no output"
+    },
+    {
+      "name": "source-ledger-conflict",
+      "operation": "update --tree tree",
+      "expected": "reject conflicting ledger edit"
+    },
+    {
+      "name": "snapshot-native-export",
+      "operation": "export",
+      "expected": "materialize first"
+    },
+    {
+      "name": "cancel-before-publication",
+      "operation": "update",
+      "expected": "preserve destination"
+    }
+  ],
+  "hashCases": [
+    {
+      "name": "content",
+      "base": "guide",
+      "target": "sources/guide.md",
+      "value": "# Guide\n ",
+      "expected": "different",
+      "expectedId": "sha256-1cb917291866098e1bef4266b62b634d3862477d619039562276126cb49cc256"
+    },
+    {
+      "name": "path",
+      "base": "guide",
+      "target": "rename/guide.md",
+      "value": "guide2.md",
+      "expected": "different",
+      "expectedId": "sha256-278625c0556052b6af07e609e3303796a0b2b328019ef11be2bb1035c7c89aef"
+    },
+    {
+      "name": "namespace",
+      "base": "guide",
+      "target": "header/namespace",
+      "value": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9",
+      "expected": "different",
+      "expectedId": "sha256-844b86612ee3565b7a80bb22c7b3fd6da7485b05f9aac1f25f1b68688d6910d2"
+    },
+    {
+      "name": "evidence",
+      "base": "delta-review",
+      "target": "review.of/dispatch",
+      "value": "second send",
+      "expected": "same",
+      "expectedId": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a"
+    },
+    {
+      "name": "zip-order",
+      "base": "guide",
+      "target": "transport/order",
+      "value": "reverse",
+      "expected": "same",
+      "expectedId": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+    },
+    {
+      "name": "compression",
+      "base": "guide",
+      "target": "transport/level",
+      "value": 9,
+      "expected": "same",
+      "expectedId": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+    },
+    {
+      "name": "empty-directory",
+      "base": "guide",
+      "target": "transport/entry",
+      "value": "empty/",
+      "expected": "same",
+      "expectedId": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+    },
+    {
+      "name": "stored-CRLF",
+      "base": "guide",
+      "target": "sources/guide.md",
+      "value": "# Guide\r\n",
+      "expected": "reject-before-hashing"
+    },
+    {
+      "name": "ledger-bytes",
+      "base": "ledger",
+      "target": "sources/.mdpkg/address/overrides.json",
+      "value": "{\"anchor\":\"cm0312-trail-source-v1\",\"entries\":{\"2d2dad82b7cdb7c450aac71fcc14a4d89dd5cb93d6f45c94b958dd89fe27d850\":{\"dead\":\"split\",\"next\":[\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"]},\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\":{\"to\":[\"section\",\"guide.md\",[[\"# Guide\",0]]]},\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\":{\"to\":[\"section\",\"replacement.md\",[[\"# Replacement\",0]]]}},\"version\":1}\n",
+      "expected": "different",
+      "expectedId": "sha256-3069329108a43c4820f225c95c8088c2ece1307c0cf76410147c805d9be6aac4"
+    },
+    {
+      "name": "comment-bytes",
+      "base": "delta-review",
+      "target": "sources/.mdpkg/review/comments.json",
+      "value": "{\"anchor\":\"cm0312-trail-source-v1\",\"fixtureNote\":\"extension bytes bear identity\",\"profile\":\"cm0312-source-lf-v1\",\"selector\":\"cm0312-quote-context-v1\",\"threads\":[],\"version\":2}\n",
+      "expected": "different",
+      "expectedId": "sha256-7b8c3687caeb8fd9889c17e62f478525f34c3fcb39cb4de7c3f4982eb2151ceb"
+    },
+    {
+      "name": "review-target",
+      "base": "delta-review",
+      "target": "header/review/of/current",
+      "value": {
+        "kind": "commit",
+        "id": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9"
+      },
+      "expected": "different",
+      "expectedId": "sha256-71d42160d14d2b8e047249fff8ee0d3158aa2c44baf3aa623b16607eb9d1cee9"
+    },
+    {
+      "name": "review-shape",
+      "base": "delta-review",
+      "target": "header/review/shape",
+      "value": "bundled",
+      "expected": "reject-before-hashing"
+    },
+    {
+      "name": "review-detail",
+      "base": "delta-review",
+      "target": "header/review/detail",
+      "value": ".mdpkg/review/other.json",
+      "expected": "reject-before-hashing"
+    },
+    {
+      "name": "BOM",
+      "base": "guide",
+      "target": "sources/guide.md",
+      "value": "﻿# Guide\n",
+      "expected": "different",
+      "expectedId": "sha256-11ec3f6de761fdbc7a1ff31a83faac1b761b50ecb8aac05eccf113ae1e9f669f"
+    },
+    {
+      "name": "empty-file",
+      "base": "guide",
+      "target": "sources/empty.txt",
+      "value": "",
+      "expected": "different",
+      "expectedId": "sha256-c1f2f883411295370fb433f9b678c28b5e583a99da80cd6dc14d1d0a3921d1d5"
+    }
+  ],
+  "packages": {
+    "guide-snapshot.mdpkg": {
+      "bytes": 574,
+      "sha256": "63404c148a908d849e010964a69a3bcd7732ec3aec6b62641eea4af601c5118a"
+    },
+    "guide-materialized.mdpkg": {
+      "bytes": 3404,
+      "sha256": "517a5a52a9dd032b743583b2299e565bc215f86a43ceab4641438ed00156a618"
+    },
+    "unicode-snapshot.mdpkg": {
+      "bytes": 874,
+      "sha256": "bcda0e1a6333f775b16665fd551808a4c04383940f7aff901411d33dbdba4866"
+    },
+    "unicode-materialized.mdpkg": {
+      "bytes": 4010,
+      "sha256": "8e5ba94fe6db66f9f88967fd351298317a7c50c5687275f1f2100f0b6bfe6b29"
+    },
+    "delta-review-snapshot.mdpkg": {
+      "bytes": 933,
+      "sha256": "8026b7d7f72aef536468cd18c6f230c01b58af67a1674ea84a7811d574a3f9a3"
+    },
+    "delta-review-materialized.mdpkg": {
+      "bytes": 4092,
+      "sha256": "299efd4790798e2e1e9bdf7287a69c10971e62b4a2997118a076f826d35d09db"
+    },
+    "ledger-snapshot.mdpkg": {
+      "bytes": 1040,
+      "sha256": "f6aabe550716572ad79e4ff79a7d187e714b2cedeeb443a71b8d7065c6a397f7"
+    },
+    "ledger-materialized.mdpkg": {
+      "bytes": 4374,
+      "sha256": "a4db3d44a2a14fb0f7a2c8e97aa93a0c37fbe428a44ebd06c467f83a97f898d4"
+    }
   }
 }

@@ -1,46 +1,59 @@
-# Review interoperability fixtures
+# Draft-2 review and deferred-history fixtures
 
-These are complete, canonical v1/v2 comment documents and separate-return packages,
-produced by `generate.py` using Python standard-library ZIP and native Git plumbing,
-independently of the .NET implementation. The code and frozen bytes are versioned
-together; `vectors.json` records producer description, Git version, hashes, lengths,
-source, locator, root, digest and expected selector. The .NET tests assert parsed
-comment bodies, original timestamp text, source order, replies, kinds and declared paths.
+These active fixtures use the revised `markdown-package/1` schema: typed current
+states and explicit history modes. They are CARD-0052 S1 documentation data;
+product implementation and its test migration follow in S2–S6. Comment-document
+versions 1/2 and selector/root/digest profiles are unchanged.
 
-`original.mdpkg`, `changed.mdpkg` and `moved.mdpkg` provide actual Git history and
-confirmed move evidence. `delta-v1.mdpkg`, `delta-v2.mdpkg` and `bundled-v2.mdpkg` are
-valid separate returns. Bundled continues the original commit and changes only review
-paths. Delta has one review-only commit in a distinct namespace.
+Python ZIP/native Git plumbing generates these files without a product writer.
+`vectors.json` records lengths, hashes and expected archive acceptance. The shared
+[state vectors](../../investigations/deferred-history/breaking-revision-vectors.json)
+contain four exact state/bootstrap designs, one changed child, 46 invalid-input
+recipes, 36 operation expectations and 15 identity mutations. Operation expectations
+are follow-on test inputs, not claims of implemented commands.
 
-`comments-empty.json` is a successful empty review. `invalid-kind.json`,
-`invalid-cycle.json` and `invalid-selector.json` are deliberately invalid, canonical
-documents; the cycle is a prose/graph constraint beyond JSON Schema's vocabulary.
-Tests derive further malformed fixtures without changing these originals.
+| Fixtures | Meaning |
+| --- | --- |
+| `original.mdpkg`, `original-git.mdpkg` | Initial review-context S0 and deterministic C0 with origin |
+| `changed.mdpkg`, `moved.mdpkg` | C0 children with changed content or confirmed move ledger; origin retained |
+| `delta-v1.mdpkg`, `delta-v2.mdpkg` | History-free returns targeting S0, with distinct export namespaces |
+| `delta-git-target-snapshot.mdpkg`, `delta-git-target-commit.mdpkg`, `delta-snapshot-target-commit.mdpkg` | Complete both delta state kinds × both reviewed kinds matrix |
+| `bundled-v2.mdpkg`, `bundled-target-commit.mdpkg` | Git returns targeting S0/C0, parent C0 and review-only changes |
+| `guide-snapshot.mdpkg`, `guide-materialized.mdpkg`, `guide-changed-child.mdpkg` | Minimal guide S0, C0 and changed C1 (§8.6) |
+| `unicode-*.mdpkg` | Unicode byte ordering, nested paths, BOM and trailing whitespace |
+| `ledger-*.mdpkg` | Initial authoritative ledger, retirement and reserved birth, then materialization |
+| `delta-review-*.mdpkg` | Empty v2 delta from the supplied design vectors and its materialization |
 
-`invalid-bundled-parent.mdpkg`, `invalid-bundled-document.mdpkg`,
-`invalid-bundled-ledger.mdpkg` and `invalid-delta-history.mdpkg` have valid Git objects
-but violate review lineage/changed-path obligations. Structural extraction must label
-its limited assurance; native deep CLI validation independently rejects these fixtures.
+Each family is an isolated example; reused illustrative namespaces across families
+do not claim multiple initial publications in one lineage.
 
-The source includes a supplementary emoji before the quote and a combining accent.
-Python explicitly counts UTF-16 units; `verify-unicode.mjs` independently checks those
-offsets with JavaScript string indexing, locator encoding and SHA-256. .NET Reader and
-Reviews tests consume the same vectors. Historical probe examples used abbreviated IDs
-and scalar offsets; these fixtures replace those illustrative examples as the current
-interoperability contract. No shipped web authoring implementation is being migrated.
+The four `invalid-bundled-*` archives fail parent, document/ledger changed-path or
+origin obligations despite valid Git objects. `invalid-delta-history.mdpkg` now
+specifically adds a forbidden history field to snapshot mode. Git-mode delta history
+is no longer invalid merely because it contains multiple commits.
+`comments-empty.json` is valid; `invalid-kind.json`, `invalid-cycle.json` and
+`invalid-selector.json` remain invalid comment documents. Source-dependent selector
+assurance remains separate from artifact integrity.
 
-From the repository root:
+Python explicitly counts UTF-16 units for the emoji/combining-accent source;
+JavaScript checks offsets, locator, root and scoped digest independently. A separate
+JavaScript oracle constructs raw Git trees/commits and checks state mutation hashes.
+
+Run from the repository root, in order:
 
 ```text
+python docs/spec/worked-example.py
+python docs/spec/deferred-history.py
 python docs/spec/review-fixtures/generate.py
+node docs/spec/verify-deferred-history.mjs
 node docs/spec/review-fixtures/verify-unicode.mjs
-cd src/generator-cli
-dotnet test --project tests/Mdpkg.Reviews.Tests -c Release
+python docs/spec/verify-fixtures.py
+python docs/spec/render-worked-example.py
 ```
 
-Fixture measurements: packages are 3,229–5,663 bytes (valid fixtures: 3,229–5,192),
-with two comments per review. The default
-8 MiB comments budget and 128 MiB package/decoded budgets leave room for backend batches;
-they are configurable service caps, not observed format limits. Tests exercise smaller
-caps, long bodies, JSON depth, compressed expansion and aggregate rejection. Large-production
-capacity claims require deployment-specific measurements.
+Archive checks cover **20 accepted fixtures and 5 expected rejections**, including
+native fsck/read-tree, complete current-file equality and origin reconstruction
+from C0 rather than C1. JavaScript supplies **94 independent hash/encoding assertions**.
+These are fixture checks, not a complete application conformance suite. Historical
+investigation archives and measurements retain their original interpretation;
+fixture sizes make no new performance claim.

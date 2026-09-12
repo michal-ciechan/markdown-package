@@ -4,6 +4,64 @@ A .NET global tool that emits and checks conforming `.mdpkg` packages. [`../spec
 
 Audience: coding agents driving the tool non-interactively. Implementation: [`src/generator-cli/`](../../src/generator-cli/), a .NET tool on System.CommandLine. `pack` and `validate` are implemented, including Git import, projection, depth, correspondence, controlled ZIP emission and shared post-write validation. `update` and `address` remain explicit `not implemented` actions (exit 70). Their sections below describe the intended contract. Tests read this file and fail when §1, §3, §4 or §10 change without the tool following. Distribution and publishing are separate work; run the project from source today.
 
+## Revised draft-2 behavior — proposed, implementation pending
+
+The current `/1` specification is now a breaking two-mode revision. S1 updates
+documentation and fixtures only. Existing binaries still use the superseded
+string-valued manifest; the older implementation reference below is historical
+until S2–S6 replace those contracts together. It does not override this proposal
+or claim compatibility with draft 2. No dual-version reader is planned.
+
+These are proposed commands/options, not available commands to run today:
+
+| Surface | Result / validation |
+| --- | --- |
+| `mdpkg pack tree --namespace N --out S0.mdpkg` | Default `--history none`; new initial snapshot, complete addressing, no Git process or repository bytes, full snapshot self-validation before publication. |
+| `pack ... --history git` | Eager ordinary Git snapshot; existing author/committer/message policy applies, root original, no origin record unless it is actually materializing an existing S0. Retains CARD-0050's gated/native backend policy. |
+| `pack ... --from-git` | Defaults to Git mode; explicit `--history none` is an option error. Import/source selection remains existing behavior. |
+| `--scope`, `--depth`, `--reverse-index`, explicitly supplied Git commit metadata/object-format options | Require Git output. Do not implicitly switch an explicitly selected snapshot output or invent ignored commit metadata. Existing scoped snapshot/import behavior is retained when Git mode is chosen. |
+| `pack ... --correspondence file` | Allowed in snapshot mode only for authoritative preparation of the initial state; unknown/partial results fail with obligation-unmet and no output. Use explicit Git mode for partial correspondence. |
+| `mdpkg update S0.mdpkg --materialize --out C0.mdpkg` | Validate S0, create deterministic C0 and origin. No `--tree`, custom bootstrap message, squash or truncate option combined with this action. On a Git-mode input this explicit action is an identity-preserving re-emission after validation, not another bootstrap commit. |
+| `mdpkg update base.mdpkg --tree tree --message text --out next.mdpkg` | If base is snapshot, materialize then append C1; for a supported Git base as bounded below, append to current. Preserve namespace, origins and ledger; use producer correspondence and partial coverage where appropriate. Output always Git mode. |
+| `update` without an implemented action, or unsupported `--squash`/`--truncate` combinations | Explicit unsupported/usage result. Do not treat their currently advertised stubs as implemented by this card. General history-transform construction can follow separately; its format rules are preserved. |
+| `validate` on snapshot | Recompute full state hash and payload checks without Git. Git checks are not applicable. |
+| `validate --deep` on snapshot | Same exhaustive snapshot obligations; succeeds without Git when valid. No dummy fsck success. |
+| `validate` / `validate --deep` on Git | Retain the distinction between payload/structural checks and requested full Git proof. Report completed assurance accurately; verify origin on a full/deep request. |
+
+The first append implementation accepts snapshot inputs and untransformed Git
+lineages with a complete retained graph: root `original` or `materialized`, no
+shallow boundaries, empty transformations/ranges/patches, sourceBase equal to
+the oldest retained commit and sourceTip equal to current. Addressing coverage
+may be partial; preserve existing covered/uncovered intervals and extend them
+with the newly assessed transition. On append, preserve sourceBase, set sourceTip
+to the new child and increment retainedCommits. A materialized origin stays
+unchanged. Other valid Git packages still open and validate, but `update --tree`
+returns an explicit capability failure before writing them. Appending across
+import projections, discarded source checkpoints and summary transforms needs
+its own source-range policy and is not silently included in S3. Identity-preserving
+`--materialize` re-emission of a Git input does not have this append restriction.
+
+Separate source selection from output history mode in the public API. Replace
+`PackageIdentity` and manifest `Current` strings with a tagged state record;
+replace unconditional history metadata with the mode union. Make commit metadata
+optional/forbidden according to mode; do not synthesize and discard it on a
+history-free path. Add materialize/update requests with explicit input package,
+destination, successor metadata and correspondence. Directory/stream creation,
+resource options, cancellation and atomic publication retain their existing
+contracts. Results carry typed identity, mode, assurance and whether
+materialization occurred; an optional C0 ID belongs in the operation result,
+not an extra manifest field.
+
+For an update input tree, `.mdpkg/address/overrides.json` is owned by the
+package/update operation: carry the base ledger, apply explicit correspondence
+and reserved births. If the source tree supplies the ledger, require byte equality
+with the base ledger before processing; reject conflicting edits instead of
+silently replacing it. Absent source ledger means carry the base ledger, not
+delete it. Source-tree enumeration/normalization and reserved review-authoring
+rules otherwise stay as today. Changing comment content is handled by an
+explicit review-authoring path, not ordinary document `pack` accepting arbitrary
+reserved review files.
+
 ---
 
 ## 1. Invocation
@@ -15,7 +73,7 @@ mdpkg address  <in.mdpkg>    --out <file.mdpkg>   <op> ...    # sparse exception
 mdpkg validate <in.mdpkg>                         [options]   # validation only, writes nothing
 ```
 
-Install `dotnet tool install -g mdpkg`; also invokable as `dotnet mdpkg`. Current release builds require `git` on `PATH` for creation and deep validation. A generated Git repository is a format requirement; launching native Git is an implementation choice.
+Install `dotnet tool install -g mdpkg`; also invokable as `dotnet mdpkg`. Current release builds require `git` on `PATH` for creation and deep validation. In the older implementation, a generated Git repository is unconditional; draft 2 requires it only in Git mode; launching native Git is an implementation choice.
 
 The managed snapshot candidate remains internally gated pending the [CARD-0050 acceptance decision](../investigations/2026-09-12-card-0050-managed-snapshot-results.md). In candidate builds, ordinary snapshots without `--scope` or `--depth` use managed object/pack/index creation and independent in-process repository verification, including `--reverse-index`, descriptors, compression, messages and correspondence. `--from-git`, snapshot scope/depth and standalone `validate --deep` retain native Git. No new CLI flag selects a backend and eligible managed failures never fall back to Git. Release behavior remains native until the gate is resolved.
 

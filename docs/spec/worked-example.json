@@ -380,7 +380,10 @@
     ]
    ],
    "expect": "2078ef26101467257c9b4d35e4c617b96c9f4e719b460088f4f78e4d927d0264",
-   "reviewedAt": "sha1-08ae3497de2558fe65f196844a2ec60fe55e5f73",
+   "reviewedAt": {
+    "id": "sha1-08ae3497de2558fe65f196844a2ec60fe55e5f73",
+    "kind": "commit"
+   },
    "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/b6564987b603d69de8b0f48998ed1b8df6a052bae15caf3aacbf614f47047984?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=2078ef26101467257c9b4d35e4c617b96c9f4e719b460088f4f78e4d927d0264&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgU2V0dXAiLDBdXV0K",
    "with_ledger": {
     "status": "flagged-changed",
@@ -426,7 +429,10 @@
     ]
    ],
    "expect": "684ba2cde243d6593c183ee88ec27f5891eec436ba269e5bccfd0a514fc0f9fa",
-   "reviewedAt": "sha1-08ae3497de2558fe65f196844a2ec60fe55e5f73",
+   "reviewedAt": {
+    "id": "sha1-08ae3497de2558fe65f196844a2ec60fe55e5f73",
+    "kind": "commit"
+   },
    "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/52f7f2741ea95e947ab04da60e3cb037562daf0374b657ba70a0d30f5a0b7f70?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=684ba2cde243d6593c183ee88ec27f5891eec436ba269e5bccfd0a514fc0f9fa&loc=WyJzZWN0aW9uIiwiZ3VpZGUubWQiLFtbIiMgR3VpZGUiLDBdLFsiIyMgVXNhZ2UiLDBdXV0K",
    "with_ledger": {
     "status": "survives",
@@ -485,7 +491,10 @@
     ]
    ],
    "expect": "0e3cb80374f66eae7b4cae61f3753e3838b819ef5e42421f741fa4a8d7c0ee2e",
-   "reviewedAt": "sha1-08ae3497de2558fe65f196844a2ec60fe55e5f73",
+   "reviewedAt": {
+    "id": "sha1-08ae3497de2558fe65f196844a2ec60fe55e5f73",
+    "kind": "commit"
+   },
    "uri": "mdpkg://c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8/v2/section/c1fb83ff728d81247fe7c6b41f62897fa54fd9df3823247ee75fd65f5fc4692d?anchor=cm0312-trail-source-v1&profile=cm0312-source-lf-v1&expect=0e3cb80374f66eae7b4cae61f3753e3838b819ef5e42421f741fa4a8d7c0ee2e&loc=WyJzZWN0aW9uIiwibm90ZXMubWQiLFtbIiMgTm90ZXMiLDBdLFsiIyMgVG9kbyIsMF1dXQo",
    "with_ledger": {
     "status": "survives",
@@ -534,7 +543,10 @@
    "manifest": {
     "mdpkg": "markdown-package/1",
     "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
-    "current": "sha1-d038a20593503cc7250243ce9d4b36f148db479b",
+    "current": {
+     "id": "sha1-d038a20593503cc7250243ce9d4b36f148db479b",
+     "kind": "commit"
+    },
     "addressing": {
      "anchor": "cm0312-trail-source-v1",
      "digest": "cm0312-source-lf-v1",
@@ -542,12 +554,13 @@
      "overrides": ".mdpkg/address/overrides.json"
     },
     "history": {
+     "mode": "git",
      "coverage": "complete",
      "transform": [],
      "detail": ".mdpkg/history.json"
     }
    },
-   "manifest_bytes": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":\".mdpkg/address/overrides.json\"},\"current\":\"sha1-d038a20593503cc7250243ce9d4b36f148db479b\",\"history\":{\"coverage\":\"complete\",\"detail\":\".mdpkg/history.json\",\"transform\":[]},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"}\n",
+   "manifest_bytes": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":\".mdpkg/address/overrides.json\"},\"current\":{\"id\":\"sha1-d038a20593503cc7250243ce9d4b36f148db479b\",\"kind\":\"commit\"},\"history\":{\"coverage\":\"complete\",\"detail\":\".mdpkg/history.json\",\"mode\":\"git\",\"transform\":[]},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"}\n",
    "history": {
     "walk": "first-parent",
     "root": "original",
@@ -566,129 +579,129 @@
     "ranges": [],
     "patches": []
    },
-   "bytes": 4986,
-   "sha256": "7d55bbf97c47ea15e5ad69bcf0c2a4525a8b7245869342af63fd910a655d6c45",
+   "bytes": 5022,
+   "sha256": "d3d7252af114c15e8640c413f71a512501381059ee1b62a9698c756816135a80",
    "entries": [
     {
      "name": ".mdpkg/manifest.json",
      "local": 0,
      "data": 50,
      "method": 0,
-     "csize": 366,
-     "usize": 366,
-     "crc": "ea0fa00b",
-     "end": 416,
+     "csize": 402,
+     "usize": 402,
+     "crc": "3dda73f9",
+     "end": 452,
      "flags": 0
     },
     {
      "name": ".mdpkg/address/overrides.json",
-     "local": 416,
-     "data": 475,
+     "local": 452,
+     "data": 511,
      "method": 8,
      "csize": 160,
      "usize": 195,
      "crc": "a14c171c",
-     "end": 635,
+     "end": 671,
      "flags": 0
     },
     {
      "name": "guide.md",
-     "local": 635,
-     "data": 673,
+     "local": 671,
+     "data": 709,
      "method": 8,
      "csize": 119,
      "usize": 163,
      "crc": "cf83f8e7",
-     "end": 792,
+     "end": 828,
      "flags": 0
     },
     {
      "name": "notes.md",
-     "local": 792,
-     "data": 830,
+     "local": 828,
+     "data": 866,
      "method": 0,
      "csize": 36,
      "usize": 36,
      "crc": "ba3d4b41",
-     "end": 866,
+     "end": 902,
      "flags": 0
     },
     {
      "name": ".mdpkg/history.json",
-     "local": 866,
-     "data": 915,
+     "local": 902,
+     "data": 951,
      "method": 8,
      "csize": 224,
      "usize": 407,
      "crc": "d3059271",
-     "end": 1139,
+     "end": 1175,
      "flags": 0
     },
     {
      "name": ".git/HEAD",
-     "local": 1139,
-     "data": 1178,
+     "local": 1175,
+     "data": 1214,
      "method": 0,
      "csize": 21,
      "usize": 21,
      "crc": "576463b5",
-     "end": 1199,
+     "end": 1235,
      "flags": 0
     },
     {
      "name": ".git/config",
-     "local": 1199,
-     "data": 1240,
+     "local": 1235,
+     "data": 1276,
      "method": 0,
      "csize": 50,
      "usize": 50,
      "crc": "184bf63d",
-     "end": 1290,
+     "end": 1326,
      "flags": 0
     },
     {
      "name": ".git/refs/heads/main",
-     "local": 1290,
-     "data": 1340,
+     "local": 1326,
+     "data": 1376,
      "method": 0,
      "csize": 41,
      "usize": 41,
      "crc": "3bb8b0aa",
-     "end": 1381,
+     "end": 1417,
      "flags": 0
     },
     {
      "name": ".git/objects/pack/pack-18335051c8115c97654be611ca0d5eeaf6f5e597.idx",
-     "local": 1381,
-     "data": 1478,
+     "local": 1417,
+     "data": 1514,
      "method": 0,
      "csize": 1436,
      "usize": 1436,
      "crc": "496d5124",
-     "end": 2914,
+     "end": 2950,
      "flags": 0
     },
     {
      "name": ".git/objects/pack/pack-18335051c8115c97654be611ca0d5eeaf6f5e597.pack",
-     "local": 2914,
-     "data": 3012,
+     "local": 2950,
+     "data": 3048,
      "method": 0,
      "csize": 1233,
      "usize": 1233,
      "crc": "e28c5164",
-     "end": 4245,
+     "end": 4281,
      "flags": 0
     }
    ],
    "eocd": {
-    "eocd": 4964,
+    "eocd": 5000,
     "count": 10,
     "cd_size": 719,
-    "cd_offset": 4245,
+    "cd_offset": 4281,
     "comment": 0
    },
-   "typing_hex": "000000  50 4b 03 04 14 00 00 00 00 00 00 00 21 00 0b a0  PK..........!...\n000010  0f ea 6e 01 00 00 6e 01 00 00 14 00 00 00 2e 6d  ..n...n........m\n000020  64 70 6b 67 2f 6d 61 6e 69 66 65 73 74 2e 6a 73  dpkg/manifest.js\n000030  6f 6e 7b 22 6d 64 70 6b 67 22 3a 22 6d 61 72 6b  on{\"mdpkg\":\"mark\n000040  64 6f 77 6e 2d 70 61 63 6b 61 67 65 2f 31 22     down-package/1\"",
-   "eocd_hex": "001364  50 4b 05 06 00 00 00 00 0a 00 0a 00 cf 02 00 00  PK..............\n001374  95 10 00 00 00 00                                ......",
+   "typing_hex": "000000  50 4b 03 04 14 00 00 00 00 00 00 00 21 00 f9 73  PK..........!..s\n000010  da 3d 92 01 00 00 92 01 00 00 14 00 00 00 2e 6d  .=.............m\n000020  64 70 6b 67 2f 6d 61 6e 69 66 65 73 74 2e 6a 73  dpkg/manifest.js\n000030  6f 6e 7b 22 6d 64 70 6b 67 22 3a 22 6d 61 72 6b  on{\"mdpkg\":\"mark\n000040  64 6f 77 6e 2d 70 61 63 6b 61 67 65 2f 31 22     down-package/1\"",
+   "eocd_hex": "001388  50 4b 05 06 00 00 00 00 0a 00 0a 00 cf 02 00 00  PK..............\n001398  b9 10 00 00 00 00                                ......",
    "tree": "100644 blob 752dff649fddd64bfb1804adc5c5da5960d55d78\t.mdpkg/address/overrides.json\n100644 blob 7e5cdaf1d0796bd7280ba1fbee7f506ecf90dc64\tguide.md\n100644 blob 143227537cf0e613855eb072fc61269cf85387f5\tnotes.md\n"
   },
   "squashed": {
@@ -696,7 +709,10 @@
    "manifest": {
     "mdpkg": "markdown-package/1",
     "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
-    "current": "sha1-b414f39b3a54a4232fbaa6a0de0dd4966bdf981c",
+    "current": {
+     "id": "sha1-b414f39b3a54a4232fbaa6a0de0dd4966bdf981c",
+     "kind": "commit"
+    },
     "addressing": {
      "anchor": "cm0312-trail-source-v1",
      "digest": "cm0312-source-lf-v1",
@@ -704,6 +720,7 @@
      "overrides": ".mdpkg/address/overrides.json"
     },
     "history": {
+     "mode": "git",
      "coverage": "complete",
      "transform": [
       "squashed"
@@ -711,7 +728,7 @@
      "detail": ".mdpkg/history.json"
     }
    },
-   "manifest_bytes": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":\".mdpkg/address/overrides.json\"},\"current\":\"sha1-b414f39b3a54a4232fbaa6a0de0dd4966bdf981c\",\"history\":{\"coverage\":\"complete\",\"detail\":\".mdpkg/history.json\",\"transform\":[\"squashed\"]},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"}\n",
+   "manifest_bytes": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":\".mdpkg/address/overrides.json\"},\"current\":{\"id\":\"sha1-b414f39b3a54a4232fbaa6a0de0dd4966bdf981c\",\"kind\":\"commit\"},\"history\":{\"coverage\":\"complete\",\"detail\":\".mdpkg/history.json\",\"mode\":\"git\",\"transform\":[\"squashed\"]},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"}\n",
    "history": {
     "walk": "first-parent",
     "root": "original",
@@ -741,151 +758,151 @@
     "patches": [],
     "bindings": ".mdpkg/history/bindings.json"
    },
-   "bytes": 6322,
-   "sha256": "b6fb3f23464452d3d4ab44660790e4f22c6cfa3fff1c184dd69152c3f4325ca9",
+   "bytes": 6358,
+   "sha256": "a624fe760a3e129860e774eff78e4c8d383660f773933cd981c77e89901df3e5",
    "entries": [
     {
      "name": ".mdpkg/manifest.json",
      "local": 0,
      "data": 50,
      "method": 0,
-     "csize": 376,
-     "usize": 376,
-     "crc": "bd7adfde",
-     "end": 426,
+     "csize": 412,
+     "usize": 412,
+     "crc": "8f51546c",
+     "end": 462,
      "flags": 0
     },
     {
      "name": ".mdpkg/address/overrides.json",
-     "local": 426,
-     "data": 485,
+     "local": 462,
+     "data": 521,
      "method": 8,
      "csize": 160,
      "usize": 195,
      "crc": "a14c171c",
-     "end": 645,
+     "end": 681,
      "flags": 0
     },
     {
      "name": "guide.md",
-     "local": 645,
-     "data": 683,
+     "local": 681,
+     "data": 719,
      "method": 8,
      "csize": 119,
      "usize": 163,
      "crc": "cf83f8e7",
-     "end": 802,
+     "end": 838,
      "flags": 0
     },
     {
      "name": "notes.md",
-     "local": 802,
-     "data": 840,
+     "local": 838,
+     "data": 876,
      "method": 0,
      "csize": 36,
      "usize": 36,
      "crc": "ba3d4b41",
-     "end": 876,
+     "end": 912,
      "flags": 0
     },
     {
      "name": ".mdpkg/history.json",
-     "local": 876,
-     "data": 925,
+     "local": 912,
+     "data": 961,
      "method": 8,
      "csize": 368,
      "usize": 844,
      "crc": "1be94c50",
-     "end": 1293,
+     "end": 1329,
      "flags": 0
     },
     {
      "name": ".mdpkg/history/bindings.json",
-     "local": 1293,
-     "data": 1351,
+     "local": 1329,
+     "data": 1387,
      "method": 8,
      "csize": 169,
      "usize": 265,
      "crc": "cafccc48",
-     "end": 1520,
+     "end": 1556,
      "flags": 0
     },
     {
      "name": ".mdpkg/history/ranges/ff2689cd726e96680fd7c32435119059ae199fbd70310111b970bac4bdabf6b0.json",
-     "local": 1520,
-     "data": 1641,
+     "local": 1556,
+     "data": 1677,
      "method": 8,
      "csize": 947,
      "usize": 2202,
      "crc": "67747d75",
-     "end": 2588,
+     "end": 2624,
      "flags": 0
     },
     {
      "name": ".git/HEAD",
-     "local": 2588,
-     "data": 2627,
+     "local": 2624,
+     "data": 2663,
      "method": 0,
      "csize": 21,
      "usize": 21,
      "crc": "576463b5",
-     "end": 2648,
+     "end": 2684,
      "flags": 0
     },
     {
      "name": ".git/config",
-     "local": 2648,
-     "data": 2689,
+     "local": 2684,
+     "data": 2725,
      "method": 0,
      "csize": 50,
      "usize": 50,
      "crc": "184bf63d",
-     "end": 2739,
+     "end": 2775,
      "flags": 0
     },
     {
      "name": ".git/refs/heads/main",
-     "local": 2739,
-     "data": 2789,
+     "local": 2775,
+     "data": 2825,
      "method": 0,
      "csize": 41,
      "usize": 41,
      "crc": "4f5dffdc",
-     "end": 2830,
+     "end": 2866,
      "flags": 0
     },
     {
      "name": ".git/objects/pack/pack-90bb59018b3df8e15cd07c8899e108e3ded2c475.idx",
-     "local": 2830,
-     "data": 2927,
+     "local": 2866,
+     "data": 2963,
      "method": 0,
      "csize": 1352,
      "usize": 1352,
      "crc": "afc5f15c",
-     "end": 4279,
+     "end": 4315,
      "flags": 0
     },
     {
      "name": ".git/objects/pack/pack-90bb59018b3df8e15cd07c8899e108e3ded2c475.pack",
-     "local": 4279,
-     "data": 4377,
+     "local": 4315,
+     "data": 4413,
      "method": 0,
      "csize": 993,
      "usize": 993,
      "crc": "8dc1b4b6",
-     "end": 5370,
+     "end": 5406,
      "flags": 0
     }
    ],
    "eocd": {
-    "eocd": 6300,
+    "eocd": 6336,
     "count": 12,
     "cd_size": 930,
-    "cd_offset": 5370,
+    "cd_offset": 5406,
     "comment": 0
    },
-   "typing_hex": "000000  50 4b 03 04 14 00 00 00 00 00 00 00 21 00 de df  PK..........!...\n000010  7a bd 78 01 00 00 78 01 00 00 14 00 00 00 2e 6d  z.x...x........m\n000020  64 70 6b 67 2f 6d 61 6e 69 66 65 73 74 2e 6a 73  dpkg/manifest.js\n000030  6f 6e 7b 22 6d 64 70 6b 67 22 3a 22 6d 61 72 6b  on{\"mdpkg\":\"mark\n000040  64 6f 77 6e 2d 70 61 63 6b 61 67 65 2f 31 22     down-package/1\"",
-   "eocd_hex": "00189c  50 4b 05 06 00 00 00 00 0c 00 0c 00 a2 03 00 00  PK..............\n0018ac  fa 14 00 00 00 00                                ......",
+   "typing_hex": "000000  50 4b 03 04 14 00 00 00 00 00 00 00 21 00 6c 54  PK..........!.lT\n000010  51 8f 9c 01 00 00 9c 01 00 00 14 00 00 00 2e 6d  Q..............m\n000020  64 70 6b 67 2f 6d 61 6e 69 66 65 73 74 2e 6a 73  dpkg/manifest.js\n000030  6f 6e 7b 22 6d 64 70 6b 67 22 3a 22 6d 61 72 6b  on{\"mdpkg\":\"mark\n000040  64 6f 77 6e 2d 70 61 63 6b 61 67 65 2f 31 22     down-package/1\"",
+   "eocd_hex": "0018c0  50 4b 05 06 00 00 00 00 0c 00 0c 00 a2 03 00 00  PK..............\n0018d0  1e 15 00 00 00 00                                ......",
    "tree": "100644 blob 752dff649fddd64bfb1804adc5c5da5960d55d78\t.mdpkg/address/overrides.json\n100644 blob 7e5cdaf1d0796bd7280ba1fbee7f506ecf90dc64\tguide.md\n100644 blob 143227537cf0e613855eb072fc61269cf85387f5\tnotes.md\n"
   }
  }

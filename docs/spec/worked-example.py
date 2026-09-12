@@ -26,7 +26,7 @@ import zlib
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE / 'worked-example-out'
+OUT = (Path(sys.argv[1]) if len(sys.argv) > 1 else HERE / 'worked-example-out').resolve()
 NAMESPACE = 'c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8'   # lineage namespace: a fixture value
 ANCHOR = 'cm0312-trail-source-v1'
 DIGEST = 'cm0312-source-lf-v1'
@@ -288,6 +288,10 @@ NOTES_0 = b"""# Notes
 
 
 def main():
+    # Generated output is confined to this checkout, never its root or source dirs.
+    checkout = HERE.parents[1]
+    assert OUT.is_relative_to(checkout) and OUT != checkout
+    assert OUT.name.startswith(('worked-example-out', 'task-'))
     if OUT.exists():
         shutil.rmtree(OUT, onerror=lambda f, p, e: (os.chmod(p, 0o700), f(p)))
     OUT.mkdir(parents=True)
@@ -365,10 +369,10 @@ def main():
                                    'summary': summary_name}],
               'ranges': [summary_name], 'bindings': '.mdpkg/history/bindings.json'})):
         repo_items = curated_repo(src, head, OUT / f'{label}.git')
-        manifest = {'mdpkg': MAGIC, 'namespace': NAMESPACE, 'current': 'sha1-' + head,
+        manifest = {'mdpkg': MAGIC, 'namespace': NAMESPACE, 'current': {'id': 'sha1-' + head, 'kind': 'commit'},
                     'addressing': {'anchor': ANCHOR, 'digest': DIGEST, 'coverage': 'complete',
                                    'overrides': LEDGER},
-                    'history': {'coverage': 'complete', 'transform': transform,
+                    'history': {'mode': 'git', 'coverage': 'complete', 'transform': transform,
                                 'detail': '.mdpkg/history.json'}}
         history = {'walk': 'first-parent', 'root': 'original', 'shallowBoundaries': [],
                    'retainedCommits': len(retained),
@@ -397,7 +401,7 @@ def main():
     for name, root in (('setup', setup_root), ('usage', usage_root), ('todo', todo_root)):
         row = inv1[root]
         reviews[name] = dict(root=root, locator=row['locator'], expect=row['digest'],
-                             reviewedAt='sha1-' + c1, uri=reference(root, row),
+                             reviewedAt={'id': 'sha1-' + c1, 'kind': 'commit'}, uri=reference(root, row),
                              with_ledger=resolve(root, row['locator'], row['digest'], inv2, ledger['entries']),
                              without_ledger=resolve(root, row['locator'], row['digest'], inv2, {}),
                              touched_after_review=[n for n in changed_at.get(root, []) if n > 1])
@@ -418,7 +422,7 @@ def main():
         after = git(dest, 'status', '--porcelain', '--untracked-files=all').decode().splitlines()
         git(dest, 'fsck', '--full', '--strict')
         head = git(dest, 'rev-parse', 'HEAD').decode().strip()
-        assert head == pkg['head'] == pkg['manifest']['current'][5:]
+        assert head == pkg['head'] == pkg['manifest']['current']['id'][5:]
         assert all(line.startswith('?? .mdpkg/') for line in after), after
         verification[label] = dict(status_lines_before_read_tree=len(before),
                                    untracked_after_read_tree=[l[3:] for l in after],
