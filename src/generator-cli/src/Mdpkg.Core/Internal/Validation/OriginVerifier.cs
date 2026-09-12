@@ -25,6 +25,11 @@ internal static class OriginVerifier
         var snapshotManifest = FormatValidation.ReadManifest(node);
         FormatValidation.ValidateManifest(snapshotManifest, manifest.Namespace);
         Require(JsonNode.DeepEquals(SnapshotHash.Header(snapshotManifest), header), "semantic header");
+        // C0 retains S0's semantic declarations; only a successor may change them.
+        // Header deliberately excludes optional transport evidence from this comparison.
+        if (manifest.Current.Id == origin["commit"]!.GetValue<string>())
+            Require(CanonicalJson.Bytes(SnapshotHash.Header(manifest)).AsSpan().SequenceEqual(CanonicalJson.Bytes(header)),
+                "current bootstrap semantic header differs from origin; a successor commit is required");
         // Native Git independently checks object hashes/reachability. Rebuilding the
         // regular-file tree also detects unrepresented empty directories and modes.
         var treeId = await repo.TreeAsync(files, ct);
