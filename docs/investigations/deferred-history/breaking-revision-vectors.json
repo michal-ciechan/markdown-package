@@ -1,0 +1,210 @@
+{
+  "purpose": "Design vectors for CARD-0052; not a package implementation or conformance suite. Canonical state hashes computed with Python; bootstrap Git trees and commits checked using native Git in isolated scratch repositories.",
+  "sourceRevision": "732f6daf0747292c411e07a53f7dbe0daf7b8a84",
+  "vectors": [
+    {
+      "name": "guide",
+      "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+      "sources": {
+        "guide.md": "# Guide\n"
+      },
+      "preimage": {
+        "entries": [
+          {
+            "bytes": 8,
+            "digest": "sha256-bc553ffe57e544498b12a9865dbf3abc2004c474e349c52c378eaa402287424b",
+            "mode": "100644",
+            "path": "guide.md"
+          }
+        ],
+        "header": {
+          "addressing": {
+            "anchor": "cm0312-trail-source-v1",
+            "coverage": "complete",
+            "digest": "cm0312-source-lf-v1",
+            "overrides": null
+          },
+          "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+          "review": null
+        },
+        "profile": "mdpkg-snapshot-v1"
+      },
+      "preimageCanonical": "{\"entries\":[{\"bytes\":8,\"digest\":\"sha256-bc553ffe57e544498b12a9865dbf3abc2004c474e349c52c378eaa402287424b\",\"mode\":\"100644\",\"path\":\"guide.md\"}],\"header\":{\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\",\"review\":null},\"profile\":\"mdpkg-snapshot-v1\"}\n",
+      "snapshotId": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+      "treeId": "sha1-a2cee25e07384988b388900d21dd2c9bd32ed487",
+      "bootstrapCommitBytes": "tree a2cee25e07384988b388900d21dd2c9bd32ed487\nauthor mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\ncommitter mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\n\nmdpkg-bootstrap-v1\nnamespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\nsnapshot sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4\n",
+      "bootstrapCommitId": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+      "origin": {
+        "commit": "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9",
+        "header": {
+          "addressing": {
+            "anchor": "cm0312-trail-source-v1",
+            "coverage": "complete",
+            "digest": "cm0312-source-lf-v1",
+            "overrides": null
+          },
+          "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+          "review": null
+        },
+        "profile": "mdpkg-bootstrap-v1",
+        "snapshot": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4"
+      },
+      "snapshotManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"current\":{\"id\":\"sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4\",\"kind\":\"snapshot\"},\"history\":{\"mode\":\"none\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"}\n",
+      "materializedManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"current\":{\"id\":\"sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9\",\"kind\":\"commit\"},\"history\":{\"coverage\":\"complete\",\"detail\":\".mdpkg/history.json\",\"mode\":\"git\",\"transform\":[]},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"}\n",
+      "materializedHistoryCanonical": "{\"addressingCoverage\":[{\"coverage\":\"complete\",\"from\":\"sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9\",\"to\":\"sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9\"}],\"origin\":{\"commit\":\"sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9\",\"header\":{\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\",\"review\":null},\"profile\":\"mdpkg-bootstrap-v1\",\"snapshot\":\"sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4\"},\"patches\":[],\"ranges\":[],\"retainedCommits\":1,\"root\":\"materialized\",\"shallowBoundaries\":[],\"sourceBase\":\"sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9\",\"sourceTip\":\"sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9\",\"transformations\":[],\"walk\":\"first-parent\"}\n"
+    },
+    {
+      "name": "unicode",
+      "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9",
+      "sources": {
+        "a.txt": "a\\b\tc\n",
+        "a/é.md": "﻿# Café  \n\n",
+        ".md": "# Private\n",
+        "𐀀.md": "# Supplementary\n"
+      },
+      "preimage": {
+        "entries": [
+          {
+            "bytes": 6,
+            "digest": "sha256-0a3d8688a7d4bcb6ad912a7fcdf2db0075dc6a8ae135cc8ccce43e6791ed6dad",
+            "mode": "100644",
+            "path": "a.txt"
+          },
+          {
+            "bytes": 14,
+            "digest": "sha256-c9b688a9b8d3f9791f3f061a9f1194720bd6e999cb31da599b8074fae81ccca2",
+            "mode": "100644",
+            "path": "a/é.md"
+          },
+          {
+            "bytes": 10,
+            "digest": "sha256-ab41281f6080eb3ecec88832d08443f4807667e1b5ce8df002a020cc250e9e9e",
+            "mode": "100644",
+            "path": ".md"
+          },
+          {
+            "bytes": 16,
+            "digest": "sha256-4462c8fff0617ffe7b68d33a0015a820334930d76a2d8447e225d74539b12793",
+            "mode": "100644",
+            "path": "𐀀.md"
+          }
+        ],
+        "header": {
+          "addressing": {
+            "anchor": "cm0312-trail-source-v1",
+            "coverage": "complete",
+            "digest": "cm0312-source-lf-v1",
+            "overrides": null
+          },
+          "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9",
+          "review": null
+        },
+        "profile": "mdpkg-snapshot-v1"
+      },
+      "preimageCanonical": "{\"entries\":[{\"bytes\":6,\"digest\":\"sha256-0a3d8688a7d4bcb6ad912a7fcdf2db0075dc6a8ae135cc8ccce43e6791ed6dad\",\"mode\":\"100644\",\"path\":\"a.txt\"},{\"bytes\":14,\"digest\":\"sha256-c9b688a9b8d3f9791f3f061a9f1194720bd6e999cb31da599b8074fae81ccca2\",\"mode\":\"100644\",\"path\":\"a/é.md\"},{\"bytes\":10,\"digest\":\"sha256-ab41281f6080eb3ecec88832d08443f4807667e1b5ce8df002a020cc250e9e9e\",\"mode\":\"100644\",\"path\":\".md\"},{\"bytes\":16,\"digest\":\"sha256-4462c8fff0617ffe7b68d33a0015a820334930d76a2d8447e225d74539b12793\",\"mode\":\"100644\",\"path\":\"𐀀.md\"}],\"header\":{\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9\",\"review\":null},\"profile\":\"mdpkg-snapshot-v1\"}\n",
+      "snapshotId": "sha256-10cb6ff2c4e8842da88586388006e33ef378c991cdd33014c44568d21227cdad",
+      "treeId": "sha1-83ecc42cf955e40ff9a033e9fa955f9c371cef95",
+      "bootstrapCommitBytes": "tree 83ecc42cf955e40ff9a033e9fa955f9c371cef95\nauthor mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\ncommitter mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\n\nmdpkg-bootstrap-v1\nnamespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9\nsnapshot sha256-10cb6ff2c4e8842da88586388006e33ef378c991cdd33014c44568d21227cdad\n",
+      "bootstrapCommitId": "sha1-5b04e58e556940a2dfad21292ecc9e0050fd87b2",
+      "origin": {
+        "commit": "sha1-5b04e58e556940a2dfad21292ecc9e0050fd87b2",
+        "header": {
+          "addressing": {
+            "anchor": "cm0312-trail-source-v1",
+            "coverage": "complete",
+            "digest": "cm0312-source-lf-v1",
+            "overrides": null
+          },
+          "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9",
+          "review": null
+        },
+        "profile": "mdpkg-bootstrap-v1",
+        "snapshot": "sha256-10cb6ff2c4e8842da88586388006e33ef378c991cdd33014c44568d21227cdad"
+      },
+      "snapshotManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"current\":{\"id\":\"sha256-10cb6ff2c4e8842da88586388006e33ef378c991cdd33014c44568d21227cdad\",\"kind\":\"snapshot\"},\"history\":{\"mode\":\"none\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9\"}\n",
+      "materializedManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"current\":{\"id\":\"sha1-5b04e58e556940a2dfad21292ecc9e0050fd87b2\",\"kind\":\"commit\"},\"history\":{\"coverage\":\"complete\",\"detail\":\".mdpkg/history.json\",\"mode\":\"git\",\"transform\":[]},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9\"}\n",
+      "materializedHistoryCanonical": "{\"addressingCoverage\":[{\"coverage\":\"complete\",\"from\":\"sha1-5b04e58e556940a2dfad21292ecc9e0050fd87b2\",\"to\":\"sha1-5b04e58e556940a2dfad21292ecc9e0050fd87b2\"}],\"origin\":{\"commit\":\"sha1-5b04e58e556940a2dfad21292ecc9e0050fd87b2\",\"header\":{\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f9\",\"review\":null},\"profile\":\"mdpkg-bootstrap-v1\",\"snapshot\":\"sha256-10cb6ff2c4e8842da88586388006e33ef378c991cdd33014c44568d21227cdad\"},\"patches\":[],\"ranges\":[],\"retainedCommits\":1,\"root\":\"materialized\",\"shallowBoundaries\":[],\"sourceBase\":\"sha1-5b04e58e556940a2dfad21292ecc9e0050fd87b2\",\"sourceTip\":\"sha1-5b04e58e556940a2dfad21292ecc9e0050fd87b2\",\"transformations\":[],\"walk\":\"first-parent\"}\n"
+    },
+    {
+      "name": "delta-review",
+      "namespace": "d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+      "sources": {
+        ".mdpkg/review/comments.json": "{\"anchor\":\"cm0312-trail-source-v1\",\"profile\":\"cm0312-source-lf-v1\",\"selector\":\"cm0312-quote-context-v1\",\"threads\":[],\"version\":2}\n"
+      },
+      "preimage": {
+        "entries": [
+          {
+            "bytes": 130,
+            "digest": "sha256-7e68de56b93edd6807dc1395c1786cf2d5830a692ea4d77da2d13fe981ab1cdb",
+            "mode": "100644",
+            "path": ".mdpkg/review/comments.json"
+          }
+        ],
+        "header": {
+          "addressing": {
+            "anchor": "cm0312-trail-source-v1",
+            "coverage": "complete",
+            "digest": "cm0312-source-lf-v1",
+            "overrides": null
+          },
+          "namespace": "d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+          "review": {
+            "detail": ".mdpkg/review/comments.json",
+            "of": {
+              "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+              "current": {
+                "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+                "kind": "snapshot"
+              }
+            },
+            "shape": "delta"
+          }
+        },
+        "profile": "mdpkg-snapshot-v1"
+      },
+      "preimageCanonical": "{\"entries\":[{\"bytes\":130,\"digest\":\"sha256-7e68de56b93edd6807dc1395c1786cf2d5830a692ea4d77da2d13fe981ab1cdb\",\"mode\":\"100644\",\"path\":\".mdpkg/review/comments.json\"}],\"header\":{\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"namespace\":\"d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\",\"review\":{\"detail\":\".mdpkg/review/comments.json\",\"of\":{\"current\":{\"id\":\"sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4\",\"kind\":\"snapshot\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"},\"shape\":\"delta\"}},\"profile\":\"mdpkg-snapshot-v1\"}\n",
+      "snapshotId": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a",
+      "treeId": "sha1-027e24bff919a0560d666b330bb66d54fb908934",
+      "bootstrapCommitBytes": "tree 027e24bff919a0560d666b330bb66d54fb908934\nauthor mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\ncommitter mdpkg bootstrap <bootstrap@mdpkg.invalid> 946684800 +0000\n\nmdpkg-bootstrap-v1\nnamespace d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\nsnapshot sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a\n",
+      "bootstrapCommitId": "sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c",
+      "origin": {
+        "commit": "sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c",
+        "header": {
+          "addressing": {
+            "anchor": "cm0312-trail-source-v1",
+            "coverage": "complete",
+            "digest": "cm0312-source-lf-v1",
+            "overrides": null
+          },
+          "namespace": "d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+          "review": {
+            "detail": ".mdpkg/review/comments.json",
+            "of": {
+              "namespace": "c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8",
+              "current": {
+                "id": "sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4",
+                "kind": "snapshot"
+              }
+            },
+            "shape": "delta"
+          }
+        },
+        "profile": "mdpkg-bootstrap-v1",
+        "snapshot": "sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a"
+      },
+      "snapshotManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"current\":{\"id\":\"sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a\",\"kind\":\"snapshot\"},\"history\":{\"mode\":\"none\"},\"namespace\":\"d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\",\"review\":{\"detail\":\".mdpkg/review/comments.json\",\"of\":{\"current\":{\"id\":\"sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4\",\"kind\":\"snapshot\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"},\"shape\":\"delta\"}}\n",
+      "materializedManifestCanonical": "{\"mdpkg\":\"markdown-package/1\",\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"current\":{\"id\":\"sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c\",\"kind\":\"commit\"},\"history\":{\"coverage\":\"complete\",\"detail\":\".mdpkg/history.json\",\"mode\":\"git\",\"transform\":[]},\"namespace\":\"d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\",\"review\":{\"detail\":\".mdpkg/review/comments.json\",\"of\":{\"current\":{\"id\":\"sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4\",\"kind\":\"snapshot\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"},\"shape\":\"delta\"}}\n",
+      "materializedHistoryCanonical": "{\"addressingCoverage\":[{\"coverage\":\"complete\",\"from\":\"sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c\",\"to\":\"sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c\"}],\"origin\":{\"commit\":\"sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c\",\"header\":{\"addressing\":{\"anchor\":\"cm0312-trail-source-v1\",\"coverage\":\"complete\",\"digest\":\"cm0312-source-lf-v1\",\"overrides\":null},\"namespace\":\"d1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\",\"review\":{\"detail\":\".mdpkg/review/comments.json\",\"of\":{\"current\":{\"id\":\"sha256-69b43819687cc0ec576965b514d5d336544966aadddec1310b4b7f242fb3adb4\",\"kind\":\"snapshot\"},\"namespace\":\"c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8\"},\"shape\":\"delta\"}},\"profile\":\"mdpkg-bootstrap-v1\",\"snapshot\":\"sha256-ba691fcf325d0de91f7609a4c887afb65b349c4e9ca5c2a7aec881c100df3f8a\"},\"patches\":[],\"ranges\":[],\"retainedCommits\":1,\"root\":\"materialized\",\"shallowBoundaries\":[],\"sourceBase\":\"sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c\",\"sourceTip\":\"sha1-e8ad2ad83e6ea492891fd02cd31b66d2be45a31c\",\"transformations\":[],\"walk\":\"first-parent\"}\n"
+    }
+  ],
+  "verification": {
+    "vectors": 3,
+    "javascriptEncodingAndHashAssertionsPassed": 24,
+    "javascriptAssertionsFailed": 0,
+    "nativeGitRepositoriesFsckPassed": 3,
+    "nativeGitRepositoriesFsckFailed": 0,
+    "pythonCommitPayloadAndHashChecks": "passed for all three vectors",
+    "applicationTestsRun": false,
+    "newFormatPackagesBuilt": false
+  }
+}
