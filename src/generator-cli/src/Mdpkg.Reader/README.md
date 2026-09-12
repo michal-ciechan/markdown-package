@@ -35,6 +35,15 @@ ledger or digest matching: `history-unavailable` for snapshot targets,
 `origin-unverified`/`origin-unavailable` for a snapshot checkpoint against Git, or
 `history-required` for a different commit. A declared origin does not establish proof.
 
+An explicit `IHistoryVerificationBackend` can supply `VerifiedHistoryContext`.
+Its constructor is not public: it carries backend-verified origin, retained
+membership and correspondence intervals, bound to the target's actual archive
+SHA-256 and length. Pass it to `Resolve(..., history: context)` to use those facts;
+an unrelated or re-emitted archive cannot reuse that proof. Reconstructed
+`OriginalSnapshot` and `ReadOriginalEntry` supply exact original state, including
+non-Markdown files. `HasOriginalArchiveBytes` is false for that reconstructed view;
+its ZIP encoding and optional original transport evidence have not been recovered.
+
 `PackageIdentity.Current` is a `CurrentState` with `Kind` (`snapshot` or `commit`) and
 `Id`. The revised schema requires an explicit history mode. Selective opening reports
 `IdentityAssurance.Declared`; it does not trust the declared snapshot digest as proof.

@@ -100,14 +100,33 @@ if (loose.Category != "identity" || loose.Status != "survives" || loose.Scope is
             (project/'Program.cs').write_text(examples[1], encoding='utf-8')
             run('build',csproj,'--no-restore',cwd=work)
             assert re.search(r'[a-f0-9]{64}', run(dll,cwd=work))
+            (project/'Program.cs').write_text('''using Mdpkg.Core;
+using Mdpkg.Reader;
+var updater = new PackageUpdater();
+var first = await updater.MaterializeAsync(new(args[0]), args[1]);
+if (first.Status != OperationStatus.Success || !first.Materialized || first.BootstrapCommit != "sha1-f02a158c093f5d6867a3527418b1705bb6a5a6f9") throw new Exception("Bootstrap differs from S1.");
+var child = await updater.UpdateAsync(new(args[1], args[2], SnapshotMetadata.CliDefault), args[3]);
+if (child.Status != OperationStatus.Success || child.Materialized) throw new Exception("Append failed.");
+using var input = File.OpenRead(args[3]);
+using var archive = await PackageArchive.OpenAsync(input);
+IHistoryVerificationBackend backend = new GitHistoryBackend();
+var proof = await backend.VerifyAsync(archive);
+if (proof.OriginalSnapshot is not { HasOriginalArchiveBytes: false } original || System.Text.Encoding.UTF8.GetString(proof.ReadOriginalEntry("guide.md")) != "# Guide\\n" || proof.GetRelationship(original.Identity.Current).Status != CheckpointStatus.Verified) throw new Exception("Original context failed.");
+Console.WriteLine("S3 materialize, append and verified Reader backend passed.");
+''', encoding='utf-8')
+            run('build',csproj,'--no-restore',cwd=work)
+            assert 'S3 materialize' in run(dll,fixtures/'guide-snapshot.mdpkg',work/'bootstrap.mdpkg',source,work/'child.mdpkg',cwd=work)
         print(package+': isolated PackageReference consumer passed' + (' without Git' if package != 'Mdpkg.Core' else ' (both README examples)') + '; dependencies: '+', '.join(sorted(names)))
     tool_env = dict(os.environ)
     tool_env['NUGET_PACKAGES'] = str(work/'tool-cache')
     tool_env['NUGET_HTTP_CACHE_PATH'] = str(work/'http-cache')
     run('tool','install','mdpkg','--version',packages['mdpkg'][1],'--tool-path',work/'tools','--configfile',work/'NuGet.Config',cwd=work,env=tool_env)
     exe = work/'tools'/('mdpkg.exe' if os.name == 'nt' else 'mdpkg')
-    for args in (['pack',str(work/'source'),'--out',str(work/'tool.mdpkg'),'--namespace','c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8'], ['validate',str(work/'tool.mdpkg'),'--deep']):
+    for args in (['pack',str(work/'source'),'--out',str(work/'tool.mdpkg'),'--namespace','c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8'], ['validate',str(work/'tool.mdpkg'),'--deep'],
+                 ['update',str(work/'tool.mdpkg'),'--materialize','--out',str(work/'tool-bootstrap.mdpkg')],
+                 ['update',str(work/'tool-bootstrap.mdpkg'),'--tree',str(work/'source'),'--message','Append from installed tool','--out',str(work/'tool-child.mdpkg')],
+                 ['validate',str(work/'tool-child.mdpkg'),'--deep']):
         result = subprocess.run([str(exe), *args], cwd=work, env=tool_env, capture_output=True, text=True)
         assert result.returncode == 0, (args,result.stdout,result.stderr)
-    print('Installed local tool: pack and deep validate passed.')
+    print('Installed local tool: pack, materialize, append and deep validate passed.')
 print('3 external consumers, 2 Core README examples and installed-tool smoke passed; 0 failures.')

@@ -7,7 +7,6 @@ public class StubTests
 {
     public static TheoryData<string, string[]> WellFormedInvocations => new()
     {
-        { "update", ["update", "in.mdpkg", "--out", "out.mdpkg", "--tree", "./docs", "--message", "m"] },
         { "update", ["update", "in.mdpkg", "--out", "out.mdpkg", "--squash", "a..b", "--no-summary"] },
         { "address move", ["address", "in.mdpkg", "--out", "o.mdpkg", "move", "--root", CliRunner.Root, "--to", "section:guide.md:# Guide/0"] },
         { "address retire", ["address", "in.mdpkg", "--out", "o.mdpkg", "retire", "--root", CliRunner.Root, "--reason", "split", "--next", "a", "--next", "b"] },
@@ -23,7 +22,7 @@ public class StubTests
         var result = CliRunner.Run(args);
 
         Assert.Equal((int)ExitCode.NotImplemented, result.Exit);
-        Assert.Equal($"mdpkg {verb}: not implemented. Only pack and validate are implemented; see src/generator-cli/README.md.", result.Stderr.Trim());
+        Assert.Equal($"mdpkg {verb}: not implemented. See src/generator-cli/README.md for supported pack, update and validate actions.", result.Stderr.Trim());
         Assert.Equal(string.Empty, result.Stdout);
     }
 

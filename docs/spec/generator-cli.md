@@ -2,19 +2,20 @@
 
 A .NET global tool that emits and checks conforming `.mdpkg` packages. [`../spec.md`](../spec.md) is authoritative; every row below cites the section or decision it implements. Rows marked **G-*n*** are tool defaults filling a gap the spec leaves open (§11); they are the tool's choice, not a format rule.
 
-Audience: coding agents driving the tool non-interactively. Implementation: [`src/generator-cli/`](../../src/generator-cli/), a .NET tool on System.CommandLine. `pack` and `validate` are implemented, including Git import, projection, depth, correspondence, controlled ZIP emission and shared post-write validation. `update` and `address` remain explicit `not implemented` actions (exit 70). Their sections below describe the intended contract. Tests read this file and fail when §1, §3, §4 or §10 change without the tool following. Distribution and publishing are separate work; run the project from source today.
+Audience: coding agents driving the tool non-interactively. Implementation: [`src/generator-cli/`](../../src/generator-cli/), a .NET tool on System.CommandLine. `pack`, `validate`, `update --materialize` and bounded `update --tree` are implemented. General history transforms and `address` remain explicit `not implemented` actions (exit 70). Tests read this file and fail when §1, §3, §4 or §10 change without the tool following. Distribution and publishing are separate work; run the project from source today.
 
-## Revised draft-2 behavior — S2 creation and reading implemented
+## Revised draft-2 behavior — S2 creation/reading and S3 updates implemented
 
 The current `/1` specification is a breaking two-mode revision. S2 implements the
 typed schema in Reader, Core, CLI and Reviews declarations, plus history-free
 creation and full snapshot validation. The superseded string-valued manifest is
-rejected. Materialization/update, origin-aware review verification and browser
-support remain the S3–S5 slices; integrated release acceptance remains S6.
+rejected. S3 implements deterministic materialization, native Git origin proof,
+archive-bound Reader checkpoint contexts and bounded append. Origin-aware Reviews
+integration and browser support remain S4–S5; integrated release acceptance remains S6.
 
-The `pack` and `validate` rows below are implemented by S2. The `update` rows
-remain planned behavior, not available operations. Historical details below this
-revision summary do not override these mode rules.
+The `pack`, `validate`, `update --materialize` and bounded `update --tree` rows below
+are implemented. Historical transform details below this revision summary do not
+imply support for squash or truncate construction.
 
 | Surface | Result / validation |
 | --- | --- |

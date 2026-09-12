@@ -16,7 +16,7 @@ internal static class Stub
         var result = ResultObject.Empty(verb, ExitCode.NotImplemented);
 
         // A diagnostic, not progress: emitted regardless of --quiet (§2).
-        stderr.WriteLine($"mdpkg {verb}: not implemented. Only pack and validate are implemented; see src/generator-cli/README.md.");
+        stderr.WriteLine($"mdpkg {verb}: not implemented. See src/generator-cli/README.md for supported pack, update and validate actions.");
 
         // --report goes first: a failed write turns the run into an environment error (§3 exit 5), and the object
         // printed on stdout must carry the exit code the process actually returns (§6 exitCode).

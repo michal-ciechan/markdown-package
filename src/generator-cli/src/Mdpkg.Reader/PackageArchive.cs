@@ -222,12 +222,22 @@ public sealed class PackageArchive : IDisposable
     }
     /// <summary>Copies the entire package for an explicitly requested verification provider.</summary>
     /// <param name="destination">Writable destination stream; remains open.</param>
+    /// <param name="maximumBytes">Optional tighter byte cap for the copy.</param>
     /// <param name="cancellationToken">Token used to cancel the operation; cancellation is propagated to the caller.</param>
     /// <returns>A task that completes when copying finishes.</returns>
-    public async Task CopyToAsync(Stream destination, CancellationToken cancellationToken = default)
+    public async Task CopyToAsync(Stream destination, CancellationToken cancellationToken = default, long? maximumBytes = null)
     {
         ObjectDisposedException.ThrowIf(disposed, this); stream.Position = 0;
-        await stream.CopyToAsync(destination, cancellationToken);
+        var limit = Math.Min(maximumBytes ?? Limits.MaxInputBytes, Limits.MaxInputBytes);
+        if (limit < 1) throw new ArgumentOutOfRangeException(nameof(maximumBytes));
+        var buffer = new byte[65536]; long copied = 0;
+        while (true)
+        {
+            var read = await stream.ReadAsync(buffer, cancellationToken);
+            if (read == 0) break;
+            if (read > limit - copied) throw new ResourceLimitException("Archive copy exceeds its byte limit.");
+            copied += read; await destination.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
+        }
     }
     /// <summary>Releases archive resources and private spools while leaving the caller input stream open.</summary>
     public void Dispose() { if (!disposed && ownsStream) stream.Dispose(); disposed = true; }

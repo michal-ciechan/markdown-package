@@ -40,6 +40,8 @@ public abstract class PackageResult
     public IdentityAssurance Assurance { get; }
     public HistoryMode? Mode => Manifest is null ? null : Manifest.History is SnapshotHistory ? HistoryMode.None : HistoryMode.Git;
     public bool Materialized { get; }
+    public string? BootstrapCommit { get; }
+    public VerifiedHistoryContext? HistoryContext { get; }
     public int OverrideCount { get; }
     public int MintedRoots { get; }
     public IReadOnlyList<ValidationCheck> Checks { get; }
@@ -71,6 +73,7 @@ public abstract class PackageResult
             h.Origin is null ? null : JsonSerializer.SerializeToElement(h.Origin, new JsonSerializerOptions { MaxDepth = 256 }))
         { DeclaredRangeCount = h.Ranges.Length, DeclaredPatchCount = h.Patches.Length };
         Assurance = result.Assurance; Materialized = result.Materialized;
+        BootstrapCommit = result.BootstrapCommit; HistoryContext = result.HistoryContext;
         OverrideCount = result.OverrideCount; MintedRoots = result.MintedRoots; Error = result.Error;
         Checks = Freeze(result.Checks.Select(c => new ValidationCheck(c.Code, c.Status switch
         { "pass" => CheckStatus.Passed, "fail" => CheckStatus.Failed, "not-applicable" => CheckStatus.NotApplicable, _ => CheckStatus.Skipped })));

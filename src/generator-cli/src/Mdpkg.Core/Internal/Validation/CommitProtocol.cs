@@ -13,6 +13,6 @@ internal static class CommitProtocol
         var firstLine = end < 0 ? message : message[..end];
         if (firstLine.SequenceEqual("mdpkg-bootstrap-v1"u8))
             throw new EngineException(Outcome.Nonconforming, "MDPK4002",
-                "Reserved bootstrap commit requires materialized history and a verified origin; origin verification is unavailable (S3).");
+                "Reserved bootstrap commit requires materialized history and a verified origin at the oldest parentless root.");
     }
 }

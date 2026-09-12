@@ -24,6 +24,7 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
         var completed = new HashSet<string>(StringComparer.Ordinal);
         Manifest? manifest = null; HistoryDetail? history = null; PackageInfo? package = null; var overrideCount = 0;
         var assurance = Mdpkg.Reader.IdentityAssurance.Declared;
+        (string[] Commits, bool[] Complete, OriginState? Origin)? proof = null;
         var deepRun = false; var deepSucceeded = false; var outcome = Outcome.Nonconforming;
         try
         {
@@ -135,7 +136,7 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
             {
                 deepRun = true;
                 if (managedSnapshot) ManagedSnapshotVerifier.Verify(manifest, history, gitEntries, view, resources, ct);
-                else await DeepAsync(manifest, history, gitEntries, view, resources, ct);
+                else proof = await DeepAsync(manifest, history, gitEntries, view, resources, ct);
                 deepSucceeded = true;
                 assurance = Mdpkg.Reader.IdentityAssurance.GitVerified;
             }
@@ -155,13 +156,17 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
             manifest?.History is Mdpkg.Reader.SnapshotHistory && i is 1 or 11 or 12 or 13 or 14 or 15 or 16 or 17 ? "not-applicable" :
             ((i == 16 || i == 17) && !deepRun) ? "skipped" : findings.Any(f => f.Code == code) ? "fail" :
             (i == 16 || i == 17) ? (deepSucceeded ? "pass" : "skipped") : completed.Contains(code) ? "pass" : "skipped")).ToArray();
-        return new(outcome, package, manifest, history, overrideCount, 0, checks, findings, Assurance: outcome == Outcome.Success ? assurance : Mdpkg.Reader.IdentityAssurance.Declared);
+        var context = outcome == Outcome.Success && package is not null && manifest is not null && proof is { } verified
+            ? new Mdpkg.Reader.VerifiedHistoryContext(new(manifest.Namespace, manifest.Current), "sha256-" + package.Sha256, package.Bytes,
+                verified.Commits, verified.Complete, verified.Origin?.Snapshot, verified.Origin?.Header, verified.Origin?.Files) : null;
+        return new(outcome, package, manifest, history, overrideCount, 0, checks, findings, Assurance: outcome == Outcome.Success ? assurance : Mdpkg.Reader.IdentityAssurance.Declared,
+            HistoryContext: context);
     }
     private static void Reject(bool invalid, string message, string code = "MDPK2007")
     { if (invalid) throw new EngineException(Outcome.Nonconforming, code, message); }
-    private async Task DeepAsync(Manifest manifest, HistoryDetail history, ZipMember[] gitEntries, List<EntryData> view, ResourceOptions resources, CancellationToken ct)
+    private async Task<(string[] Commits, bool[] Complete, OriginState? Origin)> DeepAsync(Manifest manifest, HistoryDetail history, ZipMember[] gitEntries, List<EntryData> view, ResourceOptions resources, CancellationToken ct)
     {
-        Reject(history.Origin is not null, "Origin verification requires the materialization capability (S3).", "MDPK4002");
+        OriginState? origin = null;
         using var temp = new TemporaryDirectory(settings.TemporaryDirectory);
         long spooled = 0;
         foreach (var entry in gitEntries)
@@ -183,6 +188,7 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
         var indexes = commits.Select((c, i) => (Id: "sha1-" + c, Index: i)).ToDictionary(x => x.Id, x => x.Index);
         var coverage = new bool[Math.Max(1, commits.Length - 1)];
         var completeClaims = new bool[commits.Length];
+        var partialClaims = new bool[commits.Length];
         completeClaims[0] = manifest.Addressing.Coverage == "complete";
         foreach (var range in history.AddressingCoverage)
         {
@@ -195,6 +201,8 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
                 for (var i = indexes[range.From] + 1; i <= indexes[range.To]; i++) completeClaims[i] = true;
                 if (indexes[range.From] == 0 && indexes[range.To] == 0) completeClaims[0] = true;
             }
+            else
+                for (var i = indexes[range.From] + 1; i <= indexes[range.To]; i++) partialClaims[i] = true;
         }
         Reject(commits.Length > 1 && coverage.Any(c => !c), "Coverage ranges leave undeclared gaps.");
         if (manifest.Addressing.Coverage == "complete") Reject(history.AddressingCoverage[0].From != "sha1-" + commits[0], "Complete coverage does not start at retained root.");
@@ -203,9 +211,11 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
         foreach (var (commit, index) in commits.Select((commit, index) => (commit, index)))
         {
             var rawCommit = await repo.ReadObjectAsync("commit", commit, ct);
-            CommitProtocol.RejectUnverifiedBootstrap(rawCommit);
+            if (index != 0 || history.Origin is null) CommitProtocol.RejectUnverifiedBootstrap(rawCommit);
             Reject(CountParents(rawCommit) > 1, "Retained graph includes a merge second parent.");
             var tree = await repo.ReadTreeAsync(commit, null, [], normalize: false, ct);
+            if (index == 0 && history.Origin is not null)
+                origin = await OriginVerifier.VerifyAsync(manifest, history, commit, rawCommit, tree, repo, temp.Path, resources, ct);
             if (manifest.Review?["shape"]?.GetValue<string>() == "delta")
                 Reject(tree.Any(e => e.Name != ".mdpkg/review/comments.json"), "Delta review retains non-review files.");
             foreach (var e in tree)
@@ -234,10 +244,15 @@ internal sealed class PackageValidator(EngineSettings? settings = null)
         }
         if (manifest.Review is { } review && review["shape"]!.GetValue<string>() == "bundled")
         {
-            Reject(commits.Length < 2 || "sha1-" + commits[^2] != review["of"]!["current"]!["id"]!.GetValue<string>(), "Bundled review parent differs from review.of.current.");
+            var reviewed = review["of"]!["current"]!;
+            var parent = reviewed["kind"]!.GetValue<string>() == "snapshot"
+                ? origin?.Snapshot.Identity.Current.Id == reviewed["id"]!.GetValue<string>() ? history.Origin!["commit"]!.GetValue<string>() : null
+                : reviewed["id"]!.GetValue<string>();
+            Reject(commits.Length < 2 || "sha1-" + commits[^2] != parent, "Bundled review parent differs from review.of.current or verified origin.");
             var changed = await git.TextAsync(temp.Path, ct, "diff-tree", "--no-commit-id", "--name-only", "-r", "-z", "--no-renames", commits[^2], head);
             Reject(changed.Split('\0', StringSplitOptions.RemoveEmptyEntries).Any(p => !p.StartsWith(".mdpkg/review/", StringComparison.Ordinal)), "Bundled review changes non-review paths.");
         }
+        return (commits, completeClaims.Select((complete, index) => complete && !partialClaims[index]).Skip(1).ToArray(), origin);
     }
 
     private static int CountParents(ReadOnlySpan<byte> commit)

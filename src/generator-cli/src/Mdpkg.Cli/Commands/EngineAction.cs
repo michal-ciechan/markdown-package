@@ -39,7 +39,7 @@ internal static class EngineAction
             engine.Checks.Select(c => new CheckResult(c.Code, c.Status switch { CheckStatus.Passed => "pass", CheckStatus.Failed => "fail", CheckStatus.NotApplicable => "not-applicable", _ => "skipped" })).ToArray(),
             engine.Diagnostics.Select(d => new Reporting.Diagnostic(d.Code, d.Severity switch
             { DiagnosticSeverity.Warning => "warn", DiagnosticSeverity.Error => "error", _ => "info" }, d.Entry, d.Message, d.Spec)).ToArray(),
-            m?.History.Mode, engine.Assurance switch { IdentityAssurance.SnapshotVerified => "snapshot-verified", IdentityAssurance.GitVerified => "git-verified", _ => "declared" }, engine.Materialized);
+            m?.History.Mode, engine.Assurance switch { IdentityAssurance.SnapshotVerified => "snapshot-verified", IdentityAssurance.GitVerified => "git-verified", _ => "declared" }, engine.Materialized, engine.BootstrapCommit);
     }
     private static JsonObject Manifest(ManifestMetadata m)
     {

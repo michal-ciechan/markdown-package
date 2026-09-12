@@ -99,6 +99,8 @@ public sealed partial class PackageSnapshot
     public string PackageDigest { get; }
     /// <summary>Length of the source package in bytes.</summary>
     public long PackageBytes { get; }
+    /// <summary>False for a state reconstructed from a verified Git tree; its original ZIP encoding is unavailable.</summary>
+    public bool HasOriginalArchiveBytes { get; internal set; } = true;
     /// <summary>Whether the manifest declares review data; does not imply full verification.</summary>
     public bool IsReviewPackage { get; }
     /// <summary>Package-relative paths of loaded Markdown documents.</summary>
@@ -180,19 +182,28 @@ public sealed partial class PackageSnapshot
     }
     /// <summary>Resolves an anchor through current ledger identity before comparing source digests.</summary>
     /// <param name="reviewed">Original reviewed package identity.</param>
+    /// <param name="history">Explicit archive-bound verification context, or null for selective current resolution.</param>
     /// <param name="root">Persistent anchor root hash.</param>
     /// <param name="expect">Expected canonical source digest at review time.</param>
     /// <param name="declared">Original declared scope locator.</param>
     /// <param name="cancellationToken">Token used to cancel the operation; cancellation is propagated to the caller.</param>
     /// <returns>Identity evidence with any live scope and dead-identity successor navigation.</returns>
     /// <remarks>A different checkpoint requires relationship evidence unavailable to this current-view reader. This method does not resolve quote selectors or search successor scopes.</remarks>
-    public IdentityResolution Resolve(PackageIdentity reviewed, string root, string expect, DocumentLocator declared, CancellationToken cancellationToken = default)
+    public IdentityResolution Resolve(PackageIdentity reviewed, string root, string expect, DocumentLocator declared, CancellationToken cancellationToken = default,
+        VerifiedHistoryContext? history = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (reviewed.Namespace != Identity.Namespace) return new(IdentityStatus.Invalidated, "wrong-lineage");
         if (!Profile.Root(root) || !Profile.Root(expect) || !Profile.State(reviewed.Current)) return new(IdentityStatus.Invalidated, "malformed-anchor");
+        if (history is not null && !history.Matches(this)) return new(IdentityStatus.Unconfirmed, "verification-context-mismatch");
         if (reviewed.Current != Identity.Current)
         {
+            if (history is not null)
+            {
+                var relationship = history.GetRelationship(reviewed.Current);
+                return relationship.Status == CheckpointStatus.Verified ? ResolveCurrent(root, expect, declared, cancellationToken)
+                    : new(IdentityStatus.Unconfirmed, relationship.Reason);
+            }
             if (Identity.Current.Kind == "snapshot") return new(IdentityStatus.Unconfirmed, "history-unavailable");
             if (reviewed.Current.Kind == "snapshot") return new(IdentityStatus.Unconfirmed, hasDeclaredOrigin ? "origin-unverified" : "origin-unavailable");
             return new(IdentityStatus.Unconfirmed, "history-required");

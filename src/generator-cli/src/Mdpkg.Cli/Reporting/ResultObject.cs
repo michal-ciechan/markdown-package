@@ -19,7 +19,8 @@ internal sealed record ResultObject(
     IReadOnlyList<Diagnostic> Diagnostics,
     string? Mode = null,
     string Assurance = "declared",
-    bool Materialized = false)
+    bool Materialized = false,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? BootstrapCommit = null)
 {
     /// <summary>A result with nothing computed: what a stub, or a run that failed before opening anything, reports.</summary>
     public static ResultObject Empty(string verb, ExitCode exitCode) =>

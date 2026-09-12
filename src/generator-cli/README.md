@@ -2,12 +2,15 @@
 
 `pack` creates real `.mdpkg` packages. `validate` checks them, and `validate --deep`
 verifies the curated repository with native Git and compares every current-view file
-with its tip-tree blob. `update` and `address` remain explicit exit-70 placeholders.
+with its tip-tree blob. `update --materialize` emits deterministic bootstrap history;
+`update --tree ... --message ...` appends to a supported lineage, materializing a
+snapshot base first. General transforms and `address` remain exit-70 placeholders.
 An internal managed snapshot candidate is implemented but **not enabled in release
 builds**. Cross-file blob deltas close the original size gap on the measured large
 and similar-file corpora. The [delta report](../../docs/investigations/2026-09-12-card-0050-managed-delta-results.md)
 records the new measurements and the remaining acceptance work. Ordinary
-release `pack` still requires Git; no new CLI backend flag has been added.
+`pack` defaults to history-free output and requires no Git. Explicit Git output,
+materialization and append retain the existing native/candidate backend policy.
 The [format specification](https://github.com/michal-ciechan/markdown-package/blob/master/docs/spec.md) governs the bytes; the
 [tool reference](https://github.com/michal-ciechan/markdown-package/blob/master/docs/spec/generator-cli.md) documents commands and diagnostics.
 
@@ -87,9 +90,10 @@ Snapshot mode ignores
 its exact root `.git` entry; Git mode reads committed HEAD, ignoring working-tree edits.
 Paths containing colons/control characters and symlinks/reparse points are rejected.
 Review-package authoring is outside `pack`; it needs a review manifest. SHA-256 object
-format, ZIP64, update/squash and address editing are not implemented. Payloads are buffered
+format, ZIP64, general squash/truncate and address editing are not implemented. Payloads are buffered
 in memory, with an individual-entry limit of `Int32.MaxValue`; native Git and temporary
-disk space are prerequisites. See tool-reference §12 for complete policy details.
+disk space are required for Git operations. Snapshot creation/validation needs no Git.
+See tool-reference §12 for complete policy details.
 
 ## Internal layout
 

@@ -131,3 +131,23 @@ Input/output ownership and resources:
 Reader retains the Unicode attribution and parser/compression dependency notices in
 its MIT-licensed package. The shared release workflow publishes Reader before Core
 and verifies fresh consumers against nuget.org alone.
+
+`PackageUpdater.MaterializeAsync` takes a `MaterializePackageRequest` and a separate
+output path. `UpdateAsync` takes `UpdatePackageRequest(inputPackage, sourceDirectory,
+metadata)` with optional correspondence. Stream overloads retain caller ownership
+and the documented final-copy limitation. Inputs are captured and validated before
+work; completed output is independently Deep-validated before file replacement.
+Materialization preserves S0's semantic header and exact files. Append carries the
+base ledger, rejects a conflicting source ledger, and preserves partial intervals.
+Supported Git append bases have a complete retained graph, original/materialized
+root, and no transforms, shallow boundaries, range/patch evidence or projected source
+endpoints. Re-emission of a valid Git input has no append restriction.
+
+Deep validation returns `HistoryContext`, including a verified original snapshot
+when origin exists. `GitHistoryBackend` implements Reader's explicit
+`IHistoryVerificationBackend` without making Reader depend on Core. Context reuse
+checks the target archive SHA-256 and length as well as typed identity. Pass that
+context to Reader's `Resolve` to translate a verified S0 checkpoint and check all
+intervening correspondence intervals. `OriginalSnapshot.HasOriginalArchiveBytes`
+is false: reconstruction supplies exact state, not the original ZIP encoding or
+its optional transport evidence. Reviews integration remains a separate slice.

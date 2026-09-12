@@ -7,7 +7,8 @@ internal sealed record PackageInfo(string? Path, long Bytes, string Sha256, int 
 internal sealed record EngineResult(Outcome Outcome, PackageInfo? Package, Manifest? Manifest,
     HistoryDetail? History, int OverrideCount, int MintedRoots, IReadOnlyList<Check> Checks,
     IReadOnlyList<Finding> Diagnostics, string? Error = null, bool ResourceExceeded = false,
-    Mdpkg.Reader.IdentityAssurance Assurance = Mdpkg.Reader.IdentityAssurance.Declared, bool Materialized = false);
+    Mdpkg.Reader.IdentityAssurance Assurance = Mdpkg.Reader.IdentityAssurance.Declared, bool Materialized = false,
+    Mdpkg.Reader.VerifiedHistoryContext? HistoryContext = null, string? BootstrapCommit = null);
 internal sealed record PackRequest(string Source, string Destination, string Namespace,
     bool FromGit = false, string? Scope = null, int? Depth = null, string? Message = null,
     string? Correspondence = null, bool RequireComplete = false, bool FailOnWarning = false,
