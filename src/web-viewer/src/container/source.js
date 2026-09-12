@@ -10,7 +10,7 @@ export function checkRange(size, offset, length) {
 }
 
 export function bytesSource(input) {
-  const bytes = input instanceof ArrayBuffer ? new Uint8Array(input.slice(0)) : Uint8Array.from(input);
+  const bytes = Uint8Array.from(input instanceof ArrayBuffer ? new Uint8Array(input) : input);
   return immutable({
     size: bytes.length,
     async read(offset, length) {

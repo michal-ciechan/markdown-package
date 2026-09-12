@@ -9,7 +9,7 @@ import {canonicalJson, utf8, MANIFEST} from '../src/format.js';
 import {openPackage} from '../src/inbound/open.js';
 import {referenceFor} from '../src/address/resolve.js';
 import {emitReview, validateExport} from '../src/review/emit.js';
-import {newReview} from '../src/review/comments.js';
+import {newReview, readComments} from '../src/review/comments.js';
 import {resolveDestination} from '../src/links/resolve.js';
 import {previewMarkup} from '../src/ui/markdown-surface.js';
 
@@ -101,6 +101,76 @@ test('a mutable custom source cannot earn assurance; Blob subclasses cannot repl
   const owned = blobSource(input), opened = await openContainer(owned);
   assert.throws(() => { owned.read = async () => new Uint8Array(); }, TypeError);
   await opened.verifySnapshot(); assert.equal(opened.assurance, 'snapshot-verified');
+});
+
+for (const timing of ['before', 'during']) test('verification ignores substituted public readers and metadata ' + timing + ' verification', async () => {
+  const good = await openContainer(bytesSource(await fixture('original.mdpkg')));
+  const files = await Promise.all(good.entries.filter(e => !e.directory)
+    .map(async e => ({name: e.name, bytes: await good.read(e.name), stored: true})));
+  files.find(e => e.name === 'guide.md').bytes = utf8.encode('# Changed current file\n');
+  const bad = await openContainer(bytesSource(await writePackage(files))), actualRead = bad.read;
+  await assert.rejects(bad.verifySnapshot(), /identity/);
+  const pending = timing === 'during' ? bad.verifySnapshot() : null;
+  bad.read = good.read;
+  bad.readDirectory = good.readDirectory;
+  bad.manifest = good.manifest;
+  bad.entries = good.entries;
+  bad.byName.clear();
+  await assert.rejects(pending ?? bad.verifySnapshot(), /identity/);
+  bad.read = actualRead;
+  assert.equal(bad.assurance, 'declared');
+  assert.equal(new TextDecoder().decode(await bad.read('guide.md')), '# Changed current file\n');
+});
+
+test('verification and subsequent reads retain private ledger metadata despite public mutation', async () => {
+  const opened = await openContainer(bytesSource(await fixture('ledger-snapshot.mdpkg')));
+  const manifest = opened.manifest, read = opened.read;
+  const expected = await read(manifest.addressing.overrides);
+  const pending = opened.verifySnapshot();
+  opened.manifest = null;
+  opened.entries = [];
+  opened.byName.clear();
+  opened.read = opened.readDirectory = () => { throw new Error('Public reader must not run'); };
+  assert.deepEqual((await pending).current, manifest.current);
+  assert.equal(opened.assurance, 'snapshot-verified');
+  opened.read = read;
+  assert.deepEqual(await opened.read(manifest.addressing.overrides), expected);
+  await opened.verifySnapshot();
+});
+
+test('an overridden ArrayBuffer slice cannot retain caller storage after verification', async () => {
+  const raw = await fixture('original.mdpkg');
+  const input = Uint8Array.from(raw).buffer;
+  let calls = 0;
+  input.slice = () => { calls++; return input; };
+  const source = bytesSource(input), opened = await openContainer(source);
+  const expected = await opened.read('guide.md');
+  await opened.verifySnapshot();
+  new Uint8Array(input).fill(0);
+  assert.equal(calls, 0);
+  assert.equal((await source.read(0, 1))[0], raw[0]);
+  assert.deepEqual(await opened.read('guide.md'), expected);
+  assert.equal(opened.assurance, 'snapshot-verified');
+  await opened.verifySnapshot();
+});
+
+for (const change of ['leap-second', 'v1-empty-body', 'v1-empty-thread']) test('snapshot accepts schema-permitted comments: ' + change, async () => {
+  const original = await openContainer(bytesSource(await fs.readFile(new URL('./fixtures/browser-v2.mdpkg', import.meta.url))));
+  const manifest = structuredClone(original.manifest), detail = manifest.review.detail;
+  const comments = readComments(await original.read(detail));
+  if (change === 'leap-second') comments.threads[0].comments[0].at = '2016-12-31T23:59:60Z';
+  else {
+    comments.version = 1;
+    for (const thread of comments.threads) for (const comment of thread.comments) delete comment.kind;
+    if (change === 'v1-empty-body') comments.threads[0].comments[0].body = '';
+    else comments.threads[0].comments = [];
+  }
+  const content = canonicalJson(comments);
+  manifest.current.id = await snapshotIdentity(manifest, [detail], async () => utf8.encode(content));
+  const opened = await openContainer(bytesSource(await packageBytes(manifest, {[detail]: content})));
+  await opened.verifySnapshot();
+  assert.equal(opened.assurance, 'snapshot-verified');
+  assert.deepEqual(readComments(await opened.read(detail)), comments);
 });
 
 for (const name of ['original.mdpkg', 'original-git.mdpkg']) test('current links and snapshot review export target typed ' + name, async () => {

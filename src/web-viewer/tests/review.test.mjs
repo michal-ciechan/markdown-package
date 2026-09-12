@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {makeSelector, anchorRange} from '../src/review/selector.js';
-import {newReview, newComment, newThread, validateComments, validateAnchors, DETAIL} from '../src/review/comments.js';
+import {newReview, newComment, newThread, validateComments, validateAnchors, readComments, DETAIL} from '../src/review/comments.js';
 import {emitReview, validateExport} from '../src/review/emit.js';
 import {openPackage} from '../src/inbound/open.js';
 import {outline} from '../src/address/outline.js';
@@ -53,6 +53,40 @@ test('v2 authoring preserves kinds, replies, states and canonical round trip', a
   const doc = await authored(); doc.threads[0].state = 'obsolete';
   assert.deepEqual(validateComments(JSON.parse(canonicalJson(doc))), doc);
   await validateAnchors(doc, pkg);
+});
+
+test('empty comment arrays and bodies are accepted only when reading version 1', async () => {
+  for (const empty of ['array', 'body']) {
+    const doc = await authored();
+    if (empty === 'array') doc.threads[0].comments = [];
+    else doc.threads[0].comments[0].body = '';
+    assert.throws(() => readComments(utf8.encode(canonicalJson(doc))));
+    doc.version = 1;
+    for (const c of doc.threads[0].comments) delete c.kind;
+    assert.deepEqual(readComments(utf8.encode(canonicalJson(doc))), doc);
+    assert.throws(() => validateComments(doc), /unsupported/);
+  }
+});
+
+test('timestamps preserve the schema grammar, calendar and 128-character boundary', async () => {
+  const doc = await authored(), comment = doc.threads[0].comments[0];
+  const atLimit = '2016-12-31T23:59:60.' + '1'.repeat(107) + 'Z';
+  assert.equal(atLimit.length, 128);
+  for (const at of ['2016-12-31T23:59:60Z', '2017-01-01T00:59:60.123+01:00',
+    '2016-12-31T18:59:60-05:00', '2000-02-29T12:00:00Z', '0004-02-29T00:00:00Z',
+    '0001-01-01T00:00:00+23:59', '9999-12-31T23:59:59-23:59', atLimit]) {
+    comment.at = at;
+    assert.equal(readComments(utf8.encode(canonicalJson(doc))).threads[0].comments[0].at, at);
+  }
+  for (const at of ['2016-12-31T23:59:61Z', '2016-12-31T24:00:00Z', '2016-12-31T23:60:00Z',
+    '2016-12-31T23:59:60+24:00', '2016-12-31T23:59:60+00:60', '2016-12-31T23:59:60',
+    '2016-12-31t23:59:60Z', '2016-12-31T23:59:60z', '2016-12-31T23:59:60.Z',
+    '2016-12-31T23:59:60Z\n', '1900-02-29T00:00:60Z', '0000-01-01T00:00:00Z',
+    '2026-02-30T12:00:00Z', '2026-00-01T00:00:00Z', '2026-13-01T00:00:00Z',
+    '2026-01-00T00:00:00Z', atLimit.replace('Z', '1Z')]) {
+    comment.at = at;
+    assert.throws(() => readComments(utf8.encode(canonicalJson(doc))), /timestamp/, at);
+  }
 });
 test('authoring uses live ledger roots and rejects reserved slots without birth overrides', async () => {
   const start = model.text.indexOf('target words'), anchor = anchorRange(model, start, start + 12);

@@ -35,18 +35,19 @@ export function validateComments(value, {reading = false} = {}) {
     if (!s || !Number.isSafeInteger(s.start) || !Number.isSafeInteger(s.end) || s.start < 0 || s.end <= s.start ||
         !text(s.quote) || s.quote.length !== s.end - s.start || !Number.isSafeInteger(s.occurrence) || s.occurrence < 0 ||
         !text(s.prefix) || !text(s.suffix) || s.prefix.length > 40 || s.suffix.length > 40) fail('selector');
-    if (!Array.isArray(thread.comments) || !thread.comments.length) fail('empty thread');
+    if (!Array.isArray(thread.comments) || value.version === 2 && !thread.comments.length) fail('empty thread');
     const siblings = new Map(thread.comments.map(comment => [comment.id, comment]));
     for (const comment of thread.comments) {
       unique(comment.id);
       if (++count > 20000) fail('too many comments (maximum 20,000)');
-      if ((value.version === 2 ? !['comment', 'change-request'].includes(comment.kind) : comment.kind !== undefined) || !text(comment.author) || !text(comment.body) || !comment.body.length ||
+      if ((value.version === 2 ? !['comment', 'change-request'].includes(comment.kind) : comment.kind !== undefined) || !text(comment.author) || !text(comment.body) || value.version === 2 && !comment.body.length ||
           utf8.encode(comment.body).length > 65536) fail('comment kind, author or body (maximum 64 KiB)');
-      // Read RFC 3339, including the S1 seconds-only fixtures. Authoring still
-      // emits ISO timestamps with milliseconds; reject normalized invalid dates.
-      const date = typeof comment.at === 'string' && /^(\d{4})-(\d\d)-(\d\d)T([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(?:\.\d+)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/.exec(comment.at);
-      if (!date || +date[1] === 0 || +date[2] < 1 || +date[2] > 12 || +date[3] < 1 ||
-          +date[3] > new Date(Date.UTC(+date[1], +date[2], 0)).getUTCDate() || !Number.isFinite(Date.parse(comment.at))) fail('timestamp');
+      // Preserve RFC 3339 display metadata, including leap seconds. Date.parse
+      // rejects second 60, so check the calendar independently of time parsing.
+      const date = typeof comment.at === 'string' && comment.at.length <= 128 && /^(\d{4})-(\d\d)-(\d\d)T([01]\d|2[0-3]):([0-5]\d):([0-5]\d|60)(?:\.\d+)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/.exec(comment.at);
+      // A 400-year shift preserves leap years and avoids Date.UTC's 0-99 remap.
+      if (!date || date[0] !== comment.at || +date[1] === 0 || +date[2] < 1 || +date[2] > 12 || +date[3] < 1 ||
+          +date[3] > new Date(Date.UTC(+date[1] + 400, +date[2], 0)).getUTCDate()) fail('timestamp');
       const visited = new Set([comment.id]);
       for (let next = comment.inReplyTo; next !== undefined; next = siblings.get(next).inReplyTo) {
         if (!siblings.has(next) || visited.has(next)) fail('dangling, cross-thread or cyclic reply');

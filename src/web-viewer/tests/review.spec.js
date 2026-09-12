@@ -127,6 +127,7 @@ test('section authoring, source fallback, unsaved guard and share cancellation',
 test('draft mutation during preparation cannot offer a stale download', async ({page}) => {
   await page.goto('/');
   await page.locator('#package-file').setInputFiles('../../docs/spec/review-fixtures/original.mdpkg');
+  await expect(page.locator('.document-title')).toHaveText('guide.md');
   await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
   await page.getByLabel('Your name').fill('Reviewer');
   await page.getByLabel('Feedback', {exact: true}).fill('Initial feedback');

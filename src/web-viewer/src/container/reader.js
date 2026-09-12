@@ -180,24 +180,29 @@ export async function openContainer(source, options = {}) {
     issues.push({code: 'manifest-local-metadata', entry: MANIFEST, message: 'The manifest local header must carry its true CRC and sizes.'});
   }
   let assurance = 'declared';
+  // Keep the read path and its directory private; public properties are only
+  // a view and cannot substitute another package's bytes or verification inputs.
+  const read = async (name, maximumBytes) => {
+    const target = byName.get(name);
+    if (!target) throw new Error('Package entry is missing: ' + name);
+    const bounded = maximumBytes === undefined ? limits : {...limits,
+      maxEntryBytes: Math.min(limits.maxEntryBytes, maximumBytes), maxCompressedBytes: Math.min(limits.maxCompressedBytes, maximumBytes)};
+    return (await readEntry(source, target, bounded)).bytes;
+  };
+  const readDirectory = async entry => (await readEntry(source, entry, limits)).bytes;
+  const verification = Object.freeze({manifest, entries: Object.freeze(entries), read, readDirectory});
   const container = {
-    source, manifest, entries: Object.freeze(entries), byName, typing, end, issues,
+    source, manifest, entries, byName: new Map(byName), typing, end, issues,
     get assurance() { return assurance; },
     async verifySnapshot(options) {
       if (!isImmutableSource(source)) throw new Error('Snapshot verification requires an immutable Blob or owned byte source');
-      const proof = await verifySnapshot(container, options);
+      const proof = await verifySnapshot(verification, options);
       assurance = proof.assurance;
       return proof;
     },
-    async readDirectory(entry) { return (await readEntry(source, entry, limits)).bytes; },
+    readDirectory,
     tier: typing.conforming ? 'conforming' : 'recoverable',
-    async read(name, maximumBytes) {
-      const target = byName.get(name);
-      if (!target) throw new Error('Package entry is missing: ' + name);
-      const bounded = maximumBytes === undefined ? limits : {...limits,
-        maxEntryBytes: Math.min(limits.maxEntryBytes, maximumBytes), maxCompressedBytes: Math.min(limits.maxCompressedBytes, maximumBytes)};
-      return (await readEntry(source, target, bounded)).bytes;
-    },
+    read,
   };
   return container;
 }
