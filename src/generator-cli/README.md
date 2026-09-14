@@ -170,8 +170,18 @@ dotnet pack src/Mdpkg.Reader -c Release -o artifacts/release
 dotnet pack src/Mdpkg.Core -c Release -o artifacts/release
 dotnet pack src/Mdpkg.Cli -c Release -o artifacts/release
 python tests/prove-libraries.py --local-feed artifacts/release
-python tests/prove-tool.py --local-feed artifacts/release
+python tests/prove-tool.py --local-feed artifacts/release --evidence-dir artifacts/tool-proof
 ```
+
+The tool proof uses `dotnet tool install --global --add-source <feed>` with an
+isolated CLI home, fresh caches and a config containing only that feed. It checks
+the package metadata and bundled dependencies, then invokes the installed shim
+to pack a real Markdown file inside a source directory. The optional evidence
+directory must be new: it retains the command results, package SHA-256, input,
+typed draft-2 manifest, generated archives and validation JSON. The temporary
+installation is removed on exit. Both CI platforms also run this local tool gate.
+For a human-operated NuGet push of the verified package, use the
+[manual publication instructions](../../docs/releases/mdpkg.md#manual-tool-publication).
 
 The public proof uses `python tests/prove-tool.py --attempts 20 --retry-delay 180`:
 nuget.org alone, fresh caches, exact version, installed global shim, real pack and

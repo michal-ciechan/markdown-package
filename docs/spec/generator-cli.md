@@ -2,7 +2,15 @@
 
 A .NET global tool that emits and checks conforming `.mdpkg` packages. [`../spec.md`](../spec.md) is authoritative; every row below cites the section or decision it implements. Rows marked **G-*n*** are tool defaults filling a gap the spec leaves open (§11); they are the tool's choice, not a format rule.
 
-Audience: coding agents driving the tool non-interactively. Implementation: [`src/generator-cli/`](../../src/generator-cli/), a .NET tool on System.CommandLine. `pack`, `validate`, `update --materialize` and bounded `update --tree` are implemented. General history transforms and `address` remain explicit `not implemented` actions (exit 70). Tests read this file and fail when §1, §3, §4 or §10 change without the tool following. Distribution and publishing are separate work; run the project from source today.
+Audience: coding agents driving the tool non-interactively. Implementation: [`src/generator-cli/`](../../src/generator-cli/), a .NET tool on System.CommandLine. `pack`, `validate`, `update --materialize` and bounded `update --tree` are implemented. General history transforms and `address` remain explicit `not implemented` actions (exit 70). Tests read this file and fail when §1, §3, §4 or §10 change without the tool following. The CLI is packaged as the `mdpkg` global tool; publication is a separate release action.
+
+Install the draft-2 tool after its public release with
+`dotnet tool install --global mdpkg --version 0.1.0-preview.3 --source https://api.nuget.org/v3/index.json`.
+For pre-publication use, pack and install from a local feed as described in the
+[CLI guide](../../src/generator-cli/README.md). Both routes expose the `mdpkg`
+command below. Installation requires the .NET 10 SDK; Git is only needed for
+explicit Git operations, materialization and updates. A source directory may
+contain a single Markdown file; `pack` takes that directory, not the file path.
 
 ## Revised draft-2 behavior — integrated source acceptance
 

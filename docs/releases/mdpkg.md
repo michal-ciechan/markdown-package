@@ -183,6 +183,41 @@ For the public proofs, omit `--local-feed` and use `--attempts 20 --retry-delay 
 with both `prove-libraries.py` and `prove-tool.py`. No invariant-globalization
 setting is introduced.
 
+## Manual tool publication
+
+For a tool-only local delivery, run these commands from the repository root:
+
+```powershell
+dotnet pack src/generator-cli/src/Mdpkg.Cli -c Release -o .antiphon/mdpkg-release/feed
+python src/generator-cli/tests/prove-tool.py --local-feed .antiphon/mdpkg-release/feed --evidence-dir .antiphon/mdpkg-release/proof
+```
+
+Use a new evidence directory for each run. The proof installs globally in a
+temporary CLI home using only the local feed, executes the installed `mdpkg`
+shim, checks real Markdown bytes and the CARD-0052 typed manifest, and retains
+three `.mdpkg` archives, validation/command JSON and the `.nupkg` SHA-256. It
+removes its temporary installation. The ordinary Windows/Linux CI runs the same
+local tool verifier; its package artifact is available without publishing.
+
+After review and release approval, the owner can publish the verified bytes
+using their own NuGet API key in `NUGET_API_KEY` (PowerShell):
+
+```powershell
+dotnet nuget push .antiphon/mdpkg-release/feed/mdpkg.0.1.0-preview.3.nupkg --source https://api.nuget.org/v3/index.json --api-key $env:NUGET_API_KEY
+```
+
+This manual command is not part of local verification. The tool bundles Core,
+Reader and runtime dependencies; publishing those libraries separately is not
+required to install it. Keep the coordinated version from `Mdpkg.Pack.props`;
+if the version already exists, follow the new-version rule above. After public
+feed indexing, run `python src/generator-cli/tests/prove-tool.py` without a local
+feed to verify the published installation. A local success makes no claim about
+NuGet.org publication or indexing.
+
+See Microsoft's [.NET tool packaging tutorial](https://learn.microsoft.com/en-us/dotnet/core/tools/global-tools-how-to-create)
+and [tool install reference](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install)
+for the packaging properties and global/local-feed options.
+
 ## Public API analyzer decision
 
 CARD-0039's optional analyzer suggestion was considered against Antiphon's

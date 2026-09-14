@@ -54,6 +54,26 @@ NuGet publication is a separate release-workflow action.
 
 ## Getting started
 
+### Install the published tool
+
+Once **0.1.0-preview.3** is published, install it without building this repository:
+
+```powershell
+dotnet tool install --global mdpkg --version 0.1.0-preview.3 --source https://api.nuget.org/v3/index.json
+mdpkg --version
+mdpkg pack ./my-docs --out ./my-docs.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8
+mdpkg validate ./my-docs.mdpkg --format json
+```
+
+Requires .NET 10 SDK. Create `my-docs` with at least one `.md` file first; output
+must be outside that directory. Default snapshots need no Git. Add the global
+tool directory to PATH if needed (`%USERPROFILE%\.dotnet\tools` on Windows,
+`$HOME/.dotnet/tools` on Linux/macOS). After a stable release exists,
+`dotnet tool install --global mdpkg` selects it; previews require an explicit
+version or `--prerelease`.
+
+### Build the local candidate
+
 Requires .NET 10 SDK. Git is needed for explicit Git output, materialization,
 updates and their deep validation. From the repository root:
 
