@@ -1,6 +1,6 @@
-# Draft 2: one breaking pre-release update
+# Version 1.0.0: first stable release of the breaking draft-2 format
 
-The coordinated source candidate is `0.1.0-preview.3`. This revision updates the
+The first stable coordinated release is `1.0.0`. This revision updates the
 existing `markdown-package/1` draft directly; the token, extension and 79-byte
 typing prefix are unchanged. The earlier string-valued manifest is rejected.
 There is one schema with two capability modes, with no compatibility parser,
@@ -50,9 +50,13 @@ fixtures, installed tool/library proofs and measured sizes/costs. Exploratory
 shared-host timing samples are not an isolated performance gate. No memory benefit
 is claimed without process-tree measurement.
 
-Use freshly built source/local packages for acceptance. Public-feed publication
-and proof belong to the coordinated [release workflow](mdpkg.md); historical
-preview.2 publication is not evidence for this revision. Do not replace bytes
+Use freshly built source/local 1.0.0 packages for acceptance until the public-feed
+gate succeeds. Publication and proof belong to the coordinated
+[release workflow](mdpkg.md). The published `0.1.0-preview.3` packages predate
+CARD-0052 and use the incompatible string-valued manifest. Reusing that published
+version cannot release the new format: `--skip-duplicate` leaves its bytes unchanged.
+Version 1.0.0 is the first stable release of the revised format, with no backward
+compatibility for those previews. Do not replace bytes
 under an already published version. Reader, Core and the CLI must be released
 together; Reviews shares the source version and remains a separately authorized
-local preview under the existing publishing policy.
+local package under the existing publishing policy.

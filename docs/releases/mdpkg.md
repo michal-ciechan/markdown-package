@@ -1,6 +1,22 @@
 # Coordinated mdpkg, Reader and Core releases (CARD-0036/CARD-0039)
 
-The current coordinated source candidate is **0.1.0-preview.3**, the [single breaking draft 2 update](draft-2.md). Run fresh local-feed acceptance before publication; the historical preview.2 record below does not certify the revised format.
+The first stable coordinated release version is **1.0.0**, the
+[breaking draft-2 update](draft-2.md). Run fresh local-feed acceptance before
+publication. Declare it live only after `publish` and both `prove-nuget-org`
+matrix entries succeed for the landed 1.0.0 commit.
+
+**Why a new version is required:** the published `0.1.0-preview.3` packages predate
+CARD-0052 and contain the incompatible string-valued manifest. Later master pushes
+reused that version, so `--skip-duplicate` preserved the old public bytes while
+the public proof expected the new typed schema. Version **1.0.0** gives the
+breaking format its first stable release; there is no compatibility parser.
+
+The existing workflow handles stable versions without changes: it reads the
+shared version without requiring a prerelease suffix, publishes exactly Reader,
+Core and `mdpkg`, then restores/installs that exact version in fresh public-feed
+consumers. Reviews remains local and unpublished. After Review and caller landing
+on master, the push triggers this OIDC workflow; do not dispatch it from the
+feature branch. No persistent API key or direct local NuGet push is needed.
 
 **Historical preview.2 publication (2026-09-10), preceding the breaking draft 2:** `mdpkg`, `Mdpkg.Reader` and `Mdpkg.Core`
 are live on nuget.org at **0.1.0-preview.2**. After the NuGet Trusted Publishing
@@ -203,7 +219,7 @@ After review and release approval, the owner can publish the verified bytes
 using their own NuGet API key in `NUGET_API_KEY` (PowerShell):
 
 ```powershell
-dotnet nuget push .antiphon/mdpkg-release/feed/mdpkg.0.1.0-preview.3.nupkg --source https://api.nuget.org/v3/index.json --api-key $env:NUGET_API_KEY
+dotnet nuget push .antiphon/mdpkg-release/feed/mdpkg.1.0.0.nupkg --source https://api.nuget.org/v3/index.json --api-key $env:NUGET_API_KEY
 ```
 
 This manual command is not part of local verification. The tool bundles Core,

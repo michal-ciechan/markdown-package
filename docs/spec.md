@@ -1,6 +1,6 @@
 # markdown-package format specification, version 1
 
-Status: consolidated specification, draft 2, breaking pre-release revision, 2026-09-12. The revised rules are implemented by the current CLI/Core/Reader/Reviews and browser source, with [integrated acceptance](investigations/2026-09-12-card-0052-integrated-acceptance.md) and [one breaking release note](releases/draft-2.md). The browser supports current reading and snapshot review export, with historical/origin verification explicitly unavailable. Coordinated NuGet publication remains a separate release action; older published binaries are not covered by this acceptance.
+Status: consolidated specification, draft 2, breaking revision dated 2026-09-12, targeted by the first stable package release **1.0.0**. The revised rules are implemented by the current CLI/Core/Reader/Reviews and browser source, with [integrated acceptance](investigations/2026-09-12-card-0052-integrated-acceptance.md) and [the breaking release note](releases/draft-2.md). The browser supports current reading and snapshot review export, with historical/origin verification explicitly unavailable. Coordinated NuGet publication remains a separate release action; older published binaries are not covered by this acceptance.
 
 Historical sources: their always-Git findings and measurements retain their original interpretation. The revised normative mode rules supersede unconditional repository/history claims. Sources, all in `docs/investigations/`, each with its reproducible evidence directory beside it:
 

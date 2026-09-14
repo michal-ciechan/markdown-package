@@ -22,8 +22,8 @@ that:
 
 ## Status
 
-The current source implements **draft 2**, one breaking pre-release update of
-`markdown-package/1`. Default `pack` and browser delta reviews are history-free
+The first stable packages (**1.0.0**) implement **draft 2**, the breaking revision
+of `markdown-package/1`. Default `pack` and browser delta reviews are history-free
 snapshots with typed `{kind, id}` state. Snapshot creation and full validation need
 no Git. Explicit `--history git`, history import, materialization and updates use
 committed packages; `update --materialize` records a deterministic bootstrap origin,
@@ -37,8 +37,9 @@ original snapshot review against verified materialized history; the browser's
 historical/origin backend remains unsupported. General squash/truncate construction
 and `address` remain explicit exit-70 placeholders.
 
-The coordinated source package version is **0.1.0-preview.3**. Use the source or a
-fresh local feed for this revision; the historical preview.2 release predates it.
+The first stable coordinated package version is **1.0.0**. Earlier published
+previews use the incompatible pre-CARD-0052 format; there is no compatibility parser.
+Use the source or a fresh local feed until the 1.0.0 public-feed gate succeeds.
 See the [breaking release notes](docs/releases/draft-2.md) and
 [integrated acceptance evidence](docs/investigations/2026-09-12-card-0052-integrated-acceptance.md).
 NuGet publication is a separate release-workflow action.
@@ -56,10 +57,11 @@ NuGet publication is a separate release-workflow action.
 
 ### Install the published tool
 
-Once **0.1.0-preview.3** is published, install it without building this repository:
+After the **1.0.0** public-feed gate succeeds, install the stable tool without
+building this repository:
 
 ```powershell
-dotnet tool install --global mdpkg --version 0.1.0-preview.3 --source https://api.nuget.org/v3/index.json
+dotnet tool install --global mdpkg
 mdpkg --version
 mdpkg pack ./my-docs --out ./my-docs.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8
 mdpkg validate ./my-docs.mdpkg --format json
@@ -68,9 +70,9 @@ mdpkg validate ./my-docs.mdpkg --format json
 Requires .NET 10 SDK. Create `my-docs` with at least one `.md` file first; output
 must be outside that directory. Default snapshots need no Git. Add the global
 tool directory to PATH if needed (`%USERPROFILE%\.dotnet\tools` on Windows,
-`$HOME/.dotnet/tools` on Linux/macOS). After a stable release exists,
-`dotnet tool install --global mdpkg` selects it; previews require an explicit
-version or `--prerelease`.
+`$HOME/.dotnet/tools` on Linux/macOS). The install command selects the latest
+stable release. To pin this release, add `--version 1.0.0`; to update an existing
+installation, use `dotnet tool update --global mdpkg`.
 
 ### Build the local candidate
 
@@ -87,7 +89,7 @@ To exercise the installed candidate, build a fresh local feed:
 
 ```powershell
 dotnet pack src/generator-cli/src/Mdpkg.Cli -c Release -o src/generator-cli/artifacts/package
-dotnet tool install mdpkg --tool-path .antiphon/tools --version 0.1.0-preview.3 --add-source src/generator-cli/artifacts/package
+dotnet tool install mdpkg --tool-path .antiphon/tools --version 1.0.0 --add-source src/generator-cli/artifacts/package
 ```
 
 Use your own lowercase UUID for a new package lineage. See the [tool guide](src/generator-cli/README.md)

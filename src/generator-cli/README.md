@@ -1,10 +1,10 @@
 # mdpkg generator CLI
 
 This source targets **draft 2**, the breaking `markdown-package/1` revision in
-**0.1.0-preview.3**. Typed state and history modes replace the earlier string-valued
+the first stable release, **1.0.0**. Typed state and history modes replace the earlier string-valued
 manifest; there is no compatibility parser. Use a fresh local package feed until
-the coordinated public release gate succeeds. The older preview.2 publication
-does not establish acceptance of this revision.
+the coordinated public release gate succeeds. Earlier published previews use the
+incompatible pre-CARD-0052 format and do not establish acceptance of this revision.
 
 `pack` creates history-free `.mdpkg` snapshots by default. `validate` hashes every
 current file and verifies the snapshot identity without Git. In explicit Git mode,
@@ -22,13 +22,13 @@ The [format specification](https://github.com/michal-ciechan/markdown-package/bl
 
 ## Install from NuGet.org
 
-The following installation command applies after the preview.3 public-feed gate
+The following installation command applies after the 1.0.0 public-feed gate
 succeeds. For local acceptance, add `--add-source artifacts/package` and use an
 isolated `--tool-path` instead of `-g`. Snapshot operations require .NET 10; Git is
 required for explicit Git operations:
 
 ```powershell
-dotnet tool install -g mdpkg --version 0.1.0-preview.3 --source https://api.nuget.org/v3/index.json
+dotnet tool install --global mdpkg
 mdpkg --version
 mdpkg pack ./my-docs --out ./my-docs.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8
 mdpkg validate ./my-docs.mdpkg --deep --format json
@@ -37,9 +37,9 @@ mdpkg validate ./my-docs.mdpkg --deep --format json
 Create `my-docs` with your Markdown files first; output must be outside that directory.
 Choose a new lowercase UUID for your own lineage. Add the global tool directory to
 PATH if needed: `$HOME/.dotnet/tools` on Linux/macOS or `%USERPROFILE%\.dotnet\tools`
-on Windows. To update previews, use `dotnet tool update -g mdpkg --prerelease`;
-to uninstall, `dotnet tool uninstall -g mdpkg`. `dotnet tool install -g mdpkg`
-selects the latest stable release when one exists.
+on Windows. To update, use `dotnet tool update --global mdpkg`; to uninstall,
+use `dotnet tool uninstall --global mdpkg`. Installation selects the latest
+stable release; add `--version 1.0.0` to install this exact version.
 
 The package is MIT licensed and includes the Unicode data notice. Maintainers:
 see the [release guide](https://github.com/michal-ciechan/markdown-package/blob/master/docs/releases/mdpkg.md)
