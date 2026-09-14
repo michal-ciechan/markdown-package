@@ -4,6 +4,9 @@ Original Code task / landing owner: `9474e409`.
 Base: `3a6637f` on `master`. Worktree: `C:/src/markdown-package`.
 Branch: `feat/task-9474e409-mdpkg-tool`. Restart: none.
 
+Completed ordinary results and artifact locations:
+[delivery evidence](../../investigations/2026-09-14-mdpkg-tool-local-delivery.md).
+
 The brief requests a locally verified global tool and documentation, with manual
 NuGet publication left to the owner. The landed CARD-0036 foundation already sets
 `PackAsTool`, `PackageId=mdpkg`, `ToolCommandName=mdpkg`, and imports version,
