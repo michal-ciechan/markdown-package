@@ -4,6 +4,9 @@ Follow-up Code task: `c40cf169`; original Code task / landing owner: `9474e409`.
 Continue branch `feat/task-9474e409-mdpkg-tool` in `C:/src/markdown-package` from
 `5aa6d85ec38588f0f317495d1feb5ecee18d6466`. Restart: none.
 
+Completed ordinary results and publication status:
+[stable release evidence](../../investigations/2026-09-14-mdpkg-stable-1.0.0.md).
+
 The owner selected **1.0.0**, the first stable CLI/Reader/Core release of the
 breaking CARD-0052 draft-2 format. The already-published preview.3 bytes predate
 that format. Change the one shared version in `Mdpkg.Pack.props`, synchronize
