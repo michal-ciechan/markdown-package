@@ -3,6 +3,10 @@ import fs from 'node:fs/promises';
 import {trackTableObservers, observedRows} from './table-observer-helper.js';
 
 const sizingFixture = await fs.readFile(new URL('../../../docs/investigations/table-sizing/fixtures/varying-columns.md', import.meta.url), 'utf8');
+// Keep a deliberately short table for the compact-wrapper assertion. The
+// investigation's mixed-content table is naturally wider than the 390px
+// scrollport with DejaVu Sans (the Linux runner's system font).
+const compactFixture = '\n\n## Compact control\n\n| ID | State | Detail |\n| --- | --- | --- |\n| 7 | OK | Retry |\n';
 
 async function sizing(page) {
   return page.locator('.table-container').evaluateAll(containers => containers.map(container => {
@@ -40,13 +44,13 @@ async function sizing(page) {
 
 for (const width of [1280, 800, 390]) test(`no-wrap columns and wrappers fit content at ${width}px`, async ({page}) => {
   await page.setViewportSize({width, height: 844});
-  await mount(page, sizingFixture);
-  for (let i = 1; i <= 8; i++) await wrap(page, i).click();
+  await mount(page, sizingFixture + compactFixture);
+  for (let i = 1; i <= 9; i++) await wrap(page, i).click();
   const oldSizing = await page.addStyleTag({content: '.table-nowrap table { min-width: 100%; } .table-container.table-nowrap { width: auto; }'});
   const oldMetrics = await sizing(page);
   await oldSizing.evaluate(style => style.remove());
   const metrics = await sizing(page);
-  expect(metrics).toHaveLength(8);
+  expect(metrics).toHaveLength(9);
   expect(metrics.map(m => m.heights)).toEqual(oldMetrics.map(m => m.heights));
   for (const m of metrics) {
     for (const column of m.columns) expect(Math.abs(column.width - column.natural)).toBeLessThanOrEqual(1);
@@ -58,7 +62,8 @@ for (const width of [1280, 800, 390]) test(`no-wrap columns and wrappers fit con
   }
   expect(metrics[0].columns[2].width).toBeGreaterThan(metrics[0].columns[1].width);
   expect(metrics[0].columns[1].width).toBeGreaterThan(metrics[0].columns[0].width);
-  expect(metrics[0].wrapper).toBeLessThan(metrics[0].available - 10);
+  expect(metrics[8].wrapper).toBeLessThan(metrics[8].available - 10);
+  if (width >= 700) expect(metrics[0].wrapper).toBeLessThan(metrics[0].available - 10);
   expect(metrics[1].scroll).toBeGreaterThan(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   // Content remains selectable after compact sizing, including a nested table.
