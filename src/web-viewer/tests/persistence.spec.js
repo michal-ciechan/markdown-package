@@ -1,4 +1,5 @@
 import {test, expect} from '@playwright/test';
+import {fillAuthor} from './author-name-helper.js';
 import fs from 'node:fs/promises';
 import {openPackage} from '../src/inbound/open.js';
 import {writePackage} from '../src/container/writer.js';
@@ -26,7 +27,7 @@ async function rows(page, name) {
 }
 async function edit(page, body = 'Draft 😀 café\n  with whitespace  ') {
   await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
-  await page.getByLabel('Your name').fill('Reviewer');
+  await fillAuthor(page, 'Reviewer');
   await page.getByLabel('Feedback', {exact: true}).fill(body);
 }
 async function saved(page) { await expect(page.locator('.local-save-status')).toHaveText('Saved in this browser'); }
@@ -39,7 +40,7 @@ async function reloadAttach(page, input = file()) {
 
 test('file-only reload restores exact unfinished input; same snapshot renamed deduplicates', async ({page}) => {
   await open(page); await edit(page, ' \n😀 café\t ');
-  await page.getByLabel('Your name').fill('');
+  await fillAuthor(page, '');
   await page.getByLabel('Kind', {exact: true}).selectOption('change-request');
   const quote = await page.locator('.review-editor .review-quote').textContent();
   await saved(page);

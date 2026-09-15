@@ -2,6 +2,7 @@ import {newReview, newComment, newThread, validateComments} from '../review/comm
 import {decodeLocator} from '../address/reference.js';
 import {emitReview} from '../review/emit.js';
 import {reviewFile, downloadReview} from '../review/out.js';
+import {authorName} from './author-name.js';
 
 export function reviewView(host, getContext, onNavigate) {
   host.className = 'review-panel';
@@ -13,6 +14,7 @@ export function reviewView(host, getContext, onNavigate) {
     <form class="review-editor" hidden>
       <p class="review-target"></p><pre class="review-quote"></pre>
       <label>Your name <input name="author" autocomplete="name" maxlength="200" required></label>
+      <button type="button" class="review-author" aria-label="Edit your name" hidden></button>
       <label>Kind <select name="kind" aria-label="Kind"><option value="comment">Comment</option><option value="change-request">Change request</option></select></label>
       <label>Feedback <textarea name="body" rows="4" required maxlength="65536"></textarea></label>
       <div class="review-actions"><button type="submit">Save comment</button><button type="button" data-action="cancel">Cancel</button></div>
@@ -22,8 +24,9 @@ export function reviewView(host, getContext, onNavigate) {
     <div class="review-actions"><button type="button" data-action="prepare">Prepare review file</button><button type="button" data-action="download" hidden>Download review</button><button type="button" data-action="share" hidden>Share review</button></div>`;
   const find = selector => host.querySelector(selector), action = name => find(`[data-action="${name}"]`);
   const form = find('form'), author = form.elements.author, kind = form.elements.kind, body = form.elements.body;
+  const name = authorName(author, find('.review-author'));
   // namespace is the private editing workspace ID, never an exported namespace.
-  let pkg, review = newReview(), namespace, composing, prepared, artifact, revision = 0, dirty = false, savedAuthor = '', preparing = false;
+  let pkg, review = newReview(), namespace, composing, prepared, artifact, revision = 0, dirty = false, preparing = false;
   let listener = () => {}, presentation = () => {}, exportRevision = 0, deferredDraft = false;
   const threadElements = new Map(), targetLabel = find('.review-target'), targetQuote = form.querySelector('.review-quote');
   const notify = kind => { listener(kind); presentation(kind); };
@@ -38,7 +41,7 @@ export function reviewView(host, getContext, onNavigate) {
     if (composing) { presentation('edit'); body.focus(); status('Save or cancel your current comment first.', true); return; }
     composing = target;
     form.hidden = false;
-    author.value = fields?.author ?? savedAuthor;
+    name.show(fields?.author);
     kind.value = fields?.kind ?? 'comment'; body.value = fields?.body ?? '';
     targetLabel.textContent = target.thread ? 'Reply to this thread' :
       `${target.model.path} · ${target.anchor.scope.title.replace(/\n/g, ' ')} · Exact source quote`;
@@ -103,7 +106,7 @@ export function reviewView(host, getContext, onNavigate) {
       else candidate.threads.push(thread);
       validateComments(candidate);
       review = candidate;
-      savedAuthor = comment.author;
+      name.remember(comment.author);
       closeEditor(); invalidate(); draw(); notify('submit'); status('Comment saved in this tab. Prepare a review file to export it.');
     } catch (error) { if (opened === pkg) status(error.message, true); }
     finally { submit.disabled = false; }

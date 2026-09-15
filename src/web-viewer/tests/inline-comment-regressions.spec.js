@@ -1,4 +1,5 @@
 import {test, expect} from '@playwright/test';
+import {fillAuthor} from './author-name-helper.js';
 import {sourceTextPosition} from './source-pointer-helper.js';
 
 async function open(page) {
@@ -19,7 +20,7 @@ async function select(page, text) {
 async function compose(page, text, feedback) {
   await select(page, text);
   await page.getByRole('button', {name: 'Review selected text', exact: true}).click();
-  await page.getByLabel('Your name').fill('Original reviewer');
+  await fillAuthor(page, 'Original reviewer');
   await page.getByLabel('Feedback', {exact: true}).fill(feedback);
 }
 async function point(page, text, offset = 0, length = text.length) {

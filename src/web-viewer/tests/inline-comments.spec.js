@@ -1,4 +1,5 @@
 import {test, expect} from '@playwright/test';
+import {fillAuthor} from './author-name-helper.js';
 import {sourceTextPosition} from './source-pointer-helper.js';
 import fs from 'node:fs/promises';
 import {openPackage} from '../src/inbound/open.js';
@@ -22,7 +23,7 @@ async function select(page, text, selector = '#reader article > p') {
 async function compose(page, text, body, kind = 'comment') {
   await select(page, text); await page.getByRole('button', {name: 'Review selected text', exact: true}).click();
   await expect(page.locator('.inline-group .review-editor')).toBeVisible();
-  await page.getByLabel('Your name').fill('Reviewer');
+  await fillAuthor(page, 'Reviewer');
   await page.getByLabel('Kind', {exact: true}).selectOption(kind);
   await page.getByLabel('Feedback', {exact: true}).fill(body);
 }

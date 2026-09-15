@@ -92,6 +92,8 @@ article.selected-section { box-shadow: none; }
 .review-editor { padding: 1rem; background: #f0f5fa; border-radius: .4rem; }
 .review-editor label { display: block; margin: .8rem 0; }
 .review-editor input, .review-editor textarea, .review-editor select { display: block; width: 100%; box-sizing: border-box; padding: .6rem; }
+.review-author { display: block; max-width: 100%; margin: .4rem 0; padding: .15rem .3rem; border-color: transparent; background: transparent; font-size: .85rem; text-align: left; overflow-wrap: anywhere; }
+.review-author:hover { text-decoration: underline; }
 .review-quote { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 12rem; overflow: auto; padding: .8rem; background: #f3f5f7; border-left: 3px solid #637e99; }
 .review-thread { border: 1px solid #ccd5df; border-radius: .4rem; padding: 1rem; margin: 1rem 0; }
 .review-thread > button { max-width: 100%; overflow-wrap: anywhere; text-align: left; }

@@ -150,6 +150,21 @@ block boundaries, nested containers, inline safety and the unchanged inventory.
    file sharing is supported; cancelling or failing share retains the download.
    Preparation is separate so the share gesture keeps browser user activation.
 
+**Your name** is remembered across reloads and future visits in this browser
+profile, using the localStorage key `mdpkg-viewer:author-name` on the viewer's
+origin. Once set, it appears as a small **name · Edit** button. Click it (or use
+Tab and Enter/Space) to edit; press Enter or leave the input to collapse it again.
+Enter saves the name without posting a comment. Changes are remembered as you
+type, even before feedback is saved. Clear the name to remove the preference and
+return to the full first-run input; clearing site data also forgets it. Removing
+a package's saved work does not remove this separate preference.
+
+New comments and replies use this default. A restored draft keeps its exact own
+author, including an empty name; previous comments keep their original authors.
+Names are stored locally, with no account or server synchronization. If browser
+storage is blocked or full, the name still works for the current tab but may not
+be remembered on a future visit.
+
 ### Inline conversations (CARD-0049)
 
 Authored and browser-restored v2 threads appear beneath their source block in
