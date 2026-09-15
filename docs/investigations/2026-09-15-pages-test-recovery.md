@@ -49,8 +49,8 @@ Collapse folds. That click can scroll the page; a queued native scroll event
 calls `hidePeek`, cancelling a pending hover. The correct word can receive the
 pointer event and still never open a tooltip if scroll is dispatched afterward.
 An event-recording probe with a native one-pixel scroll reproduced this on
-unchanged production code: 6/10 hovers remained hidden, each with a scroll
-event 0.5–1.0ms after the pointer event; 4/10 opened when scroll arrived first.
+unchanged production code: 5/10 hovers remained hidden, each with a scroll
+event 0.5–1.0ms after the pointer event; 5/10 opened when scroll arrived first.
 No timer or event handler was changed for this probe. A subsequent stationary
 hover after scrolling settled opened correctly. Raw logs:
 `geometry-linux-scroll.log` and diagnostic source `geometry-probe.mjs`.
@@ -83,7 +83,7 @@ production build; the Linux server builds its separate test API in memory.
 
 | ID | Actual outcome / command mapping |
 | --- | --- |
-| V-1 | Complete. Historical CI logs attribute all three failures before CARD-0052. Base Windows 3/3 and stock Linux 3/3 pass; Linux + DejaVu gives the exact table failure (2 pass, 1 fail). Instrumented original hover methods 10/10 pass; native queued-scroll probe reproduces hidden preview in 6/10, with the ordering limitation above. |
+| V-1 | Complete. Historical CI logs attribute all three failures before CARD-0052. Base Windows 3/3 and stock Linux 3/3 pass; Linux + DejaVu gives the exact table failure (2 pass, 1 fail). Instrumented original hover methods 10/10 pass; native queued-scroll probe reproduces hidden preview in 5/10, with the ordering limitation above. |
 | V-2 | PASS. `node --test --test-reporter=tap tests/*.test.mjs` (the `npm test` file set): 193 passed, zero failed/skipped. `npm run build`: dependency, graph/budget and relative-path gates pass; 94,708 / 145,000 counted gzip bytes. |
 | V-3 | PASS. Linux + DejaVu: `npx playwright test --reporter=line,json` expands to 189, all passed in 452.5s. Windows: `npx playwright test inline-comment-regressions.spec.js inline-comments.spec.js tables.spec.js --reporter=line,json` expands to 41, all passed in 84.5s. No retries, skips or flaky results. |
 | V-4 | PASS. `python tests/validate-export.py test-results/browser-review.mdpkg` and the same command for `browser-commit-target.mdpkg`: 14 independent checks each, 28 passed, zero failed. Files came from the completed Linux run and were preserved before Windows replaced test-results. |
