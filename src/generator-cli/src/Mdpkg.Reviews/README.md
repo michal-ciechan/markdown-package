@@ -3,8 +3,9 @@
 This source targets **draft 2**, the breaking `markdown-package/1` revision, and
 shares the coordinated version **1.0.0**. Typed state and history modes replace
 the earlier string-valued manifest; there is no compatibility parser. Reviews
-remains unpublished: use a local package feed even after the CLI, Reader and Core
-stable release. Earlier published previews do not establish format compatibility.
+is not published to nuget.org: use a local package feed even though it shares
+version 1.0.0 with the stable CLI, Reader and Core packages. Earlier releases do
+not establish format compatibility.
 
 Extract review comments and authored change requests from returned `.mdpkg` files in
 .NET 10. The only direct package dependency is **Mdpkg.Reader**; there is no Core, CLI,
@@ -137,9 +138,11 @@ Independent fixtures measure 3,229–5,663 bytes/package and two comments/review
 small-fixture interoperability, not throughput claims at the configured limits. Limits
 are explicit configurable backend ceilings with rejection tests. Validate deployment
 budgets against real workloads. The accepted wire contract and fixtures are in
-`docs/spec.md` §6.8 and `docs/spec/review-fixtures/`. Web authoring/export and public-feed
-publishing are separate work; these are local preview packages.
+`docs/spec.md` §6.8 and `docs/spec/review-fixtures/`. Web authoring/export is separate
+work. Mdpkg.Reviews shares the coordinated 1.0.0 version with the stable Reader,
+Core and mdpkg packages, but is not published to nuget.org.
 
 Creation and full/deep producer validation are available separately in [Mdpkg.Core](../Mdpkg.Core/README.md).
 This package remains independently usable without Core or native Git. Core requires its
-coordinated Reader build exactly; these local previews are not a public release train.
+coordinated Reader build exactly. The publish workflow releases Reader, Core and
+mdpkg; it deliberately retains Reviews for local use.

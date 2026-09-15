@@ -40,14 +40,15 @@ older preview run, not a 1.0.0 publication result. Its job states are retained i
 
 Every command completed in the foreground. Eight solution projects were built
 once into producer-owned isolated outputs; packing used `--no-build`. Independent
-package consumers compiled their own temporary projects. All checks below passed.
+package consumers compiled their own temporary projects. The recorded checks
+passed, but V-4 missed stale release wording as corrected below.
 
 | ID | Actual outcome | Evidence under `.antiphon/task-c40cf169/` |
 | --- | --- | --- |
 | V-1 | Eight-project Release build; 0 warnings/errors; 11.18 seconds. | `build.log`, `verified-commit.txt` |
 | V-2 | Four manifests at 1.0.0, Core symbols, exact Core→Reader `[1.0.0]`, notices, packaged READMEs and source SHA verified; five checksums written. | `pack.log`, `inspect-release.log`, `feed/SHA256SUMS` |
 | V-3 | Global local-feed install and eight subsequent commands passed; typed manifest, real Markdown, snapshot/Git validation and materialization verified. Three resulting archives are byte-for-byte identical to prior task 9474e409 output. | `tool-proof.log`, `tool-proof/proof.json`, `package-docs-audit.json` |
-| V-4 | Eight active install/release docs, their prose links, shared/example versions, workflow version parsing and exact publish list checked; diff clean. Historical preview references retained only as historical context. | `evidence-audit.log`, `package-docs-audit.json`, `diff-check.log` |
+| V-4 | Eight active install/release docs, their prose links, shared/example versions, workflow version parsing and exact publish list checked; diff clean. The initial audit missed two current-state preview claims in the Reviews README, found by Review 204e2409 as F1. Follow-up c7a1ff79 corrects them: Reviews shares stable 1.0.0 but is deliberately excluded from the workflow's Reader/Core/mdpkg NuGet publish list and requires a local feed. | `evidence-audit.log`, `package-docs-audit.json`, `diff-check.log`; correction evidence under `.antiphon/task-c7a1ff79/` |
 | R-1 | 57 unit cases passed; 0 failures/skips. | Shared `ordinary.trx`, `tests.log`, `trx-summary.json` |
 | R-2 | 24 affected integration cases passed; 0 failures/skips. | Same command/TRX as R-1 |
 | R-3 | Default local global-tool verifier invocation passed without evidence option. | `tool-default.log` |
