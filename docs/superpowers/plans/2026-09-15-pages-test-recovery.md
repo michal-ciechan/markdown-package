@@ -42,6 +42,14 @@ runs. Commit/push each meaningful slice before longer verification.
 After a fix, target only affected files/methods unless this first final-state full
 sweep is still outstanding. No test retries or timeout/threshold increases.
 
+Platform refinement after V-1: run V-3's full matrix in the local Playwright
+1.55.1 Noble image with DejaVu Sans (which exactly reproduces CI's table width).
+Then run only `inline-comment-regressions.spec.js`, `inline-comments.spec.js`,
+and `tables.spec.js` on Windows to check changed pointer/test setup across the
+two font/layout environments (about two additional minutes). Unit/build output
+comes from the isolated Windows worktree and is shared read-only during browser
+runs; the Linux test server's in-memory test API uses its own dependency volume.
+
 ## Pending deliberate controls (post-land Mutation only)
 
 - PC-1: exact `source hover follows adjacent and overlapping hit sets within one
