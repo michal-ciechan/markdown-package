@@ -43,6 +43,15 @@ Readers and validators still check bundled artifacts supplied by capable produce
 
 ## Acceptance and distribution
 
+The Pages viewer is released separately from CLI/NuGet packages. Its deployment
+is gated on the full configured browser test suite and all other build-job
+checks. A failure leaves the previous viewer online without a dedicated
+stale-deployment alert; `workflow_dispatch` permits a manual rerun but does not
+resolve that monitoring gap. Follow the [viewer deployment checks](../../src/web-viewer/README.md#deployment):
+record a green build + deploy run for the intended commit and open a real
+typed-current snapshot package on the live site. Source or local-build success
+does not establish deployed format compatibility.
+
 The [S6 report](../investigations/2026-09-12-card-0052-integrated-acceptance.md)
 records the fresh CLI → actual browser → returned review → CLI/Core/Reviews →
 materialization/update pipeline, both mode matrices, resource checks, regenerated

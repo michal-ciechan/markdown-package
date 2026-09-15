@@ -42,4 +42,28 @@ width, single-line, row-height, selection, scrolling and overflow assertions.
 Retain the first table's compact assertion at desktop widths. No production CSS,
 font, width threshold or timeout changes. Final verification pending.
 
-Hover investigation and final ordinary verification remain in progress.
+## Hover cause and fix
+
+Both tests used raw viewport mouse coordinates immediately after clicking
+Collapse folds. That click can scroll the page; a queued native scroll event
+calls `hidePeek`, cancelling a pending hover. The correct word can receive the
+pointer event and still never open a tooltip if scroll is dispatched afterward.
+An event-recording probe with a native one-pixel scroll reproduced this on
+unchanged production code: 6/10 hovers remained hidden, each with a scroll
+event 0.5–1.0ms after the pointer event; 4/10 opened when scroll arrived first.
+No timer or event handler was changed for this probe. A subsequent stationary
+hover after scrolling settled opened correctly. Raw logs:
+`geometry-linux-scroll.log` and diagnostic source `geometry-probe.mjs`.
+
+Use paragraph-relative range coordinates with Playwright locator hover/click
+actions, which wait for stable layout and verify the hit target. Both tests now
+include a native scroll before the first hover. Preserve every tooltip identity,
+overlap count, individual reachability and cycling assertion. The existing
+clock-controlled 250ms preview/150ms dismissal test keeps its raw timed gestures.
+No production behavior, timeout, retry policy or tooltip assertion changes.
+
+Evidence limit: the unchanged hover tests passed locally on Windows and Linux,
+including 10/10 diagnostic repetitions with two CPUs and CI=true. CI supplies
+no trace artifact, so the exact event ordering in those historical CI runs is
+inferred from the reproduced race and source, not directly observed there.
+The table failure is an exact reproduction. Final ordinary verification pending.

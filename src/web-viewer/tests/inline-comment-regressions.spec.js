@@ -1,4 +1,5 @@
 import {test, expect} from '@playwright/test';
+import {sourceTextPosition} from './source-pointer-helper.js';
 
 async function open(page) {
   await page.goto('/');
@@ -29,7 +30,8 @@ async function point(page, text, offset = 0, length = text.length) {
   }, {text, offset, length});
 }
 async function hover(page, text, offset, length) {
-  const p = await point(page, text, offset, length); await page.mouse.move(p.x, p.y);
+  const paragraph = page.locator('#reader article > p').first();
+  await paragraph.hover({position: await sourceTextPosition(paragraph, text, offset, length)});
 }
 async function post(page) {
   await page.getByRole('button', {name: 'Save comment', exact: true}).click();
@@ -75,6 +77,8 @@ test('source hover follows adjacent and overlapping hit sets within one paragrap
   for (const text of ['target', 'words']) { await compose(page, text, `Feedback for ${text}`); await post(page); }
   await page.getByRole('button', {name: 'Collapse folds'}).click();
   const peek = page.getByRole('tooltip');
+  // Exercise hover with a pending native scroll, as can follow fold collapse.
+  await page.evaluate(() => window.scrollBy(0, 1));
   await hover(page, 'target'); await expect(peek).toContainText('Feedback for target');
   await hover(page, 'words'); await expect(peek).toContainText('Feedback for words');
   await hover(page, 'target'); await expect(peek).toContainText('Feedback for target');

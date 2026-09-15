@@ -1,4 +1,5 @@
 import {test, expect} from '@playwright/test';
+import {sourceTextPosition} from './source-pointer-helper.js';
 import fs from 'node:fs/promises';
 import {openPackage} from '../src/inbound/open.js';
 import {writePackage} from '../src/container/writer.js';
@@ -73,13 +74,12 @@ test('overlapping and adjacent threads remain individually reachable and marks c
   }
   await expect(chips(page)).toHaveCount(3); await expect(folds(page)).toHaveCount(1);
   await page.getByRole('button', {name: 'Collapse folds'}).click();
-  const point = await page.locator('#reader article > p').first().evaluate(p => {
-    const r = document.createRange(), at = p.firstChild.data.indexOf('target'); r.setStart(p.firstChild, at); r.setEnd(p.firstChild, at + 6);
-    const b = r.getBoundingClientRect(); return {x: b.x + 4, y: b.y + b.height / 2};
-  });
-  await page.mouse.move(point.x, point.y); await expect(page.getByRole('tooltip')).toContainText('overlapping threads');
-  await page.mouse.click(point.x, point.y); await expect(folds(page)).toContainText('First comment');
-  await page.mouse.click(point.x, point.y); await expect(folds(page)).toContainText('Overlapping request');
+  await page.evaluate(() => window.scrollBy(0, 1));
+  const paragraph = page.locator('#reader article > p').first();
+  const position = await sourceTextPosition(paragraph, 'target');
+  await paragraph.hover({position}); await expect(page.getByRole('tooltip')).toContainText('overlapping threads');
+  await paragraph.click({position}); await expect(folds(page)).toContainText('First comment');
+  await paragraph.click({position}); await expect(folds(page)).toContainText('Overlapping request');
   await chips(page).nth(2).click(); await expect(folds(page)).toContainText('Adjacent comment');
   expect(await page.evaluate(() => CSS.highlights.get('review-mixed').size)).toBeGreaterThan(0);
 });

@@ -359,11 +359,25 @@ and single-output export cases remain Chromium-only. Run only the new cases with
 
 ## Deployment
 
-`.github/workflows/pages.yml` runs `npm ci` and `npm run build` on every push
-touching `src/web-viewer/**` (or the `docs/investigations/viewer-app/` evidence that V-1
-pins against) and publishes `src/web-viewer/dist/` to GitHub Pages at
-<https://michal-ciechan.github.io/markdown-package/>. A failed gate withholds
-the assets, so a red build cannot deploy.
+`.github/workflows/pages.yml` runs on matching pushes to `master` and through
+Actions → Deploy viewer to GitHub Pages → Run workflow (`workflow_dispatch`).
+Its path filters include the viewer, CLI, review fixtures and build evidence;
+see the workflow for the complete list. Publishing `src/web-viewer/dist/` to
+<https://michal-ciechan.github.io/markdown-package/> requires the Node unit suite,
+production build gates, **full configured Playwright suite**, independent export
+validation and fresh CLI/browser/Core/Reviews acceptance to pass. The deploy job
+depends on that entire build job.
+
+A failing test skips deployment and leaves the last successful site online,
+even when newer CLI packages or source builds support a different manifest.
+Known monitoring gap: this workflow has no separate stale-site alert or deployed
+snapshot smoke test; normal GitHub failure notifications depend on subscriber
+settings. Manual dispatch can rerun the gates but does not bypass or monitor
+them. Track automatic stale-deployment detection and live-package checks in a
+future card. For release acceptance, record the exact commit's successful
+**build and deploy** run, then open a real typed snapshot package on the live
+Pages URL and verify document rendering. Local tests alone do not prove the
+published viewer was updated.
 
 Pages must be enabled once by hand: Settings -> Pages -> Source -> "GitHub
 Actions". The workflow token cannot do it -- `actions/configure-pages` with
