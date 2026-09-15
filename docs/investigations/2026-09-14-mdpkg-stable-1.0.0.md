@@ -128,3 +128,66 @@ public-feed acceptance await CI. The optional evidence failure-path controls
 noted by the original Code task remain untested here.
 
 Restart: **none**. Original landing owner: **9474e409**.
+
+## F1 documentation correction and ordinary verification — c7a1ff79
+
+Review `204e2409` correctly found two stale current-state release claims in the
+packaged Reviews README. The README now contains no "preview" wording and states
+that Reviews shares coordinated stable **1.0.0** with Reader/Core/mdpkg, but is
+deliberately excluded from the workflow's NuGet publish list and needs a local
+feed. Only this README and this evidence document changed; runtime/test code,
+the shared version and the publish workflow are unchanged.
+
+The earlier V-4 row is corrected above. Another task owns
+`.antiphon/task-204e2409/docs-workflow-audit.json`; it accurately records the
+original finding and is preserved. The correction is recorded in
+`.antiphon/task-c7a1ff79/docs-workflow-audit.json`, including the earlier audit's
+SHA-256 for provenance.
+
+All fresh ordinary results below verify the pushed implementation commit
+`746a2fdc82391ae4d578b1574b15452d29e034a4`. The subsequent commit adds this evidence
+only; the docs/link/diff audit is repeated on that final state. Evidence root:
+`C:\src\markdown-package\.antiphon\task-c7a1ff79\`.
+
+| ID | Actual outcome | Evidence in the new root |
+| --- | --- | --- |
+| V-1 | Eight-project isolated Release build, once; 0 warnings/errors, 16.43 seconds. | `build.log`, `verified-commit.txt` |
+| V-2 | Four 1.0.0 package manifests and Core symbols verified; five checksums; packaged Reviews README matches the corrected source. | `pack.log`, `inspect-release.log`, `feed/SHA256SUMS` |
+| V-3 | Retained local-feed global tool proof: all nine commands passed; all three generated archives match original task 9474e409 bytes. | `tool-proof.log`, `tool-proof/proof.json`, `package-docs-audit.json` |
+| V-4 | Audited 22 consumer-facing documents from 81 tracked Markdown documents; checked five HTML files for release wording, eight active release docs, 36 local link targets, versions, workflow policy and diff. No stale consumer-facing release wording remains. | `docs-audit.log`, `docs-workflow-audit.json`, `diff-check.log` |
+| R-1 | 57 unit cases passed; 0 failures/skips. | Shared `ordinary.trx`, `tests.log`, `trx-summary.json` |
+| R-2 | 24 affected integration cases passed; 0 failures/skips. | Same command/TRX as R-1 |
+| R-3 | Default local global-tool proof passed without retained evidence. | `tool-default.log` |
+| R-4 | Two isolated exact-version Reader/Core consumers passed without Git. | `libraries.log` |
+| R-5 | Four package inspections, three external consumers, both Core README examples and installed-tool/native integration smoke passed. | `consumers.log` |
+
+R-1/R-2 used the seven exact `-class` filters shown earlier, with
+`-preEnumerateTheories` and a fresh `-result-trx`. All 32 intended methods appeared
+with nonzero counts, expanding to 81 passing cases in 7.151 seconds. Per-class
+counts: `HelpTests` 8, `OptionValidationTests` 46, `SpecConsistencyTests` 3,
+`HistoryModeTests` 9, `ProducerTests` 3, `ApiParityTests` 4, `UpdateTests` 8.
+All classes are in `Mdpkg.Cli.Tests`. No unexpected classes, missing methods,
+zero-count selections, failures or skips were present.
+
+The remaining 32 consumer Markdown lines mentioning "preview" describe historical
+releases or viewer features. One static HTML design mockup names a sample document
+`docs/releases/preview.3.md`; it makes no current release claim. Historical plan
+and investigation records remain historical. This is a local documentation/link
+audit, not a fresh public-feed publication check.
+
+Rerun the commands above with `c40cf169` replaced by `c7a1ff79`, using a fresh
+evidence root. The retained scripts `audit-evidence.py` and `audit-docs.py` audit
+the TRX/package/proof provenance and the F1 docs correction respectively.
+All owned commands finished. All eight `bin-c7a1ff79` directories were removed
+using `dotnet clean` and nonrecursive removal of four leftover runner DLLs and
+empty directories; see `clean.log` and `cleanup.json`.
+
+Next: ordinary read-only **Review**, before caller landing. Original Code task /
+landing owner: **9474e409-5479-4405-910a-f3d858dbf6df**. Branch:
+`feat/task-9474e409-mdpkg-tool`; exact worktree: `C:\src\markdown-package`.
+Restart: **none**. Zero PC-n rows/variants are specified and none were executed;
+the caller must preserve and explicitly commission post-land SourceLanding
+Mutation, including missing-control discovery. Existing coverage gaps remain:
+Windows-only local verification, pending Linux/public-feed CI acceptance and the
+original optional evidence failure-path controls. No landing or deployment was
+performed.
