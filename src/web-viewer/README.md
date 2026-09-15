@@ -154,6 +154,7 @@ block boundaries, nested containers, inline safety and the unchanged inventory.
 profile, using the localStorage key `mdpkg-viewer:author-name` on the viewer's
 origin. Once set, it appears as a small **name · Edit** button. Click it (or use
 Tab and Enter/Space) to edit; press Enter or leave the input to collapse it again.
+Long names stay on one line; the full name is available on hover and to screen readers.
 Enter saves the name without posting a comment. Changes are remembered as you
 type, even before feedback is saved. Clear the name to remove the preference and
 return to the full first-run input; clearing site data also forgets it. Removing
@@ -371,6 +372,9 @@ are in [tests/fixtures/README.md](tests/fixtures/README.md).
 Persistence/fallback cases run in all three browser projects; existing authoring
 and single-output export cases remain Chromium-only. Run only the new cases with
 `npx playwright test persistence.spec.js`.
+Remembered-name and compact-edit cases run in all three browsers with
+`npx playwright test username.spec.js`, including blocked storage, exact draft
+authors, keyboard controls, focused-input Save/Cancel and narrow-screen layout.
 
 ## Deployment
 

@@ -21,6 +21,8 @@ export function authorName(input, button) {
     label.hidden = !!name;
     button.hidden = !name;
     button.textContent = name + ' · Edit';
+    button.setAttribute('aria-label', 'Edit name: ' + name);
+    button.title = 'Edit name: ' + name;
   }
   button.addEventListener('click', () => {
     label.hidden = false; button.hidden = true;

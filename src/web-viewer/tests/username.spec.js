@@ -3,7 +3,7 @@ import {fillAuthor} from './author-name-helper.js';
 
 const key = 'mdpkg-viewer:author-name';
 const input = page => page.getByLabel('Your name');
-const compact = page => page.getByRole('button', {name: 'Edit name', exact: true});
+const compact = page => page.getByRole('button', {name: /^Edit name:/});
 const feedback = page => page.getByLabel('Feedback', {exact: true});
 async function attach(page, file = 'original.mdpkg') {
   await page.locator('#package-file').setInputFiles('../../docs/spec/review-fixtures/' + file);
@@ -129,8 +129,13 @@ for (const failure of ['getter', 'write']) test('unavailable localStorage still 
 test('remembered names render literally and fit the mobile editor', async ({page}) => {
   const value = '<b>Ada</b> 😀 ' + 'x'.repeat(185);
   await page.setViewportSize({width: 390, height: 844});
-  await compose(page); await input(page).fill(value); await input(page).press('Enter');
+  await compose(page);
+  const full = await input(page).boundingBox();
+  await input(page).fill(value); await input(page).press('Enter');
   await expect(compact(page)).toHaveText(value + ' · Edit');
+  await expect(compact(page)).toHaveAccessibleName('Edit name: ' + value);
+  await expect(compact(page)).toHaveAttribute('title', 'Edit name: ' + value);
+  expect((await compact(page).boundingBox()).height).toBeLessThan(full.height);
   await expect(compact(page).locator('b')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({path: test.info().outputPath('username-mobile.png'), fullPage: true});

@@ -25,6 +25,8 @@ An existing draft's exact author, including an empty value, overrides the defaul
 for that draft without changing the preference merely by restoring it. New
 comments/replies use the remembered default. Existing submitted authors remain
 unchanged. Document browser/profile/origin scope and clearing behavior.
+Long names truncate visually to one line while retaining the complete accessible
+name and hover title. Saving/cancelling while the input has focus must work.
 
 ## Ordinary verification / coverage-to-file list
 
@@ -49,6 +51,16 @@ files. No full-assembly or namespace-equivalent sweep is needed. Native CLI
 production code and contracts are unchanged; independent browser export checks
 and snapshot integration cover the touched browser authoring boundary.
 
+Platform refinement: the first Windows sweep selected 195 cases (193 passed,
+two startup/restore failures). The exact Chromium checkpoint failure reproduced
+at the unchanged base; the exact WebKit snapshot failure did not. For the final
+state, run the same eight-file matrix in the existing Playwright 1.55.1 Noble
+image (CI platform, about 3–6 minutes), reusing the producer's built assets with
+read-only source, isolated Linux dependencies and external output. Also run
+username.spec.js on Windows in all three browsers, plus the two previously
+failing methods for diagnosis. Preserve failures; do not add retries or relax
+timeouts. The focused-input action test adds three cases (198 total).
+
 ## Pending deliberate controls — post-land Mutation only
 
 Mutation owns red/restore/green and missing-control discovery. No deliberate
@@ -64,9 +76,12 @@ mutants run during Code. All controls use exact methods in username.spec.js:
 - PC-4 / draft precedence: `restoring a draft preserves its author without replacing the remembered default`;
   replace the restored author with the preference.
 - PC-5 / storage fallback: `unavailable localStorage still allows comments and in-tab name reuse`;
-  remove the storage exception handling (getter and write variants).
+  exact method suffixes `: getter` and `: write`; remove the corresponding
+  storage exception handling in each variant.
+- PC-6 / compact long names: `remembered names render literally and fit the mobile editor`;
+  restore multiline wrapping in the compact name button.
 
-Nine variants are pending. Multi-tab live synchronization is outside this card;
+Ten variants are pending. Multi-tab live synchronization is outside this card;
 new page/reload persistence is covered. Mutation may identify further gaps.
 
 ## Handoff
