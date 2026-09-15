@@ -3,7 +3,7 @@ import {fillAuthor} from './author-name-helper.js';
 
 const key = 'mdpkg-viewer:author-name';
 const input = page => page.getByLabel('Your name');
-const compact = page => page.getByRole('button', {name: 'Edit your name', exact: true});
+const compact = page => page.getByRole('button', {name: 'Edit name', exact: true});
 const feedback = page => page.getByLabel('Feedback', {exact: true});
 async function attach(page, file = 'original.mdpkg') {
   await page.locator('#package-file').setInputFiles('../../docs/spec/review-fixtures/' + file);

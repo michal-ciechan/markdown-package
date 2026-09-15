@@ -14,7 +14,7 @@ export function reviewView(host, getContext, onNavigate) {
     <form class="review-editor" hidden>
       <p class="review-target"></p><pre class="review-quote"></pre>
       <label>Your name <input name="author" autocomplete="name" maxlength="200" required></label>
-      <button type="button" class="review-author" aria-label="Edit your name" hidden></button>
+      <button type="button" class="review-author" aria-label="Edit name" hidden></button>
       <label>Kind <select name="kind" aria-label="Kind"><option value="comment">Comment</option><option value="change-request">Change request</option></select></label>
       <label>Feedback <textarea name="body" rows="4" required maxlength="65536"></textarea></label>
       <div class="review-actions"><button type="submit">Save comment</button><button type="button" data-action="cancel">Cancel</button></div>
