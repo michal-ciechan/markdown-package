@@ -47,20 +47,28 @@ Platform refinement after V-1: run V-3's full matrix in the local Playwright
 Then run only `inline-comment-regressions.spec.js`, `inline-comments.spec.js`,
 and `tables.spec.js` on Windows to check changed pointer/test setup across the
 two font/layout environments (about two additional minutes). Unit/build output
-comes from the isolated Windows worktree and is shared read-only during browser
+comes from the isolated Windows worktree and is reused unchanged during browser
 runs; the Linux test server's in-memory test API uses its own dependency volume.
 
 ## Pending deliberate controls (post-land Mutation only)
 
-- PC-1: exact `source hover follows adjacent and overlapping hit sets within one
-  paragraph` method: variants disabling hit-set identity updates and same-anchor
-  cancellation recovery; Mutation must map the latter to the exact re-entry
-  method if needed. No deliberate control runs in Code.
+- PC-1 / hit-set identity: exact `source hover follows adjacent and overlapping
+  hit sets within one paragraph` method; disable hit-set identity updates.
+- PC-1 / cancellation recovery: exact `same-anchor re-entry restarts a cancelled
+  preview and cancels visible dismissal` method; disable same-anchor recovery.
+  No deliberate control runs in Code.
 - PC-2: exact `overlapping and adjacent threads remain individually reachable
   and marks cycle` method: disable overlap click cycling.
 - PC-3: exact `no-wrap columns and wrappers fit content at 390px` method:
   variants restoring full-width no-wrap wrappers and forced table width floors.
   Mutation owns missing-control discovery and precise expected assertions.
+
+All five variants remain pending. The width-floor-only variant may be equivalent
+while the compact wrapper remains; Mutation must discover and report that rather
+than count a zero-effect change as a successful control. A deterministic control
+for reverting the raw-pointer test helper has not been established. Historical
+CI hover ordering lacks a trace artifact; ordinary probes demonstrate the native
+scroll race, but cannot prove the exact event order of the old hosted runs.
 
 ## Handoff obligations
 
@@ -70,3 +78,8 @@ does not merge, deploy or dispatch Pages. Then confirm the exact landed commit's
 Pages build + deploy run and open a real CARD-0052 typed snapshot on the live
 Pages URL, recording run URL, asset identity and successful document rendering.
 Explicitly commission SourceLanding Mutation after landing. Restart: none.
+
+Code settlement note: ordinary V/R checks passed. V-5's generated dist cleanup
+was rejected by automatic approval review (“blocked by policy”); the evidence
+report records its exact retained path. All owned commands/containers finished
+and the task's Docker dependency volume was removed.
