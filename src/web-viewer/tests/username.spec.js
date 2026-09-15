@@ -148,3 +148,16 @@ test('editing the default keeps submitted authors and uses the new name for repl
   await expect(comments.nth(0)).toContainText('First author');
   await expect(comments.nth(1)).toContainText('Second author');
 });
+
+test('saving or cancelling while the name input is focused keeps the clicked action', async ({page}) => {
+  await compose(page); await feedback(page).fill('Name entered last');
+  await input(page).fill('Last field');
+  await page.getByRole('button', {name: 'Save comment', exact: true}).click();
+  await expect(page.locator('.review-comment')).toContainText('Last field');
+  await saved(page);
+  await page.getByRole('button', {name: 'Reply', exact: true}).click();
+  await fillAuthor(page, 'Changed again');
+  await page.getByRole('button', {name: 'Cancel', exact: true}).click();
+  await expect(page.locator('.review-editor')).toBeHidden();
+  await expect(page.locator('.review-comment')).toHaveCount(1);
+});
