@@ -91,3 +91,13 @@ obligation and lands original Code task `46fbc379`; Code does not merge or deplo
 After landing, check the exact commit's Pages workflow build/deploy success and
 verify name persistence/editing on the live GitHub Pages site before card closure.
 Explicitly commission SourceLanding Mutation after landing. Restart: none.
+
+## Code settlement
+
+[Ordinary evidence and handoff](../../investigations/2026-09-15-username-local-storage.md):
+193 unit tests, 198 Linux browser cases, 33 Windows username cases, two final
+Windows diagnostics and 28 independent export checks passed. Linux elapsed time
+was 9.6 minutes on this host. V-1–V-3 and R-1–R-5 passed. V-4's method/doc/diff
+audit passed; automatic approval review blocked filesystem cleanup, so its exact
+retained output paths are recorded in the evidence. All commands finished;
+the Docker dependency volume was removed. Ten PC variants remain pending.
