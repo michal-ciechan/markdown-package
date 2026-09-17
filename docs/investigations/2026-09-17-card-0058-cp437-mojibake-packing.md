@@ -225,3 +225,9 @@ The regression test idea above is now implemented in the viewer suite rather tha
 Both run in the Pages workflow, which now installs the .NET SDK before `npm test`.
 Not covered: running `mdpkg.exe` under a `chcp 850` console (the tool never reads
 console text, so the investigation found no path where that could matter).
+
+Verified at commit `e46a773c55d462b40ef9d72169799de852557171` on this CP850 machine:
+`npm test` 196 passed (193 existing + 3 new); `npx playwright test` 225 passed
+(119 Chromium, 53 Firefox, 53 WebKit, run in three chunks); `validate-export.py`
+14 + 14 checks passed on the fresh browser downloads. No positive-control mutants
+were executed; that stays with the post-land Mutation pass.
