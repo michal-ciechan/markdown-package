@@ -376,6 +376,27 @@ Remembered-name and compact-edit cases run in all three browsers with
 `npx playwright test username.spec.js`, including blocked storage, exact draft
 authors, keyboard controls, focused-input Save/Cancel and narrow-screen layout.
 
+### Unicode round trip (CARD-0058, issue #3)
+
+`tests/unicode-fixture-helper.js` writes a UTF-8 (no BOM, LF) Markdown fixture with
+an em dash, a minus sign, two emoji, accented text and Japanese, builds the CLI
+from `src/generator-cli` with `dotnet build -c Release`, and packs it with the real
+`mdpkg pack`. Both tests below therefore need the .NET SDK from
+`src/generator-cli/global.json` on `PATH`; they fail rather than skip without it.
+
+- `node --test tests/unicode-roundtrip.test.mjs` (part of `npm test`) checks the
+  fixture bytes, then unzips the package independently with fflate and asserts the
+  inner `.md` entry is byte-identical to the source, and that the viewer's own
+  container reader returns the same bytes and decodes them exactly.
+- `npx playwright test unicode-roundtrip.spec.js` opens that package in Chromium,
+  Firefox and WebKit and asserts the rendered heading and paragraphs, the whole
+  article text, and the **View source** text equal the fixture exactly, with no
+  U+FFFD and none of the CP850/CP437/CP1252 mojibake signatures from the issue.
+  DOM text cannot detect font tofu, so glyph availability stays a manual check.
+
+Pages CI (`.github/workflows/pages.yml`) installs the .NET SDK before `npm test`
+so both run on every deploy build.
+
 ## Deployment
 
 `.github/workflows/pages.yml` runs on matching pushes to `master` and through

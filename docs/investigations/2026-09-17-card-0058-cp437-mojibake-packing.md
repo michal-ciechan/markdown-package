@@ -206,3 +206,22 @@ that captured `git show`/`type`/stdin text under an OEM console.
 - Regression test idea (one line): a `Mdpkg.Cli.Tests` process-level test that runs
   `mdpkg.exe pack` under `chcp 850` on a fixture with `—`, `−` and an emoji and
   asserts the inner entry is byte-identical to the source.
+
+## Follow-up: automated regression test (task dcfc898d, 2026-09-17)
+
+The regression test idea above is now implemented in the viewer suite rather than
+`Mdpkg.Cli.Tests`, so one fixture covers the producer and the browser reader:
+
+- `src/web-viewer/tests/unicode-fixture-helper.js` writes the fixture (em dash,
+  minus sign, `😀`, `✅`, `café`, `naïve`, `日本語`; UTF-8, no BOM, LF) and packs it
+  with a fresh `dotnet build -c Release` of the real CLI.
+- `src/web-viewer/tests/unicode-roundtrip.test.mjs` (`npm test`) asserts the inner
+  entry is byte-identical to the source through an independent fflate unzip and
+  through the viewer's container reader.
+- `src/web-viewer/tests/unicode-roundtrip.spec.js` (`npx playwright test`, Chromium,
+  Firefox and WebKit) asserts the rendered DOM text and the source view equal the
+  fixture exactly, with no U+FFFD and none of the CP850/CP437/CP1252 signatures.
+
+Both run in the Pages workflow, which now installs the .NET SDK before `npm test`.
+Not covered: running `mdpkg.exe` under a `chcp 850` console (the tool never reads
+console text, so the investigation found no path where that could matter).

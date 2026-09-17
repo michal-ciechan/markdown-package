@@ -46,10 +46,15 @@ jobs:
       - name: Install pinned dependencies
         run: npm ci
         working-directory: src/web-viewer
+      # The .NET SDK must precede the Node suite: unicode-roundtrip.test.mjs and
+      # unicode-roundtrip.spec.js (CARD-0058) build and run the real mdpkg CLI.
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: src/generator-cli/global.json
       # The build is the check: V-1 (dependency pins), V-2
       # (eager graph and gzip budget) and D-1 (relative asset paths) all exit
       # nonzero and withhold dist/ assets on failure.
-      - name: Test review schema, selectors and writer
+      - name: Test review schema, selectors, writer and CLI Unicode round trip
         run: npm test
         working-directory: src/web-viewer
       - name: Build and run the slice gates

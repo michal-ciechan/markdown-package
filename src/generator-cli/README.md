@@ -206,3 +206,8 @@ python src/generator-cli/tests/prove-deferred-history.py --work .antiphon/integr
 `--prepare-only` and `--verify-only` split the native and browser phases when using
 the Linux Playwright image. Set `MDPKG_ACCEPTANCE_DIR` to the shared output directory
 for `npx playwright test tests/integration.spec.js --project=chromium` in the viewer.
+
+The viewer suite also builds this CLI and packs a Unicode fixture (em dash, minus
+sign, emoji, accented and Japanese text) to prove `pack` keeps the source bytes and
+the browser renders them exactly (CARD-0058, issue #3): see the Unicode round trip
+section of [the viewer README](../web-viewer/README.md#unicode-round-trip-card-0058-issue-3).
