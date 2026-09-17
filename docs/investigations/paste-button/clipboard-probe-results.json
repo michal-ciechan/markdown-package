@@ -1,0 +1,269 @@
+{
+  "fixture": "C:\\src\\markdown-package\\docs\\spec\\review-fixtures\\original.mdpkg",
+  "size": 636,
+  "platform": "win32",
+  "node": "v24.6.0",
+  "results": {
+    "chromium": {
+      "version": "140.0.7339.186",
+      "permissions": "granted clipboard-read, clipboard-write",
+      "runs": {
+        "file": {
+          "pasteEvent": {
+            "types": [
+              "Files"
+            ],
+            "files": [
+              {
+                "name": "original.mdpkg",
+                "size": 636,
+                "type": ""
+              }
+            ],
+            "items": [
+              {
+                "kind": "file",
+                "type": ""
+              }
+            ],
+            "text": ""
+          },
+          "clipboardRead": {
+            "ok": true,
+            "items": [
+              []
+            ]
+          },
+          "clipboardReadText": {
+            "ok": true,
+            "text": ""
+          },
+          "execCommand": {
+            "supported": false,
+            "returned": false
+          }
+        },
+        "text": {
+          "pasteEvent": {
+            "types": [
+              "text/plain"
+            ],
+            "files": [],
+            "items": [
+              {
+                "kind": "string",
+                "type": "text/plain"
+              }
+            ],
+            "text": "plain clipboard text"
+          },
+          "clipboardRead": {
+            "ok": true,
+            "items": [
+              [
+                "text/plain"
+              ]
+            ]
+          },
+          "clipboardReadText": {
+            "ok": true,
+            "text": "plain clipboard text"
+          },
+          "execCommand": {
+            "supported": false,
+            "returned": false
+          }
+        }
+      },
+      "secureContext": true,
+      "api": {
+        "clipboard": "object",
+        "read": "function",
+        "readText": "function",
+        "ClipboardItem": "function"
+      },
+      "stubs": {
+        "stubRead": [
+          "text/plain"
+        ],
+        "stubDenied": "NotAllowedError",
+        "removed": "undefined"
+      }
+    },
+    "firefox": {
+      "version": "141.0",
+      "permissions": {
+        "stepError": "grant: browserContext.grantPermissions: Unknown permission: clipboard-read"
+      },
+      "runs": {
+        "file": {
+          "pasteEvent": {
+            "types": [
+              "application/x-moz-file",
+              "Files"
+            ],
+            "files": [
+              {
+                "name": "original.mdpkg",
+                "size": 636,
+                "type": ""
+              }
+            ],
+            "items": [
+              {
+                "kind": "file",
+                "type": ""
+              }
+            ],
+            "text": ""
+          },
+          "clipboardRead": "pending",
+          "clipboardReadText": "pending",
+          "execCommand": {
+            "supported": false,
+            "returned": false
+          }
+        },
+        "text": {
+          "pasteEvent": {
+            "types": [
+              "text/plain"
+            ],
+            "files": [],
+            "items": [
+              {
+                "kind": "string",
+                "type": "text/plain"
+              }
+            ],
+            "text": "plain clipboard text"
+          },
+          "clipboardRead": "pending",
+          "clipboardReadText": "pending",
+          "execCommand": {
+            "supported": false,
+            "returned": false
+          }
+        }
+      },
+      "secureContext": true,
+      "api": {
+        "clipboard": "object",
+        "read": "function",
+        "readText": "function",
+        "ClipboardItem": "function"
+      },
+      "stubs": {
+        "stubRead": [
+          "text/plain"
+        ],
+        "stubDenied": "NotAllowedError",
+        "removed": "undefined"
+      }
+    },
+    "webkit": {
+      "version": "26.0",
+      "permissions": "granted clipboard-read",
+      "runs": {
+        "file": {
+          "pasteEvent": {
+            "types": [
+              "Files",
+              "text/uri-list",
+              "text/html"
+            ],
+            "files": [
+              {
+                "name": "original.mdpkg",
+                "size": 636,
+                "type": ""
+              }
+            ],
+            "items": [
+              {
+                "kind": "string",
+                "type": "text/uri-list"
+              },
+              {
+                "kind": "string",
+                "type": "text/html"
+              },
+              {
+                "kind": "file",
+                "type": ""
+              }
+            ],
+            "text": ""
+          },
+          "clipboardRead": {
+            "ok": false,
+            "name": "NotAllowedError",
+            "message": "The request is not allowed by the user agent or the platform in the current context, possibly because the user denied permission."
+          },
+          "clipboardReadText": {
+            "ok": false,
+            "name": "NotAllowedError",
+            "message": "The request is not allowed by the user agent or the platform in the current context, possibly because the user denied permission."
+          },
+          "execCommand": {
+            "supported": true,
+            "returned": true
+          }
+        },
+        "text": {
+          "pasteEvent": {
+            "types": [
+              "text/plain",
+              "text/uri-list",
+              "text/html"
+            ],
+            "files": [],
+            "items": [
+              {
+                "kind": "string",
+                "type": "text/plain"
+              },
+              {
+                "kind": "string",
+                "type": "text/uri-list"
+              },
+              {
+                "kind": "string",
+                "type": "text/html"
+              }
+            ],
+            "text": "plain clipboard text"
+          },
+          "clipboardRead": {
+            "ok": false,
+            "name": "NotAllowedError",
+            "message": "The request is not allowed by the user agent or the platform in the current context, possibly because the user denied permission."
+          },
+          "clipboardReadText": {
+            "ok": false,
+            "name": "NotAllowedError",
+            "message": "The request is not allowed by the user agent or the platform in the current context, possibly because the user denied permission."
+          },
+          "execCommand": {
+            "supported": true,
+            "returned": true
+          }
+        }
+      },
+      "secureContext": true,
+      "api": {
+        "clipboard": "object",
+        "read": "function",
+        "readText": "function",
+        "ClipboardItem": "function"
+      },
+      "stubs": {
+        "stubRead": [
+          "text/plain"
+        ],
+        "stubDenied": "NotAllowedError",
+        "removed": "undefined"
+      }
+    }
+  }
+}

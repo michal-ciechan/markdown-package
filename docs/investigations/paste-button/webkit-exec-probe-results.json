@@ -1,0 +1,2 @@
+{"engine":"webkit","version":"26.0","grant":false,"afterExecClick":{"exec":{"supported":true,"returned":false}},"read":{"ok":false,"name":"NotAllowedError"}}
+{"engine":"webkit","version":"26.0","grant":true,"afterExecClick":{"paste":{"types":["Files","text/uri-list","text/html"],"files":[{"name":"original.mdpkg","size":636}]},"exec":{"supported":true,"returned":true}},"read":{"ok":false,"name":"NotAllowedError"}}

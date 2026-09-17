@@ -1,0 +1,82 @@
+[
+  {
+    "clipboard": "empty",
+    "headless": false,
+    "grant": true,
+    "read": {
+      "ok": true,
+      "count": 1,
+      "items": [
+        []
+      ]
+    }
+  },
+  {
+    "clipboard": "empty",
+    "headless": false,
+    "grant": false,
+    "read": "pending"
+  },
+  {
+    "clipboard": "empty",
+    "headless": true,
+    "grant": true,
+    "read": {
+      "ok": true,
+      "count": 1,
+      "items": [
+        []
+      ]
+    }
+  },
+  {
+    "clipboard": "empty",
+    "headless": true,
+    "grant": false,
+    "read": {
+      "ok": false,
+      "name": "NotAllowedError",
+      "message": "Failed to execute 'read' on 'Clipboard': Read permission denied."
+    }
+  },
+  {
+    "clipboard": "file",
+    "headless": false,
+    "grant": true,
+    "read": {
+      "ok": true,
+      "count": 1,
+      "items": [
+        []
+      ]
+    }
+  },
+  {
+    "clipboard": "file",
+    "headless": false,
+    "grant": false,
+    "read": "pending"
+  },
+  {
+    "clipboard": "file",
+    "headless": true,
+    "grant": true,
+    "read": {
+      "ok": true,
+      "count": 1,
+      "items": [
+        []
+      ]
+    }
+  },
+  {
+    "clipboard": "file",
+    "headless": true,
+    "grant": false,
+    "read": {
+      "ok": false,
+      "name": "NotAllowedError",
+      "message": "Failed to execute 'read' on 'Clipboard': Read permission denied."
+    }
+  }
+]
