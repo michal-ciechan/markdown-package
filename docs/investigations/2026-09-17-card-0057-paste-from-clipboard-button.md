@@ -258,3 +258,28 @@ cannot be met as written. Three live options; the plan above assumes A:
   Playwright case.
 - Nothing in production code was touched; the probe scripts live only under
   `docs/investigations/paste-button/` and import Playwright from `src/web-viewer/node_modules`.
+
+## Implementation and verification (Code task 15a67fc3)
+
+Option A was chosen and implemented at commit `d89368211d626b52da0d024d4eed34a60f1d1807`:
+`src/web-viewer/src/inbound/clipboard.js` (pure `hasClipboardRead` /
+`classifyClipboard` / `readClipboard`), the `#paste-package` button and its
+`report()` outcomes in `src/web-viewer/src/main.js`, the empty-state line naming
+Ctrl+V (Cmd+V on Mac), `tests/clipboard.test.mjs`, the Chromium-only
+`tests/paste-button.spec.js` (12 cases, including the previously untested
+multi-file drop/paste refusals and a stubbed `read()` file representation that opens
+as "Pasted package"), and a **Paste package** section in `src/web-viewer/README.md`.
+Eager gzip budget after the change: 95,764 of 145,000 bytes (was 95,061).
+
+Verified at that commit on this machine (Windows 10, Playwright 1.55.1):
+`npm test` 205 passed (196 existing + 9 new). `npx playwright test` per project:
+Chromium 131 tests, two full runs, 130 passed each with one different timing
+failure per run (`quota retry is bounded`, then `a slow older open cannot replace`;
+each passed 3 of 3 when rerun alone). Firefox 52 passed, 1 failed (`two tabs
+preserve conflicting text`, `open()` at `persistence.spec.js:150`; fails 1 of 3
+alone at this commit and 1 of 6 alone at base `868f28f`, so pre-existing). WebKit
+49 passed, 4 failed, every one a `.document-title` still empty 5 s after
+`setInputFiles`; all 4 passed 10 of 10 when rerun alone, and the full WebKit lane
+at base `868f28f` also failed 4 of 53 on a different set of tests. The 12 new
+Chromium cases passed in both full lanes. No positive-control mutants were executed;
+that stays with the post-land Mutation pass.
