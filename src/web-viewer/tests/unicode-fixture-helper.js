@@ -1,7 +1,8 @@
 // CARD-0058 / issue #3 regression support: pack a Unicode fixture with the real
 // mdpkg CLI so tests can prove its bytes survive packing and browser rendering.
-// Every non-ASCII character is spelled as an escape so the test itself cannot be
-// corrupted by an editor or checkout re-encoding this file.
+// Every non-ASCII character in code is spelled as an escape, so the test itself
+// cannot be corrupted by an editor or checkout re-encoding this file; only the
+// trailing comments show the visible forms, and they prove nothing.
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -14,13 +15,13 @@ export const namespace = 'c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8';
 export const entryName = 'unicode.md';
 // Code point, visible form and the exact UTF-8 bytes the fixture must contain.
 export const characters = [
-  {name: 'em dash', text: '—', bytes: [0xe2, 0x80, 0x94]},          // —
-  {name: 'minus sign', text: '−', bytes: [0xe2, 0x88, 0x92]},       // −
+  {name: 'em dash', text: '\u2014', bytes: [0xe2, 0x80, 0x94]},          // —
+  {name: 'minus sign', text: '\u2212', bytes: [0xe2, 0x88, 0x92]},       // −
   {name: 'grinning face', text: '\u{1F600}', bytes: [0xf0, 0x9f, 0x98, 0x80]}, // 😀
-  {name: 'check mark button', text: '✅', bytes: [0xe2, 0x9c, 0x85]}, // ✅
-  {name: 'e acute', text: 'é', bytes: [0xc3, 0xa9]},                // é
-  {name: 'i diaeresis', text: 'ï', bytes: [0xc3, 0xaf]},            // ï
-  {name: 'nihongo', text: '日本語', bytes: [0xe6, 0x97, 0xa5, 0xe6, 0x9c, 0xac, 0xe8, 0xaa, 0x9e]}, // 日本語
+  {name: 'check mark button', text: '\u2705', bytes: [0xe2, 0x9c, 0x85]}, // ✅
+  {name: 'e acute', text: '\u00e9', bytes: [0xc3, 0xa9]},                // é
+  {name: 'i diaeresis', text: '\u00ef', bytes: [0xc3, 0xaf]},            // ï
+  {name: 'nihongo', text: '\u65e5\u672c\u8a9e', bytes: [0xe6, 0x97, 0xa5, 0xe6, 0x9c, 0xac, 0xe8, 0xaa, 0x9e]}, // 日本語
 ];
 const [dash, minus, grin, check, eAcute, iDiaeresis, nihongo] = characters.map(c => c.text);
 export const heading = 'Unicode round trip';
@@ -34,8 +35,8 @@ export const text = `# ${heading}\n\n${paragraphs.join('\n\n')}\n`;
 export const rendered = paragraphs.map(p => p.replaceAll('`', ''));
 // Signatures of the source UTF-8 decoded with CP850 (the issue), CP437 or CP1252,
 // plus the replacement character a strict decoder would emit.
-export const mojibake = ['ÔÇö', 'ÔêÆ', 'ΓÇö', 'ΓêÆ',
-  'â€”', 'âˆ’', '├®', '�'];
+export const mojibake = ['\u00d4\u00c7\u00f6', '\u00d4\u00ea\u00c6', '\u0393\u00c7\u00f6', '\u0393\u00ea\u00c6', // ÔÇö ÔêÆ ΓÇö ΓêÆ
+  '\u00e2\u20ac\u201d', '\u00e2\u02c6\u2019', '\u251c\u00ae', '\ufffd']; // â€” âˆ’ ├® �
 
 function dotnet(args, cwd) {
   try {
