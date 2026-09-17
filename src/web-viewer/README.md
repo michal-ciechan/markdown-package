@@ -4,7 +4,12 @@ The current source uses the single breaking draft 2 schema: typed snapshot/commi
 state, default history-free creation, and explicit materialization before published
 successors. See [the release notes](../../docs/releases/draft-2.md).
 
-Open a local `.mdpkg` through the file picker, drag/drop or paste. The picker has
+Open a local `.mdpkg` through the file picker, drag/drop or paste. To paste, copy
+the package file and press Ctrl+V (Cmd+V on Mac) on the page; that keyboard paste
+is the only clipboard route every browser supports. The **Paste package** button
+next to **Open package** is a best-effort helper: it inspects the clipboard where
+the browser allows and otherwise tells you to use the shortcut (see
+[Paste package](#paste-package-card-0057)). The picker has
 no `accept` restriction so iOS can select packages typed as `public.data`.
 Documents stay on the device. The viewer lists the current view, renders it with
 CommonMark 0.31.2 plus a GFM table extension, offers normalized source and section navigation, and resolves
@@ -308,6 +313,28 @@ only on a click; reload never prompts. Revoked permission, a moved/deleted file 
 unavailable APIs fall back to choosing the file again. Changed handle contents
 require an explicit **Open as separate package** action if identity differs.
 Picker cancellation and invalid archives leave the current editor/package intact.
+
+## Paste package (CARD-0057)
+
+Copy a `.mdpkg` in the file manager and press **Ctrl+V** (**Cmd+V** on Mac) with
+the page focused: the document `paste` listener hands the copied file to the same
+open route as the picker and drop. Several files at once are refused with **Paste
+one package at a time.** Text pastes into inputs are unaffected.
+
+The **Paste package** button beside **Open package** cannot use that route. No
+browser lets a click raise a paste event, and `navigator.clipboard.read()` never
+exposed an OS-copied file when measured (Chromium resolves one item with no
+types, the same as an empty clipboard; Firefox blocks behind its paste prompt;
+WebKit rejects). So the button calls `read()` where it exists in a secure
+context and always ends in a status line: **Nothing readable is on the
+clipboard**, **The clipboard holds text, not a package file**, **Clipboard
+access was not allowed** and **Pasting from a button is not available in this
+browser** each repeat the shortcut. Only if a browser ever returns a non-text,
+non-image representation (for example `application/zip`) is it opened as
+**Pasted package**, through the ordinary validation. Browser notes: Chrome asks
+for clipboard permission on the first click; Firefox shows its paste prompt on
+every click; Safari shows a Paste callout or rejects. HTTPS (or localhost) is
+required, as for every clipboard API.
 
 Author, kind and exact unfinished body text save after 400 ms of inactivity,
 with a 1,500 ms maximum wait while typing. Blur, navigation, hidden visibility and

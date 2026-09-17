@@ -1,4 +1,5 @@
 import {openPackage} from './inbound/open.js';
+import {readClipboard} from './inbound/clipboard.js';
 import {documentList} from './ui/documents.js';
 import {readerView} from './ui/reader-view.js';
 import {reviewView} from './ui/review-view.js';
@@ -15,10 +16,11 @@ app.innerHTML = `
   <header class="app-header">
     <div><h1>Markdown Package</h1><p>Open a package. Read its documents. Follow a reference.</p></div>
     <div class="open-actions"><button id="enhanced-open" type="button" hidden>Open package</button>
-    <label class="open-button"><span id="standard-open-label">Open package</span><input id="package-file" type="file"></label></div>
+    <label class="open-button"><span id="standard-open-label">Open package</span><input id="package-file" type="file"></label>
+    <button id="paste-package" type="button" title="Checks the clipboard where the browser allows. Ctrl+V (Cmd+V on Mac) on this page always pastes a copied package file.">Paste package</button></div>
   </header>
   <main>
-    <div id="activity" role="status" aria-live="polite">Choose a file, or drop or paste a package here. Files stay on this device.</div>
+    <div id="activity" role="status" aria-live="polite">Choose a file, drop a package here, or copy a package file and press Ctrl+V (Cmd+V on Mac). Files stay on this device.</div>
     <section id="saved-sessions" aria-label="Browser history and saved work"></section>
     <section id="package-details" hidden aria-label="Package details"></section>
     <details id="conformance" hidden><summary>Package conformance findings</summary><ul></ul></details>
@@ -268,6 +270,22 @@ document.addEventListener('paste', event => {
   event.preventDefault();
   if (event.clipboardData.files.length !== 1) { report('Paste one package at a time.', true); return; }
   receive(event.clipboardData.files[0]);
+});
+// The button is guidance for the keyboard route above: no engine hands an OS-copied
+// file to navigator.clipboard.read() (CARD-0057), so every branch ends in a status.
+const KEYBOARD_PASTE = 'Ctrl+V (Cmd+V on Mac)';
+const clipboardOutcomes = {
+  unsupported: ['Pasting from a button is not available in this browser. Copy the package file and press ' + KEYBOARD_PASTE + ' on this page, or use Open package.'],
+  denied: ['Clipboard access was not allowed. Press ' + KEYBOARD_PASTE + ' on this page to paste the copied package, or use Open package.'],
+  'no-types': ['Nothing readable is on the clipboard. If you copied a package file, press ' + KEYBOARD_PASTE + ' on this page.'],
+  text: ['The clipboard holds text, not a package file. Copy a .mdpkg file and press Ctrl+V, or use Open package.', true],
+  other: ['The clipboard holds an image or other content, not a package file. Copy a .mdpkg file and press Ctrl+V, or use Open package.', true],
+};
+element('paste-package').addEventListener('click', async () => {
+  const result = await readClipboard();
+  if (result.status === 'ok' && result.kind === 'file') { receive(new File([result.blob], 'Pasted package', {type: result.type})); return; }
+  if (result.status === 'failed') { report('Could not read the clipboard: ' + (result.error?.message || result.error), true); return; }
+  report(...clipboardOutcomes[result.status === 'ok' ? result.kind : result.status]);
 });
 element('reference-form').addEventListener('submit', event => { event.preventDefault(); resolve(element('reference').value.trim()); });
 element('make-reference').addEventListener('click', async () => {
