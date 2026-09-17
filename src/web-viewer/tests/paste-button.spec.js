@@ -67,7 +67,7 @@ test('text on the real clipboard is refused and leaves the package and draft unt
   await page.getByLabel('Feedback', {exact: true}).fill('Keep this work');
   await page.evaluate(() => navigator.clipboard.writeText('# not a package'));
   await button(page).click();
-  await expect(activity(page)).toHaveText('The clipboard holds text, not a package file. Copy a .mdpkg file and press Ctrl+V, or use Open package.');
+  await expect(activity(page)).toHaveText('The clipboard holds text, not a package file. Copy a .mdpkg file and press ' + KEYBOARD + ', or use Open package.');
   await expect(activity(page)).toHaveClass('error');
   await expect(page.locator('.document-title')).toHaveText('guide.md');
   await expect(page.getByLabel('Feedback', {exact: true})).toHaveValue('Keep this work');
@@ -77,7 +77,7 @@ test('an image-only clipboard is refused as not a package', async ({page}) => {
   await stubRead(page, {items: [{types: ['image/png']}]});
   await page.goto('/');
   await button(page).click();
-  await expect(activity(page)).toContainText('The clipboard holds an image or other content, not a package file.');
+  await expect(activity(page)).toHaveText('The clipboard holds an image or other content, not a package file. Copy a .mdpkg file and press ' + KEYBOARD + ', or use Open package.');
   await expect(activity(page)).toHaveClass('error');
 });
 

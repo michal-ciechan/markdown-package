@@ -314,28 +314,6 @@ unavailable APIs fall back to choosing the file again. Changed handle contents
 require an explicit **Open as separate package** action if identity differs.
 Picker cancellation and invalid archives leave the current editor/package intact.
 
-## Paste package (CARD-0057)
-
-Copy a `.mdpkg` in the file manager and press **Ctrl+V** (**Cmd+V** on Mac) with
-the page focused: the document `paste` listener hands the copied file to the same
-open route as the picker and drop. Several files at once are refused with **Paste
-one package at a time.** Text pastes into inputs are unaffected.
-
-The **Paste package** button beside **Open package** cannot use that route. No
-browser lets a click raise a paste event, and `navigator.clipboard.read()` never
-exposed an OS-copied file when measured (Chromium resolves one item with no
-types, the same as an empty clipboard; Firefox blocks behind its paste prompt;
-WebKit rejects). So the button calls `read()` where it exists in a secure
-context and always ends in a status line: **Nothing readable is on the
-clipboard**, **The clipboard holds text, not a package file**, **Clipboard
-access was not allowed** and **Pasting from a button is not available in this
-browser** each repeat the shortcut. Only if a browser ever returns a non-text,
-non-image representation (for example `application/zip`) is it opened as
-**Pasted package**, through the ordinary validation. Browser notes: Chrome asks
-for clipboard permission on the first click; Firefox shows its paste prompt on
-every click; Safari shows a Paste callout or rejects. HTTPS (or localhost) is
-required, as for every clipboard API.
-
 Author, kind and exact unfinished body text save after 400 ms of inactivity,
 with a 1,500 ms maximum wait while typing. Blur, navigation, hidden visibility and
 pagehide also attempt a flush. **Saved in this browser** means the IndexedDB
@@ -373,6 +351,28 @@ writes, cross-snapshot relocation and browser Back/Forward integration are defer
 Real IndexedDB/fallback tests run in Chromium, Firefox and WebKit. Permission tests
 use injected doubles; native Chrome/Edge/Android grants and real Safari/iOS providers
 remain untested. WebKit automation and Chromium touch emulation are not device tests.
+
+## Paste package (CARD-0057)
+
+Copy a `.mdpkg` in the file manager and press **Ctrl+V** (**Cmd+V** on Mac) with
+the page focused: the document `paste` listener hands the copied file to the same
+open route as the picker and drop. Several files at once are refused with **Paste
+one package at a time.** Text pastes into inputs are unaffected.
+
+The **Paste package** button beside **Open package** cannot use that route. No
+browser lets a click raise a paste event, and `navigator.clipboard.read()` never
+exposed an OS-copied file when measured (Chromium resolves one item with no
+types, the same as an empty clipboard; Firefox blocks behind its paste prompt;
+WebKit rejects). So the button calls `read()` where it exists in a secure
+context and always ends in a status line: **Nothing readable is on the
+clipboard**, **The clipboard holds text, not a package file**, **Clipboard
+access was not allowed** and **Pasting from a button is not available in this
+browser** each repeat the shortcut. Only if a browser ever returns a non-text,
+non-image representation (for example `application/zip`) is it opened as
+**Pasted package**, through the ordinary validation. Browser notes: Chrome asks
+for clipboard permission on the first click; Firefox shows its paste prompt on
+every click; Safari shows a Paste callout or rejects. HTTPS (or localhost) is
+required, as for every clipboard API.
 
 ## Tests
 

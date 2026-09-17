@@ -278,8 +278,8 @@ const clipboardOutcomes = {
   unsupported: ['Pasting from a button is not available in this browser. Copy the package file and press ' + KEYBOARD_PASTE + ' on this page, or use Open package.'],
   denied: ['Clipboard access was not allowed. Press ' + KEYBOARD_PASTE + ' on this page to paste the copied package, or use Open package.'],
   'no-types': ['Nothing readable is on the clipboard. If you copied a package file, press ' + KEYBOARD_PASTE + ' on this page.'],
-  text: ['The clipboard holds text, not a package file. Copy a .mdpkg file and press Ctrl+V, or use Open package.', true],
-  other: ['The clipboard holds an image or other content, not a package file. Copy a .mdpkg file and press Ctrl+V, or use Open package.', true],
+  text: ['The clipboard holds text, not a package file. Copy a .mdpkg file and press ' + KEYBOARD_PASTE + ', or use Open package.', true],
+  other: ['The clipboard holds an image or other content, not a package file. Copy a .mdpkg file and press ' + KEYBOARD_PASTE + ', or use Open package.', true],
 };
 element('paste-package').addEventListener('click', async () => {
   const result = await readClipboard();
