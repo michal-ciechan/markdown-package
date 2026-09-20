@@ -10,6 +10,13 @@ Scope: how phase 1 (Windows) of the Tauri viewer reaches users, alongside the
 distribution story this repository already has. Investigation and recommendation
 only — the channel choice is the caller's to accept.
 
+**Status: all three §8 questions DECIDED 2026-09-20 (CARD-0061, closed).** The
+recommendation stands unchanged on two of them (GitHub Releases only for phase 1
+with winget still deferred; unsigned v1) and is **overruled on one**: the desktop
+app's version is **coupled** to the coordinated NuGet `<Version>`, not given an
+independent line. The original reasoning below is left intact; §8 records each
+decision and §4.5/§4.1/DR7 carry the one correction that follows from it.
+
 ## 0. Recommendation in one line each
 
 | # | Question | Answer |
@@ -23,7 +30,8 @@ only — the channel choice is the caller's to accept.
 
 The repository's existing distribution story is unaffected: `mdpkg` stays a NuGet
 global tool, the browser viewer stays on GitHub Pages, and the desktop app becomes
-a third, independent artifact with its own version line.
+a third artifact — independent in channel and release train, but **sharing the
+coordinated NuGet `<Version>`** per the 2026-09-20 decision (§8 Q3).
 
 ## 1. What this repository distributes today (ground truth)
 
@@ -184,9 +192,10 @@ searching. Users must arrive from the README, the Pages viewer, or a link. For a
 yet the binding constraint; *shipping and self-updating correctly* is.
 
 **New work this implies (not designed here, for the phase-1 plan stage):** a tag or
-release-trigger convention, since the repo has none; a desktop-app version line
-separate from `Mdpkg.Pack.props` (the app has nothing to do with the NuGet
-version); `~/.cargo` and `target/` caching against the measured 18-minute release
+release-trigger convention, since the repo has none; wiring the desktop app's
+version to the coordinated `Mdpkg.Pack.props` `<Version>` (decided 2026-09-20, §8
+Q3 — `tauri.conf.json` and `latest.json` must be generated or bumped by whatever
+bumps that shared value today); `~/.cargo` and `target/` caching against the measured 18-minute release
 build; and secure storage for the updater private key, whose loss is terminal.
 
 ### 4.2 B. winget — the one secondary worth planning for
@@ -285,6 +294,10 @@ not even download at first run — it could carry the 1.6 MiB installer or the 4
    keeping them separate means `mdpkg` 1.0.0 and `mdpkg-viewer` 0.1.0 coexisting on
    nuget.org, which is precisely the "confusing second install path" the brief
    worried about.
+   *(Amended 2026-09-20: the caller decided to couple the app's version to the
+   coordinated `<Version>` anyway, for simplicity — §8 Q3. That removes the
+   "second version number" half of this objection; the other three objections to a
+   `dotnet tool` wrapper are untouched and it stays rejected.)*
 4. **It fights the updater.** The app updates itself from `latest.json`. A tool-
    installed copy would drift from the NuGet version immediately, and
    `dotnet tool update` would then have nothing coherent to do.
@@ -357,6 +370,9 @@ can do is tell you which risk is cheaper to be wrong about, and here it is one-s
 permitted, then winget moves from secondary to co-primary and the signing question
 moves forward with it. That is worth a direct question to the caller (§8), not a guess.
 
+**Answered 2026-09-20:** the caller confirmed the audience is *not* constrained in
+phase 1. This contingency does not fire; winget stays deferred (§8 Q1).
+
 ## 6. Recommended sequencing
 
 Stated as a recommendation to accept or reject, not as a design:
@@ -369,7 +385,9 @@ Stated as a recommendation to accept or reject, not as a design:
    quote the `fileAssociations` open command (spike §3.3, both already booked into W4).
    Both are correctness fixes on their own merits, *and* they are winget's uninstall
    and install validations, so doing them now keeps that door open at zero extra cost.
-3. **After one real end-to-end update has shipped:** revisit winget. Decide then
+3. **After one real end-to-end update has shipped:** revisit winget — confirmed
+   2026-09-20 as the plan of record, not a co-primary promotion (§8 Q1), and with
+   no certificate budgeted for now (§8 Q2), so this step stays a later-phase item. Decide then
    whether to submit unsigned (accepting scan risk) or to get a certificate first.
    A certificate retires the SmartScreen paragraph, the winget scan risk and part of
    the phase 2 macOS story in one purchase, so pricing it is the higher-value task.
@@ -387,18 +405,35 @@ Stated as a recommendation to accept or reject, not as a design:
 | DR4 | Self-updater and winget both claiming ownership of updates | Unverified interaction. Needs its own check before winget is advertised |
 | DR5 | Orphan `HKCU\Software\Classes\.mdpkg` key after uninstall | Measured (spike §3.3). Harmless to users; a winget validation failure |
 | DR6 | 18-minute cold release build makes the release workflow slow and cache-dependent | Measured (spike §1). Affects any channel needing a per-release artifact |
-| DR7 | Three independent version lines (NuGet coordinated version, viewer/Pages, desktop app) with no stated relationship | New with phase 1. Worth deciding explicitly at plan stage, since the README will show all three |
+| DR7 | Three independent version lines (NuGet coordinated version, viewer/Pages, desktop app) with no stated relationship | **Resolved 2026-09-20 (§8 Q3):** the desktop app is coupled to the coordinated NuGet `<Version>`. Residual work, not risk: the release process must bump `tauri.conf.json` and the updater `latest.json` from that single value, and a CLI-only change now also ships a desktop version number |
 
-## 8. Questions for the caller
+## 8. Questions for the caller — DECIDED 2026-09-20 (CARD-0061 closed)
 
-1. **Is the audience environment constrained?** If the intended users are on machines
-   where downloading an `.exe` is policy-blocked but a package manager is not, winget
-   becomes co-primary and signing moves forward (§5).
-2. **Is a code-signing certificate on the table, and at what budget?** It is the single
-   purchase that improves the most distinct problems (SmartScreen, winget scan risk,
-   part of phase 2). Everything in §6 step 3 hinges on the answer.
-3. **Version line for the desktop app:** independent (recommended) or coupled to the
-   coordinated NuGet `<Version>`? (DR7.)
+Asked as open questions by this investigation; answered by the caller on 2026-09-20.
+All three are now settled and need no further work at plan stage.
+
+1. **Is the audience environment constrained? — DECIDED: no, not a concern for
+   phase 1.** GitHub Releases only. winget stays **deferred to a later phase** as
+   originally recommended, with no promotion to co-primary. The §5 contingency
+   (policy-blocked `.exe` downloads) does not fire, so nothing about signing or
+   channel order moves forward on its account. *Plan effect:* §6 stands as written.
+2. **Is a code-signing certificate on the table? — DECIDED: not budgeted for now.**
+   v1 ships **unsigned**, per the already-decided D4 in
+   `docs/plans/2026-09-18-native-viewer-shells.md`. No change from the
+   recommendation. *Plan effect:* the SmartScreen paragraph (§3) is a permanent part
+   of the phase 1 README and release notes, not a temporary one; DR3 (winget scan
+   risk) and the phase 2 macOS notarisation question both stay open behind it.
+3. **Version line for the desktop app? — DECIDED: couple it to the coordinated
+   NuGet `<Version>`** (`src/generator-cli/Mdpkg.Pack.props:5`, shared by `mdpkg`,
+   `Mdpkg.Reader` and `Mdpkg.Core`). **This deviates from this document's own
+   recommendation**, which favoured an independent line (§4.1, §4.5 point 3); the
+   caller chose coupling for simplicity, and that choice governs. *Plan effect:* the
+   desktop release process must hook into whatever bumps that shared `<Version>`
+   today — `tauri.conf.json`'s `version` and the updater's `latest.json` are derived
+   from it rather than maintained separately. The accepted consequences are that a
+   CLI-only version bump also produces a desktop version number, and that a desktop
+   fix needs a coordinated bump; the offsetting gain is one version to reason about
+   across the README's three artifacts (DR7 resolved).
 
 ## 9. Not done, noted
 
