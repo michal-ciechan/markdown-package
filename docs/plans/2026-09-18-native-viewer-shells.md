@@ -8,6 +8,17 @@ production code was changed by either task.
 §9. This plan is delivered; the phase 0 spike and everything after it are
 follow-on work under new cards, not part of CARD-0059.
 
+**Amended 2026-09-20 with the phase 0 spike results** (CARD-0060,
+`docs/plans/2026-09-19-phase0-windows-spike.md`, commit `f088f2a`). A working
+Tauri v2 shell was built, installed and uninstalled on this Windows 10 machine
+and answered phase 0 items 1, 2, 4, 5, 6, 7, 8 and 9. Where this plan
+previously stated an assumption it now states the measurement; where a
+measurement contradicted the assumption the text says so. The four changes
+that move work: **D5 is closed** (keep the default origin), **R2 is closed**
+(`plugin-fs` `readFile`), **item F is now a phase 1 blocker** rather than a
+macOS portability nicety, and item L's handler gains three rules (§2.7). The
+spike note holds the raw numbers; this plan holds only the conclusions.
+
 Revision history, kept because the rejected path is part of the record:
 
 1. First draft recommended Tauri v2 for every target.
@@ -33,7 +44,7 @@ working on GitHub Pages.
 
 | Platform | Decided | Notes |
 | --- | --- | --- |
-| Windows (phase 1) | Tauri v2, NSIS per-user installer, `bundle.fileAssociations` for `.mdpkg`; `.md` registered as an "Open with" candidate only (§9 D2); single-instance plugin; updater plugin over GitHub Releases; **unsigned for v1** (§9 D4) | Origin scheme is a phase 0 measurement, not a decision (§9 D5) |
+| Windows (phase 1) | Tauri v2, NSIS per-user installer, `bundle.fileAssociations` for `.mdpkg`; `.md` registered as an "Open with" candidate only (§9 D2); single-instance plugin; updater plugin over GitHub Releases; **unsigned for v1** (§9 D4) | Origin scheme settled by the spike: the default `http://tauri.localhost` is a secure context, so `useHttpsScheme` is **not** set (§9 D5). Blocker before the dialog plugin is registered: item F (§2.4) |
 | Windows (phase 1.5) | Native file watcher on an opened loose `.md`, "file changed" notice, and a what-changed diff on reload (§9 D3, §6) | New viewer code; see §1.4 for why it is not free |
 | Linux and macOS (phase 2) | Same Tauri project: AppImage/deb; `.app`/dmg with Developer ID signing and notarization | Apple Developer Program needed for macOS |
 | iPhone and iPad (phases 3 and 4) | Same Tauri project via `tauri ios init`; one adaptive app. Fallback: a hand-written Swift WKWebView wrapper hosting the same `dist/` if the phase 3 gate fails | Capacitor rejected: its desktop platform is unmaintained, so it would mean two shells |
@@ -117,11 +128,11 @@ Evidence is the source at `ca2dc7f`; line numbers are from that commit.
 | Package bytes | `blobSource(blob)` slices a `Blob` (`source.js:23-33`); `bytesSource(Uint8Array)` also exists (`:12`) | `File` from picker/drop/paste | Shell reads bytes natively and hands `new Blob([bytes])` to `receive()` |
 | Inflate | `DecompressionStream('deflate-raw')` with a lazy fflate fallback (`src/container/inflate.js:2-33`) | Native from Chrome 103 / Safari 16.4 | WebView2 native; WKWebView native on iOS 16.4+; WebKitGTK 2.40+ expected; fallback covers the rest |
 | Deflate on export | `CompressionStream('deflate-raw')` with STORE fallback (`src/container/writer.js:9-43`) | Same | Same |
-| Web Crypto | `crypto.subtle.digest` (`src/address/digest.js:10-12`), `crypto.randomUUID` (`review-view.js`, `store.js`) | Secure context required; the code throws "serve the app over HTTPS or localhost" otherwise | **Origin must be a secure context** (R1; phase 0 item 2) |
+| Web Crypto | `crypto.subtle.digest` (`src/address/digest.js:10-12`), `crypto.randomUUID` (`review-view.js`, `store.js`) | Secure context required; the code throws "serve the app over HTTPS or localhost" otherwise | **Origin must be a secure context.** Confirmed on Windows 2026-09-19: the default `http://tauri.localhost` is one (R1, §2.1, D5); Apple and Linux unmeasured |
 | Persistence | IndexedDB (`store.js`), `sessionStorage` tab pointer (`session.js:12-13`), `localStorage` author name (`src/ui/author-name.js:8-16`) | Per origin | All available in WebView2/WKWebView/WebKitGTK. Origin = the shell's scheme; changing the scheme later orphans the data (R1) |
 | Export review | `<a download>` on a blob URL (`src/review/out.js:6-15`) | Browser download UI | Works in WebView2 and Chromium; **no-op in Tauri on macOS** (tauri-apps/tauri#6171, closed "not planned"). Route through a native save dialog behind the adapter |
 | Share review | `navigator.share({files})` / `canShare` (`src/ui/review-view.js:129, 142-144, 160`) | On by default on Cocoa WebKit (repo evidence `viewer-app/ios-evidence.json`) | WKWebView: expected but never measured on a device. Adapter can call the native share sheet instead |
-| Unsaved-work guards | `window.confirm` ×3 (`main.js:121`, `session.js:63`, `189`); `beforeunload` (`main.js:80-81`, `session.js:14-20`); `pagehide`/`visibilitychange` flush (`session.js:142-143`) | Native dialogs | WebView2: works. **WKWebView under wry: `confirm()` reported to return `false` with no dialog** (tauri-apps/wry#584; downstream report 2026). Native window close does not raise `beforeunload`; the shell must hook close-requested and call `flush()` |
+| Unsaved-work guards | `window.confirm` ×3 (`main.js:121`, `session.js:63`, `189`); `beforeunload` (`main.js:80-81`, `session.js:14-20`); `pagehide`/`visibilitychange` flush (`session.js:142-143`) | Native dialogs | WebView2: **broken once `tauri-plugin-dialog` is registered** — the plugin replaces `window.confirm` with a truthy, always-rejecting Promise, so the guard silently answers yes (measured 2026-09-19, §2.4; item F is a phase 1 blocker). **WKWebView under wry: `confirm()` reported to return `false` with no dialog** (tauri-apps/wry#584; downstream report 2026). Native window close does not raise `beforeunload`; the shell must hook close-requested and call `flush()` |
 | External links | `http(s):`/`mailto:` get `target="_blank"` (`src/ui/markdown-surface.js:11-13`) | New tab | Tauri needs the `opener` plugin and an ACL entry to open the system browser |
 | Images | Never requested from packages (`src/ui/markdown-renderer.js:22-23`) | | Nothing to allow in CSP |
 | Layout | `@media (max-width: 700px)`, `(width < 700px)`, 44 px touch targets (`styles.css:80-129`) | | Range syntax needs Chrome 104 / Safari 16.4; sets the iOS floor |
@@ -178,8 +189,23 @@ browser behaviour stays, so GitHub Pages ships the same build.
 Origin: on Windows the default is `http://tauri.localhost`, switchable to
 `https://tauri.localhost` with `useHttpsScheme` ("alters where IndexedDB,
 cookies, and localStorage are stored", Tauri docs); on macOS, Linux, iOS and
-Android it is the custom `tauri://localhost` scheme. Whether each is a secure
-context for `crypto.subtle` is R1, measured in phase 0 (decision D5).
+Android it is the custom `tauri://localhost` scheme.
+
+**Measured on Windows (phase 0, 2026-09-19; WebView2 153.0.4234.32):** under
+the default `http://tauri.localhost`, `window.isSecureContext` is `true`,
+`crypto.subtle.digest` returns the correct SHA-256, `crypto.randomUUID`
+works, and IndexedDB and `localStorage` both persist across app restarts
+(`storage.persisted()` is `false`, i.e. evictable, exactly as in a browser).
+`showOpenFilePicker`/`showSaveFilePicker` exist and work, and the real viewer
+opened a fixture package through its own picker unmodified. **D5 is therefore
+closed: keep the default scheme and do not set `useHttpsScheme`** — there is
+no storage-origin migration and nothing in the viewer's crypto or persistence
+code to change. `useHttpsScheme` was deliberately not measured, as it is only
+needed if the default had failed. The Apple and Linux `tauri://localhost`
+origins remain unmeasured (R1, phase 2). One Windows aside for the adapter:
+`navigator.clipboard.readText()` raises a native WebView2 permission prompt
+that blocks the promise until the user answers; the grant then persists.
+`writeText` does not prompt.
 
 ### 2.2 File associations and launch
 
@@ -205,24 +231,80 @@ without touching the extension's default (R3). Windows 10 protects a user's
 chosen default with the `UserChoice` hash anyway, so an installer could not
 take `.md` from a user who already picked another editor.
 
+**Both routes were verified end to end in phase 0** on this Windows 10
+machine, whose `.md` default was already Typora. `.mdpkg` through
+`fileAssociations`: double-click launched the installed app with the path as
+`argv[1]`; a second double-click while it ran was forwarded by
+`tauri-plugin-single-instance` and the second process exited. `.md` through
+the `installerHooks` fragment: the app appeared in Explorer's "Open with"
+chooser with its icon, marked *New*, immediately and without a logoff, while
+`UserChoice` stayed on Typora and shell-executing a `.md` did not launch the
+app. Uninstall restored `.md` byte-for-byte. Two defects in the Tauri NSIS
+template, both carried into W4 as checklist lines: (1) the `fileAssociations`
+`shell\open\command` is written with the **program path unquoted**
+(`C:\…\app.exe "%1"`), which breaks for a user whose account name contains a
+space, so phase 1 must quote it through a hook or confirm upstream has fixed
+it; (2) uninstall restores the extension's previous *value* but leaves an
+orphan `HKCU\Software\Classes\.mdpkg` key holding a stale `…_backup` value,
+so "the uninstaller restores the backup" should be read as "restores the
+value, leaves an empty key".
+
 ### 2.3 Bytes into the viewer
 
-One Rust command reads the path and returns bytes. Tauri IPC serialises JSON
-by default and large arrays are slow; the candidates are a raw-binary
-`invoke` response (`tauri::ipc::Response`) or `fetch` on the asset protocol,
-which supports range requests and would fit `blobSource`'s slicing (R2).
-Phase 0 item 5 times both with a 20 MB package and picks one for all
-platforms.
+**Settled by the phase 0 spike (R2 closed): use `@tauri-apps/plugin-fs`
+`readFile`.** No Rust command is written at all, and the plugin is a
+dependency anyway for `watch` (§2.7). Release-build times for a 20 MiB
+`.mdpkg`, best of three: `plugin-fs` `readFile` 530 ms, raw-bytes command
+(`tauri::ipc::Response`) 522 ms, `fetch` on the asset protocol 522 ms —
+against **3016 ms** for the default `Vec<u8>` JSON IPC and 1072 ms for
+base64. So the three good routes are within 2 % of one another and the
+default one is six times slower: the rule is simply *never return `Vec<u8>`
+over IPC*. `new Blob([arrayBuffer])` adds 15 ms at that size. (Benchmark
+under a release build: the debug build inflates the JSON route to 12.4 s and
+would mislead.)
+
+The asset protocol stays the documented upgrade path, not the phase 1
+choice: it is the only route that supports range requests, so it is what
+would make `blobSource`'s slicing genuinely lazy (§8) rather than slicing a
+`Blob` already fully in memory.
 
 ### 2.4 Export, share, dialogs, links, close
 
 `plugin-dialog` save dialog plus `plugin-fs` write behind `host.saveFile()`
 (required on macOS, tauri#6171); native share on iOS through a small custom
 command or `navigator.share` if the device test passes; `plugin-dialog`
-`confirm` behind `host.confirm()` (wry#584); `plugin-opener` behind
+`confirm` behind `host.confirm()`; `plugin-opener` behind
 `host.openExternal()`; the window's close-requested event calls the adapter's
 `flush()` and, if work is unsaved, vetoes through the confirm above. Each is
 a few lines behind the adapter; each needs a capability entry.
+
+**`window.confirm` is a phase 1 blocker on Windows too, and the failure is
+silent (measured, phase 0).** The plan assumed wry#584 — a macOS/WKWebView
+no-op — and that Windows was safe. It is not, and the reason is Tauri's own
+plugin, not the webview:
+
+- Bare WebView2 with no dialog plugin registered: `confirm`, `alert` and
+  `prompt` are native code, show real *blocking* "tauri.localhost says"
+  dialogs, and `confirm()` returns a proper boolean.
+- With `tauri_plugin_dialog::init()` registered — which phase 1 does, for
+  `host.saveFile()` — the crate injects a script that replaces
+  `window.alert` and `window.confirm`. The crate registers only the `open`,
+  `save` and `message` commands, so **`window.confirm()` returns a `Promise`
+  that always rejects** with `dialog.confirm not allowed. Command not found`.
+  A pending Promise is truthy, so every `if (window.confirm(…))` takes the
+  "yes" branch with no dialog and no error the user can see — at
+  `main.js:121`, `session.js:63` and `session.js:189` that means silently
+  discarding unsaved review work. `window.alert()` returns in about 0.5 ms
+  with its dialog appearing afterwards; `window.prompt` is left untouched and
+  still blocks.
+
+So item F must land *before* the dialog plugin is registered, and W3 carries
+an explicit gate for it. What to call instead: the plugin's own
+`confirm()`/`message()` JS APIs, which open a real top-level Win32 dialog and
+work correctly. Capability note: both are served by the `message` command, so
+the permission is `dialog:allow-message` (or `dialog:default`) —
+`dialog:allow-confirm` and `dialog:allow-ask` are deprecated aliases for it,
+not separate permissions.
 
 ### 2.5 Updates, signing, distribution (decision D4)
 
@@ -271,7 +353,45 @@ in the desktop app (item H). It stays optional and out of phase 1.
 call fails with "forbidden path". The plan watches the opened file's *parent
 directory* non-recursively and filters events by file name, rather than the
 file itself, because editors that save by writing a temporary file and
-renaming it over the original replace the watched inode (R15).
+renaming it over the original replace the watched inode (R15). A scope of
+`[dir, dir/**]` plus `fs:allow-watch` was enough in the spike.
+
+**Measured against 11 real save patterns (phase 0, `delayMs: 500`), including
+Notepad, VS Code 1.138, Vim 9.1 in both backup modes and `git checkout`.** A
+save produces 1 to 4 debounced callbacks, collapsing up to 15 raw OS events,
+with no duplicate batch. The parent-directory shape survives contact with
+reality and stays the choice, but for a different reason than the plan gave,
+and the handler needs three rules the plan did not state:
+
+1. **Never key on `modify`.** This is the finding that would otherwise have
+   become a bug. A real Vim save and a `File.Replace`-style atomic save
+   deliver **no `modify` event for the document** to a directory watcher —
+   only a `create` (plus a `remove` of a backup file). Treat `create`,
+   `remove`, `modify` and rename events identically: "something touched this
+   name, re-read and compare".
+2. **A `remove` is not a deletion.** `Move-Item -Force` and `git checkout`
+   both deliver `remove` immediately before `create`. Re-stat after the
+   debounce rather than reacting to `remove`; that ordering is what makes
+   R17's "a missing file shows a notice, not an error" safe.
+3. **Filename filtering is mandatory**, as the plan said: one Vim save alone
+   also emits `.watched.md.swp`, `.watched.md.swx`, `4913` and `watched.md~`
+   in the same directory, and the atomic patterns emit `*.tmp` and
+   `*~RF….TMP`.
+
+Snapshot-identity gating stays mandatory for the reason D3 assumed: a
+metadata-only touch is *indistinguishable* from a real in-place save at the
+event level (one `modify(any)` either way), so only recomputing the snapshot
+id separates them.
+
+Two corrections to R15's premises, recorded so nobody designs around them
+again: on Windows a watch on the *file path* does **not** go stale across a
+rename or delete-and-create (notify's backend is `ReadDirectoryChangesW` on
+the parent with a name filter, so there is no inode to lose), and VS Code
+writes **in place** on Windows rather than using a safe-write temp file.
+Parent-directory watching is still right — the Linux and macOS backends do
+lose the inode, one code path is cheaper than two, and a file watch cannot be
+armed before the file exists — but it is a portability choice, not a Windows
+necessity.
 
 ### 2.8 Testing
 
@@ -341,7 +461,7 @@ smaller than one codebase for every target.
 | Auto-update | `tauri-plugin-updater` + GitHub Releases | Velopack or App Installer | `electron-updater` | As Electron |
 | Clipboard files | Community plugin or Rust command (§2.6) | `Clipboard.GetContent()` on Windows | Native | Plugin |
 | Known webview gaps | macOS `<a download>` no-op; `confirm()` no-op on WKWebView; drop interception | `confirm()`/`<a download>` on WKWebView; WinUI drop bug | None relevant | None relevant |
-| Toolchain here | Rust not installed; VS 2019 Build Tools present | .NET 10 SDK present; MAUI workload not installed | Node only | Node only |
+| Toolchain here | Rust installed 2026-09-19 (1.98.1); VS 2019 Build Tools present | .NET 10 SDK present; MAUI workload not installed | Node only | Node only |
 | Language | Rust | C# | JS | JS + Swift/Kotlin |
 
 Electron is excluded by size and by having no iOS story; Capacitor by its
@@ -378,13 +498,13 @@ refine.
 | C | Reopen recents by path | `session.js:31-55` (`reopen`), `:215` (`saveHandle`), `file-access.js` | Store `{path}` in the existing `handles` store; the permission branch stays for browsers |
 | D | Export through `saveFile` when hosted | `out.js:6-15`, `review-view.js:134-138` | Required for macOS (tauri#6171); harmless elsewhere |
 | E | Share through the host when hosted | `review-view.js:129-144, 160` | iOS native sheet |
-| F | Replace `window.confirm` with `await host.confirm` and hook window close | `main.js:121`, `session.js:63`, `189`, `14-20`, `142-143` | WKWebView `confirm()` no-op; native close bypasses `beforeunload`. Flush on close-requested, then confirm if unsaved |
+| F | **Phase 1 BLOCKER (raised from "portability nicety" by the phase 0 spike).** Replace `window.confirm`/`window.alert` with `await host.confirm` / `host.message`, and hook window close | `main.js:121`, `session.js:63`, `189`, `14-20`, `142-143` | Registering `tauri-plugin-dialog` (which phase 1 needs for `saveFile`) replaces `window.confirm` with a Promise that is **truthy and always rejects**, so every existing `if (window.confirm(…))` silently takes the "yes" branch and discards unsaved work — measured, §2.4. Must land *before* the plugin is registered; W3 gates on a grep. Also the WKWebView no-op (wry#584) and native close bypassing `beforeunload`. Flush on close-requested, then confirm if unsaved. Capability: `dialog:allow-message`, not `dialog:allow-confirm` |
 | G | External links through `openExternal` | `markdown-surface.js:11-13` | Tauri `opener` plugin + ACL |
 | H | (Optional, later) Paste button reads a copied file natively | `main.js:284-289`, `clipboard.js` | §2.6; would make CARD-0057's button do what its label says |
 | I | **Loose document synthesizer** (decision D3): wrap a single `.md` into an in-memory conforming snapshot: manifest per spec §4 (`mdpkg`, `addressing {anchor, digest, coverage: complete, overrides: null}`, `current {kind: snapshot, id}`, `history {mode: none}`, `namespace`), LF-normalize the text (`snapshotIdentity` rejects CR), compute `current.id` with `snapshotIdentity()` (`src/container/snapshot.js:14-25`), write with `writePackage()` (`writer.js`), then hand the bytes to `openPackage()` | new `src/inbound/loose.js` (name TBD), `main.js` inbound routes, tests | Pattern already exists in `emitReview()` (`src/review/emit.js:8-22`). Open design question R11: how the namespace is derived, because saved work is keyed by (namespace, snapshot id) and the watcher (item L) relies on the namespace staying stable across edits |
-| J | Tauri config | `src-tauri/tauri.conf.json` | `dragDropEnabled: false`; `useHttpsScheme` per the phase 0 result (D5); CSP allowing `blob:` object URLs; capabilities for `dialog`, `fs` (scoped to picked/opened paths and, for `watch`, their parent directories), `opener`, `single-instance`, `updater`; `bundle.fileAssociations` for `mdpkg` only, `.md` via `installerHooks` (§2.2) |
-| K | Build/CI | `.github/workflows/`, `src/web-viewer/build.mjs` V-2 budget | New `desktop.yml` using `tauri-action` on a Windows runner (later a matrix); the Pages workflow is untouched. Any eager-graph growth needs the plan §4 + `APP_BUDGETS` amendment the README requires |
-| L | **Loose-file watcher and change notice** (decision D3, phase 1.5): after a loose `.md` opens from a path, the shell watches its parent directory (`plugin-fs` `watch`, `delayMs` about 500, non-recursive, filtered to the file name). On an event the adapter re-reads the file, LF-normalizes, and computes the would-be snapshot id with the item I code; if it equals the current one the event is dropped (touch, metadata-only save, duplicate event). Otherwise the viewer shows the existing offer strip ("This file changed on disk. Reload to see what changed." with a Reload action) and keeps the current view untouched. Reload re-synthesizes through item I and opens it as the same namespace with a new snapshot id, so `prepare()` and the CARD-0046 reattachment carry saved comments and drafts across | adapter (item A); `main.js` receive path; `recent-view.js` offer UI (`:42-48`); `session.js` `prepare`/`mismatch`; tests | Reuses: synthesizer, identity, offer UI, keying and reattachment. New: the watch wiring and the notice text. Not offered on a package (`.mdpkg`) in phase 1.5; watching packages is a later extension |
+| J | Tauri config | `src-tauri/tauri.conf.json` | `dragDropEnabled: false`; **no `useHttpsScheme`** — the default origin is confirmed a secure context (D5 closed, §2.1); CSP allowing `blob:` object URLs; capabilities for `dialog` (`dialog:allow-message`, §2.4), `fs` (`fs:allow-read-file`, and for `watch` `fs:allow-watch`/`fs:allow-unwatch` scoped `[dir, dir/**]` of the opened path), `opener`, `single-instance`, `updater`; `bundle.fileAssociations` for `mdpkg` only, `.md` via `installerHooks` (§2.2) |
+| K | Build/CI | `.github/workflows/`, `src/web-viewer/build.mjs` V-2 budget | New `desktop.yml` using `tauri-action` on a Windows runner (later a matrix); the Pages workflow is untouched. **Measured build budget (phase 0, this machine):** release `tauri build` **~18 min cold** (template profile, `lto = true`, `codegen-units = 1`), `cargo build` debug 7 min cold and 17–55 s incremental; installer ~1.6 MiB, installed exe ~5 MiB, cold start ~1.9 s. The workflow must cache `~/.cargo` and `target/` from the first commit or every run pays the 18 minutes; W4's association work cannot be iterated without a full release build each time. Any eager-graph growth needs the plan §4 + `APP_BUDGETS` amendment the README requires |
+| L | **Loose-file watcher and change notice** (decision D3, phase 1.5): after a loose `.md` opens from a path, the shell watches its parent directory (`plugin-fs` `watch`, `delayMs` about 500, non-recursive, filtered to the file name). **Three handler rules the spike proved necessary (§2.7): do not key on `modify` — a Vim or atomic save delivers only `create` for the document; do not treat a bare `remove` as a deletion, because `remove` precedes `create` in rename-based saves, so re-stat after the debounce; filter the filename, because one Vim save also emits `.swp`/`.swx`/`4913`/`file~` in the same directory.** On an event the adapter re-reads the file, LF-normalizes, and computes the would-be snapshot id with the item I code; if it equals the current one the event is dropped (touch, metadata-only save, duplicate event). Otherwise the viewer shows the existing offer strip ("This file changed on disk. Reload to see what changed." with a Reload action) and keeps the current view untouched. Reload re-synthesizes through item I and opens it as the same namespace with a new snapshot id, so `prepare()` and the CARD-0046 reattachment carry saved comments and drafts across | adapter (item A); `main.js` receive path; `recent-view.js` offer UI (`:42-48`); `session.js` `prepare`/`mismatch`; tests | Reuses: synthesizer, identity, offer UI, keying and reattachment. New: the watch wiring and the notice text. Not offered on a package (`.mdpkg`) in phase 1.5; watching packages is a later extension |
 | M | **What-changed view on reload** (decision D3, phase 1.5): the viewer keeps the previous document text in memory (and in the package record, so a restart survives), and on Reload renders a unified diff between the previous and new text. **This is new code**, because the viewer has no diff machinery (§1.4). Default: a line-based Myers diff with three lines of context, in a lazily imported chunk so the eager graph does not grow (R9); the Myers/three-context choice mirrors the spec's `git-myers-u3-v1` profile so a later Git-mode integration can present the same hunks. Size estimate 150 to 250 lines of JS plus a renderer panel and tests. The view is read-only and lives beside the document, not inside the review model | new `src/history/` or `src/ui/changes-view.js` (names TBD); `main.js`; tests | If the diff is dropped, item L still delivers the notice and reattachment; item M is what makes "see what changed" true. Alternative rejected: running the CLI's Git-mode append from the app, which would ship .NET and `git` inside the viewer |
 
 Nothing in the container reader, addressing, review or persistence *logic*
@@ -393,39 +513,43 @@ add user-visible behaviour beyond "the browser viewer, in a window".
 
 ## 6. Phased delivery
 
-### Phase 0: Windows spike (3 to 5 days, throwaway branch)
+### Phase 0: Windows spike — DONE 2026-09-20 (CARD-0060)
 
-Answers the unknowns that decide the design; produces a short evidence note
-under `docs/investigations/`, not product code. Follow-on work, not CARD-0059.
+Answered the unknowns that decide the design; the evidence note is
+`docs/plans/2026-09-19-phase0-windows-spike.md` (commit `f088f2a`), and the
+throwaway shell lived in a gitignored `.spike-tauri/`. No product code
+changed. Item status:
 
-1. `rustup` + C++ workload; `tauri init` against `../dist`; app boots and opens
-   the fixture packages.
-2. **Origin scheme (decision D5, a measurement, not a question for the
-   user):** `window.isSecureContext`, `crypto.subtle.digest`,
-   `crypto.randomUUID`, `navigator.clipboard.writeText` and IndexedDB
-   persistence across restarts under the default `http://tauri.localhost`;
-   repeat under `useHttpsScheme: true`. Fix whichever scheme passes (prefer
-   the default if both pass) in `tauri.conf.json` before the first public
-   build, because it is the storage origin (R1).
-3. HTML5 drop and Ctrl+V with `dragDropEnabled: false`.
-4. `showOpenFilePicker` behaviour inside WebView2 (works? persists grants?).
-5. Bytes over IPC: time a 20 MB `.mdpkg` through `invoke` returning raw bytes
-   (`tauri::ipc::Response`) versus `fetch` on the asset protocol (R2).
-6. File associations: `fileAssociations` for `.mdpkg` and the `installerHooks`
-   `OpenWithProgids` route for `.md` (§2.2) on Windows 10 for a user whose
-   `.md` already has a chosen default (R3); Explorer shows the app under
-   "Open with"; icons refresh without logoff; the uninstaller restores the
-   backup.
-7. `window.confirm`, `<a download>` and `target="_blank"` inside WebView2, so
-   the adapter's Windows branch is known before phase 1.
-8. Installer size and cold start time, recorded.
-9. `plugin-fs` `watch` on a parent directory with `delayMs: 500`: events
-   observed for an in-place save (Notepad), a temp-file-and-rename save (Vim
-   with default `backupcopy`, or `git checkout` of the file), and a
-   metadata-only touch; count of events per save after debouncing (R15).
+1. **Answered.** `rustup` + VS 2019 Build Tools; a hand-written Tauri v2
+   project (crate 2.11.5) loaded `src/web-viewer/dist/` unchanged, and the
+   real viewer opened `docs/spec/review-fixtures/original.mdpkg` through its
+   own picker (conforming tier, 1 document, 2 entries).
+2. **Answered — D5 closed.** Default `http://tauri.localhost`:
+   `isSecureContext` true, `crypto.subtle` and `randomUUID` correct,
+   IndexedDB and `localStorage` persist across restarts. Keep the default;
+   `useHttpsScheme` not set and not measured (§2.1).
+3. **Still open.** HTML5 drop and Ctrl+V with `dragDropEnabled: false` were
+   not exercised; they move to W2 (R13).
+4. **Answered.** `showOpenFilePicker`/`showSaveFilePicker` exist and work in
+   WebView2. Whether a grant persists across restarts is still open (W1).
+5. **Answered — R2 closed.** `plugin-fs` `readFile` (§2.3).
+6. **Answered — R3 closed for Windows.** Both association routes verified on
+   a machine whose `.md` default was already Typora, including icon refresh
+   without logoff and uninstall restoration; two NSIS template defects found
+   (§2.2, W4).
+7. **Answered, and it changed the plan.** `window.confirm` is a silent
+   truthy-Promise trap once the dialog plugin is registered — item F is now a
+   blocker (§2.4). `<a download>` and `target="_blank"` were not exercised;
+   they ride along with W3's adapter items D and G.
+8. **Answered.** Installer 1.6 MiB, installed exe 5 MiB, cold start ~1.9 s,
+   release build ~18 min (item K).
+9. **Answered.** 11 save patterns measured; three handler rules added to
+   item L (§2.7); R15's inode and safe-write premises corrected.
 
-Exit: every row answered with a measurement, and R1 through R4 resolved for
-Windows.
+Exit criteria met for R1 (Windows), R2 and R3; R4 is macOS/iOS and remains
+for phase 2. Still open after the spike: phase 0 item 3, File System Access
+grant persistence, half-written large saves, a file-only `fs:scope` for
+`watch`, and everything about signing/updater/SmartScreen (W4).
 
 ### Phase 1: Windows desktop (2 to 3 weeks after the spike)
 
@@ -433,8 +557,8 @@ Windows.
 | --- | --- |
 | W1 Shell boots | `src-tauri/` in the repo; `dist/` loads; native picker opens `.mdpkg`; IndexedDB persistence; the 108 Playwright tests unchanged in the browser lane |
 | W2 OS entry points | Double-click, "Open with", drag onto the window, and launch with a path all open the file; second launch while running goes to the existing instance and, if work is unsaved, through the existing confirm flow |
-| W3 `.md` and adapter | Loose-document synthesizer (item I) with unit tests in the Node suite and a Playwright case in the browser lane; adapter items B to G wired; recents reopen by path |
-| W4 Installer and updates | NSIS per-user installer with icons, unsigned (D4), SmartScreen steps documented in the README; `.mdpkg` association and the `.md` "Open with" hook (D2); uninstaller restores the previous association; `tauri-action` release workflow; updater with a minisign key held outside the repo; an actual 0.1.0 → 0.1.1 update performed on a clean Windows 10 VM, including whether the updater-launched install trips SmartScreen (R7) |
+| W3 `.md` and adapter | Loose-document synthesizer (item I) with unit tests in the Node suite and a Playwright case in the browser lane; adapter items B to G wired; recents reopen by path. **Gate (item F, blocking):** a repo grep for `window.confirm` and for `window.alert` under `src/web-viewer/src` returns zero matches before `tauri-plugin-dialog` is registered, and a shell smoke proves a cancelled confirm actually cancels — without this the desktop build silently discards unsaved work (§2.4) |
+| W4 Installer and updates | NSIS per-user installer with icons, unsigned (D4), SmartScreen steps documented in the README; `.mdpkg` association and the `.md` "Open with" hook (D2); uninstaller restores the previous association; `tauri-action` release workflow; updater with a minisign key held outside the repo; an actual 0.1.0 → 0.1.1 update performed on a clean Windows 10 VM, including whether the updater-launched install trips SmartScreen (R7). **Two fixes the spike found in the Tauri NSIS template (§2.2):** quote the program path in the `fileAssociations` `shell\open\command` (unquoted upstream; breaks for an account name containing a space — test with such a profile), and have the uninstaller delete the orphan `HKCU\Software\Classes\.mdpkg` key it leaves behind with a stale `…_backup` value |
 | W5 Acceptance | Manual checklist executed and recorded under `docs/investigations/`; `tauri-driver` smoke on the Windows runner covering the adapter points; README section for the desktop app |
 
 **Definition of done for Windows (phase 1).** An installable per-user package
@@ -509,10 +633,10 @@ filters; `content://` URIs need a Rust or Kotlin read path; Play signing.
 
 | # | Risk | Evidence | How it is resolved |
 | --- | --- | --- | --- |
-| R1 | The viewer needs a secure context (`digest.js:10`). Tauri on Windows serves `http://tauri.localhost` by default; `*.localhost` hosts are "potentially trustworthy" per the W3C Secure Contexts algorithm in agents that resolve them locally, and WebView2 is Chromium, so it is *expected* to pass. A community report shows a non-localhost custom origin failing. Switching later to `useHttpsScheme` "alters where IndexedDB, cookies, and localStorage are stored". On Apple and Linux the origin is `tauri://localhost`; WebKit's scheme-handler rule should make it trustworthy, unmeasured | W3C spec; Tauri `WindowConfig` docs; hoppscotch#6287; WebKit `SecurityOrigin.cpp` | Phase 0 item 2 (D5); phase 2 for WKWebView/WebKitGTK; the origin is fixed before the first public build |
-| R2 | Bytes from disk into the webview. Tauri IPC serialises JSON by default; large arrays are slow. Options: raw-binary `invoke` responses, or `fetch` on the asset protocol which supports range requests and would fit `blobSource`'s slicing | Tauri IPC docs; `source.js` | Phase 0 item 5 with a 20 MB package; pick one command for all platforms |
-| R3 | Windows default handler. Tauri's NSIS macro writes the extension default (with backup); it does not write `OpenWithProgids` or call `SHChangeNotify`. Windows 10 protects a user's chosen default through the `UserChoice` hash | Tauri `FileAssociation.nsh`; Windows `UserChoice` behaviour | D2: `.mdpkg` owned; `.md` through an `installerHooks` `OpenWithProgids` write plus `SHChangeNotify`; phase 0 item 6 verifies |
-| R4 | macOS/iOS webview gaps: `<a download>` no-op (tauri#6171), `window.confirm` no-op (wry#584 and a 2026 downstream report), native close bypassing `beforeunload` | Issues cited | Adapter items D and F; verified in phase 2 |
+| R1 | The viewer needs a secure context (`digest.js:10`). Tauri on Windows serves `http://tauri.localhost` by default; `*.localhost` hosts are "potentially trustworthy" per the W3C Secure Contexts algorithm in agents that resolve them locally, and WebView2 is Chromium, so it is *expected* to pass. A community report shows a non-localhost custom origin failing. Switching later to `useHttpsScheme` "alters where IndexedDB, cookies, and localStorage are stored". On Apple and Linux the origin is `tauri://localhost`; WebKit's scheme-handler rule should make it trustworthy, unmeasured | W3C spec; Tauri `WindowConfig` docs; hoppscotch#6287; WebKit `SecurityOrigin.cpp`; **phase 0 spike §2** | **CLOSED for Windows 2026-09-19:** the expectation held — `isSecureContext` true, `crypto.subtle` correct, IndexedDB and `localStorage` persist, under the default `http://tauri.localhost`. Origin fixed, `useHttpsScheme` not set (§2.1, D5). Apple and Linux `tauri://localhost` still unmeasured: carried to phase 2 |
+| R2 | Bytes from disk into the webview. Tauri IPC serialises JSON by default; large arrays are slow. Options: raw-binary `invoke` responses, or `fetch` on the asset protocol which supports range requests and would fit `blobSource`'s slicing | Tauri IPC docs; `source.js`; **phase 0 spike §6** | **CLOSED 2026-09-19: `@tauri-apps/plugin-fs` `readFile` for all platforms.** At 20 MiB, release build: `readFile` 530 ms, raw `ipc::Response` 522 ms, asset protocol 522 ms, base64 1072 ms, default `Vec<u8>` JSON **3016 ms**. No Rust command needed; the plugin is a `watch` dependency anyway. Never return `Vec<u8>` over IPC. Asset protocol remains the upgrade path if lazy slicing is wanted (§2.3, §8) |
+| R3 | Windows default handler. Tauri's NSIS macro writes the extension default (with backup); it does not write `OpenWithProgids` or call `SHChangeNotify`. Windows 10 protects a user's chosen default through the `UserChoice` hash | Tauri `FileAssociation.nsh`; Windows `UserChoice` behaviour; **phase 0 spike §3** | **CLOSED for Windows 2026-09-19:** D2's route works exactly as designed — `.mdpkg` owned and launched with `argv[1]`, `.md` added to "Open with" with its icon and no logoff, the user's Typora `UserChoice` untouched, uninstall restoring `.md` byte-for-byte. Two template defects carried into W4: the open command is written unquoted, and uninstall orphans `HKCU\Software\Classes\.mdpkg` (§2.2) |
+| R4 | macOS/iOS webview gaps: `<a download>` no-op (tauri#6171), `window.confirm` no-op (wry#584 and a 2026 downstream report), native close bypassing `beforeunload` | Issues cited | Adapter items D and F; verified in phase 2. **Note (phase 0):** `window.confirm` is not only a macOS problem — under `tauri-plugin-dialog` it is a silent truthy-Promise trap on Windows too, which is why item F is a phase 1 blocker (§2.4) |
 | R5 | Tauri iOS file-open maturity ("experimental (or partial)" in tauri#13844), security-scoped URL access for in-place opens, and `navigator.share({files})` inside WKWebView never measured on a device | Issues and prior investigation | Phase 3 gate on a Mac with a device; Swift fallback |
 | R6 | App Store guideline 4.2 rejection | `viewer-app.md` §2.6 | Native affordances listed in phase 3; TestFlight/ad-hoc as fallback distribution |
 | R7 | Unsigned v1 (D4): SmartScreen on the downloaded installer is accepted; whether the updater-launched silent install also trips it is unknown; a false-positive antivirus flag on an unsigned NSIS installer is possible; updater key custody (loss means no further updates) | Tauri signing and updater docs | W4 verifies on a clean VM; key in CI secrets plus an offline copy; certificate revisited after v1 |
@@ -521,11 +645,11 @@ filters; `content://` URIs need a Rust or Kotlin read path; Play signing.
 | R10 | One window, one package: opening a second file replaces the first (existing confirm at `main.js:121`) | Code | Accepted for phase 1; tabs/windows out of scope |
 | R11 | Loose `.md` identity: saved reviews and positions are keyed by (namespace, snapshot id); the id changes whenever the file changes, which the existing reattachment already handles, but the *namespace* for a file that never had one must be chosen (derived from the absolute path, from content, a fixed constant, or random per open). Item L requires it to be stable across edits of the same path, which rules out content-derived and random-per-open | `session.js` `prepare()`; spec §4 | Plan-stage design decision for W3; path-derived is the working default |
 | R12 | Tauri 3.0.0-alpha.1 is out; pin 2.11.x and revisit after phase 2 | crates.io | Pin |
-| R13 | Keyboard paste and `showOpenFilePicker` in WebView2 are assumed, not measured | | Phase 0 items 3 and 4 |
-| R14 | No Mac, no iOS device and no Linux desktop are attached to this machine; Rust is not installed | Toolchain check | Phase 0 installs Rust; phases 2 and 3 need hardware |
-| R15 | **Watcher false positives and misses (D3).** Editors that save through a temporary file and a rename (Vim with `backupcopy=no`/`auto`, Emacs, Sublime with `atomic_save`, many IDE "safe write" modes, and `git checkout`) emit remove/rename plus create events and replace the inode, so a watch on the file itself goes stale on Linux/macOS; editors that write in place emit several modify events per save; some tools touch mtime without changing content; a large save can be observed half-written | `notify` crate documented behaviour; `notify-debouncer-full` | Watch the parent directory and filter by name; `delayMs` debounce; gate every event on the recomputed snapshot id so a no-op write is dropped and a half-written file (id computed, then the final event arrives) is superseded by the next event; never auto-reload; phase 0 item 9 measures the three save styles |
+| R13 | Keyboard paste and `showOpenFilePicker` in WebView2 are assumed, not measured | Phase 0 spike §2 | **Partly closed 2026-09-19:** `showOpenFilePicker`/`showSaveFilePicker` exist and work in WebView2, and the viewer opened a real package through its own picker. Still open and moved to W1/W2: whether a File System Access grant persists across restarts, and Ctrl+V of an Explorer-copied file with `dragDropEnabled: false` (phase 0 item 3, not exercised) |
+| R14 | No Mac, no iOS device and no Linux desktop are attached to this machine; Rust is not installed | Toolchain check | **Rust installed 2026-09-19** (rustc/cargo 1.98.1, MSVC linker from VS 2019 Build Tools, Windows SDK 10.0.19041.0) and a full release bundle built, so the Windows toolchain is no longer a risk. Phases 2 and 3 still need hardware |
+| R15 | **Watcher false positives and misses (D3).** Editors that save through a temporary file and a rename (Vim with `backupcopy=no`/`auto`, Emacs, Sublime with `atomic_save`, many IDE "safe write" modes, and `git checkout`) emit remove/rename plus create events and replace the inode, so a watch on the file itself goes stale on Linux/macOS; editors that write in place emit several modify events per save; some tools touch mtime without changing content; a large save can be observed half-written | `notify` crate documented behaviour; `notify-debouncer-full` | Watch the parent directory and filter by name; `delayMs` debounce; gate every event on the recomputed snapshot id so a no-op write is dropped and a half-written file (id computed, then the final event arrives) is superseded by the next event; never auto-reload. **Measured 2026-09-19 across 11 patterns (spike §5): mostly confirmed, two premises wrong and one new rule.** Wrong: a file-path watch does *not* go stale on Windows (notify uses `ReadDirectoryChangesW` on the parent), and VS Code writes **in place**, not through a safe-write temp file. New and load-bearing: **the handler must not key on `modify`** — a Vim or `File.Replace` save delivers only `create` for the document to a directory watcher. Confirmed: filename filtering is mandatory (a Vim save also emits `.swp`/`.swx`/`4913`/`file~`), a `remove` precedes `create` in rename saves so is not a deletion, a metadata touch is event-indistinguishable from a real save so the snapshot-id gate is mandatory, and `delayMs: 500` collapses up to 15 raw events into 1–4 callbacks with no duplicate batch. A half-written large save was not reproduced (fixtures were small) and stays open (§2.7) |
 | R16 | **D3's reuse premise does not hold for the diff.** The viewer has no history or diff code (§1.4); the "what changed" view is new JavaScript; the packaged-history machinery is C# plus `git` and cannot be embedded | §1.4 evidence | Phase 1.5 as an explicit scope addition (about 1 week); item L works without item M if the diff slips |
-| R17 | Watching is desktop only; a watched file on a removable or network drive can vanish; the `fs` scope must include the parent directory or `watch` fails with "forbidden path" | Tauri fs plugin docs | Capability scope written from the opened path at runtime; a missing file shows a notice, not an error |
+| R17 | Watching is desktop only; a watched file on a removable or network drive can vanish; the `fs` scope must include the parent directory or `watch` fails with "forbidden path" | Tauri fs plugin docs; phase 0 spike §5 | Capability scope written from the opened path at runtime; a missing file shows a notice, not an error. **Measured 2026-09-19:** `fs:allow-watch` with a scope of `[dir, dir/**]` is sufficient; whether a *file-only* scope also works was not tested. The "notice, not an error" behaviour depends on rule 2 in §2.7 — `remove` arrives before `create` in every rename-based save |
 
 ## 8. Not done, noted
 
@@ -533,7 +657,9 @@ filters; `content://` URIs need a Rust or Kotlin read path; Play signing.
   on the desktop (item H); not scheduled.
 - Serving the opened file through the asset protocol with range support would
   let `blobSource` read only the bytes it needs, matching the format's
-  bounded-read design (`viewer-app.md` §3.1).
+  bounded-read design (`viewer-app.md` §3.1). Phase 0 measured it at the same
+  cost as `readFile` for a whole-file read (§2.3), so the win here is
+  laziness, not throughput.
 - The loose-document synthesizer could later take a dropped folder and
   produce the same package `mdpkg pack` would, giving the viewer a no-CLI
   packaging route.
@@ -563,7 +689,11 @@ items A, J, K and every phase are Tauri-based; §3.1 keeps the MAUI record.
 **D2. `.md` file association: "Open with" registration only,** not a forced
 default handler (Windows 10 `UserChoice` cannot be overridden anyway).
 `.mdpkg` is fully owned. *Plan effect:* §2.2 `installerHooks` route instead
-of `fileAssociations` for `.md`; phase 0 item 6; W4; R3.
+of `fileAssociations` for `.md`; phase 0 item 6; W4; R3. *Verified
+2026-09-19:* the spike installed both routes on a machine whose `.md`
+default was already Typora and confirmed D2 behaves exactly as decided —
+"Open with" entry present, existing default untouched, uninstall clean
+(§2.2). Two NSIS template defects go to W4.
 
 **D3. Loose `.md` handling: build the snapshot synthesizer** (in-memory wrap
 into a conforming snapshot on open, item I) **and add a native file watcher**
@@ -578,7 +708,12 @@ CARD-0046 reattachment. The diff view is new code. *Plan effect:* items L
 and M; **phase 1.5** (about 1 week) as an explicit scope addition, called out
 separately because it changes the phase 1 estimate; risks R15 (watcher
 false positives from temp-file-and-rename saves, debouncing), R16 (reuse
-premise), R17 (scope and desktop-only).
+premise), R17 (scope and desktop-only). *Verified 2026-09-19:* the watcher
+half of D3 is feasible as decided — 11 real save patterns produce 1 to 4
+debounced callbacks each — but item L's handler needs the three rules in
+§2.7, chiefly that it must **not** key on the `modify` event, and the
+snapshot-id gate is confirmed as the only thing that separates a real save
+from a metadata touch.
 
 **D4. Phase 1 signing and updates: ship unsigned for v1,** accepting the
 one-time SmartScreen warning, using Tauri's built-in updater against GitHub
@@ -592,11 +727,24 @@ task to resolve empirically (verify `isSecureContext` and `crypto.subtle`
 under whichever scheme Tauri uses) without asking the user. *Plan effect:*
 phase 0 item 2; R1; item J.
 
+> **CONFIRMED and closed 2026-09-19 by the phase 0 spike (§2.1; spike note
+> §2).** Under Tauri's default Windows origin `http://tauri.localhost`,
+> `window.isSecureContext` is `true`, `crypto.subtle.digest` returns the
+> correct SHA-256, `crypto.randomUUID` works, and IndexedDB and
+> `localStorage` persist across app restarts. **Keep the default scheme; do
+> not set `useHttpsScheme`.** No storage-origin migration, no change to the
+> viewer's crypto or persistence code, and no further spike work on this
+> point. `useHttpsScheme` was deliberately not measured, being needed only
+> if the default had failed. This closes D5 for Windows; the Apple and Linux
+> `tauri://localhost` origins are a phase 2 measurement under R1.
+
 Subsumed by the above and no longer open: Linux approach (same Tauri
 project, D1); Windows packaging (Tauri NSIS per-user installer, D1 and D4);
 distribution (GitHub Releases plus the updater, D4); .NET version (moot,
 D1). Still to be settled at the plan stage of the relevant card, not by the
-user: the loose-file namespace derivation (R11) and the IPC bytes route (R2).
+user: the loose-file namespace derivation (R11). The IPC bytes route, listed
+here as open on 2026-09-18, was settled by measurement on 2026-09-19:
+`plugin-fs` `readFile` (R2, §2.3).
 
 ## 10. Evidence and reproduction
 
@@ -619,6 +767,18 @@ node -v 24.6.0; dotnet --version 10.0.300; dotnet workload list -> (none); cargo
 vswhere -> Visual Studio Community 2022, 2019, Build Tools 2019
 WebView2 runtime: C:\Program Files (x86)\Microsoft\EdgeWebView\Application\153.0.4234.32
 ```
+
+Superseded on 2026-09-19 by the phase 0 spike, which installed the missing
+toolchain and measured everything this plan had assumed:
+`rustc`/`cargo` 1.98.1 with the VS 2019 Build Tools MSVC linker and Windows
+SDK 10.0.19041.0; a Tauri 2.11.5 shell built, installed, exercised and
+uninstalled on Windows 10 Pro 19045 against WebView2 153.0.4234.32. Every
+number quoted in §2.1, §2.2, §2.3, §2.7, item K and the amended R1/R2/R3/R13/
+R14/R15/R17 rows comes from
+`docs/plans/2026-09-19-phase0-windows-spike.md` (commit `f088f2a`), which
+holds the raw traces, the registry dumps, the NSIS fragment and the full
+benchmark and watcher tables. The throwaway shell was gitignored under
+`.spike-tauri/` and the machine was returned to its pre-spike state.
 
 Sources consulted (all fetched 2026-09-18):
 
