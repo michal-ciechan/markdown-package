@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 import fs from 'node:fs/promises';
 import {openPackage} from '../src/inbound/open.js';
-import {looseNamespace} from '../src/inbound/loose.js';
+import {looseNamespace, MAX_LOOSE_BYTES} from '../src/inbound/loose.js';
 
 const SOURCE = '# Loose notes\n\nProse with target words in it.\n\n## Second section\n\nMore prose.\n';
 const LAST_MODIFIED = Date.UTC(2020, 0, 2, 3, 4, 5);
@@ -142,4 +142,108 @@ test('CRLF and a leading BOM are handled, and a non-UTF-8 file is refused', asyn
   await page.locator('#package-file').setInputFiles({name: 'latin1.md', mimeType: 'text/markdown', buffer: Buffer.from([0x23, 0x20, 0xff, 0xfe, 0x0a])});
   await expect(page.locator('#activity')).toContainText('not UTF-8 text');
   await expect(page.locator('#browser')).toBeHidden();
+});
+
+// Review 30af66b7, defect 1: persistence re-runs reviews.setPackage(getPackage())
+// on both of these paths. The flag used to be a defaulted call argument, so each
+// one silently cleared it and the export caveat vanished while the very same
+// synthesized package was still open and still exportable.
+test('deleting saved work keeps the loose export caveat on the still-open package', async ({page}) => {
+  await page.goto('/');
+  await page.locator('#package-file').setInputFiles(loose());
+  await expect(page.locator('.document-title')).toHaveText('notes.md');
+  await expect(page.locator('.review-loose')).toBeVisible();
+  await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
+  await page.getByLabel('Your name').fill('Loose Reviewer');
+  await page.getByLabel('Feedback', {exact: true}).fill('Work that will be deleted.');
+  await page.getByRole('button', {name: 'Save comment', exact: true}).click();
+  await expect(page.locator('.local-save-status')).toHaveText('Saved in this browser');
+
+  await page.locator('#saved-sessions summary').first().click();
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', {name: 'Delete saved work', exact: true}).click();
+  await expect(page.locator('.local-save-status')).toHaveText('Saved work deleted.');
+
+  // The same loose package is still open, so both surfaces must still say so.
+  await expect(page.locator('.review-loose')).toBeVisible();
+  await expect(page.locator('.review-loose')).toContainText('synthesized snapshot that exists only on this device');
+  await expect(page.locator('#package-details .loose-note')).toContainText('synthesized on this device');
+  await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
+  await page.getByLabel('Your name').fill('Loose Reviewer');
+  await page.getByLabel('Feedback', {exact: true}).fill('Feedback written after the delete.');
+  await page.getByRole('button', {name: 'Save comment', exact: true}).click();
+  await page.getByRole('button', {name: 'Prepare review file', exact: true}).click();
+  await expect(page.locator('.review-status')).toContainText('Review ready: 1 threads');
+  await expect(page.locator('.review-status')).toContainText('not a packaged .mdpkg the recipient can obtain');
+});
+
+test('discarding unrestorable saved work keeps the loose export caveat', async ({page}) => {
+  await page.goto('/');
+  await page.locator('#package-file').setInputFiles(loose());
+  await expect(page.locator('.document-title')).toHaveText('notes.md');
+  await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
+  await page.getByLabel('Your name').fill('Loose Reviewer');
+  await page.getByLabel('Feedback', {exact: true}).fill('Draft that will not restore.');
+  await expect(page.locator('.local-save-status')).toHaveText('Saved in this browser');
+  // Force the recovery branch: an unsupported draft version cannot be decoded.
+  await page.evaluate(async () => {
+    const opening = indexedDB.open('mdpkg-viewer:snapshot-draft2:/', 1);
+    const db = await new Promise(resolve => { opening.onsuccess = () => resolve(opening.result); });
+    const tx = db.transaction('drafts', 'readwrite'), request = tx.objectStore('drafts').openCursor();
+    request.onsuccess = () => { const cursor = request.result; if (cursor) { cursor.update({...cursor.value, version: 999}); cursor.continue(); } };
+    await new Promise((resolve, reject) => { tx.oncomplete = resolve; tx.onabort = reject; }); db.close();
+  });
+
+  await page.reload();
+  await expect(page.getByRole('button', {name: 'Choose file again', exact: true})).toBeVisible();
+  await page.locator('#package-file').setInputFiles(loose());
+  await expect(page.locator('.document-title')).toHaveText('notes.md');
+  await expect(page.locator('.saved-recovery')).toContainText('could not be restored');
+  await expect(page.locator('.review-loose')).toBeVisible();
+  await page.locator('.saved-recovery summary').click();
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', {name: 'Discard saved recovery'}).click();
+  await expect.poll(async () => await page.locator('.saved-recovery summary').count()).toBe(0);
+
+  await expect(page.locator('.review-loose')).toBeVisible();
+  await expect(page.locator('.review-loose')).toContainText('synthesized snapshot that exists only on this device');
+  await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
+  await page.getByLabel('Your name').fill('Loose Reviewer');
+  await page.getByLabel('Feedback', {exact: true}).fill('Feedback written after the discard.');
+  await page.getByRole('button', {name: 'Save comment', exact: true}).click();
+  await page.getByRole('button', {name: 'Prepare review file', exact: true}).click();
+  await expect(page.locator('.review-status')).toContainText('not a packaged .mdpkg the recipient can obtain');
+});
+
+// Review 30af66b7, defect 2: the cap was only enforced inside synthesizeLoose,
+// after main.js had already buffered the whole file with arrayBuffer().
+test('an oversized non-ZIP file is refused on its declared size, without being read', async ({page}) => {
+  await page.goto('/');
+  const readWhole = await page.evaluate(async limit => {
+    const file = new File(['# Too big\n'], 'huge.md', {type: 'text/markdown'});
+    // Declare a size past the cap while keeping the bytes tiny, and make any
+    // whole-file read observable: the refusal must arrive without one.
+    Object.defineProperty(file, 'size', {value: limit + 1});
+    let read = false;
+    const original = file.arrayBuffer.bind(file);
+    file.arrayBuffer = () => { read = true; return original(); };
+    const event = new Event('drop', {bubbles: true, cancelable: true});
+    Object.defineProperty(event, 'dataTransfer', {value: {types: ['Files'], files: [file]}});
+    document.dispatchEvent(event);
+    await new Promise(resolve => setTimeout(resolve, 250));
+    return read;
+  }, MAX_LOOSE_BYTES);
+  await expect(page.locator('#activity')).toContainText('too large to open as a loose document');
+  await expect(page.locator('#browser')).toBeHidden();
+  expect(readWhole).toBe(false);
+});
+
+// Review 30af66b7, defect 3: a two-byte "PK" test routed this to openPackage,
+// which failed it with a container error instead of rendering it.
+test('a Markdown file whose text starts with PK opens as a loose document', async ({page}) => {
+  await page.goto('/');
+  await page.locator('#package-file').setInputFiles(loose('pkcs.md', '# PKCS #11 notes\n\nPKI prose.\n\n## Second section\n\nMore prose.\n'));
+  await expect(page.locator('.document-title')).toHaveText('pkcs.md');
+  await expect(page.locator('.markdown h1')).toHaveText('PKCS #11 notes');
+  await expect(page.locator('#package-details .loose-note')).toContainText('synthesized on this device');
 });

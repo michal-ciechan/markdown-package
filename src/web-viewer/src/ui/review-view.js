@@ -11,6 +11,15 @@ import {authorName} from './author-name.js';
 export const LOOSE_EXPORT_CAVEAT = 'This document was opened as a loose Markdown file. ' +
   'An exported review references a synthesized snapshot that exists only on this device, not a packaged .mdpkg the recipient can obtain.';
 
+// Looseness belongs to the opened package, not to one call. persistence/session.js
+// re-runs setPackage(getPackage()) after "Delete saved work" and after a recovery
+// discard; a per-call argument defaulted to false there and silently took the
+// export caveat away while the same synthesized package was still open
+// (review 30af66b7, defect 1). Keying off the package object makes every call
+// site preserve it, including ones written later.
+const loosePackages = new WeakSet();
+export function markLoose(pkg) { if (pkg) loosePackages.add(pkg); }
+
 export function reviewView(host, getContext, onNavigate) {
   host.className = 'review-panel';
   host.hidden = true;
@@ -174,9 +183,9 @@ export function reviewView(host, getContext, onNavigate) {
     deferDraft(value) { deferredDraft = value; },
     restoreDraft(context, fields) { deferredDraft = false; edit(context, fields, false); },
     hasUnsaved: () => dirty || !!composing,
-    setPackage(value, loose = false) {
+    setPackage(value) {
       pkg = value; review = newReview(); namespace = value ? crypto.randomUUID() : undefined;
-      looseSource = !!value && !!loose;
+      looseSource = !!value && loosePackages.has(value);
       find('.review-loose').textContent = looseSource ? LOOSE_EXPORT_CAVEAT : '';
       find('.review-loose').hidden = !looseSource;
       revision++; exportRevision = revision; dirty = false; prepared = artifact = undefined; deferredDraft = false; closeEditor();

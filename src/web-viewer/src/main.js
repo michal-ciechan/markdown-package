@@ -1,9 +1,9 @@
 import {openPackage} from './inbound/open.js';
-import {synthesizeLoose} from './inbound/loose.js';
+import {synthesizeLoose, MAX_LOOSE_BYTES} from './inbound/loose.js';
 import {readClipboard} from './inbound/clipboard.js';
 import {documentList} from './ui/documents.js';
 import {readerView} from './ui/reader-view.js';
-import {reviewView} from './ui/review-view.js';
+import {reviewView, markLoose} from './ui/review-view.js';
 import {referenceFor} from './address/resolve.js';
 import {destination, markdownLink} from './links/destination.js';
 import {referencePreview} from './ui/reference-preview.js';
@@ -107,9 +107,20 @@ function displayDocument(model, scope) {
 // Route on the ZIP signature, never the extension: sniffing gets .markdown,
 // .txt and extensionless files wrong one way, and would silently render a
 // truncated .mdpkg as Markdown source instead of reporting a container error.
+// The three ZIP record signatures a container can legitimately start with: local
+// file header, end of central directory (an empty archive) and the spanning
+// marker. Matching all four bytes, not just "PK", keeps a Markdown file that
+// opens with the word PKCS or PKI out of the container path, where it would fail
+// with a container error instead of rendering (review 30af66b7, defect 3).
+const ZIP_SIGNATURES = [[0x50, 0x4b, 0x03, 0x04], [0x50, 0x4b, 0x05, 0x06], [0x50, 0x4b, 0x07, 0x08]];
+
 async function packageBytesFor(blob) {
-  const head = new Uint8Array(await blob.slice(0, 3).arrayBuffer());
-  if (head[0] === 0x50 && head[1] === 0x4b) return {input: blob};
+  const head = new Uint8Array(await blob.slice(0, 4).arrayBuffer());
+  if (ZIP_SIGNATURES.some(signature => signature.every((byte, index) => head[index] === byte))) return {input: blob};
+  // Refuse on the declared size before reading anything: arrayBuffer() on a
+  // multi-gigabyte non-ZIP would materialize the whole file in memory only for
+  // synthesizeLoose to reject it on the same bound (review 30af66b7, defect 2).
+  if (blob.size > MAX_LOOSE_BYTES) throw new Error('This file is too large to open as a loose document');
   const name = blob.name || 'document.md';
   // Name-derived identity: the browser has no path. Two files sharing a
   // basename deliberately share saved work (CARD-0062 decision 1).
@@ -142,7 +153,8 @@ async function receive(source, expectedKey, documentPath) {
     preview.close(false); returnLocation = undefined; element('back-reference').hidden = true;
     const initialNavigation = ++navigationGeneration;
     pkg = opened;
-    reviews.setPackage(pkg, loose);
+    if (loose) markLoose(pkg);
+    reviews.setPackage(pkg);
     currentDocument = undefined; currentScope = undefined; reader.clear(); clearGeneratedReference();
     element('reference').value = ''; resolution.className = ''; resolution.textContent = '';
     const attached = prepared ? savedSessions.attach(prepared) : Promise.resolve();
