@@ -4,12 +4,20 @@ import {emitReview} from '../review/emit.js';
 import {reviewFile, downloadReview} from '../review/out.js';
 import {authorName} from './author-name.js';
 
+// A review exported against a synthesized loose file names a (namespace,
+// snapshot id) pair that exists nowhere: the recipient cannot obtain the
+// original it claims to review. CARD-0062 decision 2 allows the export in v1
+// provided every surface that offers it says so.
+export const LOOSE_EXPORT_CAVEAT = 'This document was opened as a loose Markdown file. ' +
+  'An exported review references a synthesized snapshot that exists only on this device, not a packaged .mdpkg the recipient can obtain.';
+
 export function reviewView(host, getContext, onNavigate) {
   host.className = 'review-panel';
   host.hidden = true;
   host.innerHTML = `<h2>Review</h2>
     <p>Select text in the reader, or review the selected section. Review files contain feedback; send them back with access to the original package.</p>
     <p class="review-memory">Browser saving and review export are separate. Download your review to return feedback.</p>
+    <p class="review-loose" hidden></p>
     <div class="review-actions"><button type="button" data-action="text">Review selected text</button><button type="button" data-action="scope">Review selected section</button></div>
     <form class="review-editor" hidden>
       <p class="review-target"></p><pre class="review-quote"></pre>
@@ -26,10 +34,12 @@ export function reviewView(host, getContext, onNavigate) {
   const form = find('form'), author = form.elements.author, kind = form.elements.kind, body = form.elements.body;
   const name = authorName(author, find('.review-author'));
   // namespace is the private editing workspace ID, never an exported namespace.
-  let pkg, review = newReview(), namespace, composing, prepared, artifact, revision = 0, dirty = false, preparing = false;
+  let pkg, review = newReview(), namespace, composing, prepared, artifact, revision = 0, dirty = false, preparing = false, looseSource = false;
   let listener = () => {}, presentation = () => {}, exportRevision = 0, deferredDraft = false;
   const threadElements = new Map(), targetLabel = find('.review-target'), targetQuote = form.querySelector('.review-quote');
   const notify = kind => { listener(kind); presentation(kind); };
+  // Scoped to the loose-file case only: a real .mdpkg export is unaffected.
+  const caveat = message => looseSource ? message + ' ' + LOOSE_EXPORT_CAVEAT : message;
   const status = (message, error = false) => { find('.review-status').textContent = message; find('.review-status').classList.toggle('error', error); };
   function invalidate() {
     revision++; dirty = true; prepared = artifact = undefined;
@@ -127,19 +137,19 @@ export function reviewView(host, getContext, onNavigate) {
       prepared = reviewFile(bytes, opened.name);
       action('download').hidden = false;
       action('share').hidden = !(navigator.canShare?.({files: [prepared]}) && navigator.share);
-      status(`Review ready: ${review.threads.length} threads. Snapshot hash, payloads and selectors checked. Download or share the file.`);
+      status(caveat(`Review ready: ${review.threads.length} threads. Snapshot hash, payloads and selectors checked. Download or share the file.`));
     } catch (error) { if (opened === pkg) status('Could not prepare review: ' + error.message, true); }
     finally { preparing = false; draw(); }
   });
   action('download').addEventListener('click', () => {
     if (!prepared) return;
-    try { downloadReview(prepared); dirty = false; exportRevision = revision; listener('export'); status('Review download requested. Keep the file to return your feedback.'); }
+    try { downloadReview(prepared); dirty = false; exportRevision = revision; listener('export'); status(caveat('Review download requested. Keep the file to return your feedback.')); }
     catch (error) { status('Download failed: ' + error.message, true); }
   });
   action('share').addEventListener('click', async () => {
     const file = prepared, generation = revision, opened = pkg;
     if (!file) return;
-    try { await navigator.share({files: [file]}); if (opened === pkg && generation === revision) { dirty = false; exportRevision = revision; listener('export'); status('Review shared.'); } }
+    try { await navigator.share({files: [file]}); if (opened === pkg && generation === revision) { dirty = false; exportRevision = revision; listener('export'); status(caveat('Review shared.')); } }
     catch (error) { if (opened === pkg && generation === revision) status(error.name === 'AbortError' ? 'Sharing cancelled. Your review is ready to download.' : 'Sharing failed. Download the review file instead.', error.name !== 'AbortError'); }
   });
   return {
@@ -164,8 +174,11 @@ export function reviewView(host, getContext, onNavigate) {
     deferDraft(value) { deferredDraft = value; },
     restoreDraft(context, fields) { deferredDraft = false; edit(context, fields, false); },
     hasUnsaved: () => dirty || !!composing,
-    setPackage(value) {
+    setPackage(value, loose = false) {
       pkg = value; review = newReview(); namespace = value ? crypto.randomUUID() : undefined;
+      looseSource = !!value && !!loose;
+      find('.review-loose').textContent = looseSource ? LOOSE_EXPORT_CAVEAT : '';
+      find('.review-loose').hidden = !looseSource;
       revision++; exportRevision = revision; dirty = false; prepared = artifact = undefined; deferredDraft = false; closeEditor();
       action('download').hidden = action('share').hidden = true;
       host.hidden = !value; status(''); draw();

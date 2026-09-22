@@ -1,4 +1,5 @@
 import {openPackage} from './inbound/open.js';
+import {synthesizeLoose} from './inbound/loose.js';
 import {readClipboard} from './inbound/clipboard.js';
 import {documentList} from './ui/documents.js';
 import {readerView} from './ui/reader-view.js';
@@ -103,13 +104,32 @@ function displayDocument(model, scope) {
   element('reference-tools').hidden = false;
 }
 
+// Route on the ZIP signature, never the extension: sniffing gets .markdown,
+// .txt and extensionless files wrong one way, and would silently render a
+// truncated .mdpkg as Markdown source instead of reporting a container error.
+async function packageBytesFor(blob) {
+  const head = new Uint8Array(await blob.slice(0, 3).arrayBuffer());
+  if (head[0] === 0x50 && head[1] === 0x4b) return {input: blob};
+  const name = blob.name || 'document.md';
+  // Name-derived identity: the browser has no path. Two files sharing a
+  // basename deliberately share saved work (CARD-0062 decision 1).
+  const bytes = await synthesizeLoose(new Uint8Array(await blob.arrayBuffer()), name, {identity: name});
+  return {input: new File([bytes], name, {type: 'application/octet-stream'}), loose: true,
+    strippedBom: head[0] === 0xef && head[1] === 0xbb && head[2] === 0xbf};
+}
+
 async function receive(source, expectedKey, documentPath) {
   if (source instanceof Blob) source = {blob: source, sourceKind: 'file'};
   const {blob} = source;
   const generation = ++openGeneration;
   report('Opening ' + (blob.name || 'package') + '…');
   try {
-    const opened = await openPackage(blob);
+    // Only openPackage sees synthesized bytes. source.blob stays the user's
+    // original File, or recents would record the synthesized ZIP's size and
+    // Date.now() as the file's modification time and the saved File System
+    // Access handle would be meaningless.
+    const {input, loose, strippedBom} = await packageBytesFor(blob);
+    const opened = await openPackage(input);
     await persistenceReady;
     await savedSessions?.flush();
     const outgoingRevision = reviews.revision();
@@ -122,7 +142,7 @@ async function receive(source, expectedKey, documentPath) {
     preview.close(false); returnLocation = undefined; element('back-reference').hidden = true;
     const initialNavigation = ++navigationGeneration;
     pkg = opened;
-    reviews.setPackage(pkg);
+    reviews.setPackage(pkg, loose);
     currentDocument = undefined; currentScope = undefined; reader.clear(); clearGeneratedReference();
     element('reference').value = ''; resolution.className = ''; resolution.textContent = '';
     const attached = prepared ? savedSessions.attach(prepared) : Promise.resolve();
@@ -134,6 +154,15 @@ async function receive(source, expectedKey, documentPath) {
     const lineage = document.createElement('small');
     lineage.textContent = `Lineage ${pkg.manifest.namespace} · ${pkg.manifest.current.kind} ${pkg.manifest.current.id}`;
     detail.append(name, metadata, lineage);
+    // The status region is transient: the first document's name replaces it.
+    // A synthesized lineage must stay labelled for as long as it is displayed.
+    if (loose) {
+      const note = document.createElement('small');
+      note.className = 'loose-note';
+      note.textContent = 'Opened as a loose Markdown file. This lineage is synthesized on this device; it is not a packaged .mdpkg.' +
+        (strippedBom ? ' A leading byte order mark was removed.' : '');
+      detail.append(note);
+    }
     detail.hidden = false;
     const findings = element('conformance');
     findings.hidden = !pkg.issues.length;
@@ -146,7 +175,8 @@ async function receive(source, expectedKey, documentPath) {
     documents.setDocuments(pkg.documents);
     element('browser').hidden = false;
     element('reference-form').hidden = false;
-    report(pkg.tier === 'recoverable' ? 'Package recovered. See the conformance findings below.' : 'Package opened.');
+    report(pkg.tier === 'recoverable' ? 'Package recovered. See the conformance findings below.' :
+      loose ? `Opened ${pkg.name} as a loose Markdown file.` : 'Package opened.');
     await attached;
     // A later failed picker/open keeps this successfully installed package.
     // A successful replacement or explicit navigation owns the reader instead.

@@ -25,6 +25,7 @@ main { max-width: 1480px; margin: auto; padding: 1.2rem; }
 .error { color: #9c2531; }
 #package-details { display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; padding: 1rem; background: white; border: 1px solid #dbe1e8; border-radius: 7px; overflow-wrap: anywhere; }
 #package-details small { width: 100%; color: #5c6976; }
+#package-details .loose-note { color: #7a4a00; }
 #conformance { background: #fff4d8; border: 1px solid #e1c584; border-radius: 6px; padding: .75rem 1rem; margin-top: .8rem; overflow-wrap: anywhere; }
 summary { cursor: pointer; }
 #reference-form { margin: 1.2rem 0; }
@@ -99,6 +100,7 @@ article.selected-section { box-shadow: none; }
 .review-thread > button { max-width: 100%; overflow-wrap: anywhere; text-align: left; }
 .review-comment { border-top: 1px solid #dde3e9; margin-top: 1rem; padding-top: .5rem; }
 .review-comment > p:first-child, .review-memory { color: #526172; font-size: .9rem; }
+.review-loose { color: #7a4a00; background: #fff6e5; border: 1px solid #f0d9a8; border-radius: 4px; padding: .5rem .6rem; font-size: .9rem; }
 .review-body { white-space: pre-wrap; overflow-wrap: anywhere; }
 button:disabled { opacity: .6; cursor: default; }
 .selection-toolbar { display: flex; align-items: center; gap: .25rem; flex-wrap: wrap; padding: .35rem; border: 1px solid #adc1d3; border-radius: .65rem; background: #fff; box-shadow: 0 3px 16px #172b3f33; }
