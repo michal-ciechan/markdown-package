@@ -33,6 +33,18 @@ full four-byte ZIP signatures (`PK\x03\x04`, `PK\x05\x06`, `PK\x07\x08`).
 A truncated `.mdpkg` still begins `PK\x03\x04` and still reports a container
 error. Four regression cases were added to `tests/loose.spec.js`.
 
+**Review 6ad4a13a (task `44f45a6c`): one weak test repaired.** The defect-3
+regression case used the fixture `# PKCS #11 notes`, whose first two bytes are
+`# ` - the *old* two-byte sniff already routed it to the loose path, so the
+case passed identically before and after the fix and guarded nothing. Its
+fixture is now a Setext heading (`PKCS#11 notes` over `=====`), so `P` and `K`
+really are the file's first two bytes, and a second minimal case opens a file
+that is literally `PK
+
+Not a container.
+`. Both fail against the old
+predicate (main.js at `1b6db9e`) and pass at HEAD.
+
 Scope: the *current* browser web-viewer and the generator CLI. The native
 shell's loose-`.md` handling is already decided (D3 and items I, L, M of
 `docs/plans/2026-09-18-native-viewer-shells.md`) and is not redesigned here.
