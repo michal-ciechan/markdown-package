@@ -466,7 +466,7 @@ or accept the limitation and document it.
 
 - ~~The synthesizer module is **not written**~~ — **written.**
   `src/web-viewer/src/inbound/loose.js`, with `tests/loose.test.mjs`
-  (11 Node cases) and `tests/loose.spec.js` (7 Chromium cases). §2.2 remains
+  (11 Node cases) and `tests/loose.spec.js` (12 Chromium cases). §2.2 remains
   the prototype the module was built from; the shipped module adds the BOM
   strip, a 64 MiB input cap matching the container reader's own entry limit,
   and a friendlier non-UTF-8 message.
