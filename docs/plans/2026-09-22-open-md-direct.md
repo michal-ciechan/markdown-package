@@ -6,6 +6,15 @@ below was taken by importing the shipped viewer modules from a throwaway
 script outside the repo; the prototype synthesizer in §2.2 exists only in
 that script.
 
+**Status (2026-09-22, CARD-0062 follow-on build, task `dd696119`): BUILT.**
+Both open decisions in §5 were taken by the user and are recorded as DECIDED
+below; §5.3 and §5.4 were taken with them. The "smallest first step" this note
+recommends is closed out: `src/web-viewer/src/inbound/loose.js` exists with
+Node unit tests (`tests/loose.test.mjs`), `receive()` routes on the ZIP
+signature, and the review-export caveat ships. The CLI is untouched, as this
+note recommends, and §4's amendments to the native plan still stand as
+described (they are that plan's to apply).
+
 Scope: the *current* browser web-viewer and the generator CLI. The native
 shell's loose-`.md` handling is already decided (D3 and items I, L, M of
 `docs/plans/2026-09-18-native-viewer-shells.md`) and is not redesigned here.
@@ -59,7 +68,8 @@ paths share; proving it in the browser lane is far cheaper than proving it
 behind an ~18-minute Tauri release build (item K), and it is the same artifact
 the watcher's identity gate (item L) later needs.
 
-**Smallest first step, in order:**
+**Smallest first step, in order** (all three DONE — see the status note at the
+top; the build is commits `8625827` and `69f63e0`):
 
 1. **`src/web-viewer/src/inbound/loose.js`** — `synthesizeLoose(bytes, name,
    {identity})` returning package bytes, plus `looseNamespace(identity)`.
@@ -74,6 +84,12 @@ the watcher's identity gate (item L) later needs.
 
 Step 1 is the deliverable that matters and is independently useful; steps 2
 and 3 are small and can follow in the same card.
+
+All three shipped in one card. Step 3 became `tests/loose.spec.js` (seven
+Chromium cases) plus a persistent `.loose-note` line in `#package-details`
+rather than a change to the header copy: the `#activity` status region is
+transient (the opened document's name replaces it immediately), so a
+synthesized lineage needs a label that stays on screen.
 
 ---
 
@@ -271,8 +287,8 @@ with the other.
 | 1 | No history | Nothing. **The viewer has no history or diff UI to leave empty** — confirmed by grep: the only `history` references under `src/web-viewer/src` are the manifest validator, `snapshot.js:28`, and an unrelated selection-toolbar variable. `at=` / commit / diff / hunk references return `unsupported / history-reader-required` (`address/resolve.js:46`) and print "Historical references are not available in this viewer yet" (`main.js:207`) — **identically for a packaged snapshot** | Not a gap |
 | 2 | No author or timestamp for the document | Nothing. The format carries no author/timestamp for current files in snapshot mode either; that metadata exists only in Git-mode commits. Review comment authorship comes from the user-entered name (`ui/author-name.js`), not from the package | Not a gap |
 | 3 | One document instead of many | A one-item sidebar. `main.js:154` picks the first `.md` as the initial document and finds it | Empty state, fine |
-| 4 | **Namespace has to be invented** | Determines whether closing and reopening the same file restores your position, drafts and comments: saved work is keyed by `packageKey` = `[mdpkg, namespace, current.kind, current.id, anchor, digest]` (`persistence/model.js:10-11`). Random-per-open means resume never works and `reopen()` always hits the `mismatch()` offer (`session.js:33-54, 160-161`). The browser **cannot** use the plan's path-derived default: it has no path, only `File.name`/`size`/`lastModified` | **PRODUCT DECISION** — §5.1 |
-| 5 | **A delta review exported against it is published** | `emitReview()` succeeds against a synthesized package (measured) and writes `review.of = {namespace: <synthetic>, current: {kind: snapshot, id: sha256-…}}`. That file can be sent to someone else, and §4's correlation key `(review.of.namespace, kind, id)` then names a package that exists nowhere and that nobody can obtain. Editing the file and exporting again produces a second delta claiming a second state in the same synthetic namespace | **PRODUCT DECISION** — §5.2 |
+| 4 | **Namespace has to be invented** | Determines whether closing and reopening the same file restores your position, drafts and comments: saved work is keyed by `packageKey` = `[mdpkg, namespace, current.kind, current.id, anchor, digest]` (`persistence/model.js:10-11`). Random-per-open means resume never works and `reopen()` always hits the `mismatch()` offer (`session.js:33-54, 160-161`). The browser **cannot** use the plan's path-derived default: it has no path, only `File.name`/`size`/`lastModified` | **DECIDED: name-derived** — §5.1 |
+| 5 | **A delta review exported against it is published** | `emitReview()` succeeds against a synthesized package (measured) and writes `review.of = {namespace: <synthetic>, current: {kind: snapshot, id: sha256-…}}`. That file can be sent to someone else, and §4's correlation key `(review.of.namespace, kind, id)` then names a package that exists nowhere and that nobody can obtain. Editing the file and exporting again produces a second delta claiming a second state in the same synthetic namespace | **DECIDED: allowed, with a caveat notice** — §5.2 |
 | 6 | CRLF is normalized before hashing | Nothing visible, but the snapshot is not a byte-faithful copy of the file on disk. `snapshotIdentity` rejects any `\r` (`snapshot.js:21`), so normalizing is mandatory, not optional; digests, quotes and selectors are over the LF text. `outline()` already LF-normalizes for display (`address/outline.js:6`), and the digest profile is literally `cm0312-source-lf-v1`, so this is consistent with the format rather than a compromise | State it; no decision |
 | 7 | A leading UTF-8 BOM suppresses the first heading | **Measured:** a file starting `EF BB BF` then `# T` yields **2 scopes (document + preamble) and no sections** — CommonMark treats U+FEFF as text, so the heading is not a heading. The file reads as one unstructured blob with no section references. `decode()` deliberately keeps the BOM ("it is source, per §6.1", `format.js:10`) | **Minor decision** — §5.3 |
 | 8 | Invalid UTF-8 | `The encoded data was not valid for encoding utf-8` — accurate but unfriendly for someone who dropped a Latin-1 file | Error message only |
@@ -315,7 +331,11 @@ Nothing in D2, D3, D4 or D5 changes.
 
 ---
 
-## 5. Decisions needed before the UI is wired
+## 5. Decisions needed before the UI is wired — all DECIDED
+
+Taken by the user on 2026-09-22 and implemented in the CARD-0062 follow-on
+build. Each subsection keeps its original analysis; the decision is stated at
+the end of it.
 
 Step 1 of the recommendation (the pure module) can be built before any of
 these, because `identity` is an argument. Steps 2 and 3 need 5.1 and 5.2.
@@ -347,6 +367,16 @@ the identity string, first 16 bytes, with the version and variant nibbles set
 so the result is a well-formed lowercase UUID (the viewer's own `UUID` regex,
 `format.js:6`, does not check them, but the spec says "UUID").
 
+**DECIDED (user, 2026-09-22): name-derived.** The collision is accepted for
+v1: two different files sharing a basename (two `README.md` from different
+folders) share saved annotation and review state, and the existing
+`mismatch()` offer remains the recovery path. Implemented as `looseNamespace`
+in `src/web-viewer/src/inbound/loose.js` — a UUIDv8 over
+`"mdpkg-loose-namespace-v1" NUL <identity>`, exactly the derivation described
+above. The *identity* itself is a required argument of `synthesizeLoose`, not
+derived inside the module (R11/W3): `main.js` passes `File.name`, and the
+native shell will pass an absolute path.
+
 ### 5.2 May a review be exported against a synthesized file?
 
 Measured: it works today with no extra code, and it publishes a `review.of`
@@ -368,6 +398,15 @@ checkpoint or published-continuity claim is made"), so re-synthesizing the
 same namespace with new snapshot ids is *not* a violation while it stays in
 memory. The question is only about the moment an export leaves the machine.
 
+**DECIDED (user, 2026-09-22): (a) allow it, with a caveat notice.** The review
+panel shows a standing notice for a loose file, and the prepare, download and
+share statuses each append it: "This document was opened as a loose Markdown
+file. An exported review references a synthesized snapshot that exists only on
+this device, not a packaged .mdpkg the recipient can obtain."
+(`LOOSE_EXPORT_CAVEAT`, `src/web-viewer/src/ui/review-view.js`.) The notice is
+scoped to the loose case only: a review exported against a real `.mdpkg` is
+completely unaffected, which `tests/loose.spec.js` asserts in both directions.
+
 ### 5.3 BOM: strip it, or keep it?
 
 Keeping it is spec-faithful (§6.1: the BOM is source) and produces a document
@@ -375,6 +414,13 @@ with no sections at all (measured). Stripping it makes the file read the way
 its author intended but means the synthesized snapshot no longer contains the
 file's bytes. Recommended: **strip, and say so in the status line**, since the
 alternative looks like the viewer is broken. Low stakes either way.
+
+**DECIDED: strip, and say so.** A leading U+FEFF is removed before hashing, so
+the first heading stays a heading; an interior U+FEFF is ordinary source and is
+kept. The notice lands in `#package-details` ("A leading byte order mark was
+removed."), not the `#activity` status line, because that line is overwritten
+by the opened document's name a moment later. Covered by `L3` in
+`tests/loose.test.mjs` and by the browser case in `tests/loose.spec.js`.
 
 ### 5.4 Which files count as "a loose document"?
 
@@ -388,13 +434,21 @@ or accept the limitation and document it.
 
 ## 6. Not done, noted
 
-- The synthesizer module is **not written**; §2.2 is a throwaway prototype in
-  a scratch directory outside the repo.
-- Not measured: behaviour in a real browser. Everything here ran under Node
-  24.6.0 against the same ES modules the browser loads. `CompressionStream`,
-  `crypto.subtle` and `Blob` are used identically in both, and `writer.js`
-  already has a STORE fallback when `deflate-raw` is unavailable
-  (`writer.js:41-48`), but a Playwright case is still wanted.
+- ~~The synthesizer module is **not written**~~ — **written.**
+  `src/web-viewer/src/inbound/loose.js`, with `tests/loose.test.mjs`
+  (11 Node cases) and `tests/loose.spec.js` (7 Chromium cases). §2.2 remains
+  the prototype the module was built from; the shipped module adds the BOM
+  strip, a 64 MiB input cap matching the container reader's own entry limit,
+  and a friendlier non-UTF-8 message.
+- ~~Not measured: behaviour in a real browser~~ — **measured.** The picker,
+  drag-drop and Ctrl+V routes, CRLF, BOM, non-UTF-8, a truncated `.mdpkg`,
+  recents metadata and the review export all run in Chromium under
+  `tests/loose.spec.js`, and manually in Chrome.
+- §5.4 was implemented as recommended: **any UTF-8 text that is not a ZIP** is
+  accepted, so drag-drop is predictable. The `preview-type` limitation for a
+  non-`.md` name (§3, row 11) stands unchanged and is still worth fixing.
+- §3, row 12's size cap is implemented as `MAX_LOOSE_BYTES` (64 MiB, matching
+  `reader.js`'s `maxEntryBytes`), refused before decoding rather than after.
 - Not investigated: whether the CLI should grow a `pack` shorthand that
   accepts a single file rather than a directory. It would make the manual
   workaround in §1.2 one command instead of three, and it is unrelated to the

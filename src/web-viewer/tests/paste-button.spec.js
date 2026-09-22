@@ -125,8 +125,11 @@ test('a file representation from read() opens through the ordinary package route
   await expect(page.locator('#saved-sessions')).toContainText('Pasted package');
 });
 
+// CARD-0062: plain text that is not a ZIP now opens as a loose Markdown
+// document (tests/loose.spec.js), so this case needs bytes that are neither a
+// package nor a loose document. Invalid UTF-8 is both.
 test('a file representation that is not a package fails like a broken file', async ({page}) => {
-  await stubRead(page, {items: [{types: ['application/octet-stream'], bytes: [...Buffer.from('not a zip')]}]});
+  await stubRead(page, {items: [{types: ['application/octet-stream'], bytes: [0x23, 0x20, 0xff, 0xfe, 0x0a]}]});
   await page.goto('/');
   await button(page).click();
   await expect(activity(page)).toContainText('Could not open package');

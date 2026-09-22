@@ -100,10 +100,12 @@ test('Cancel cannot be resurrected by a pending debounce or reload', async ({pag
   await expect(page.locator('.review-editor')).toBeHidden();
 });
 
+// CARD-0062: the candidate must fail BOTH routes. Plain text that is not a ZIP
+// is now opened as a loose Markdown document; invalid UTF-8 is not.
 test('invalid candidate preserves editor, recents and current package', async ({page}) => {
   await open(page); await edit(page, 'Keep this work'); await saved(page);
   const before = await rows(page, 'packages');
-  await page.locator('#package-file').setInputFiles(file(Buffer.from('not a zip'), 'broken.mdpkg'));
+  await page.locator('#package-file').setInputFiles(file(Buffer.from([0x23, 0x20, 0xff, 0xfe, 0x0a]), 'broken.mdpkg'));
   await expect(page.locator('#activity')).toContainText('Could not open package');
   await expect(page.getByLabel('Feedback', {exact: true})).toHaveValue('Keep this work');
   expect(await rows(page, 'packages')).toEqual(before);
