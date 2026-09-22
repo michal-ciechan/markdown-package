@@ -1,4 +1,5 @@
 import {test, expect} from '@playwright/test';
+import {fillAuthor} from './author-name-helper.js';
 import fs from 'node:fs/promises';
 import {openPackage} from '../src/inbound/open.js';
 import {looseNamespace, MAX_LOOSE_BYTES} from '../src/inbound/loose.js';
@@ -154,7 +155,7 @@ test('deleting saved work keeps the loose export caveat on the still-open packag
   await expect(page.locator('.document-title')).toHaveText('notes.md');
   await expect(page.locator('.review-loose')).toBeVisible();
   await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
-  await page.getByLabel('Your name').fill('Loose Reviewer');
+  await fillAuthor(page, 'Loose Reviewer');
   await page.getByLabel('Feedback', {exact: true}).fill('Work that will be deleted.');
   await page.getByRole('button', {name: 'Save comment', exact: true}).click();
   await expect(page.locator('.local-save-status')).toHaveText('Saved in this browser');
@@ -169,7 +170,7 @@ test('deleting saved work keeps the loose export caveat on the still-open packag
   await expect(page.locator('.review-loose')).toContainText('synthesized snapshot that exists only on this device');
   await expect(page.locator('#package-details .loose-note')).toContainText('synthesized on this device');
   await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
-  await page.getByLabel('Your name').fill('Loose Reviewer');
+  await fillAuthor(page, 'Loose Reviewer');
   await page.getByLabel('Feedback', {exact: true}).fill('Feedback written after the delete.');
   await page.getByRole('button', {name: 'Save comment', exact: true}).click();
   await page.getByRole('button', {name: 'Prepare review file', exact: true}).click();
@@ -182,7 +183,7 @@ test('discarding unrestorable saved work keeps the loose export caveat', async (
   await page.locator('#package-file').setInputFiles(loose());
   await expect(page.locator('.document-title')).toHaveText('notes.md');
   await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
-  await page.getByLabel('Your name').fill('Loose Reviewer');
+  await fillAuthor(page, 'Loose Reviewer');
   await page.getByLabel('Feedback', {exact: true}).fill('Draft that will not restore.');
   await expect(page.locator('.local-save-status')).toHaveText('Saved in this browser');
   // Force the recovery branch: an unsupported draft version cannot be decoded.
@@ -208,7 +209,7 @@ test('discarding unrestorable saved work keeps the loose export caveat', async (
   await expect(page.locator('.review-loose')).toBeVisible();
   await expect(page.locator('.review-loose')).toContainText('synthesized snapshot that exists only on this device');
   await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
-  await page.getByLabel('Your name').fill('Loose Reviewer');
+  await fillAuthor(page, 'Loose Reviewer');
   await page.getByLabel('Feedback', {exact: true}).fill('Feedback written after the discard.');
   await page.getByRole('button', {name: 'Save comment', exact: true}).click();
   await page.getByRole('button', {name: 'Prepare review file', exact: true}).click();

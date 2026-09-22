@@ -15,6 +15,24 @@ signature, and the review-export caveat ships. The CLI is untouched, as this
 note recommends, and §4's amendments to the native plan still stand as
 described (they are that plan's to apply).
 
+**Review 30af66b7 (task `eb6d82e2`): three defects found and fixed.**
+(1) The loose flag reached the review panel as a defaulted `setPackage(value,
+loose = false)` argument, so the two `persistence/session.js` call sites that
+re-run `reviews.setPackage(getPackage())` — "Delete saved work" and the
+recovery discard — silently cleared it, and the export caveat disappeared
+while the same synthesized package was still open and still exportable.
+Looseness now lives in a `WeakSet` keyed on the opened package object
+(`markLoose`, `ui/review-view.js`), so every call site preserves it, including
+ones written later. (2) `packageBytesFor()` buffered the whole blob with
+`arrayBuffer()` before `synthesizeLoose` could reject it, contradicting the
+claim in §6 that the cap refuses before decoding; it now refuses on
+`blob.size` first and reads nothing. (3) The routing sniff matched only the
+two bytes `PK`, so a Markdown file opening with the word PKCS or PKI was sent
+to `openPackage` and failed with a container error; it now matches the three
+full four-byte ZIP signatures (`PK\x03\x04`, `PK\x05\x06`, `PK\x07\x08`).
+A truncated `.mdpkg` still begins `PK\x03\x04` and still reports a container
+error. Four regression cases were added to `tests/loose.spec.js`.
+
 Scope: the *current* browser web-viewer and the generator CLI. The native
 shell's loose-`.md` handling is already decided (D3 and items I, L, M of
 `docs/plans/2026-09-18-native-viewer-shells.md`) and is not redesigned here.
@@ -448,7 +466,9 @@ or accept the limitation and document it.
   accepted, so drag-drop is predictable. The `preview-type` limitation for a
   non-`.md` name (§3, row 11) stands unchanged and is still worth fixing.
 - §3, row 12's size cap is implemented as `MAX_LOOSE_BYTES` (64 MiB, matching
-  `reader.js`'s `maxEntryBytes`), refused before decoding rather than after.
+  `reader.js`'s `maxEntryBytes`). It is checked twice: `main.js` refuses on the
+  blob's declared size before reading any of it, and `synthesizeLoose` refuses
+  on the byte length it is handed, so the module keeps the bound on its own.
 - Not investigated: whether the CLI should grow a `pack` shorthand that
   accepts a single file rather than a directory. It would make the manual
   workaround in §1.2 one command instead of three, and it is unrelated to the
