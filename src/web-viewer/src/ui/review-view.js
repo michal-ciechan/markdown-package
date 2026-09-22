@@ -55,9 +55,18 @@ export function reviewView(host, getContext, onNavigate) {
     action('download').hidden = action('share').hidden = true;
   }
   function closeEditor() { composing = undefined; form.hidden = true; body.value = ''; }
+  // Engines disagree on what focus() reveals: Chromium centres the field,
+  // Firefox reveals its nearest edge, WebKit reveals only the caret line and
+  // does so asynchronously. Reveal the editor explicitly once it is placed.
+  function reveal() {
+    body.focus({preventScroll: true});
+    // A form taller than the viewport cannot fit; show its end (feedback and Save) rather than its header.
+    form.scrollIntoView({block: form.getBoundingClientRect().height > innerHeight ? 'end' : 'nearest', inline: 'nearest'});
+    body.scrollIntoView({block: 'nearest', inline: 'nearest'});
+  }
   function edit(target, fields, focus = true) {
     if (deferredDraft) { status('Resume or cancel your saved draft before starting another comment.', true); return; }
-    if (composing) { presentation('edit'); body.focus(); status('Save or cancel your current comment first.', true); return; }
+    if (composing) { presentation('edit'); reveal(); status('Save or cancel your current comment first.', true); return; }
     composing = target;
     form.hidden = false;
     name.show(fields?.author);
@@ -65,7 +74,7 @@ export function reviewView(host, getContext, onNavigate) {
     targetLabel.textContent = target.thread ? 'Reply to this thread' :
       `${target.model.path} · ${target.anchor.scope.title.replace(/\n/g, ' ')} · Exact source quote`;
     targetQuote.textContent = target.thread?.select.quote ?? target.anchor.select.quote;
-    if (focus) { revision++; prepared = artifact = undefined; action('download').hidden = action('share').hidden = true; notify('edit'); body.focus(); }
+    if (focus) { revision++; prepared = artifact = undefined; action('download').hidden = action('share').hidden = true; notify('edit'); reveal(); }
     else presentation('restore');
   }
   function draw() {

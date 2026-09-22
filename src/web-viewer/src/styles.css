@@ -90,7 +90,8 @@ article.selected-section { box-shadow: none; }
 /* Review capture sits alongside the existing reader and remains usable on phones. */
 .review-panel { margin-top: 2rem; border-top: 2px solid #ccd5df; padding-top: 1rem; }
 .review-actions { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1rem 0; }
-.review-editor { padding: 1rem; background: #f0f5fa; border-radius: .4rem; }
+.review-editor { padding: 1rem; background: #f0f5fa; border-radius: .4rem; scroll-margin: .5rem; }
+.review-editor textarea { scroll-margin: .5rem; }
 .review-editor label { display: block; margin: .8rem 0; }
 .review-editor input, .review-editor textarea, .review-editor select { display: block; width: 100%; box-sizing: border-box; padding: .6rem; }
 .review-author { display: block; max-width: 100%; margin: .4rem 0; padding: .15rem .3rem; border-color: transparent; background: transparent; font-size: .85rem; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
