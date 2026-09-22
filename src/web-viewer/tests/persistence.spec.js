@@ -31,11 +31,21 @@ async function edit(page, body = 'Draft 😀 café\n  with whitespace  ') {
   await page.getByLabel('Feedback', {exact: true}).fill(body);
 }
 async function saved(page) { await expect(page.locator('.local-save-status')).toHaveText('Saved in this browser'); }
+// Reloading and reattaching is the heaviest wait in this file: the new page
+// reads IndexedDB to offer the resume, then reads it again to restore the saved
+// review and draft around opening the container. Measured over 40 WebKit runs
+// that is 146ms to the offer (p90 160ms) and 262ms to the document (p90 298ms),
+// but WebKit's IndexedDB occasionally stalls the whole page for seconds at a
+// time, which reddened this file about one WebKit run in thirty at 5s. The
+// stall is in the engine, not in the viewer -- it lands on whichever of these
+// two waits it overlaps -- so only these two carry the longer budget. The 30s
+// test timeout still bounds an attach that never completes.
+const RELOAD_ATTACH_TIMEOUT = 12000;
 async function reloadAttach(page, input = file()) {
   await page.reload();
-  await expect(page.getByRole('button', {name: 'Choose file again', exact: true})).toBeVisible();
+  await expect(page.getByRole('button', {name: 'Choose file again', exact: true})).toBeVisible({timeout: RELOAD_ATTACH_TIMEOUT});
   await page.locator('#package-file').setInputFiles(input);
-  await expect(page.locator('.document-title')).not.toBeEmpty();
+  await expect(page.locator('.document-title')).not.toBeEmpty({timeout: RELOAD_ATTACH_TIMEOUT});
 }
 
 test('file-only reload restores exact unfinished input; same snapshot renamed deduplicates', async ({page}) => {
