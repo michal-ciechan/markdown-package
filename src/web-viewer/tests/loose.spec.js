@@ -239,12 +239,29 @@ test('an oversized non-ZIP file is refused on its declared size, without being r
   expect(readWhole).toBe(false);
 });
 
-// Review 30af66b7, defect 3: a two-byte "PK" test routed this to openPackage,
-// which failed it with a container error instead of rendering it.
+// Review 30af66b7, defect 3: the sniff matched only the two bytes "PK", so a
+// Markdown file beginning with them went to openPackage and failed with a
+// container error instead of rendering. Review 6ad4a13a: the first fixture here
+// began "# PKCS", whose first two bytes are "# " - the old predicate already
+// sent it down the loose path, so the case passed either way and guarded
+// nothing. A Setext heading puts P and K in the file's first two bytes.
 test('a Markdown file whose text starts with PK opens as a loose document', async ({page}) => {
   await page.goto('/');
-  await page.locator('#package-file').setInputFiles(loose('pkcs.md', '# PKCS #11 notes\n\nPKI prose.\n\n## Second section\n\nMore prose.\n'));
+  await page.locator('#package-file').setInputFiles(loose('pkcs.md', 'PKCS#11 notes\n=============\n\nPKI prose.\n\n## Second section\n\nMore prose.\n'));
   await expect(page.locator('.document-title')).toHaveText('pkcs.md');
-  await expect(page.locator('.markdown h1')).toHaveText('PKCS #11 notes');
+  await expect(page.locator('.markdown h1')).toHaveText('PKCS#11 notes');
+  await expect(page.locator('.markdown h2')).toHaveText('Second section');
   await expect(page.locator('#package-details .loose-note')).toContainText('synthesized on this device');
+});
+
+// The narrowest form of the same guard: the two signature bytes and nothing a
+// ZIP local file header, end of central directory or spanning marker could
+// follow them with.
+test('a file that begins with a bare PK line opens as loose, not as a container', async ({page}) => {
+  await page.goto('/');
+  await page.locator('#package-file').setInputFiles(loose('pk.md', 'PK\n\nNot a container.\n'));
+  await expect(page.locator('.document-title')).toHaveText('pk.md');
+  await expect(page.locator('article.markdown')).toContainText('Not a container.');
+  await expect(page.locator('#package-details .loose-note')).toContainText('synthesized on this device');
+  await expect(page.locator('#activity')).not.toContainText('Could not open');
 });
