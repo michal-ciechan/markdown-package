@@ -148,6 +148,13 @@ Same trace with fix A alone: `grp.top=6571.99px` before `focus()`, textarea at
 - **D-9 The Reply path and the saved-draft restore are out of scope for the
   test.** Reply goes through the same `reveal()` and is covered by the existing
   reply tests staying green; restore deliberately does not move the viewport (G10).
+  - **Corrected by review `cd3fa23d` (task `710f335f`).** The Reply half was
+    wrong: the existing reply tests in `inline-comments.spec.js`,
+    `persistence.spec.js`, `review.spec.js` and `username.spec.js` assert
+    visibility, field values and comment counts only — never viewport bounds — so
+    the third trigger had no guard at all. It is red in all three engines at
+    `ea0cb00`. A Reply case is now part of the spec; see the Status addendum. The
+    restore half stands: G10 is unchanged and restore is still out of scope.
 
 ## 5. Slices
 
@@ -352,3 +359,55 @@ No pre-existing red was encountered, so no base re-run was needed. The residual
 risks in §8 stand unchanged: the iOS visual-viewport case is still unmeasured,
 and Chromium no longer centres the textarea on the toolbar path (intentional,
 D-3).
+
+### Status addendum — Reply coverage (task `710f335f`, review `cd3fa23d`)
+
+D-9's claim that the existing reply tests covered the Reply trigger was wrong;
+see the correction under D-9. One case, `d244424`, brings the spec to **8 cases
+per engine, 24 in total**. No `playwright.config.js` change was needed — the file
+is already registered for all three engines.
+
+**The case.** `the composer opens inside the viewport from a fold Reply`, at
+1280×720 only: compose and save a comment on the same long fixture the other
+cases use, scroll to `document.documentElement.scrollHeight`, click **Reply**,
+assert the target label reads `Reply to this thread`, then reuse
+`expectComposerRevealed`. Saving writes the snapshot to IndexedDB, so the case
+deletes `mdpkg-viewer:snapshot-draft2:/` and its `:resume` key in a `finally`
+block (the `persistence.spec.js:523` pattern) rather than leaving state for a
+following test.
+
+**RED against a local revert of the §6 fix** (`git checkout ea0cb00 --
+src/ui/inline-comments.js src/ui/review-view.js src/styles.css`, rebuilt;
+restored immediately after): **3 failed of 3**, one per engine, all on the
+Feedback textarea.
+
+| Engine | Failing rect (viewport 1280×720) |
+| --- | --- |
+| chromium | textarea 1376.7–1497.1 |
+| firefox | textarea 1337.0–1457.4 |
+| webkit | textarea 686.0–806.4 |
+
+**GREEN at `d244424`:** the case passes in all three engines (3 passed, 26.9 s);
+the full spec is **24 passed, 0 failed, 51.2 s**.
+
+**Lane at `d244424`** (`dist/` rebuilt from committed source first):
+
+| ID | Result |
+| --- | --- |
+| V-1 `node --test tests/*.test.mjs` | **216 passed, 0 failed**, 26.2 s |
+| V-2 `node build.mjs` | gates passed; **96,715 / 145,000** eager gzip bytes, unchanged (test-only commit) |
+| V-5 | 24/24 green above |
+| V-6 | subsumed by V-7 at this commit |
+| V-7 `npx playwright test --project=…` | **chromium 151 passed** (4.6 min), **firefox 61 passed** (3.0 min), **webkit 61 passed** (3.2 min) — **273 passed**, baseline 270 plus the three new cases |
+| V-8 | worktree clean; the reverted files restored and re-verified |
+
+**One unreproduced WebKit flake.** The first full WebKit lane run reported
+`persistence.spec.js:132 changed text under the same declared identity preserves
+feedback for recovery` failed (60 passed / 1 failed). It did not reproduce: that
+test passes alone (5.5 s), the whole WebKit lane then passed 61/61, the
+viewport+persistence pair passed 41/41, and the new Reply case interleaved with
+that specific test passed 8/8 under `--repeat-each=4`. Same configuration, both
+outcomes, so it is non-deterministic rather than a consequence of the new case —
+and the IndexedDB-leak hypothesis the review raised is not supported by the
+repeat run. Left on record for whoever sees it next; no assertion or timeout was
+touched.
