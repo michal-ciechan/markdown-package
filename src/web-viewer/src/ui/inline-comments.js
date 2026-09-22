@@ -37,8 +37,11 @@ export function inlineComments(host, reader, reviews) {
       g.spacer.style.height = (g.node.hidden ? 0 : g.node.getBoundingClientRect().height / scale) + 'px';
     }
     for (const g of groups) {
-      const rect = g.spacer.getBoundingClientRect();
-      g.node.style.left = (rect.left - root.left) / scale + 'px'; g.node.style.top = (rect.top - root.top) / scale + 'px';
+      // Measure host and spacer from the same layout. Resizing the spacers above
+      // lets scroll anchoring move the viewport, which would leave a host rect
+      // taken earlier measured against the old scroll position.
+      const origin = host.getBoundingClientRect(), rect = g.spacer.getBoundingClientRect();
+      g.node.style.left = (rect.left - origin.left) / scale + 'px'; g.node.style.top = (rect.top - origin.top) / scale + 'px';
     }
   }
   function paint(linked = []) {
