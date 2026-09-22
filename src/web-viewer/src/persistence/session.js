@@ -210,13 +210,24 @@ export async function persistence({host, reviews, reader, article, receive, navi
       ui.exported(reviews.snapshot().dirty); ui.clearOffer();
       if (session.pendingDraft && !session.locked) ui.offer(`Your saved draft belongs to ${session.pendingDraft.path}.`,
         `Resume draft in ${session.pendingDraft.path}`, () => navigate(session.pendingDraft.path));
-      if (store) try {
-        session.record = await store.openPackage(session.key, session.metadata);
-        if (session.source.handle) try { await store.saveHandle(session.key, session.source.handle); }
-        catch { ui.offer('This browser could not remember file access. Saved work can still resume after choosing the file again.'); }
-        await store.prune();
-      } catch (error) { failure(error); }
-      await refresh();
+      // Only the package record is on the critical path: every later save needs
+      // it, and the caller renders the document once attaching resolves. Saving
+      // the handle, pruning and relisting the recents are storage maintenance
+      // the reader does not depend on, so they continue in the background;
+      // awaiting them put three more IndexedDB round trips between the file and
+      // the first rendered document, and WebKit is occasionally seconds over
+      // those, leaving the reader blank past a 5s budget (CARD-0064 follow-up).
+      if (!store) return; // refresh() is a no-op without a store.
+      try { session.record = await store.openPackage(session.key, session.metadata); }
+      catch (error) { failure(error); void refresh(); return; }
+      void (async () => {
+        try {
+          if (session.source.handle) try { await store.saveHandle(session.key, session.source.handle); }
+          catch { ui.offer('This browser could not remember file access. Saved work can still resume after choosing the file again.'); }
+          await store.prune();
+        } catch (error) { failure(error); }
+        await refresh();
+      })();
     },
     async navigated(model, restore = false) {
       const session = active, generation = ++intent;

@@ -139,6 +139,41 @@ test('changed text under the same declared identity preserves feedback for recov
   expect((await rows(page, 'drafts')).filter(d => !d.tombstone)).toHaveLength(1);
 });
 
+test('storage housekeeping never delays the restored document or its saved draft', async ({page}) => {
+  await open(page); await edit(page, 'Housekeeping must not gate the reader'); await saved(page);
+  await page.reload();
+  await expect(page.getByRole('button', {name: 'Choose file again', exact: true})).toBeVisible();
+  // Withhold completion of the pruning write. Pruning is storage maintenance;
+  // nothing the reader shows depends on it, so attaching must not wait for it.
+  // It used to, and WebKit occasionally spends seconds on these extra attach
+  // transactions, leaving .document-title empty past the 5s expect budget
+  // (~1 reload-attach in 30 on the WebKit lane, CARD-0064 follow-up).
+  await page.evaluate(() => {
+    const transaction = IDBDatabase.prototype.transaction;
+    IDBDatabase.prototype.transaction = function(names, mode, ...args) {
+      const tx = transaction.call(this, names, mode, ...args);
+      if (mode === 'readwrite' && [...tx.objectStoreNames].includes('handles') && !window.prunePaused) {
+        window.prunePaused = true;
+        Object.defineProperty(tx, 'oncomplete', {set(callback) {
+          tx.addEventListener('complete', event => { window.releasePrune = () => callback.call(tx, event); });
+        }});
+      }
+      return tx;
+    };
+  });
+  await page.locator('#package-file').setInputFiles(file());
+  await expect.poll(() => page.evaluate(() => typeof window.releasePrune)).toBe('function');
+  await expect(page.locator('.document-title')).toHaveText('guide.md');
+  await expect(page.getByLabel('Feedback', {exact: true})).toHaveValue('Housekeeping must not gate the reader');
+  // Saving still works while that write is outstanding: attach keeps the package
+  // record every later save needs, and only defers the maintenance around it.
+  expect(await page.evaluate(() => typeof window.releasePrune)).toBe('function');
+  await page.getByLabel('Feedback', {exact: true}).fill('Saved while housekeeping is outstanding'); await saved(page);
+  expect((await rows(page, 'drafts')).find(d => !d.tombstone).body).toBe('Saved while housekeeping is outstanding');
+  await page.evaluate(() => window.releasePrune());
+  await expect.poll(async () => (await rows(page, 'packages')).filter(p => !p.removed)).toHaveLength(1);
+});
+
 test('two tabs preserve conflicting text and deletion defeats stale writers', async ({page, context}) => {
   await open(page); await edit(page, 'Shared checkpoint'); await saved(page);
   const other = await context.newPage(); await open(other);
