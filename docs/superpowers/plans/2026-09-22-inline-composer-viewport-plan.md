@@ -296,6 +296,59 @@ Do not edit source while a lane is running. Commit before V-6 and V-7.
 
 ### Status
 
-Plan stage complete (this commit). RED evidence and root cause are recorded above
-from probe runs in this session; the committed regression spec, the fix and the
-lane counts belong to the Code stage, which should append its results here.
+Plan stage complete (`385995f`). Code stage complete (task `01957a2e`, master,
+`C:\src\markdown-package`): S1 `ea0cb00`, S2 `9c34b6d`, S3 `011277b`, S5 this
+commit. The fix shipped is exactly the §6 diff; no decision was revised.
+
+**Spec as committed.** `tests/inline-composer-viewport.spec.js` builds 3 viewports
+× 2 triggers plus one real mouse-drag case = **7 cases per engine, 21 in total**
+(the §7.1 probe's 27 counted a third selection method at every viewport; the drag
+case is kept once, at 1280×720, because the prototype showed both selection
+methods behave identically). Registered in both the firefox and the webkit
+`testMatch` arrays (D-5/G7).
+
+**RED at `ea0cb00`** (= base `385995f` + spec only), `npx playwright test
+inline-composer-viewport.spec.js`: **15 failed, 6 passed, 1.1 min.** Red were all
+9 panel-button cases (3 engines × 3 viewports), all 7 WebKit cases, and Firefox's
+toolbar and drag cases at 1280×720. Measured rects, viewport-relative:
+
+| Case | Failing rect |
+| --- | --- |
+| chromium, panel, 1280×720 | textarea 925.6–1046.0 |
+| chromium, panel, 390×844 | textarea 1012.3–1132.6 |
+| chromium, panel, 1280×400 | textarea 765.6–886.0 |
+| firefox, panel, 1280×720 | textarea 886.7–1007.1 |
+| firefox, toolbar / drag, 1280×720 | form −21.8–513.8 (nearest-edge reveal leaves the header above the fold) |
+| webkit, toolbar / drag, 1280×720 | textarea 685.7–806.1 (34 px visible) |
+| webkit, panel, 1280×720 | textarea −12.3–108.1 |
+| webkit, toolbar, 390×844 | textarea 809.7–930.0 |
+
+The two Firefox toolbar/drag failures are new relative to §3: the probe asserted
+the textarea, the committed spec also asserts the whole form where it fits (D-7),
+and Firefox's nearest-edge `focus()` reveal fails that stricter check.
+
+**After S2 (fix A alone), `9c34b6d`:** **10 failed, 11 passed.** Every Chromium
+panel case green, Firefox panel green at 390×844 and 1280×400; the remaining
+Firefox failures are whole-form-only (form top −21.8/−22.1), every WebKit case
+still red. Fix A is therefore the Chromium/Firefox cause and nothing else, as §1
+claims.
+
+**After S3 (fix B), `011277b`: 21/21 passed, 39.9 s, all three engines.**
+
+**Lane at `011277b`** (`dist/` rebuilt from committed source before every run):
+
+| ID | Result |
+| --- | --- |
+| V-1 `node --test tests/*.test.mjs` | **216 passed, 0 failed**, 16.4 s |
+| V-2 `node build.mjs` | build's own V-1/V-2 gates passed; **96,715 / 145,000** eager gzip bytes — the §6 prediction exactly (96,665 at base, 96,670 after fix A) |
+| V-3 | RED above |
+| V-4 | fix-A run above |
+| V-5 | 21/21 green above |
+| V-6 | subsumed by V-7: the six named specs ran in all three projects at this same commit, all green |
+| V-7 `npx playwright test --project=…` | **chromium 150 passed** (2.6 min), **firefox 60 passed** (2.4 min), **webkit 60 passed** (3.2 min) — **270 passed, 0 failed, 0 flaky**. Baseline was 249 (143/53/53); the delta is exactly the new spec's 7 cases per engine |
+| V-8 | `git status` clean apart from the intended files; no probe artefacts |
+
+No pre-existing red was encountered, so no base re-run was needed. The residual
+risks in §8 stand unchanged: the iOS visual-viewport case is still unmeasured,
+and Chromium no longer centres the textarea on the toolbar path (intentional,
+D-3).
