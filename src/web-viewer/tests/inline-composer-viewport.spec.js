@@ -6,6 +6,7 @@
 // toBeVisible() does not check the viewport, so every assertion here is a rect
 // bounds check, and the failure message carries the measured rect.
 import {test, expect} from '@playwright/test';
+import {fillAuthor} from './author-name-helper.js';
 
 const PHRASE = 'deep target words';
 const SECTIONS = 40, TARGET_SECTION = 30;
@@ -67,6 +68,19 @@ async function dragPhrase(page) {
   await page.mouse.up();
   expect(await page.evaluate(() => getSelection().toString().trim().length), 'mouse drag selected nothing').toBeGreaterThan(0);
 }
+
+// Only the Reply case saves a comment, which writes the snapshot to IndexedDB.
+// WebKit can carry that database into the next test in the file, where it would
+// surface as a resume offer over a supposedly fresh document, so this case clears
+// it again (the persistence.spec.js pattern) rather than leaving state behind.
+const DATABASE = 'mdpkg-viewer:snapshot-draft2:/';
+const clearSavedWork = page => page.evaluate(async name => {
+  await new Promise(resolve => {
+    const request = indexedDB.deleteDatabase(name);
+    request.onsuccess = request.onerror = request.onblocked = resolve;
+  });
+  sessionStorage.removeItem(name + ':resume');
+}, DATABASE);
 
 const openViaToolbar = page => page.getByRole('toolbar', {name: 'Text selection'})
   .getByRole('button', {name: 'Leave comment'}).click();
@@ -131,4 +145,34 @@ test('the composer opens inside the viewport after a real mouse drag selection',
   await dragPhrase(page);
   await openViaToolbar(page);
   await expectComposerRevealed(page, viewport);
+});
+
+// The fold Reply trigger reaches the same edit() and reveal() as the other two
+// (plan G2; review-view.js draw() wires it to edit({thread, inReplyTo})), and it
+// meets both causes: the saved fold makes the document taller, and the reply
+// composer is placed while the viewport sits below the insertion point. Plan D-9
+// assumed the existing reply tests covered this, but those assert visibility,
+// values and counts only -- never viewport bounds -- so nothing guarded it.
+test('the composer opens inside the viewport from a fold Reply', async ({page}) => {
+  const viewport = VIEWPORTS[0];
+  await openLong(page, viewport);
+  try {
+    await selectPhrase(page);
+    await page.getByRole('button', {name: 'Review selected text', exact: true}).click();
+    await expect(page.locator('.inline-group .review-editor')).toBeVisible();
+    await fillAuthor(page, 'Reviewer');
+    await page.getByLabel('Feedback', {exact: true}).fill('Parent comment the reply answers');
+    await page.getByRole('button', {name: 'Save comment', exact: true}).click();
+    await expect(page.locator('.review-editor')).toBeHidden();
+    await expect(page.locator('.local-save-status')).toHaveText('Saved in this browser');
+    await page.evaluate(() => getSelection().removeAllRanges());
+    // The same precondition as the panel path: the viewport is below the
+    // insertion point at the moment the composer is placed and revealed.
+    await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+    await page.getByRole('button', {name: 'Reply', exact: true}).click();
+    await expect(page.locator('.review-editor .review-target')).toContainText('Reply to this thread');
+    await expectComposerRevealed(page, viewport);
+  } finally {
+    await clearSavedWork(page);
+  }
 });
