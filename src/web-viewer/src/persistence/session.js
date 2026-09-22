@@ -8,6 +8,7 @@ import {decodeLocator} from '../address/reference.js';
 export async function persistence({host, reviews, reader, article, receive, navigate, getModel, getPackage, fileInput, enhanced, standardLabel}) {
   let store, active, pendingPick, pendingPosition, workQueue = Promise.resolve(), positionQueue = Promise.resolve();
   let dirty = false, failed = false, restoring = false, intent = 0, frame, recovery = [], workSequence = 0;
+  let relistSequence = 0;
   const tabKey = databaseName(location.href) + ':resume';
   const tabRead = () => { try { const p = JSON.parse(sessionStorage.getItem(tabKey)); return p?.version === 1 ? p : undefined; } catch {} };
   const tabWrite = value => { try { sessionStorage.setItem(tabKey, JSON.stringify({version: 1, ...value})); } catch {} };
@@ -20,8 +21,14 @@ export async function persistence({host, reviews, reader, article, receive, navi
   function failure(error) { failed = true; ui.notice('Could not save; keep this tab open. ' + error.message, true); }
   async function refresh() {
     if (!store) return;
+    // Relisting is concurrent: saving, navigating, attaching and the list's own
+    // actions all start one. A relist reads before it renders, so one the
+    // browser is slow to finish would otherwise repaint the list it read over a
+    // newer one -- showing a removed package as still listed, for instance.
+    const sequence = ++relistSequence;
     try {
       const [packages, positions, conflicts] = await Promise.all(['packages', 'positions', 'conflicts'].map(name => store.all(name)));
+      if (sequence !== relistSequence) return;
       ui.list(packages.filter(p => p.version === 1), positions.filter(p => p.version === 1), conflicts);
       ui.recovery([...packages.filter(p => p.version !== 1).map(p => ({reason: 'Saved package data has an unsupported version; it was retained.', text: recoveryText(p)})),
         ...recovery, ...conflicts.map(c => ({reason: String(c.reason ?? 'Saved conflict'), text: recoveryText(c.snapshot),

@@ -303,6 +303,42 @@ test('denied storage leaves reading, exact authoring and export usable', async (
   expect(await page.locator('#package-file').getAttribute('accept')).toBeNull();
 });
 
+test('a relist stalled by attaching cannot repaint the list over a newer one', async ({page}) => {
+  await open(page); await edit(page, 'Recovery stays'); await saved(page);
+  await page.reload();
+  // Attaching relists in the background now, so a relist WebKit stalls for
+  // seconds can finish after the user has changed what the list should say; the
+  // newer list has to win. The resume offer proves the startup relist is done,
+  // which makes the next transaction to read conflicts on its own -- nothing
+  // else does -- the one attaching starts.
+  await expect(page.getByRole('button', {name: 'Choose file again', exact: true})).toBeVisible({timeout: RELOAD_ATTACH_TIMEOUT});
+  await page.evaluate(() => {
+    const transaction = IDBDatabase.prototype.transaction;
+    IDBDatabase.prototype.transaction = function(names, mode, ...args) {
+      const tx = transaction.call(this, names, mode, ...args);
+      if (mode === 'readonly' && [...tx.objectStoreNames].join() === 'conflicts' && !window.relistPaused) {
+        window.relistPaused = true;
+        Object.defineProperty(tx, 'oncomplete', {set(callback) {
+          tx.addEventListener('complete', event => { window.releaseRelist = () => callback.call(tx, event); });
+        }});
+      }
+      return tx;
+    };
+  });
+  await page.locator('#package-file').setInputFiles(file());
+  await expect(page.locator('.document-title')).not.toBeEmpty({timeout: RELOAD_ATTACH_TIMEOUT});
+  await expect.poll(() => page.evaluate(() => typeof window.releaseRelist)).toBe('function');
+  await page.locator('#saved-sessions summary').first().click();
+  await page.getByRole('button', {name: 'Remove from recents'}).click();
+  await expect(page.locator('.recent-list')).toContainText('Saved work');
+  await page.evaluate(async () => {
+    window.releaseRelist();
+    for (let i = 0; i < 10; i++) await new Promise(resolve => requestAnimationFrame(resolve));
+  });
+  await expect(page.locator('.recent-list')).toContainText('Saved work');
+  expect((await rows(page, 'drafts')).filter(d => !d.tombstone)).toHaveLength(1);
+});
+
 test('remove recents retains saved work; explicit deletion removes it', async ({page}) => {
   await open(page); await edit(page, 'Recovery stays'); await saved(page);
   await page.locator('#saved-sessions summary').first().click();
