@@ -201,7 +201,9 @@ test('Copy and Download as Markdown export every thread in document order, leavi
   await expect(page.locator('.review-status')).toHaveText('Review copied as Markdown: 2 threads.');
   await expect(page.getByRole('button', {name: 'Download review'})).toBeVisible();
 
-  const text = await page.evaluate(() => navigator.clipboard.readText());
+  // Windows hands clipboard text back CRLF-normalized. The renderer emits LF,
+  // which the byte comparison against the downloaded .md at the end proves.
+  const text = (await page.evaluate(() => navigator.clipboard.readText())).replace(/\r\n/g, '\n');
   expect(text.startsWith('# Review of original.mdpkg\n')).toBe(true);
   expect(text).toContain('2 threads (1 open, 1 resolved), 3 comments by Priya. Exported ');
   // Document order, not authoring order: Guide's thread was authored second.
