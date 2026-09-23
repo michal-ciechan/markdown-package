@@ -27,6 +27,30 @@ Chromium, 126 Firefox + WebKit). §6's open items are unchanged and still open:
 the export does not call `validateAnchors`, and it degrades to authoring order
 rather than refusing when a stored quote no longer matches its source.
 
+**Amended (2026-09-23, fix task `4a83f46d`) after review `dcdede68`.** Two
+defects found and fixed. **Defect 1, blocking:** `invalidate()` did not hide the
+manual-copy fallback textarea. `navigator.clipboard` does not exist outside a
+secure context, so off HTTPS/localhost that box is the *only* copy path; saving
+a comment or changing a thread state left it visible, still labelled, holding a
+snapshot rendered before the change, and the reviewer could return an export
+silently missing it. The thread-state handler invalidates without redrawing, so
+`draw()` was the wrong place — `invalidate()` now calls `hideMarkdown()` and the
+next Copy re-renders. **Defect 2, hardening:** `escape()` neutralized inline
+constructs but not newlines, so a value reaching the start of a line could open
+a block construct no backslash prevents. `validateComments` checks only that an
+author is well-formed UTF-8, so a *received* review file can carry one; the
+shipped UI cannot author it. `escape()` now folds line breaks to a space before
+escaping. New cases: unit `M16`, and browser case *a change to the review never
+leaves stale Markdown in the fallback text box*. Both were confirmed red against
+the unfixed code first (M16 produced 6 headings instead of 3; the browser case
+found the box still visible after a state change). The fallback cases moved to
+`tests/review-markdown-fallback.spec.js` and now run on **all three engines** —
+they read nothing from the clipboard, so they need no permission Firefox blocks
+or WebKit rejects; the clipboard-read Copy case stays Chromium-only. Measured
+after the fix: unit **232/232**, V-1 and V-2 passed at **98,421 / 145,000** eager
+gzip bytes (+14), Playwright **286/286** (156 Chromium, 130 Firefox + WebKit).
+§6 is still open, unchanged.
+
 Scope: the browser web-viewer's reviewer-side export. This note is about adding
 a **second, human-readable output** next to the existing `.mdpkg` delta review —
 "here are my comments" as text you can paste into a PR description, a chat
