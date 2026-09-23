@@ -47,9 +47,14 @@ found the box still visible after a state change). The fallback cases moved to
 `tests/review-markdown-fallback.spec.js` and now run on **all three engines** —
 they read nothing from the clipboard, so they need no permission Firefox blocks
 or WebKit rejects; the clipboard-read Copy case stays Chromium-only. Measured
-after the fix: unit **232/232**, V-1 and V-2 passed at **98,421 / 145,000** eager
+after the fix: unit **233/233**, V-1 and V-2 passed at **98,421 / 145,000** eager
 gzip bytes (+14), Playwright **286/286** (156 Chromium, 130 Firefox + WebKit).
-§6 is still open, unchanged.
+§6 is still open, unchanged. SourceLanding Mutation (task `833e9c70`) later
+weakened `escape()`'s fold from `/\s*[\r\n]+\s*/` to `/\s*\n+\s*/` and found the
+`\r` branch of Defect 2 uncovered: all 16 then-existing unit cases stayed
+green. Unit `M17` (commit `e000cb5c07912a93c6431a92a714bb6cbeecd381`) closes
+that gap — it pins a lone `\r` in an author/package name the same way M16
+pins `\n`, bringing the unit lane to 233/233.
 
 Scope: the browser web-viewer's reviewer-side export. This note is about adding
 a **second, human-readable output** next to the existing `.mdpkg` delta review —
