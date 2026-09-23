@@ -6,6 +6,27 @@ below came from throwaway scripts in the session scratchpad that import the
 shipped viewer modules by absolute path; nothing from those scripts is in the
 repo.
 
+**Status (2026-09-23, build task `dafabc9a`): BUILT.** All four decisions were
+taken by the user as recommended — D-1 verbatim quotes capped at 600
+characters, D-2 document order, D-3 base level `#` kept as a module option, D-4
+every thread exported with its state printed — and §5's smallest first step is
+closed out. `src/web-viewer/src/review/markdown.js` renders the §2.1 shape and
+imports only `decodeLocator`; `tests/review-markdown.test.mjs` has 15 Node unit
+cases; `Copy review as Markdown` and `Download as Markdown` sit in the review
+panel's second action row (`ui/review-view.js`), the copy reusing the
+writeText-with-textarea fallback and the download reusing `downloadReview` via
+a new `markdownFile` in `review/out.js`; two Chromium cases were added to
+`tests/review.spec.js`. **§3 re-confirmed against the shipped renderer**: it
+reads no manifest, and unit case M14 plus the browser case assert the output
+carries no `mdpkg://`, no 64-hex digest, no `sha256-` and no UUID, so
+`LOOSE_EXPORT_CAVEAT` does not apply. Measured at that build: Node unit lane
+231/231 (was 216 before this slice); `node build.mjs` V-1 and V-2 passed at
+**98,407 / 145,000** eager gzip bytes, 1,650 over the 96,757 recorded in §0 and
+46,593 under the ceiling; Playwright 281/281 across the three engines (155
+Chromium, 126 Firefox + WebKit). §6's open items are unchanged and still open:
+the export does not call `validateAnchors`, and it degrades to authoring order
+rather than refusing when a stored quote no longer matches its source.
+
 Scope: the browser web-viewer's reviewer-side export. This note is about adding
 a **second, human-readable output** next to the existing `.mdpkg` delta review —
 "here are my comments" as text you can paste into a PR description, a chat
