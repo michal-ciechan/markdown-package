@@ -25,6 +25,20 @@ async function rows(page, name) {
   return page.evaluate(async name => { const {openStore} = await import('/test-api.js'); const db = await openStore();
     try { return await db.all(name); } finally { db.close(); } }, name);
 }
+// The reading position saves on a debounce no test awaits -- CARD-0065 moved
+// storage housekeeping off the reader's critical path on purpose -- and every
+// such save stamps a fresh `lastRead` on the package row. One can therefore
+// land between a snapshot of the packages table and a later comparison with it:
+// observed on Firefox with `lastRead` 1.19s ahead and every other field
+// identical, from the scroll the test's own click produced. The two tests that
+// compare the whole table are about history and saved work, not about reading
+// position, so hold `lastRead` to the invariant it actually has and keep every
+// other field, the row count and the row order exact.
+function samePackages(after, before) {
+  expect(after.map(({lastRead, ...rest}) => rest)).toEqual(before.map(({lastRead, ...rest}) => rest));
+  expect(after.map(p => typeof p.lastRead)).toEqual(before.map(p => typeof p.lastRead));
+  expect(after.every((p, i) => p.lastRead === undefined || p.lastRead >= before[i].lastRead)).toBe(true);
+}
 async function edit(page, body = 'Draft 😀 café\n  with whitespace  ') {
   await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
   await fillAuthor(page, 'Reviewer');
@@ -118,7 +132,7 @@ test('invalid candidate preserves editor, recents and current package', async ({
   await page.locator('#package-file').setInputFiles(file(Buffer.from([0x23, 0x20, 0xff, 0xfe, 0x0a]), 'broken.mdpkg'));
   await expect(page.locator('#activity')).toContainText('Could not open package');
   await expect(page.getByLabel('Feedback', {exact: true})).toHaveValue('Keep this work');
-  expect(await rows(page, 'packages')).toEqual(before);
+  samePackages(await rows(page, 'packages'), before);
 });
 
 test('different snapshot identity never receives old work and mismatch requires an explicit action', async ({page}) => {
@@ -598,7 +612,7 @@ test('cancelled enhanced picker leaves the active editor and history intact', as
   const before = await rows(page, 'packages');
   await page.getByRole('button', {name: 'Open package', exact: true}).click();
   await expect(page.getByLabel('Feedback', {exact: true})).toHaveValue('Keep after cancel');
-  expect(await rows(page, 'packages')).toEqual(before);
+  samePackages(await rows(page, 'packages'), before);
 });
 
 test('cleared site data starts empty without a restore claim', async ({page}) => {
