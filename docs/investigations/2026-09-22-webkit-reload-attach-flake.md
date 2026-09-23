@@ -153,6 +153,11 @@ not losing a reviewer's work. Widening individual waits the way `reloadAttach`
 was widened is whack-a-mole -- the stall lands wherever it lands, including on a
 navigation that has nothing to do with storage.
 
+**Decision (caller, 2026-09-23):** accept the ~1.9% rate (across 840
+firefox/webkit executions, both engines) as-is for now. No retries are added and
+no new harness-level investigation is opened; revisit only if the rate worsens or
+the stall starts blocking real work.
+
 ### Open lead
 
 While building the mechanism A controls, a mutation that added `hasWork: false`
