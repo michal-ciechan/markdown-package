@@ -77,6 +77,14 @@ export function reviewView(host, getContext, onNavigate) {
   function invalidate() {
     revision++; dirty = true; prepared = artifact = undefined;
     action('download').hidden = action('share').hidden = true;
+    // The fallback holds a rendered snapshot, so every change to the review
+    // makes it stale. Off HTTPS/localhost navigator.clipboard does not exist and
+    // that box is the only copy path, so a stale one that is still visible and
+    // still labelled gets copied: the reviewer returns an export silently
+    // missing the change they just made (review dcdede68, defect 1). Hide it
+    // here, not in draw() — the thread-state handler invalidates without
+    // redrawing — and let the next Copy render it again.
+    hideMarkdown();
   }
   function closeEditor() { composing = undefined; form.hidden = true; body.value = ''; }
   // Never leave a previous review's text in the manual-copy fallback.

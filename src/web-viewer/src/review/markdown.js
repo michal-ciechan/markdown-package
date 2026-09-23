@@ -7,9 +7,15 @@
 import {decodeLocator} from '../address/reference.js';
 
 const STATES = ['open', 'resolved', 'obsolete'];
-// Backslash-escape only what can open emphasis, a link, raw HTML or an entity
-// mid-line. Leaving `-` and `.` alone keeps ordinary names and paths readable.
-const escape = value => String(value).replace(/[\\`*_[\]<>&]/g, '\\$&');
+// Fold first, then escape. An inline escape cannot reach a block construct: a
+// newline inside an author or package name puts the rest of the value at the
+// start of a line, where `#`, `>`, a fence, a list marker or a Setext underline
+// open a block no backslash prevents. validateComments checks only that an
+// author is well-formed UTF-8, so a received review file can carry one (review
+// dcdede68, defect 2). Every caller here writes a single line, so folding loses
+// nothing. Then backslash-escape what can open emphasis, a link, raw HTML or an
+// entity mid-line; leaving `-` and `.` alone keeps names and paths readable.
+const escape = value => String(value).replace(/\s*[\r\n]+\s*/g, ' ').replace(/[\\`*_[\]<>&]/g, '\\$&');
 const plural = (count, noun) => `${count} ${noun}${count === 1 ? '' : 's'}`;
 // An embedded fence must not terminate the block: outrun the longest run inside.
 const fence = text => '`'.repeat(Math.max(3, ...[...text.matchAll(/`+/g)].map(run => run[0].length + 1)));

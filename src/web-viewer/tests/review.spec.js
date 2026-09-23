@@ -227,26 +227,5 @@ test('Copy and Download as Markdown export every thread in document order, leavi
   expect(await fs.readFile('test-results/browser-review.md', 'utf8')).toBe(text);
   expect(errors).toEqual([]);
 });
-
-test('the Markdown copy falls back to a readonly text box when the clipboard refuses', async ({page}) => {
-  await page.addInitScript(() => {
-    Clipboard.prototype.writeText = async () => { throw new DOMException('Denied', 'NotAllowedError'); };
-  });
-  await page.goto('/');
-  await page.locator('#package-file').setInputFiles('../../docs/spec/review-fixtures/original.mdpkg');
-  await expect(page.locator('.document-title')).toHaveText('guide.md');
-  await expect(page.getByRole('button', {name: 'Copy review as Markdown', exact: true})).toBeDisabled();
-  await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
-  await fillAuthor(page, 'Priya');
-  await page.getByLabel('Feedback', {exact: true}).fill('Whole-section feedback.');
-  await page.getByRole('button', {name: 'Save comment', exact: true}).click();
-  await page.getByRole('button', {name: 'Copy review as Markdown', exact: true}).click();
-  await expect(page.locator('.review-status')).toHaveText('Select and copy the Markdown from the text box.');
-  const field = page.getByLabel('Review as Markdown');
-  await expect(field).toBeVisible();
-  await expect(field).toBeFocused();
-  await expect(field).toHaveJSProperty('readOnly', true);
-  expect(await field.inputValue()).toContain('> Whole-section feedback.');
-  // select() so the keyboard copy works: the whole value must be selected.
-  expect(await field.evaluate(node => node.selectionEnd - node.selectionStart === node.value.length && node.value.length > 0)).toBe(true);
-});
+// The manual-copy fallback moved to review-markdown-fallback.spec.js so every
+// engine runs it: it needs no clipboard permission, unlike the copy above.

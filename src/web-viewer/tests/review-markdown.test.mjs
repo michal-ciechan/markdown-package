@@ -251,3 +251,25 @@ test('M15 an author or package name cannot inject emphasis, a link or raw HTML',
   assert.equal(rendered.startsWith('<h1>Review of __runbook__ &lt;img src=x&gt;</h1>'), true);
   assert.equal(rendered.includes('*Priya* &lt;b&gt;x&lt;/b&gt; [a](b) `c`'), true);
 });
+
+// validateComments checks an author is well-formed UTF-8 and nothing more, so a
+// received review file can carry a newline in one. Escaping inline constructs is
+// not enough: a line break puts the rest of the value at the start of a line,
+// where `#`, `>`, `-`, a fence or a Setext underline are block constructs no
+// inline escape reaches (review dcdede68, defect 2).
+test('M16 a newline in an author or package name cannot open a block construct', () => {
+  const out = render([thread({source: 'x', state: 'resolved',
+    comments: [comment('Priya\n# Injected H1\n\n```\nnot a fence\n```', 'comment', 'body')]})],
+    {packageName: 'runbook.mdpkg\n## Injected H2\n\n- injected item'});
+  // One heading per level the renderer itself emits: h1 header, h2 path, h3 scope.
+  assert.deepEqual(inventory(out).headings.map(heading => heading.split(' ')[0]), ['#', '##', '###']);
+  // Exactly the three the renderer wrote; nothing reached the start of a line.
+  assert.equal(out.split('\n').filter(line => /^(#|-|\d+\.|={2,}$|-{2,}$)/.test(line)).length, 3);
+  const rendered = html(out);
+  assert.equal(rendered.includes('Injected H1</h'), false);
+  assert.equal(rendered.includes('Injected H2</h'), false);
+  assert.equal(rendered.includes('<li>'), false);
+  // Folded to one line, not dropped: the value still reads as itself.
+  assert.equal(rendered.startsWith('<h1>Review of runbook.mdpkg ## Injected H2 - injected item</h1>'), true);
+  assert.equal(rendered.includes('Priya # Injected H1 ```'), true);
+});
