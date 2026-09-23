@@ -273,3 +273,27 @@ test('M16 a newline in an author or package name cannot open a block construct',
   assert.equal(rendered.startsWith('<h1>Review of runbook.mdpkg ## Injected H2 - injected item</h1>'), true);
   assert.equal(rendered.includes('Priya # Injected H1 ```'), true);
 });
+
+// A lone carriage return is a CommonMark line ending in its own right, and a
+// review file received from a CRLF platform can carry one where the LF was
+// stripped. Folding only `\n` leaves it in the output, where the recipient's
+// parser still starts a new line and `#` still opens a heading — and every
+// other case here stays green, so nothing else pins the `\r` in the fold.
+test('M17 a lone carriage return in an author or package name cannot open a block construct', () => {
+  const out = render([thread({source: 'x', state: 'resolved',
+    comments: [comment('Priya\r# Injected H1', 'comment', 'body')]})],
+    {packageName: 'runbook.mdpkg\r## Injected H2'});
+  // The value is folded, not merely escaped: no line ending of any kind survives.
+  assert.equal(out.includes('\r'), false);
+  // One heading per level the renderer itself emits: h1 header, h2 path, h3 scope.
+  assert.deepEqual(inventory(out).headings.map(heading => heading.split(' ')[0]), ['#', '##', '###']);
+  // Split the way a CommonMark parser does, so a bare `\r` cannot hide a line start.
+  assert.equal(out.split(/\r\n|\r|\n/).filter(line => /^(#|-|\d+\.|={2,}$|-{2,}$)/.test(line)).length, 3);
+  const rendered = html(out);
+  // Nothing the values carry starts a heading of its own; the `##` and `#` they
+  // hold stay inline text inside the headings and metadata the renderer wrote.
+  assert.equal(/<h[1-6]>Injected/.test(rendered), false);
+  // Folded to one line, not dropped: the value still reads as itself.
+  assert.equal(rendered.startsWith('<h1>Review of runbook.mdpkg ## Injected H2</h1>'), true);
+  assert.equal(rendered.includes('Priya # Injected H1'), true);
+});
