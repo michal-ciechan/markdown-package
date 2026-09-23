@@ -54,6 +54,10 @@ async function saved(page) { await expect(page.locator('.local-save-status')).to
 // stall is in the engine, not in the viewer -- it lands on whichever of these
 // two waits it overlaps -- so only these two carry the longer budget. The 30s
 // test timeout still bounds an attach that never completes.
+// Reopened 2026-09-23: the stall also hits Firefox, and it also lands on waits
+// outside this helper, including the first page load of a test. Only the two
+// waits below carry a budget, so the rest of the file is still exposed at 5s.
+// See docs/investigations/2026-09-22-webkit-reload-attach-flake.md.
 const RELOAD_ATTACH_TIMEOUT = 12000;
 async function reloadAttach(page, input = file()) {
   await page.reload();
