@@ -1,6 +1,13 @@
+const stem = name => name.replace(/\.mdpkg$/i, '').replace(/[^\p{L}\p{N}._-]/gu, '_').slice(0, 100) || 'package';
+
 export function reviewFile(bytes, name) {
-  const stem = name.replace(/\.mdpkg$/i, '').replace(/[^\p{L}\p{N}._-]/gu, '_').slice(0, 100) || 'package';
-  return new File([bytes], stem + '-review.mdpkg', {type: 'application/octet-stream'});
+  return new File([bytes], stem(name) + '-review.mdpkg', {type: 'application/octet-stream'});
+}
+
+// The plain-Markdown export shares downloadReview, which takes any File. It is
+// a separate artifact from the .mdpkg delta and never stands in for it.
+export function markdownFile(text, name) {
+  return new File([text], stem(name) + '-review.md', {type: 'text/markdown'});
 }
 
 export function downloadReview(file) {

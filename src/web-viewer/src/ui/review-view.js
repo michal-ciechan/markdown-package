@@ -1,7 +1,9 @@
 import {newReview, newComment, newThread, validateComments} from '../review/comments.js';
 import {decodeLocator} from '../address/reference.js';
 import {emitReview} from '../review/emit.js';
-import {reviewFile, downloadReview} from '../review/out.js';
+import {reviewFile, markdownFile, downloadReview} from '../review/out.js';
+import {reviewMarkdown} from '../review/markdown.js';
+import {commentInterval} from './comment-anchor.js';
 import {authorName} from './author-name.js';
 
 // A review exported against a synthesized loose file names a (namespace,
@@ -19,6 +21,26 @@ export const LOOSE_EXPORT_CAVEAT = 'This document was opened as a loose Markdown
 // site preserve it, including ones written later.
 const loosePackages = new WeakSet();
 export function markLoose(pkg) { if (pkg) loosePackages.add(pkg); }
+
+// D-2: reviewers do not comment top to bottom, so rank every thread by where it
+// sits in the reviewed source rather than when it was authored. Gather the
+// distinct paths first: pkg.document caches only the active document, so each
+// path is read and outlined exactly once. Ranks, not raw offsets, because two
+// documents both start at offset 0 and the renderer takes one numeric key.
+async function documentOrder(pkg, review) {
+  const position = new Map(pkg.documents.map((entry, index) => [entry.name, index]));
+  const ranked = [];
+  for (const path of new Set(review.threads.map(thread => decodeLocator(thread.loc)[1]))) {
+    const model = await pkg.document(path);
+    for (const thread of review.threads) {
+      if (decodeLocator(thread.loc)[1] !== path) continue;
+      ranked.push([thread.id, position.get(path) ?? 0, commentInterval(model, thread.loc, thread.select).start]);
+    }
+  }
+  ranked.sort((a, b) => a[1] - b[1] || a[2] - b[2]);
+  const ranks = new Map(ranked.map(([id], rank) => [id, rank]));
+  return thread => ranks.get(thread.id);
+}
 
 export function reviewView(host, getContext, onNavigate) {
   host.className = 'review-panel';
@@ -38,7 +60,9 @@ export function reviewView(host, getContext, onNavigate) {
     </form>
     <p class="review-status" role="status" aria-live="polite"></p>
     <div class="review-threads"></div>
-    <div class="review-actions"><button type="button" data-action="prepare">Prepare review file</button><button type="button" data-action="download" hidden>Download review</button><button type="button" data-action="share" hidden>Share review</button></div>`;
+    <div class="review-actions"><button type="button" data-action="prepare">Prepare review file</button><button type="button" data-action="download" hidden>Download review</button><button type="button" data-action="share" hidden>Share review</button></div>
+    <div class="review-actions"><button type="button" data-action="copy-markdown">Copy review as Markdown</button><button type="button" data-action="download-markdown">Download as Markdown</button></div>
+    <label class="review-markdown-label" hidden>Review as Markdown <textarea class="review-markdown" rows="6" readonly spellcheck="false"></textarea></label>`;
   const find = selector => host.querySelector(selector), action = name => find(`[data-action="${name}"]`);
   const form = find('form'), author = form.elements.author, kind = form.elements.kind, body = form.elements.body;
   const name = authorName(author, find('.review-author'));
@@ -55,6 +79,8 @@ export function reviewView(host, getContext, onNavigate) {
     action('download').hidden = action('share').hidden = true;
   }
   function closeEditor() { composing = undefined; form.hidden = true; body.value = ''; }
+  // Never leave a previous review's text in the manual-copy fallback.
+  function hideMarkdown() { find('.review-markdown-label').hidden = true; find('.review-markdown').value = ''; }
   // Engines disagree on what focus() reveals: Chromium centres the field,
   // Firefox reveals its nearest edge, WebKit reveals only the caret line and
   // does so asynchronously. Reveal the editor explicitly once it is placed.
@@ -105,6 +131,7 @@ export function reviewView(host, getContext, onNavigate) {
       threadElements.set(thread.id, article);
     }
     action('prepare').disabled = !review.threads.length || preparing;
+    action('copy-markdown').disabled = action('download-markdown').disabled = !review.threads.length;
     presentation('draw');
   }
   for (const [name, whole] of [['text', false], ['scope', true]]) {
@@ -164,6 +191,41 @@ export function reviewView(host, getContext, onNavigate) {
     try { downloadReview(prepared); dirty = false; exportRevision = revision; listener('export'); status(caveat('Review download requested. Keep the file to return your feedback.')); }
     catch (error) { status('Download failed: ' + error.message, true); }
   });
+  // The Markdown export is a second, independent artifact: it writes no
+  // manifest and makes no identity claim (plan §3), so it neither invalidates a
+  // prepared .mdpkg nor counts as returning the review. Never touch prepared,
+  // artifact, revision, dirty or exportRevision from here.
+  async function markdown() {
+    if (composing || deferredDraft) { status('Save or cancel your current comment before exporting.', true); return; }
+    const opened = pkg, value = review;
+    let order;
+    // A stale quote makes only the ordering unavailable, not the export. Degrade
+    // to authoring order rather than refusing to render stored comments.
+    try { order = await documentOrder(opened, value); } catch { order = undefined; }
+    if (opened !== pkg || value !== review) return;
+    return reviewMarkdown(value, {packageName: opened.name, order});
+  }
+  action('copy-markdown').addEventListener('click', async () => {
+    let text;
+    try { text = await markdown(); } catch (error) { status('Could not render Markdown: ' + error.message, true); return; }
+    if (text === undefined) return;
+    try { await navigator.clipboard.writeText(text); hideMarkdown(); status(`Review copied as Markdown: ${review.threads.length} threads.`); }
+    catch {
+      // writeText needs a secure context and can be denied; the panel has no
+      // other text field to fall back to, so reveal one (main.js:347-364).
+      const field = find('.review-markdown');
+      find('.review-markdown-label').hidden = false;
+      field.value = text; field.focus(); field.select();
+      status('Select and copy the Markdown from the text box.');
+    }
+  });
+  action('download-markdown').addEventListener('click', async () => {
+    let text;
+    try { text = await markdown(); } catch (error) { status('Could not render Markdown: ' + error.message, true); return; }
+    if (text === undefined) return;
+    try { downloadReview(markdownFile(text, pkg.name)); status('Markdown download requested. It is a readable copy, not a review file.'); }
+    catch (error) { status('Download failed: ' + error.message, true); }
+  });
   action('share').addEventListener('click', async () => {
     const file = prepared, generation = revision, opened = pkg;
     if (!file) return;
@@ -197,7 +259,7 @@ export function reviewView(host, getContext, onNavigate) {
       looseSource = !!value && loosePackages.has(value);
       find('.review-loose').textContent = looseSource ? LOOSE_EXPORT_CAVEAT : '';
       find('.review-loose').hidden = !looseSource;
-      revision++; exportRevision = revision; dirty = false; prepared = artifact = undefined; deferredDraft = false; closeEditor();
+      revision++; exportRevision = revision; dirty = false; prepared = artifact = undefined; deferredDraft = false; closeEditor(); hideMarkdown();
       action('download').hidden = action('share').hidden = true;
       host.hidden = !value; status(''); draw();
     },

@@ -1,5 +1,6 @@
 import {test, expect} from '@playwright/test';
 import fs from 'node:fs/promises';
+import {fillAuthor} from './author-name-helper.js';
 
 test('browser authors request, reply and state; downloads an independently readable delta', async ({page}) => {
   const errors = []; page.on('pageerror', error => errors.push(error.message));
@@ -149,4 +150,101 @@ test('draft mutation during preparation cannot offer a stale download', async ({
   await expect(page.getByRole('button', {name: 'Download review'})).toBeHidden();
   await page.getByRole('button', {name: 'Prepare review file'}).click();
   await expect(page.getByRole('button', {name: 'Download review'})).toBeVisible();
+});
+
+// The plain-Markdown export (docs/plans/2026-09-23-review-as-plain-markdown.md).
+// Chromium only, like the other clipboard cases: Firefox blocks clipboard-read
+// behind its paste prompt and WebKit rejects it outright (CARD-0057).
+async function selectText(page, needle) {
+  await page.evaluate(value => {
+    const walker = document.createTreeWalker(document.querySelector('.markdown'), NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      const at = walker.currentNode.data.indexOf(value);
+      if (at < 0) continue;
+      const range = document.createRange();
+      range.setStart(walker.currentNode, at); range.setEnd(walker.currentNode, at + value.length);
+      const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range);
+      return;
+    }
+    throw new Error('Not found in the reader: ' + value);
+  }, needle);
+}
+
+test('Copy and Download as Markdown export every thread in document order, leaving the .mdpkg alone', async ({page, context}) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  const errors = []; page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/');
+  await page.locator('#package-file').setInputFiles('../../docs/spec/review-fixtures/original.mdpkg');
+  await expect(page.locator('.document-title')).toHaveText('guide.md');
+  // Author the later comment first: the export must re-sort into document order.
+  await selectText(page, 'Use the tool.');
+  await page.getByRole('button', {name: 'Review selected text', exact: true}).click();
+  await fillAuthor(page, 'Priya');
+  await page.getByLabel('Feedback', {exact: true}).fill('Name the tool.');
+  await page.getByRole('button', {name: 'Save comment', exact: true}).click();
+  await expect(page.locator('.review-thread')).toHaveCount(1);
+  await selectText(page, 'target words');
+  await page.getByRole('button', {name: 'Review selected text', exact: true}).click();
+  await page.getByLabel('Kind', {exact: true}).selectOption('change-request');
+  await page.getByLabel('Feedback', {exact: true}).fill('Explain these words.');
+  await page.getByRole('button', {name: 'Save comment', exact: true}).click();
+  await expect(page.locator('.review-thread')).toHaveCount(2);
+  await page.locator('.review-thread').nth(1).getByRole('button', {name: 'Reply', exact: true}).click();
+  await page.getByLabel('Feedback', {exact: true}).fill('Agreed, and name the metric.');
+  await page.getByRole('button', {name: 'Save comment', exact: true}).click();
+  await page.locator('.review-thread').nth(0).getByLabel('Thread state', {exact: true}).selectOption('resolved');
+
+  // A prepared .mdpkg and the Markdown export are independent artifacts.
+  await page.getByRole('button', {name: 'Prepare review file'}).click();
+  await expect(page.getByRole('button', {name: 'Download review'})).toBeVisible();
+  await page.getByRole('button', {name: 'Copy review as Markdown', exact: true}).click();
+  await expect(page.locator('.review-status')).toHaveText('Review copied as Markdown: 2 threads.');
+  await expect(page.getByRole('button', {name: 'Download review'})).toBeVisible();
+
+  const text = await page.evaluate(() => navigator.clipboard.readText());
+  expect(text.startsWith('# Review of original.mdpkg\n')).toBe(true);
+  expect(text).toContain('2 threads (1 open, 1 resolved), 3 comments by Priya. Exported ');
+  // Document order, not authoring order: Guide's thread was authored second.
+  expect(text.indexOf('### Guide\n')).toBeGreaterThan(-1);
+  expect(text.indexOf('### Guide\n')).toBeLessThan(text.indexOf('› Usage'));
+  expect(text).toContain('```\ntarget words\n```');
+  expect(text).toContain('```\nUse the tool.\n```');
+  expect(text).toContain('> Explain these words.');
+  expect(text).toContain('> Name the tool.');
+  expect(text).toContain('>> Agreed, and name the metric.');
+  expect(text).toContain('· _resolved_');
+  expect(text).toContain('· _open_');
+  // CARD-0062's caveat turns on identity; this export claims none (plan section 3).
+  expect(text).not.toMatch(/mdpkg:\/\/|[a-f0-9]{64}|sha256-/);
+
+  const downloading = page.waitForEvent('download');
+  await page.getByRole('button', {name: 'Download as Markdown', exact: true}).click();
+  const download = await downloading;
+  expect(download.suggestedFilename()).toBe('original-review.md');
+  await download.saveAs('test-results/browser-review.md');
+  expect(await fs.readFile('test-results/browser-review.md', 'utf8')).toBe(text);
+  expect(errors).toEqual([]);
+});
+
+test('the Markdown copy falls back to a readonly text box when the clipboard refuses', async ({page}) => {
+  await page.addInitScript(() => {
+    Clipboard.prototype.writeText = async () => { throw new DOMException('Denied', 'NotAllowedError'); };
+  });
+  await page.goto('/');
+  await page.locator('#package-file').setInputFiles('../../docs/spec/review-fixtures/original.mdpkg');
+  await expect(page.locator('.document-title')).toHaveText('guide.md');
+  await expect(page.getByRole('button', {name: 'Copy review as Markdown', exact: true})).toBeDisabled();
+  await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
+  await fillAuthor(page, 'Priya');
+  await page.getByLabel('Feedback', {exact: true}).fill('Whole-section feedback.');
+  await page.getByRole('button', {name: 'Save comment', exact: true}).click();
+  await page.getByRole('button', {name: 'Copy review as Markdown', exact: true}).click();
+  await expect(page.locator('.review-status')).toHaveText('Select and copy the Markdown from the text box.');
+  const field = page.getByLabel('Review as Markdown');
+  await expect(field).toBeVisible();
+  await expect(field).toBeFocused();
+  await expect(field).toHaveJSProperty('readOnly', true);
+  expect(await field.inputValue()).toContain('> Whole-section feedback.');
+  // select() so the keyboard copy works: the whole value must be selected.
+  expect(await field.evaluate(node => node.selectionEnd - node.selectionStart === node.value.length && node.value.length > 0)).toBe(true);
 });
