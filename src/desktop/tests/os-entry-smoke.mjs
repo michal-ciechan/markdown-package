@@ -126,6 +126,29 @@ try {
   assert.equal(result.entryPoints.unsavedConfirm.type, 'confirm');
   await expect(page.locator('.document-title')).toHaveText('guide.md');
   await expect(page.getByLabel('Feedback', {exact: true})).toHaveValue('Keep this unsaved draft');
+  const queuedAfterCancel = await page.evaluate(() => window.__TAURI_INTERNALS__.invoke('pending_launch_files'));
+  assert(queuedAfterCancel.some(file => file.path === loosePath), 'Cancel must leave the forwarded path queued');
+  result.entryPoints.unsavedConfirm.pendingAfterCancel = queuedAfterCancel.length;
+
+  // A nonexistent OS path is a terminal, visible rejection. It must not be
+  // silently dropped during Rust's canonicalization or blocked by the draft.
+  const missingPath = path.join(work, 'missing.mdpkg');
+  const missing = spawn(exe, [missingPath], {cwd: work, stdio: 'ignore'});
+  const [missingCode] = await Promise.race([once(missing, 'exit'), delay(15000).then(() => { missing.kill(); throw new Error('Missing-file launch did not exit'); })]);
+  assert.equal(missingCode, 0);
+  await expect(page.locator('#activity')).toContainText('Could not open file: Could not access file:', {timeout: 10000});
+  await expect.poll(async () => (await page.evaluate(() => window.__TAURI_INTERNALS__.invoke('pending_launch_files')))
+    .filter(file => file.path === missingPath).length).toBe(0);
+  result.entryPoints.missingPath = {visible: true, acknowledged: true};
+  const brokenPath = path.join(work, 'broken.mdpkg');
+  await writeFile(brokenPath, Buffer.from([0x50, 0x4b, 0x03, 0x04]));
+  const broken = spawn(exe, [brokenPath], {cwd: work, stdio: 'ignore'});
+  const [brokenCode] = await Promise.race([once(broken, 'exit'), delay(15000).then(() => { broken.kill(); throw new Error('Broken-file launch did not exit'); })]);
+  assert.equal(brokenCode, 0);
+  await expect(page.locator('#activity')).toContainText('Could not open package:', {timeout: 10000});
+  await expect.poll(async () => (await page.evaluate(() => window.__TAURI_INTERNALS__.invoke('pending_launch_files')))
+    .filter(file => file.path === brokenPath).length).toBe(0);
+  result.entryPoints.brokenPath = {visible: true, acknowledged: true};
   await page.screenshot({path: path.join(evidenceDir, 'card-0072-webview.png')});
 } catch (error) {
   if (page) result.activity = await page.locator('#activity').textContent().catch(() => undefined);

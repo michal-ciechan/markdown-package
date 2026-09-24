@@ -135,6 +135,7 @@ async function receive(source, expectedKey, documentPath) {
   source = normalizeSource(source);
   const {blob} = source;
   const generation = ++openGeneration;
+  let phase = 'decode';
   report('Opening ' + (blob.name || 'package') + '…');
   try {
     // Only openPackage sees synthesized bytes. source.blob stays the user's
@@ -143,15 +144,16 @@ async function receive(source, expectedKey, documentPath) {
     // Access handle would be meaningless.
     const {input, loose, strippedBom} = await packageBytesFor(blob);
     const opened = await openPackage(input);
+    phase = 'install';
     await persistenceReady;
     await savedSessions?.flush();
     const outgoingRevision = reviews.revision();
     const prepared = await savedSessions?.prepare(opened, source);
-    if (generation !== openGeneration) return;
-    if (outgoingRevision !== reviews.revision()) { report('Feedback changed while opening. The current package was kept; choose the new package again.'); return; }
-    if (expectedKey && prepared?.key !== expectedKey) { savedSessions.mismatch(source); return; }
+    if (generation !== openGeneration) return 'superseded';
+    if (outgoingRevision !== reviews.revision()) { report('Feedback changed while opening. The current package was kept; choose the new package again.'); return 'superseded'; }
+    if (expectedKey && prepared?.key !== expectedKey) { savedSessions.mismatch(source); return 'deferred'; }
     if ((savedSessions ? savedSessions.hasUnsaved() : reviews.hasUnsaved()) &&
-        !window.confirm('This tab has feedback that could not be saved in this browser. Discard the unsaved changes and open another package?')) return;
+        !window.confirm('This tab has feedback that could not be saved in this browser. Discard the unsaved changes and open another package?')) return 'deferred';
     preview.close(false); returnLocation = undefined; element('back-reference').hidden = true;
     const initialNavigation = ++navigationGeneration;
     pkg = opened;
@@ -194,7 +196,7 @@ async function receive(source, expectedKey, documentPath) {
     await attached;
     // A later failed picker/open keeps this successfully installed package.
     // A successful replacement or explicit navigation owns the reader instead.
-    if (pkg !== opened || navigationGeneration !== initialNavigation) return;
+    if (pkg !== opened || navigationGeneration !== initialNavigation) return 'superseded';
     const initialDocument = pkg.documents.find(entry => /\.(?:md|markdown)$/i.test(entry.name)) ?? pkg.documents[0];
     const remembered = documentPath ?? prepared?.documentPath;
     if (initialDocument) {
@@ -203,19 +205,26 @@ async function receive(source, expectedKey, documentPath) {
       if (remembered && !exists) report('The saved document is missing. Its saved work was retained for recovery.', true);
     }
     else report(pkg.manifest.review ? 'Review package opened. It contains no ordinary documents; this viewer does not yet display review threads.' : 'Package opened; its current view has no documents.');
+    return 'opened';
   } catch (error) {
     if (generation === openGeneration) report('Could not open package: ' + error.message, true);
+    if (generation !== openGeneration) return 'superseded';
+    return phase === 'decode' ? 'rejected' : 'deferred';
   }
 }
 
 // Rust retains OS launches until this recipient has handled and acknowledged
 // them. The host listener also reconciles the queue if an event is missed.
 if (host.detect() === 'tauri') {
-  async function openHostPath(path) {
+  async function openHostPath(path, launchError) {
     try {
+      if (launchError) {
+        report('Could not open file: ' + launchError, true);
+        return 'rejected';
+      }
       const blob = await host.readFile(path);
       const name = path.split(/[\\/]/).pop();
-      await receive({blob, sourceKind: 'host', path, name});
+      return await receive({blob, sourceKind: 'host', path, name});
     } catch (error) {
       report('Could not open file: ' + error.message, true);
       throw error;
