@@ -81,6 +81,7 @@ try {
   await expect(page.locator('#reader article')).toContainText('Pasted through WebView2', {timeout: 20000});
   result.entryPoints.pasteEvent = {opened: true};
   await page.locator('#paste-package').click();
+  await expect(page.locator('#activity')).toContainText(/clipboard|Pasting from a button|Could not read/i, {timeout: 10000});
   result.entryPoints.pasteButton = {status: await page.locator('#activity').textContent()};
   await page.screenshot({path: path.join(evidenceDir, 'card-0072-webview.png')});
 } catch (error) {
