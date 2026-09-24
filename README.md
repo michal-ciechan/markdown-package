@@ -1,5 +1,7 @@
 # markdown-package
 
+> **[Open a `.mdpkg` package in the web viewer](https://michal-ciechan.github.io/markdown-package/)** — no installation required.
+
 A package for efficiently transporting markdown documents — including their revisions and
 changes — between tools, agents, and reviewers, with reviewing specs and docs specifically in
 mind.
@@ -39,7 +41,6 @@ and `address` remain explicit exit-70 placeholders.
 
 The first stable coordinated package version is **1.0.0**. Earlier published
 previews use the incompatible pre-CARD-0052 format; there is no compatibility parser.
-Use the source or a fresh local feed until the 1.0.0 public-feed gate succeeds.
 See the [breaking release notes](docs/releases/draft-2.md) and
 [integrated acceptance evidence](docs/investigations/2026-09-12-card-0052-integrated-acceptance.md).
 NuGet publication is a separate release-workflow action.
@@ -55,46 +56,46 @@ NuGet publication is a separate release-workflow action.
 
 ## Getting started
 
-### Install the published tool
+### View a package — no install
 
-After the **1.0.0** public-feed gate succeeds, install the stable tool without
-building this repository:
+Open the [hosted web viewer](https://michal-ciechan.github.io/markdown-package/), then select
+**Open package** (or drag, drop, or paste a local `.mdpkg` file). Packages stay on your device.
+
+### Create a package with `mdpkg`
+
+Install the CLI (requires the .NET 10 SDK), then package a directory containing at least one
+Markdown file. The output must be outside the source directory:
 
 ```powershell
+New-Item -ItemType Directory my-docs
+Set-Content my-docs\README.md '# My docs'
 dotnet tool install --global mdpkg
-mdpkg --version
 mdpkg pack ./my-docs --out ./my-docs.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8
-mdpkg validate ./my-docs.mdpkg --format json
 ```
 
-Requires .NET 10 SDK. Create `my-docs` with at least one `.md` file first; output
-must be outside that directory. Default snapshots need no Git. Add the global
-tool directory to PATH if needed (`%USERPROFILE%\.dotnet\tools` on Windows,
-`$HOME/.dotnet/tools` on Linux/macOS). The install command selects the latest
-stable release. To pin this release, add `--version 1.0.0`; to update an existing
-installation, use `dotnet tool update --global mdpkg`.
+Use your own lowercase UUID for a new package lineage. Default snapshots need no Git.
+Open `my-docs.mdpkg` in the [hosted viewer](https://michal-ciechan.github.io/markdown-package/)
+to read and review it. Add the global tool directory to PATH if needed
+(`%USERPROFILE%\.dotnet\tools` on Windows, `$HOME/.dotnet/tools` on Linux/macOS).
 
-### Build the local candidate
+### Use the .NET libraries
 
-Requires .NET 10 SDK. Git is needed for explicit Git output, materialization,
-updates and their deep validation. From the repository root:
+Use `Mdpkg.Reader` for read-only access, or `Mdpkg.Core` to create and validate packages
+(Core restores its matching Reader dependency):
 
 ```powershell
-dotnet run --project src/generator-cli/src/Mdpkg.Cli -- pack examples/guide-and-notes --out guide.mdpkg --namespace c1b2d3e4-5f60-4a71-8b92-a3b4c5d6e7f8
-dotnet run --project src/generator-cli/src/Mdpkg.Cli -- validate guide.mdpkg --deep
-dotnet run --project src/generator-cli/src/Mdpkg.Cli -- update guide.mdpkg --materialize --out guide-git.mdpkg
+dotnet add package Mdpkg.Reader --version 1.0.0 --source https://api.nuget.org/v3/index.json
+dotnet add package Mdpkg.Core --version 1.0.0 --source https://api.nuget.org/v3/index.json
 ```
 
-To exercise the installed candidate, build a fresh local feed:
+### Desktop app (coming soon)
 
-```powershell
-dotnet pack src/generator-cli/src/Mdpkg.Cli -c Release -o src/generator-cli/artifacts/package
-dotnet tool install mdpkg --tool-path .antiphon/tools --version 1.0.0 --add-source src/generator-cli/artifacts/package
-```
+The Windows desktop viewer is in phase 1 and is not released yet. When available, its unsigned
+Windows installer will be published through GitHub Releases. Until then, see the
+[desktop README](src/desktop/README.md) to build it from source.
 
-Use your own lowercase UUID for a new package lineage. See the [tool guide](src/generator-cli/README.md)
-for options, implementation limits and tests, and the [release guide](docs/releases/mdpkg.md)
-for publishing setup and verification. This repository is [MIT licensed](LICENSE).
+For CLI options, local builds, and release details, see the [tool guide](src/generator-cli/README.md)
+and [release guide](docs/releases/mdpkg.md). This repository is [MIT licensed](LICENSE).
 
 ## Examples
 
