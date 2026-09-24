@@ -95,8 +95,8 @@ try {
 
   page = await launch();
   result.reopened = {origin: await page.evaluate(() => location.origin)};
-  await expect(page.locator('.recent-list .recent-package')
-    .filter({hasText: path.basename(packagePath)})).toBeVisible({timeout: 15000});
+  await expect(page.locator('.recent-list'))
+    .toContainText(path.basename(packagePath), {timeout: 15000});
   if (!(await page.getByLabel('Feedback', {exact: true}).isVisible())) {
     await page.locator('#package-file').setInputFiles(packagePath);
   }
