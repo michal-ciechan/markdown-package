@@ -26,6 +26,7 @@ function clipboard(command) {
     `Add-Type -AssemblyName System.Windows.Forms; ${command}`], {encoding: 'utf8'}).trim();
 }
 const psPath = value => "'" + value.replaceAll("'", "''") + "'";
+const ordinaryPath = value => value.startsWith('\\\\?\\') ? value.slice(4) : value;
 
 async function waitForPage() {
   for (let attempt = 0; attempt < 60; attempt++) {
@@ -127,7 +128,7 @@ try {
   await expect(page.locator('.document-title')).toHaveText('guide.md');
   await expect(page.getByLabel('Feedback', {exact: true})).toHaveValue('Keep this unsaved draft');
   const queuedAfterCancel = await page.evaluate(() => window.__TAURI_INTERNALS__.invoke('pending_launch_files'));
-  assert(queuedAfterCancel.some(file => file.path === loosePath), 'Cancel must leave the forwarded path queued');
+  assert(queuedAfterCancel.some(file => ordinaryPath(file.path) === loosePath), 'Cancel must leave the forwarded path queued');
   result.entryPoints.unsavedConfirm.pendingAfterCancel = queuedAfterCancel.length;
 
   // A nonexistent OS path is a terminal, visible rejection. It must not be
@@ -147,7 +148,7 @@ try {
   assert.equal(brokenCode, 0);
   await expect(page.locator('#activity')).toContainText('Could not open package:', {timeout: 10000});
   await expect.poll(async () => (await page.evaluate(() => window.__TAURI_INTERNALS__.invoke('pending_launch_files')))
-    .filter(file => file.path === brokenPath).length).toBe(0);
+    .filter(file => ordinaryPath(file.path) === brokenPath).length).toBe(0);
   result.entryPoints.brokenPath = {visible: true, acknowledged: true};
   await page.screenshot({path: path.join(evidenceDir, 'card-0072-webview.png')});
 } catch (error) {

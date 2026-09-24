@@ -126,10 +126,11 @@ mod tests {
     fn failed_scope_grant_is_queued_as_visible_error() {
         let file = std::env::temp_dir().join(format!("mdpkg-scope-test-{}", std::process::id()));
         std::fs::write(&file, b"test").unwrap();
+        let canonical = file.canonicalize().unwrap();
         let prepared = prepare_launch_files(vec![file.to_string_lossy().into_owned()], Path::new("."), |_| Err("scope denied".to_owned()));
         std::fs::remove_file(&file).unwrap();
         assert_eq!(prepared.len(), 1);
-        assert_eq!(prepared[0].0, file.to_string_lossy());
+        assert_eq!(prepared[0].0, canonical.to_string_lossy());
         assert_eq!(prepared[0].1.as_deref(), Some("Could not grant file access: scope denied"));
     }
 }
