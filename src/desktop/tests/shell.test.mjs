@@ -12,9 +12,12 @@ test('W1 builds the viewer and serves its dist from the stable default origin', 
   assert.equal(config.build.frontendDist, '../../web-viewer/dist');
   assert.match(config.build.beforeBuildCommand, /npm .*web-viewer run build/);
   assert.equal(config.app.windows[0].dragDropEnabled, false);
+  assert.equal(Object.hasOwn(config.app, 'useHttpsScheme'), false);
   assert.equal(Object.hasOwn(config.app.windows[0], 'useHttpsScheme'), false);
   assert.equal(Object.hasOwn(config.app.security, 'useHttpsScheme'), false);
   assert.match(config.app.security.csp, /blob:/);
+  const props = await read('../generator-cli/Mdpkg.Pack.props');
+  assert.equal(config.version, props.match(/<Version>([^<]+)<\/Version>/)?.[1]);
 });
 
 test('W1 bundles a per-user NSIS shell with only core permissions', async () => {
