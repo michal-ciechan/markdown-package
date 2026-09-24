@@ -8,8 +8,8 @@ export async function launchFiles() {
   return detect() === 'tauri' ? (await native()).launchFiles() : [];
 }
 
-export async function onOpenFile(callback) {
-  return detect() === 'tauri' ? (await native()).onOpenFile(callback) : () => {};
+export async function onOpenFile(callback, options) {
+  return detect() === 'tauri' ? (await native()).onOpenFile(callback, options) : () => {};
 }
 
 export async function readFile(path) {

@@ -208,29 +208,20 @@ async function receive(source, expectedKey, documentPath) {
   }
 }
 
-// The listener precedes the startup drain. Rust queues every OS launch until
-// this command takes it, so a second launch during boot cannot lose its path.
+// Rust retains OS launches until this recipient has handled and acknowledged
+// them. The host listener also reconciles the queue if an event is missed.
 if (host.detect() === 'tauri') {
-  const pendingHostPaths = [];
-  let openingHostFile = false;
   async function openHostPath(path) {
     try {
       const blob = await host.readFile(path);
       const name = path.split(/[\\/]/).pop();
       await receive({blob, sourceKind: 'host', path, name});
-    } catch (error) { report('Could not open file: ' + error.message, true); }
+    } catch (error) {
+      report('Could not open file: ' + error.message, true);
+      throw error;
+    }
   }
-  async function drainHostPaths() {
-    if (openingHostFile) return;
-    openingHostFile = true;
-    try { while (pendingHostPaths.length) await openHostPath(pendingHostPaths.shift()); }
-    finally { openingHostFile = false; }
-  }
-  void (async () => {
-    await host.onOpenFile(path => { pendingHostPaths.push(path); void drainHostPaths(); });
-    pendingHostPaths.push(...await host.launchFiles());
-    await drainHostPaths();
-  })().catch(error => report('Could not listen for files: ' + error.message, true));
+  void host.onOpenFile(openHostPath).catch(error => report('Could not listen for files: ' + error.message, true));
 }
 
 async function showDocument(name, fragment, resume = false) {
