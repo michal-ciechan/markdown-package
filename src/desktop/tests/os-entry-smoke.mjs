@@ -80,6 +80,7 @@ try {
   await deliverHtml5File(page, 'paste', 'pasted.md', Buffer.from('# Pasted through WebView2\n'));
   await expect(page.locator('#reader article')).toContainText('Pasted through WebView2', {timeout: 20000});
   result.entryPoints.pasteEvent = {opened: true};
+  await page.context().grantPermissions(['clipboard-read']);
   await page.locator('#paste-package').click();
   await expect(page.locator('#activity')).toContainText(/clipboard|Pasting from a button|Could not read/i, {timeout: 10000});
   result.entryPoints.pasteButton = {status: await page.locator('#activity').textContent()};
