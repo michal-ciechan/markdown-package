@@ -5,13 +5,16 @@ import {onOpenFile} from '../src/host/tauri.js';
 function transport() {
   let listener, nextId = 0;
   const pending = [];
-  const faults = {drain: false, ack: false};
+  const faults = {drain: false, ack: false, listen: false};
   let ackAttempts = 0;
   globalThis.window = {
     __TAURI_INTERNALS__: {
       transformCallback(callback) { listener = callback; return 1; },
       async invoke(command, args) {
-        if (command === 'plugin:event|listen') return 1;
+        if (command === 'plugin:event|listen') {
+          if (faults.listen) { faults.listen = false; throw new Error('listener registration failed'); }
+          return 1;
+        }
         if (command === 'plugin:event|unlisten') return;
         if (command === 'take_launch_files') {
           const files = pending.splice(0).map(file => file.path);
@@ -36,7 +39,7 @@ function transport() {
   };
   return {
     pending, faults,
-    enqueue(path) { pending.push({id: ++nextId, path}); },
+    enqueue(path, error = null) { pending.push({id: ++nextId, path, error}); },
     emit() { return listener?.({payload: null}); },
     get ackAttempts() { return ackAttempts; },
   };
@@ -99,5 +102,52 @@ test('failed acknowledgement retries without reopening the visible document', as
     await Promise.resolve(ipc.emit()).catch(() => {});
     await until(() => ipc.ackAttempts >= 2 && ipc.pending.length === 0);
     assert.deepEqual(seen, ['C:\\docs\\ack.mdpkg']);
+  } finally { await stop(); delete globalThis.window; }
+});
+
+test('a deferred recipient outcome retains the launch until a later event reoffers it', async () => {
+  const ipc = transport(), seen = [];
+  const stop = await onOpenFile(path => {
+    seen.push(path);
+    return seen.length === 1 ? 'deferred' : 'opened';
+  }, {pollMs: 5});
+  try {
+    ipc.enqueue('C:\\docs\\cancelled.mdpkg');
+    await until(() => seen.length === 1);
+    await new Promise(resolve => setTimeout(resolve, 30));
+    assert.equal(ipc.pending.length, 1);
+    assert.equal(ipc.ackAttempts, 0);
+    assert.equal(seen.length, 1);
+    await Promise.resolve(ipc.emit());
+    await until(() => ipc.pending.length === 0);
+    assert.deepEqual(seen, ['C:\\docs\\cancelled.mdpkg', 'C:\\docs\\cancelled.mdpkg']);
+  } finally { await stop(); delete globalThis.window; }
+});
+
+test('a failed listener registration still polls and later installs the listener', async () => {
+  const ipc = transport(), seen = [];
+  ipc.faults.listen = true;
+  const stop = await onOpenFile(path => { seen.push(path); return 'opened'; }, {pollMs: 5});
+  try {
+    ipc.enqueue('C:\\docs\\polled.mdpkg');
+    await until(() => ipc.pending.length === 0);
+    assert.deepEqual(seen, ['C:\\docs\\polled.mdpkg']);
+    ipc.enqueue('C:\\docs\\listener.mdpkg');
+    await until(() => ipc.emit() !== undefined);
+    await until(() => ipc.pending.length === 0);
+    assert.deepEqual(seen, ['C:\\docs\\polled.mdpkg', 'C:\\docs\\listener.mdpkg']);
+  } finally { await stop(); delete globalThis.window; }
+});
+
+test('a file-scope rejection reaches the recipient and is acknowledged after display', async () => {
+  const ipc = transport(), seen = [];
+  const stop = await onOpenFile((path, error) => {
+    seen.push({path, error});
+    return 'rejected';
+  }, {pollMs: 5});
+  try {
+    ipc.enqueue('C:\\docs\\denied.mdpkg', 'Could not grant file access');
+    await until(() => ipc.pending.length === 0);
+    assert.deepEqual(seen, [{path: 'C:\\docs\\denied.mdpkg', error: 'Could not grant file access'}]);
   } finally { await stop(); delete globalThis.window; }
 });
