@@ -46,8 +46,13 @@ try {
     await delay(500);
   }
   browser = await chromium.connectOverCDP(endpoint);
-  const page = browser.contexts().flatMap(context => context.pages())
-    .find(candidate => candidate.url().startsWith('http://tauri.localhost/'));
+  let page;
+  for (let attempt = 0; attempt < 60; attempt++) {
+    page = browser.contexts().flatMap(context => context.pages())
+      .find(candidate => candidate.url().startsWith('http://tauri.localhost/'));
+    if (page) { await page.waitForLoadState('domcontentloaded'); break; }
+    await delay(500);
+  }
   assert.ok(page, 'associated app opened a viewer page');
   await expect(page.locator('.document-title')).toHaveText('guide.md', {timeout: 20000});
   result.doubleClick = {opened: true, pid};
