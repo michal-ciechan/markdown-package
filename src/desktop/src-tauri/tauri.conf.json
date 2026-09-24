@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Markdown Package Viewer",
+  "mainBinaryName": "mdpkg-viewer",
+  "version": "1.0.0",
+  "identifier": "net.codeperf.mdpkg",
+  "build": {
+    "beforeBuildCommand": "npm --prefix ../web-viewer run build",
+    "beforeDevCommand": "npm --prefix ../web-viewer run build",
+    "frontendDist": "../../web-viewer/dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Markdown Package Viewer",
+        "width": 1100,
+        "height": 800,
+        "dragDropEnabled": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; object-src 'self' blob:; connect-src 'self' ipc: http://ipc.localhost"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser"
+      }
+    }
+  }
+}

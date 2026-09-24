@@ -1,2 +1,4 @@
 /.antiphon/
 /.spike-tauri/
+/src/desktop/src-tauri/target/
+/src/desktop/src-tauri/gen/schemas/
