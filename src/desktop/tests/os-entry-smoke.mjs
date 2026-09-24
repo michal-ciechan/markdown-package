@@ -14,12 +14,12 @@ const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const require = createRequire(path.join(desktop, '../web-viewer/package.json'));
 const {chromium, expect} = require('@playwright/test');
 const exe = path.join(desktop, 'src-tauri/target/debug/mdpkg-viewer.exe');
-const fixture = path.join(desktop, '../web-viewer/tests/fixtures/browser-v2.mdpkg');
+const fixture = path.join(desktop, '../../docs/spec/review-fixtures/guide-snapshot.mdpkg');
 const evidenceDir = path.resolve(process.argv[2] ?? '');
 if (!process.argv[2]) throw new Error('Pass an evidence directory');
 const endpoint = 'http://127.0.0.1:9229';
 const result = {exe, entryPoints: {}};
-let work, first, browser;
+let work, first, browser, page;
 
 async function waitForPage() {
   for (let attempt = 0; attempt < 60; attempt++) {
@@ -60,7 +60,7 @@ try {
     ...process.env, WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: '--remote-debugging-port=9229',
     WEBVIEW2_USER_DATA_FOLDER: path.join(work, 'profile'),
   }});
-  const page = await waitForPage();
+  page = await waitForPage();
   await expect(page.locator('#reader article')).not.toBeEmpty({timeout: 20000});
   result.entryPoints.argv = {opened: true, document: await page.locator('.document-title').textContent()};
 
@@ -84,6 +84,7 @@ try {
   result.entryPoints.pasteButton = {status: await page.locator('#activity').textContent()};
   await page.screenshot({path: path.join(evidenceDir, 'card-0072-webview.png')});
 } catch (error) {
+  if (page) result.activity = await page.locator('#activity').textContent().catch(() => undefined);
   result.error = String(error?.stack ?? error);
   throw error;
 } finally {
