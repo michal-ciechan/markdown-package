@@ -20,6 +20,14 @@ Both commands run the viewer build before loading its `dist/` directory. The
 debug executable is under `src-tauri/target/debug/`; the NSIS installer is
 under `src-tauri/target/debug/bundle/nsis/`.
 
+For a native restart smoke after building, package `examples/guide-and-notes`
+with the CLI, then run `node tests/webview-smoke.mjs <package.mdpkg>
+<evidence-directory>` from `src/desktop`. This attaches to the actual WebView2,
+opens through the viewer's file-input route, saves a draft, restarts the process
+and checks that recents and the draft return. The enhanced
+`showOpenFilePicker` dialog needs a hands-on check because CDP cannot supply a
+file to that Windows dialog.
+
 Do not register `tauri-plugin-dialog` before W3a's browser dialog gate lands.
 Its registration changes the behavior of the viewer's current synchronous
 `window.confirm` guards and can discard unsaved work. The copied

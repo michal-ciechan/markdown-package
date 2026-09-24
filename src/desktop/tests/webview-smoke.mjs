@@ -55,10 +55,10 @@ async function stop() {
   child = undefined;
 }
 
-async function openEnhanced(page) {
-  const chooser = page.waitForEvent('filechooser', {timeout: 15000});
-  await page.locator('#enhanced-open').click();
-  await (await chooser).setFiles(packagePath);
+async function openStandard(page) {
+  // CDP cannot hand a file to WebView2's showOpenFilePicker dialog. The
+  // viewer's existing input route still exercises the real embedded page.
+  await page.locator('#package-file').setInputFiles(packagePath);
 }
 
 try {
@@ -73,8 +73,8 @@ try {
   assert.equal(result.first.picker, 'function');
   assert.equal(result.first.indexedDB, 'object');
   assert.equal(await page.locator('#enhanced-open').isVisible(), true);
-  await openEnhanced(page);
-  result.route = 'showOpenFilePicker';
+  await openStandard(page);
+  result.route = 'input[type=file]';
   await expect(page.locator('.document-title')).toHaveText('guide.md', {timeout: 15000});
   await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
   await page.getByLabel('Your name').fill('W1 Smoke');
