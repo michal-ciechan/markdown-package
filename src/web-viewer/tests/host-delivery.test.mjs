@@ -3,7 +3,7 @@ import test from 'node:test';
 import {onOpenFile} from '../src/host/tauri.js';
 
 function transport() {
-  let listener, nextId = 0;
+  let listener, listening = false, nextId = 0;
   const pending = [];
   const faults = {drain: false, ack: false, listen: false};
   let ackAttempts = 0;
@@ -13,9 +13,10 @@ function transport() {
       async invoke(command, args) {
         if (command === 'plugin:event|listen') {
           if (faults.listen) { faults.listen = false; throw new Error('listener registration failed'); }
+          listening = true;
           return 1;
         }
-        if (command === 'plugin:event|unlisten') return;
+        if (command === 'plugin:event|unlisten') { listening = false; return; }
         if (command === 'take_launch_files') {
           const files = pending.splice(0).map(file => file.path);
           if (faults.drain) { faults.drain = false; throw new Error('lost drain response'); }
@@ -40,7 +41,8 @@ function transport() {
   return {
     pending, faults,
     enqueue(path, error = null) { pending.push({id: ++nextId, path, error}); },
-    emit() { return listener?.({payload: null}); },
+    emit() { if (listening) listener?.({payload: null}); },
+    get listening() { return listening; },
     get ackAttempts() { return ackAttempts; },
   };
 }
@@ -124,6 +126,20 @@ test('a deferred recipient outcome retains the launch until a later event reoffe
   } finally { await stop(); delete globalThis.window; }
 });
 
+test('a superseded recipient outcome is retried by polling without an early acknowledgement', async () => {
+  const ipc = transport();
+  let attempts = 0;
+  const stop = await onOpenFile(() => ++attempts === 1 ? 'superseded' : 'opened', {pollMs: 20});
+  try {
+    ipc.enqueue('C:\\docs\\superseded.mdpkg');
+    await until(() => attempts === 1);
+    assert.equal(ipc.pending.length, 1);
+    assert.equal(ipc.ackAttempts, 0);
+    await until(() => ipc.pending.length === 0);
+    assert.equal(attempts, 2);
+  } finally { await stop(); delete globalThis.window; }
+});
+
 test('a failed listener registration still polls and later installs the listener', async () => {
   const ipc = transport(), seen = [];
   ipc.faults.listen = true;
@@ -133,7 +149,8 @@ test('a failed listener registration still polls and later installs the listener
     await until(() => ipc.pending.length === 0);
     assert.deepEqual(seen, ['C:\\docs\\polled.mdpkg']);
     ipc.enqueue('C:\\docs\\listener.mdpkg');
-    await until(() => ipc.emit() !== undefined);
+    await until(() => ipc.listening);
+    ipc.emit();
     await until(() => ipc.pending.length === 0);
     assert.deepEqual(seen, ['C:\\docs\\polled.mdpkg', 'C:\\docs\\listener.mdpkg']);
   } finally { await stop(); delete globalThis.window; }
