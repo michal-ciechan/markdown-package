@@ -104,8 +104,8 @@ try {
   await page.keyboard.press('Control+V');
   await page.waitForFunction(() => window.__osPaste, undefined, {timeout: 5000});
   result.entryPoints.copiedFilePaste = await page.evaluate(() => window.__osPaste);
-  if (result.entryPoints.copiedFilePaste.files.length)
-    await expect(page.locator('.document-title')).toHaveText('guide.md', {timeout: 20000});
+  assert.deepEqual(result.entryPoints.copiedFilePaste.files, ['launch package.mdpkg']);
+  await expect(page.locator('.document-title')).toHaveText('guide.md', {timeout: 20000});
 
   // Force a real failed save so receive() must ask before replacing this draft.
   // The shell has no dialog plugin yet; WebView2's native confirm is expected.
