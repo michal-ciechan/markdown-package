@@ -29,6 +29,16 @@ and checks that recents and the draft return. The enhanced
 `showOpenFilePicker` dialog needs a hands-on check because CDP cannot supply a
 file to that Windows dialog.
 
+For W2 entry-point verification after the debug build, run
+`node tests/os-entry-smoke.mjs <evidence-directory>` from `src/desktop`.
+It tests startup argv, relative-path forwarding, the unsaved-work Cancel
+guard, WebView2 drop/paste events, and a copied file through Ctrl+V. It
+restores the previous text clipboard. Install the debug NSIS bundle, then run
+`node tests/association-smoke.mjs <evidence-directory>` to check the installed
+`.mdpkg` shell association and the `.md` Open with registration. Uninstall
+the debug app after that check. Physical Explorer drag and context-menu
+selection still need a hands-on pass.
+
 The `.mdpkg` association is configured in `tauri.conf.json`. The NSIS hook
 adds `.md` as an **Open with** candidate only. File read permission has no
 static directory scope: Rust grants a single-file scope for each existing,
