@@ -8,6 +8,8 @@
     "test:browser": "npm run build && playwright test"
   },
   "dependencies": {
+    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/plugin-fs": "^2.5.2",
     "commonmark": "0.31.2",
     "fflate": "0.8.2"
   },
