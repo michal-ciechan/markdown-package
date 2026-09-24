@@ -25,6 +25,9 @@
   "bundle": {
     "active": true,
     "targets": ["nsis"],
+    "fileAssociations": [
+      { "ext": ["mdpkg"], "name": "MdpkgPackage", "description": "Markdown Package", "mimeType": "application/zip", "role": "Editor" }
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -34,7 +37,8 @@
     ],
     "windows": {
       "nsis": {
-        "installMode": "currentUser"
+        "installMode": "currentUser",
+        "installerHooks": "installer-hooks.nsh"
       }
     }
   }

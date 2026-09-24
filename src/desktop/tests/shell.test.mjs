@@ -20,17 +20,22 @@ test('W1 builds the viewer and serves its dist from the stable default origin', 
   assert.equal(config.version, props.match(/<Version>([^<]+)<\/Version>/)?.[1]);
 });
 
-test('W1 bundles a per-user NSIS shell with only core permissions', async () => {
+test('W2 bundles per-user associations with file-scoped read permission', async () => {
   assert.equal(config.productName, 'Markdown Package Viewer');
   assert.equal(config.mainBinaryName, 'mdpkg-viewer');
   assert.equal(config.identifier, 'net.codeperf.mdpkg');
   assert.deepEqual(config.bundle.targets, ['nsis']);
   assert.equal(config.bundle.windows.nsis.installMode, 'currentUser');
+  assert.equal(config.bundle.windows.nsis.installerHooks, 'installer-hooks.nsh');
+  assert.deepEqual(config.bundle.fileAssociations.map(a => a.ext), [['mdpkg']]);
   const capability = JSON.parse(await read('src-tauri/capabilities/default.json'));
-  assert.deepEqual(capability.permissions, ['core:default']);
+  assert.deepEqual(capability.permissions, ['core:default', 'fs:allow-read-file']);
   const cargo = await read('src-tauri/Cargo.toml');
   const lib = await read('src-tauri/src/lib.rs');
-  assert.doesNotMatch(cargo, /tauri-plugin-/);
-  assert.doesNotMatch(lib, /\.plugin\(/);
-  assert.doesNotMatch(lib, /\.invoke_handler\(/);
+  assert.match(cargo, /tauri-plugin-fs/);
+  assert.match(cargo, /tauri-plugin-single-instance/);
+  assert.match(lib, /fs_scope\(\)\.allow_file/);
+  assert.match(lib, /take_launch_files/);
+  assert.doesNotMatch(cargo, /tauri-plugin-dialog/);
+  assert.doesNotMatch(lib, /tauri_plugin_dialog/);
 });

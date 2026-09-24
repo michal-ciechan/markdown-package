@@ -1,9 +1,10 @@
-# Windows desktop viewer (W1)
+# Windows desktop viewer (W2)
 
 The Tauri v2 shell serves the browser viewer's built files from
-`../web-viewer/dist`. The shell lives in `src-tauri/`; it has no plugins or
-native file commands yet. The viewer's existing **Open** button uses WebView2's
-file picker. Path-based entry points arrive in W2.
+`../web-viewer/dist`. The shell lives in `src-tauri/`. The viewer's existing
+**Open** button uses WebView2's file picker. Windows launch paths are queued
+until the viewer subscribes, then read through `tauri-plugin-fs`. A second
+launch forwards its paths to the first window and focuses it.
 
 ## Prerequisites
 
@@ -28,10 +29,18 @@ and checks that recents and the draft return. The enhanced
 `showOpenFilePicker` dialog needs a hands-on check because CDP cannot supply a
 file to that Windows dialog.
 
+The `.mdpkg` association is configured in `tauri.conf.json`. The NSIS hook
+adds `.md` as an **Open with** candidate only. File read permission has no
+static directory scope: Rust grants a single-file scope for each existing,
+canonical path supplied by a launch. The viewer cannot request arbitrary
+paths from the filesystem plugin. Drag and paste continue through the
+browser's HTML5 `File` routes.
+
 Do not register `tauri-plugin-dialog` before W3a's browser dialog gate lands.
 Its registration changes the behavior of the viewer's current synchronous
 `window.confirm` guards and can discard unsaved work. The copied
-`installer-hooks.nsh` is also inactive until W2 adds associations.
+`installer-hooks.nsh` is active for the `.md` association. Installer command
+quoting and uninstall restoration are owned by W4b.
 
 The product name is **Markdown Package Viewer**, identifier
 `net.codeperf.mdpkg`, and binary `mdpkg-viewer`. Version `1.0.0` matches

@@ -3,5 +3,5 @@
   "identifier": "default",
   "description": "Core viewer window",
   "windows": ["main"],
-  "permissions": ["core:default"]
+  "permissions": ["core:default", "fs:allow-read-file"]
 }

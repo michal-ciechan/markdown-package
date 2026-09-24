@@ -1,6 +1,8 @@
 import {openPackage} from './inbound/open.js';
 import {synthesizeLoose, MAX_LOOSE_BYTES} from './inbound/loose.js';
 import {readClipboard} from './inbound/clipboard.js';
+import {normalizeSource} from './inbound/source.js';
+import * as host from './host/index.js';
 import {documentList} from './ui/documents.js';
 import {readerView} from './ui/reader-view.js';
 import {reviewView, markLoose} from './ui/review-view.js';
@@ -130,7 +132,7 @@ async function packageBytesFor(blob) {
 }
 
 async function receive(source, expectedKey, documentPath) {
-  if (source instanceof Blob) source = {blob: source, sourceKind: 'file'};
+  source = normalizeSource(source);
   const {blob} = source;
   const generation = ++openGeneration;
   report('Opening ' + (blob.name || 'package') + '…');
@@ -204,6 +206,31 @@ async function receive(source, expectedKey, documentPath) {
   } catch (error) {
     if (generation === openGeneration) report('Could not open package: ' + error.message, true);
   }
+}
+
+// The listener precedes the startup drain. Rust queues every OS launch until
+// this command takes it, so a second launch during boot cannot lose its path.
+if (host.detect() === 'tauri') {
+  const pendingHostPaths = [];
+  let openingHostFile = false;
+  async function openHostPath(path) {
+    try {
+      const blob = await host.readFile(path);
+      const name = path.split(/[\\/]/).pop();
+      await receive({blob, sourceKind: 'host', path, name});
+    } catch (error) { report('Could not open file: ' + error.message, true); }
+  }
+  async function drainHostPaths() {
+    if (openingHostFile) return;
+    openingHostFile = true;
+    try { while (pendingHostPaths.length) await openHostPath(pendingHostPaths.shift()); }
+    finally { openingHostFile = false; }
+  }
+  void (async () => {
+    await host.onOpenFile(path => { pendingHostPaths.push(path); void drainHostPaths(); });
+    pendingHostPaths.push(...await host.launchFiles());
+    await drainHostPaths();
+  })().catch(error => report('Could not listen for files: ' + error.message, true));
 }
 
 async function showDocument(name, fragment, resume = false) {
