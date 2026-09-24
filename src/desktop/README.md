@@ -3,7 +3,9 @@
 The Tauri v2 shell serves the browser viewer's built files from
 `../web-viewer/dist`. The shell lives in `src-tauri/`. The viewer's existing
 **Open** button uses WebView2's file picker. Windows launch paths are queued
-until the viewer subscribes, then read through `tauri-plugin-fs`. A second
+until the viewer acknowledges receipt, then read through `tauri-plugin-fs`.
+The viewer checks the queue periodically to recover a missed notification.
+A second
 launch forwards its paths to the first window and focuses it.
 
 ## Prerequisites
