@@ -105,7 +105,27 @@ try {
   await page.waitForFunction(() => window.__osPaste, undefined, {timeout: 5000});
   result.entryPoints.copiedFilePaste = await page.evaluate(() => window.__osPaste);
   if (result.entryPoints.copiedFilePaste.files.length)
-    await expect(page.locator('#reader article')).not.toBeEmpty({timeout: 20000});
+    await expect(page.locator('.document-title')).toHaveText('guide.md', {timeout: 20000});
+
+  // Force a real failed save so receive() must ask before replacing this draft.
+  // The shell has no dialog plugin yet; WebView2's native confirm is expected.
+  await page.evaluate(() => { IDBObjectStore.prototype.put = () => { throw new Error('W2 smoke: save blocked'); }; });
+  await page.getByRole('button', {name: 'Review selected section', exact: true}).click();
+  await page.getByLabel('Your name').fill('W2 Smoke');
+  await page.getByLabel('Feedback', {exact: true}).fill('Keep this unsaved draft');
+  await expect(page.locator('.local-save-status')).toContainText('Could not save', {timeout: 10000});
+  const dialogSeen = new Promise(resolve => page.once('dialog', async dialog => {
+    const detail = {type: dialog.type(), message: dialog.message()};
+    await dialog.dismiss();
+    resolve(detail);
+  }));
+  const third = spawn(exe, ['forwarded.md'], {cwd: work, stdio: 'ignore'});
+  const [thirdCode] = await Promise.race([once(third, 'exit'), delay(15000).then(() => { third.kill(); throw new Error('Confirm launch did not exit'); })]);
+  assert.equal(thirdCode, 0);
+  result.entryPoints.unsavedConfirm = await Promise.race([dialogSeen, delay(10000).then(() => { throw new Error('Unsaved-work confirm was not shown'); })]);
+  assert.equal(result.entryPoints.unsavedConfirm.type, 'confirm');
+  await expect(page.locator('.document-title')).toHaveText('guide.md');
+  await expect(page.getByLabel('Feedback', {exact: true})).toHaveValue('Keep this unsaved draft');
   await page.screenshot({path: path.join(evidenceDir, 'card-0072-webview.png')});
 } catch (error) {
   if (page) result.activity = await page.locator('#activity').textContent().catch(() => undefined);
