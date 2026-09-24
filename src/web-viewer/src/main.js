@@ -202,6 +202,7 @@ async function receive(source, expectedKey, documentPath) {
     if (initialDocument) {
       const exists = remembered && pkg.documents.some(entry => entry.name === remembered);
       await showDocument(exists ? remembered : initialDocument.name, undefined, true);
+      if (pkg !== opened || generation !== openGeneration) return 'superseded';
       if (remembered && !exists) report('The saved document is missing. Its saved work was retained for recovery.', true);
     }
     else report(pkg.manifest.review ? 'Review package opened. It contains no ordinary documents; this viewer does not yet display review threads.' : 'Package opened; its current view has no documents.');
