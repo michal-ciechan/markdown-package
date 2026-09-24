@@ -53,9 +53,15 @@ async function stop() {
   if (child && child.exitCode === null) {
     const exited = once(child, 'exit');
     child.kill();
-    await Promise.race([exited, delay(5000)]);
+    await Promise.race([exited, delay(5000).then(() => { throw new Error('Tauri did not exit'); })]);
   }
   child = undefined;
+  for (let attempt = 0; attempt < 60; attempt++) {
+    try { await fetch(endpoint + '/json/version'); }
+    catch { return; }
+    if (attempt === 59) throw new Error('WebView2 CDP endpoint did not stop');
+    await delay(100);
+  }
 }
 
 async function openStandard(page) {
@@ -104,6 +110,6 @@ try {
 } finally {
   await stop();
   await writeFile(path.join(evidenceDir, 'card-0071-native-smoke.json'), JSON.stringify(result, null, 2));
-  if (profileDir) await rm(profileDir, {recursive: true, force: true});
+  if (profileDir) await rm(profileDir, {recursive: true, force: true, maxRetries: 50, retryDelay: 100});
 }
 console.log(JSON.stringify(result));
