@@ -35,7 +35,9 @@ test('W2 bundles per-user associations with file-scoped read permission', async 
   assert.match(cargo, /tauri-plugin-fs/);
   assert.match(cargo, /tauri-plugin-single-instance/);
   assert.match(lib, /fs_scope\(\)\.allow_file/);
-  assert.match(lib, /take_launch_files/);
+  assert.match(lib, /pending_launch_files/);
+  assert.match(lib, /ack_launch_file/);
+  assert.doesNotMatch(lib, /take_launch_files/);
   assert.doesNotMatch(cargo, /tauri-plugin-dialog/);
   assert.doesNotMatch(lib, /tauri_plugin_dialog/);
 });
