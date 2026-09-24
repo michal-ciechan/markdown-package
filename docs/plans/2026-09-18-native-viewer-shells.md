@@ -552,6 +552,7 @@ grant persistence, half-written large saves, a file-only `fs:scope` for
 `watch`, and everything about signing/updater/SmartScreen (W4).
 
 ### Phase 1: Windows desktop (2 to 3 weeks after the spike)
+Execution: docs/plans/2026-09-23-phase1-execution.md (2026-09-23, CARD-0070; sub-cards CARD-0071 to CARD-0079).
 
 | Milestone | Delivers |
 | --- | --- |
