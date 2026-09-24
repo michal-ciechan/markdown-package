@@ -5,8 +5,9 @@
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
-import {mkdir, writeFile} from 'node:fs/promises';
+import {mkdir, mkdtemp, rm, writeFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
+import os from 'node:os';
 import path from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
 import {fileURLToPath} from 'node:url';
@@ -21,10 +22,12 @@ const exe = path.join(desktop, 'src-tauri/target/debug/mdpkg-viewer.exe');
 const endpoint = 'http://127.0.0.1:9228';
 const result = {exe, packagePath, route: null, first: null, reopened: null};
 let child, browser;
+let profileDir;
 
 async function launch() {
   child = spawn(exe, [], {cwd: desktop, stdio: 'ignore', env: {
     ...process.env, WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: '--remote-debugging-port=9228',
+    WEBVIEW2_USER_DATA_FOLDER: profileDir,
   }});
   for (let attempt = 0; attempt < 60; attempt++) {
     if (child.exitCode !== null) throw new Error(`Tauri exited early: ${child.exitCode}`);
@@ -63,6 +66,7 @@ async function openStandard(page) {
 
 try {
   await mkdir(evidenceDir, {recursive: true});
+  profileDir = await mkdtemp(path.join(os.tmpdir(), 'mdpkg-w1-smoke-'));
   let page = await launch();
   result.first = await page.evaluate(() => ({
     title: document.title, origin: location.origin, secure: isSecureContext,
@@ -84,8 +88,9 @@ try {
   await stop();
 
   page = await launch();
-  result.reopened = await page.evaluate(() => ({origin: location.origin, text: document.body.innerText}));
-  assert.match(result.reopened.text, /card-0071-guide\.mdpkg/);
+  result.reopened = {origin: await page.evaluate(() => location.origin)};
+  await expect(page.locator('.recent-list .recent-package')
+    .filter({hasText: path.basename(packagePath)})).toBeVisible({timeout: 15000});
   if (!(await page.getByLabel('Feedback', {exact: true}).isVisible())) {
     await page.locator('#package-file').setInputFiles(packagePath);
   }
@@ -99,5 +104,6 @@ try {
 } finally {
   await stop();
   await writeFile(path.join(evidenceDir, 'card-0071-native-smoke.json'), JSON.stringify(result, null, 2));
+  if (profileDir) await rm(profileDir, {recursive: true, force: true});
 }
 console.log(JSON.stringify(result));
