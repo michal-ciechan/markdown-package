@@ -426,18 +426,20 @@ test('a comment refused for a draft in another document says why beside the sele
   await expect(page.locator('.document-title')).toHaveText('b.md');
   await reloadAttach(page, input);
   await expect(page.locator('.document-title')).toHaveText('b.md');
-  const selection = await page.locator('#reader article > p').first().evaluate(p => {
+  await page.locator('#reader article > p').first().evaluate(p => {
     const range = document.createRange(); range.setStart(p.firstChild, 2); range.setEnd(p.firstChild, 8);
     getSelection().removeAllRanges(); getSelection().addRange(range); document.dispatchEvent(new Event('selectionchange'));
-    const r = range.getBoundingClientRect(); return {left: r.left, bottom: r.bottom};
   });
   await page.getByRole('button', {name: 'Review selected text', exact: true}).click();
   await expect(page.locator('.review-editor')).toBeHidden();
   const refusal = page.getByRole('alert').filter({hasText: 'Resume or cancel your saved draft before starting another comment.'});
   await expect(refusal).toBeVisible(); await expect(refusal).toBeInViewport();
-  const box = await refusal.boundingBox();
-  expect(Math.abs(box.y - selection.bottom)).toBeLessThan(40);
-  expect(Math.abs(box.x - selection.left)).toBeLessThan(40);
+  // Measure both after the click: reaching the panel button can scroll the page.
+  const gap = await refusal.evaluate(note => {
+    const a = getSelection().getRangeAt(0).getBoundingClientRect(), b = note.getBoundingClientRect();
+    return {x: Math.abs(b.left - a.left), y: Math.abs(b.top - a.bottom)};
+  });
+  expect(gap.x).toBeLessThan(40); expect(gap.y).toBeLessThan(40);
   await page.getByRole('button', {name: 'Resume draft in a.md'}).click();
   await expect(refusal).toBeHidden();
   await expect(page.getByLabel('Feedback', {exact: true})).toHaveValue('A draft');
