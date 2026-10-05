@@ -134,15 +134,85 @@ Ordinary CI, local verification and the public proof have `contents: read` only.
 
 ## Releasing and recovering
 
-Change the single `<Version>` in `src/generator-cli/Mdpkg.Pack.props`, commit and
-push to master. Tool, Reader, Core and local Reviews share that version. Core's
-NuGet dependency is **exactly** `[ReaderVersion]` because it uses Reader internals.
-Never publish a new Core against different Reader bytes bearing the same version.
+Change the single `<Version>` in `src/generator-cli/Mdpkg.Pack.props`, run
+`node src/desktop/scripts/sync-version.mjs` to copy it into the desktop app, commit
+and push to master. Tool, Reader, Core, local Reviews and the desktop app share that
+version. Core's NuGet dependency is **exactly** `[ReaderVersion]` because it uses
+Reader internals. Never publish a new Core against different Reader bytes bearing
+the same version. The desktop app follows with its own manual step; see
+[Desktop app release](#desktop-app-release-card-0075).
 
 The workflow triggers on `src/generator-cli/**` (including Reader/Core and shared
 props), LICENSE, its own workflow, and external consumer/spec fixtures used by its
 gates. Manual dispatch remains available. No tags, CHANGELOG or GitHub Packages
-mirror are involved. This supersedes the older CARD-0033 tag proposal.
+mirror are involved in the NuGet release. This supersedes the older CARD-0033 tag
+proposal. The only tags in the repository are the desktop app's `v<version>`, which
+GitHub creates when an owner publishes a desktop draft release.
+
+## Desktop app release (CARD-0075)
+
+The Windows desktop app (`src/desktop`, Markdown Package Viewer) ships as an
+unsigned per-user NSIS installer on a GitHub Release, built by
+`.github/workflows/desktop.yml` with `tauri-apps/tauri-action`. Its version is the
+shared `<Version>` above; it is never edited by hand.
+
+**Version coupling.** `src/desktop/scripts/sync-version.mjs` reads `<Version>` from
+`Mdpkg.Pack.props` and writes it into `src-tauri/tauri.conf.json`,
+`src-tauri/Cargo.toml` and the app's own entry in `src-tauri/Cargo.lock`. Three
+ways it runs:
+
+| Command (from `src/desktop`) | Effect |
+| --- | --- |
+| `node scripts/sync-version.mjs` | Writes the props version into the three files |
+| `node scripts/sync-version.mjs --check` | Writes nothing; exits 1 naming each drifted file. `desktop.yml` runs this first, so a bump pushed without the sync fails CI |
+| `node scripts/sync-version.mjs --build` | `beforeBuildCommand`: writes, then exits 1 if anything changed. The Tauri CLI has already read the old version by then, so the build stops rather than bundle a mismatched installer; re-run it |
+
+`Cargo.toml`'s version is a copy, not a source of truth. The version must be
+semantic (`1.2.3` or `1.2.3-preview.4`); a four-part NuGet version is refused.
+
+**What runs when.** A push to master or a pull request touching `src/desktop/**`,
+`src/web-viewer/**`, `Mdpkg.Pack.props` or the workflow builds the release-profile
+installer and uploads it as the `mdpkg-viewer-setup-<version>` workflow artifact.
+Nothing is released. A version bump on master therefore runs `publish-nuget.yml`
+and this build side by side; the desktop release waits for the step below.
+
+**Cutting a release.** After the bump has landed on master and its `desktop.yml`
+build is green:
+
+```powershell
+gh workflow run desktop.yml --ref master
+gh run list --workflow desktop.yml --limit 5
+gh run watch <run-id> --exit-status
+gh release view v<version>
+```
+
+`draft-release` defaults to true on dispatch. The run builds again from the cache,
+then creates a **draft** release `v<version>` named "Markdown Package Viewer
+v<version>" whose target is the built commit, and uploads the NSIS
+`*_x64-setup.exe`. The run summary links the draft. Unticking `draft-release`
+(`gh workflow run desktop.yml --ref <branch> -f draft-release=false`) builds and
+uploads the artifact only, from any branch; a release from any branch but master
+is refused.
+
+A draft creates no git tag. Download the installer from the draft, install it on
+Windows, open a `.mdpkg`, then **Publish release** in the GitHub UI: that creates the
+tag `v<version>` at the built commit. Never create or push the tag by hand.
+
+**Recovering.** Re-dispatching while `v<version>` is still a draft rebuilds and
+replaces its installer. Once `v<version>` is published, a dispatch fails (the
+action refuses to treat a published release as a draft): a changed installer
+needs a new shared version, as for NuGet. A failed or unwanted draft can be
+deleted with `gh release delete v<version>`; with no tag behind it nothing else
+needs cleaning up.
+
+**Not yet included.** The installer is unsigned, so SmartScreen warns on first
+run. The updater's `latest.json`, `.sig` files and signing secret arrive with
+CARD-0077 (W4c); until then `uploadUpdaterJson` and `uploadUpdaterSignatures` are
+off and users update by installing the newer release.
+
+**Owner settings.** The job requests `contents: write` itself, which a repository
+whose default workflow permissions are read-only still allows. No secret beyond
+the built-in `GITHUB_TOKEN` is used.
 
 Windows and Linux build/test, pack all four products, inspect manifests, and run
 all local consumer gates plus global tool installation. `inspect-release.py` checks

@@ -1,0 +1,125 @@
+# Builds the Windows desktop app (src/desktop, Tauri v2) and its per-user NSIS installer.
+# Push and pull-request builds upload the installer as a workflow artifact only. A manual
+# dispatch on master cuts a DRAFT GitHub Release tagged v<version>; publishing the draft is
+# an owner step (docs/releases/mdpkg.md). The version comes from
+# src/generator-cli/Mdpkg.Pack.props and is never edited here.
+name: Build desktop app
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'src/desktop/**'
+      # The app ships the viewer's dist/ and builds it in beforeBuildCommand.
+      - 'src/web-viewer/**'
+      # The shared version; a bump must re-check the desktop copies of it.
+      - 'src/generator-cli/Mdpkg.Pack.props'
+      - '.github/workflows/desktop.yml'
+  pull_request:
+    paths:
+      - 'src/desktop/**'
+      - 'src/web-viewer/**'
+      - 'src/generator-cli/Mdpkg.Pack.props'
+      - '.github/workflows/desktop.yml'
+  workflow_dispatch:
+    inputs:
+      draft-release:
+        description: 'Create a draft GitHub Release v<version> with the installer (false: build and upload the artifact only)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  # Superseded PR pushes are cancelled; master builds and releases always finish.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    permissions:
+      # Only the dispatch's tauri-action step writes (it creates the draft release); a
+      # pull request from a fork receives a read-only token regardless.
+      contents: write
+    env:
+      # The CLI is the prebuilt npm binary, pinned to the version this app was developed
+      # against, so no run pays a cold `cargo install tauri-cli`. Bump with the tauri crate.
+      TAURI_CLI_VERSION: 2.11.5
+      DRAFT_RELEASE: ${{ github.event_name == 'workflow_dispatch' && inputs.draft-release }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Refuse a release from any branch but master
+        if: env.DRAFT_RELEASE == 'true' && github.ref != 'refs/heads/master'
+        run: |
+          echo "::error::Draft releases are cut from master only; re-run with draft-release unticked to build $env:GITHUB_REF_NAME."
+          exit 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: src/web-viewer/package-lock.json
+
+      - name: Check the desktop version matches Mdpkg.Pack.props
+        run: node scripts/sync-version.mjs --check
+        working-directory: src/desktop
+
+      - name: Test the desktop configuration and version coupling
+        run: node --test tests/shell.test.mjs tests/version.test.mjs
+        working-directory: src/desktop
+
+      - name: Install pinned viewer dependencies
+        run: npm ci
+        working-directory: src/web-viewer
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      # Swatinem/rust-cache rather than a hand-keyed actions/cache: it keys on the
+      # toolchain, Cargo.lock and this job, caches ~/.cargo/registry, ~/.cargo/git and the
+      # dependency part of target/, and prunes the app's own (always rebuilt) artifacts so
+      # the cache does not grow with every run. Measured cold cost without it: release
+      # `tauri build` about 18 minutes (docs/plans/2026-09-18-native-viewer-shells.md, K).
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/desktop/src-tauri -> target
+
+      - name: Build the installer (and the draft release on dispatch)
+        id: tauri
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: src/desktop
+          tauriScript: npx --yes @tauri-apps/cli@${{ env.TAURI_CLI_VERSION }}
+          # An empty tag means build only: tauri-action creates no release.
+          tagName: ${{ env.DRAFT_RELEASE == 'true' && 'v__VERSION__' || '' }}
+          releaseName: Markdown Package Viewer v__VERSION__
+          releaseBody: >-
+            Unsigned per-user Windows installer for Markdown Package Viewer. Windows
+            SmartScreen may warn on first run; choose "More info", then "Run anyway".
+          releaseDraft: true
+          releaseCommitish: ${{ github.sha }}
+          # W4c adds the updater (latest.json, .sig files and the signing secret).
+          uploadUpdaterJson: false
+          uploadUpdaterSignatures: false
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mdpkg-viewer-setup-${{ steps.tauri.outputs.appVersion }}
+          path: src/desktop/src-tauri/target/release/bundle/nsis/*-setup.exe
+          if-no-files-found: error
+
+      - name: Summarize
+        env:
+          APP_VERSION: ${{ steps.tauri.outputs.appVersion }}
+          RELEASE_URL: ${{ steps.tauri.outputs.releaseHtmlUrl }}
+        run: |
+          $installer = Get-Item src/desktop/src-tauri/target/release/bundle/nsis/*-setup.exe
+          "Built $($installer.Name) ($($installer.Length) bytes), version $env:APP_VERSION." >> $env:GITHUB_STEP_SUMMARY
+          if ($env:RELEASE_URL) { "Draft release: $env:RELEASE_URL" >> $env:GITHUB_STEP_SUMMARY }
