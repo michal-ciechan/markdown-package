@@ -85,6 +85,9 @@ jobs:
       # dependency part of target/, and prunes the app's own (always rebuilt) artifacts so
       # the cache does not grow with every run. Measured cold cost without it: release
       # `tauri build` about 18 minutes (docs/plans/2026-09-18-native-viewer-shells.md, K).
+      # The app crate itself is rebuilt every run: under the release profile's fat LTO and
+      # one codegen unit it took 7m44s on the development machine (2026-10-06), which is
+      # the floor for a warm run.
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src/desktop/src-tauri -> target
