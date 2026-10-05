@@ -12,7 +12,8 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {fileURLToPath} from 'node:url';
 
 const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const exe = path.join(desktop, 'src-tauri/target/debug/mdpkg-viewer.exe');
+// MDPKG_SMOKE_EXE compares another debug build, such as one before a fix.
+const exe = path.resolve(process.env.MDPKG_SMOKE_EXE ?? path.join(desktop, 'src-tauri/target/debug/mdpkg-viewer.exe'));
 const fixture = path.join(desktop, '../../docs/spec/review-fixtures/guide-snapshot.mdpkg');
 if (!process.argv[2]) throw new Error('Pass an evidence directory');
 const evidenceDir = path.resolve(process.argv[2]);
