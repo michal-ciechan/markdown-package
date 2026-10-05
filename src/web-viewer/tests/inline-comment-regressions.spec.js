@@ -120,6 +120,9 @@ test('requesting another comment reveals and focuses the retained draft hidden b
     await expect(page.locator('.review-editor .review-quote')).toHaveText('target');
     await expect(page.locator('.review-editor')).toHaveCount(1);
     await expect(page.locator('.review-status')).toContainText('Save or cancel your current comment first.');
+    // The panel status is off-screen while reading; the composer says it too.
+    const refusal = page.locator('.review-editor').getByRole('alert');
+    await expect(refusal).toHaveText('Save or cancel your current comment first.'); await expect(refusal).toBeInViewport();
   }
   await post(page);
   await expect(page.locator('.review-thread')).toHaveCount(1);

@@ -5,6 +5,8 @@ import {fillAuthor} from './author-name-helper.js';
 // Reproduction for "after one saved comment the reader cannot add a second"
 // (task 18d59e3e). Not a fix: the first test is expected to FAIL until the
 // stuck deferred draft is fixed.
+// Fixed by task e6f03caf: navigated() now settles the draft when input
+// interrupts the restore, and refusals also show beside the selection/composer.
 //
 // Mechanism: an unfinished comment (even an empty opened composer) is saved as
 // a draft. On reopen, persistence attach() calls reviews.deferDraft(true) and

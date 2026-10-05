@@ -56,6 +56,7 @@ export function reviewView(host, getContext, onNavigate) {
       <button type="button" class="review-author" aria-label="Edit name" hidden></button>
       <label>Kind <select name="kind" aria-label="Kind"><option value="comment">Comment</option><option value="change-request">Change request</option></select></label>
       <label>Feedback <textarea name="body" rows="4" required maxlength="65536"></textarea></label>
+      <p class="review-form-status error" role="alert" hidden></p>
       <div class="review-actions"><button type="submit">Save comment</button><button type="button" data-action="cancel">Cancel</button></div>
     </form>
     <p class="review-status" role="status" aria-live="polite"></p>
@@ -74,6 +75,25 @@ export function reviewView(host, getContext, onNavigate) {
   // Scoped to the loose-file case only: a real .mdpkg export is unaffected.
   const caveat = message => looseSource ? message + ' ' + LOOSE_EXPORT_CAVEAT : message;
   const status = (message, error = false) => { find('.review-status').textContent = message; find('.review-status').classList.toggle('error', error); };
+  // The panel status sits beside the document, usually off-screen while
+  // reading, so a refused comment looked like a dead button. Repeat the refusal
+  // where the reader is looking: in the open composer, or under the selection
+  // when there is no composer to show (second-comment-repro.spec.js).
+  const formStatus = find('.review-form-status'), refusal = document.createElement('p');
+  refusal.className = 'review-refusal error'; refusal.setAttribute('role', 'alert'); refusal.hidden = true; document.body.append(refusal);
+  const dismissRefusal = () => { refusal.hidden = true; };
+  for (const type of ['pointerdown', 'keydown']) document.addEventListener(type, dismissRefusal, {capture: true, passive: true});
+  function refuse(message) {
+    status(message, true);
+    if (composing) { formStatus.textContent = message; formStatus.hidden = false; return; }
+    const selection = getSelection(), range = selection?.rangeCount && !selection.isCollapsed ? selection.getRangeAt(0) : undefined;
+    const rect = (range ?? document.activeElement)?.getBoundingClientRect() ?? {left: 0, bottom: 0};
+    refusal.textContent = message; refusal.hidden = false;
+    // Page coordinates, so the note stays beside the text it refers to while scrolling.
+    const box = refusal.getBoundingClientRect();
+    refusal.style.left = scrollX + Math.max(8, Math.min(rect.left, innerWidth - box.width - 8)) + 'px';
+    refusal.style.top = scrollY + Math.max(8, Math.min(rect.bottom + 8, innerHeight - box.height - 8)) + 'px';
+  }
   function invalidate() {
     revision++; dirty = true; prepared = artifact = undefined;
     action('download').hidden = action('share').hidden = true;
@@ -86,7 +106,7 @@ export function reviewView(host, getContext, onNavigate) {
     // redrawing — and let the next Copy render it again.
     hideMarkdown();
   }
-  function closeEditor() { composing = undefined; form.hidden = true; body.value = ''; }
+  function closeEditor() { composing = undefined; form.hidden = true; body.value = ''; formStatus.hidden = true; }
   // Never leave a previous review's text in the manual-copy fallback.
   function hideMarkdown() { find('.review-markdown-label').hidden = true; find('.review-markdown').value = ''; }
   // Engines disagree on what focus() reveals: Chromium centres the field,
@@ -99,9 +119,9 @@ export function reviewView(host, getContext, onNavigate) {
     body.scrollIntoView({block: 'nearest', inline: 'nearest'});
   }
   function edit(target, fields, focus = true) {
-    if (deferredDraft) { status('Resume or cancel your saved draft before starting another comment.', true); return; }
-    if (composing) { presentation('edit'); reveal(); status('Save or cancel your current comment first.', true); return; }
-    composing = target;
+    if (deferredDraft) { refuse('Resume or cancel your saved draft before starting another comment.'); return; }
+    if (composing) { presentation('edit'); reveal(); refuse('Save or cancel your current comment first.'); return; }
+    composing = target; dismissRefusal(); formStatus.hidden = true;
     form.hidden = false;
     name.show(fields?.author);
     kind.value = fields?.kind ?? 'comment'; body.value = fields?.body ?? '';
@@ -269,7 +289,7 @@ export function reviewView(host, getContext, onNavigate) {
       find('.review-loose').hidden = !looseSource;
       revision++; exportRevision = revision; dirty = false; prepared = artifact = undefined; deferredDraft = false; closeEditor(); hideMarkdown();
       action('download').hidden = action('share').hidden = true;
-      host.hidden = !value; status(''); draw();
+      host.hidden = !value; status(''); dismissRefusal(); draw();
     },
   };
 }

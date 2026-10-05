@@ -192,7 +192,9 @@ The existing selection toolbar and review actions open the shared composer at
 the future thread's position, with its exact quote and a blue source highlight.
 Replies use that same location. Filtering, changing folds, Read/Review and
 source/render switches preserve an unfinished draft; a second draft request
-focuses the existing editor. Saving, replies, state changes, browser persistence
+focuses the existing editor and says why inside it. A request refused while a
+saved draft waits in another document explains itself beside the selection, not
+only in the Review panel. Saving, replies, state changes, browser persistence
 and v2 export continue through the existing review model and writer.
 
 Source ranges are validated against the original locator and selector evidence,
@@ -298,6 +300,8 @@ Reattachment checks normalized document digests and exact review/draft selectors
 Changed or missing text is retained in recovery with copy/discard controls instead
 of being attached to a different target. A draft in another document has a
 **Resume draft in …** action; it does not change the last reading destination.
+Scrolling, clicking or typing while a document reopens cancels only the restored
+scroll position; a saved draft for that document still reopens in its editor.
 Explicit document/reference navigation takes precedence over a saved destination.
 
 The standard picker, drop and paste work without file-handle support. On reload,

@@ -251,7 +251,10 @@ export async function persistence({host, reviews, reader, article, receive, navi
         }
       } catch (error) { session.protectedPositions.add(model.path); ui.offer('Reading position was retained for recovery: ' + error.message); }
       if (session !== active || getModel() !== model) return;
-      if (generation !== intent) { restoring = false; position(); return; }
+      // Input during the restore cancels only the viewport move. The saved draft
+      // is still settled below: left deferred, edit() refused every new comment
+      // and saves kept writing the draft back (second-comment-repro.spec.js).
+      const interrupted = generation !== intent;
       restoring = false;
       const draft = session.pendingDraft;
       if (draft && !session.locked) {
@@ -261,7 +264,8 @@ export async function persistence({host, reviews, reader, article, receive, navi
           ui.notice('Saved draft restored');
         } else if (draft.path !== model.path) ui.offer(`Your saved draft belongs to ${draft.path}.`, `Resume draft in ${draft.path}`, () => navigate(draft.path));
       }
-      position(); await flushPosition();
+      position(); if (interrupted) return;
+      await flushPosition();
       await refresh();
     },
     async startup() {

@@ -417,6 +417,32 @@ test('draft in document A stays there when the last read document is B', async (
   await expect(page.getByLabel('Feedback', {exact: true})).toHaveValue('A draft');
 });
 
+// The panel's status line is off-screen while reading; a refusal shown only
+// there made the viewer look dead (second-comment-repro.spec.js).
+test('a comment refused for a draft in another document says why beside the selection', async ({page}) => {
+  const input = file(await packageWith({'a.md': '# A\n\nA target\n', 'b.md': '# B\n\nB target words\n'}));
+  await open(page, input); await edit(page, 'A draft'); await saved(page);
+  await page.locator('#documents').getByRole('button', {name: 'b.md', exact: true}).click();
+  await expect(page.locator('.document-title')).toHaveText('b.md');
+  await reloadAttach(page, input);
+  await expect(page.locator('.document-title')).toHaveText('b.md');
+  const selection = await page.locator('#reader article > p').first().evaluate(p => {
+    const range = document.createRange(); range.setStart(p.firstChild, 2); range.setEnd(p.firstChild, 8);
+    getSelection().removeAllRanges(); getSelection().addRange(range); document.dispatchEvent(new Event('selectionchange'));
+    const r = range.getBoundingClientRect(); return {left: r.left, bottom: r.bottom};
+  });
+  await page.getByRole('button', {name: 'Review selected text', exact: true}).click();
+  await expect(page.locator('.review-editor')).toBeHidden();
+  const refusal = page.getByRole('alert').filter({hasText: 'Resume or cancel your saved draft before starting another comment.'});
+  await expect(refusal).toBeVisible(); await expect(refusal).toBeInViewport();
+  const box = await refusal.boundingBox();
+  expect(Math.abs(box.y - selection.bottom)).toBeLessThan(40);
+  expect(Math.abs(box.x - selection.left)).toBeLessThan(40);
+  await page.getByRole('button', {name: 'Resume draft in a.md'}).click();
+  await expect(refusal).toBeHidden();
+  await expect(page.getByLabel('Feedback', {exact: true})).toHaveValue('A draft');
+});
+
 for (const route of ['drop', 'paste']) test(`${route} inputs retain file-only history and restore drafts`, async ({page}) => {
   await page.goto('/');
   await page.evaluate(({bytes, route}) => {

@@ -104,6 +104,8 @@ article.selected-section { box-shadow: none; }
 .review-comment { border-top: 1px solid #dde3e9; margin-top: 1rem; padding-top: .5rem; }
 .review-comment > p:first-child, .review-memory { color: #526172; font-size: .9rem; }
 .review-loose { color: #7a4a00; background: #fff6e5; border: 1px solid #f0d9a8; border-radius: 4px; padding: .5rem .6rem; font-size: .9rem; }
+.review-form-status { margin: .5rem 0; font-size: .9rem; }
+.review-refusal { position: absolute; z-index: 30; max-width: min(24rem, calc(100vw - 16px)); box-sizing: border-box; margin: 0; padding: .5rem .7rem; background: #fff; border: 1px solid #d9a3a9; border-radius: .5rem; box-shadow: 0 3px 12px #182c3533; font-size: .9rem; }
 .review-body { white-space: pre-wrap; overflow-wrap: anywhere; }
 button:disabled { opacity: .6; cursor: default; }
 .selection-toolbar { display: flex; align-items: center; gap: .25rem; flex-wrap: wrap; padding: .35rem; border: 1px solid #adc1d3; border-radius: .65rem; background: #fff; box-shadow: 0 3px 16px #172b3f33; }
