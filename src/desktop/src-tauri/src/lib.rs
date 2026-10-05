@@ -72,6 +72,22 @@ where
     }
 }
 
+// Do not use `set_focus` here. When Windows refuses SetForegroundWindow, tao
+// injects a synthetic Alt press. A lone Alt reaching the focused WebView2 puts
+// the window in keyboard menu mode, which holds WebView2's browser thread until
+// the user clicks, so a forwarded file sits unopened. Ask once without input;
+// if Windows refuses, it flashes the taskbar button and the file still opens.
+fn bring_to_front(window: &WebviewWindow) {
+    let _ = window.unminimize();
+    let _ = window.show();
+    #[cfg(windows)]
+    if let Ok(hwnd) = window.hwnd() {
+        unsafe { windows_sys::Win32::UI::WindowsAndMessaging::SetForegroundWindow(hwnd.0 as _) };
+    }
+    #[cfg(not(windows))]
+    let _ = window.set_focus();
+}
+
 #[tauri::command]
 fn pending_launch_files(window: WebviewWindow) -> Vec<LaunchFile> {
     window.state::<PendingFiles>().0.lock().unwrap().files.clone()
@@ -79,7 +95,22 @@ fn pending_launch_files(window: WebviewWindow) -> Vec<LaunchFile> {
 
 #[tauri::command]
 fn ack_launch_file(window: WebviewWindow, id: u64) -> bool {
-    window.state::<PendingFiles>().0.lock().unwrap().acknowledge(id)
+    let acknowledged = window.state::<PendingFiles>().0.lock().unwrap().acknowledge(id);
+    #[cfg(debug_assertions)]
+    if acknowledged { record_ack(id) }
+    acknowledged
+}
+
+// Debug builds only: tests/forward-focus-smoke.mjs times forwarded opens from
+// this file, because an attached debugger keeps the page awake and hides stalls.
+#[cfg(debug_assertions)]
+fn record_ack(id: u64) {
+    use std::io::Write;
+    let Some(file) = std::env::var_os("MDPKG_ACK_LOG") else { return };
+    let millis = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0, |time| time.as_millis());
+    if let Ok(mut log) = std::fs::OpenOptions::new().create(true).append(true).open(file) {
+        let _ = writeln!(log, "{millis} {id}");
+    }
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -88,8 +119,7 @@ pub fn run() {
         .plugin(tauri_plugin_single_instance::init(|app, args, cwd| {
             queue_files(app, args.into_iter().skip(1), Path::new(&cwd));
             if let Some(window) = app.get_webview_window("main") {
-                let _ = window.show();
-                let _ = window.set_focus();
+                bring_to_front(&window);
             }
         }))
         .plugin(tauri_plugin_fs::init())

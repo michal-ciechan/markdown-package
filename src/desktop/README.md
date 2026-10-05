@@ -6,7 +6,12 @@ The Tauri v2 shell serves the browser viewer's built files from
 until the viewer acknowledges receipt, then read through `tauri-plugin-fs`.
 The viewer checks the queue periodically to recover a missed notification.
 A second
-launch forwards its paths to the first window and focuses it.
+launch forwards its paths to the first window and asks Windows to bring it to
+the front with a plain `SetForegroundWindow`. Do not use Tauri's `set_focus`
+for this: when Windows refuses the request, tao injects a synthetic Alt press,
+and a lone Alt that reaches WebView2 leaves the window in keyboard menu mode.
+The page then stalls until the user clicks. If Windows refuses the plain
+request, it flashes the taskbar button and the file still opens.
 
 ## Prerequisites
 
@@ -40,6 +45,15 @@ restores the previous text clipboard. Install the debug NSIS bundle, then run
 `.mdpkg` shell association and the `.md` Open with registration. Uninstall
 the debug app after that check. Physical Explorer drag and context-menu
 selection still need a hands-on pass.
+
+To check that forwarded launches open without a click, run
+`node tests/forward-focus-smoke.mjs <evidence-directory> [launches]` from
+`src/desktop` in an unlocked desktop. A minimized RDP client does not count.
+It attaches no debugger, because CDP keeps the page awake. It covers the
+viewer with Notepad and forwards absolute and relative launches from a
+process that does not own the foreground. Each file must be acknowledged
+within 5 s. Debug builds append acknowledgements to the file named by
+`MDPKG_ACK_LOG`. Without a foreground window the script exits 2 (skipped).
 
 The `.mdpkg` association is configured in `tauri.conf.json`. The NSIS hook
 adds `.md` as an **Open with** candidate only. File read permission has no

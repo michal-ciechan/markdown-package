@@ -41,3 +41,13 @@ test('W2 bundles per-user associations with file-scoped read permission', async 
   assert.doesNotMatch(cargo, /tauri-plugin-dialog/);
   assert.doesNotMatch(lib, /tauri_plugin_dialog/);
 });
+
+test('W2 forwarding raises the window without tao set_focus input injection', async () => {
+  // tao's set_focus can inject a lone Alt, leaving WebView2 stalled in menu mode.
+  const lib = await read('src-tauri/src/lib.rs');
+  const windowsCode = lib.replace(/#\[cfg\(not\(windows\)\)\][^;]*;/g, '');
+  assert.doesNotMatch(windowsCode, /\.set_focus\(\)/);
+  assert.doesNotMatch(lib, /SendInput|keybd_event/);
+  assert.match(lib, /SetForegroundWindow/);
+  assert.match(lib, /single_instance::init\([\s\S]*?bring_to_front\(&window\)/);
+});
