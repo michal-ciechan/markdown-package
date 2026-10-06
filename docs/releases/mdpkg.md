@@ -146,8 +146,41 @@ The workflow triggers on `src/generator-cli/**` (including Reader/Core and share
 props), LICENSE, its own workflow, and external consumer/spec fixtures used by its
 gates. Manual dispatch remains available. No tags, CHANGELOG or GitHub Packages
 mirror are involved in the NuGet release. This supersedes the older CARD-0033 tag
-proposal. The only tags in the repository are the desktop app's `v<version>`, which
-GitHub creates when an owner publishes a desktop draft release.
+proposal. GitHub creates the `v<version>` tag when an owner publishes a desktop draft
+release.
+
+Windows and Linux build/test, pack all four products, inspect manifests, and run
+all local consumer gates plus global tool installation. `inspect-release.py` checks
+shared versions, IDs, license/README, source commit, dependency boundaries, the
+exact Core-to-Reader pin, Core XML documentation/symbols and Unicode notices. Each
+platform uploads its packages, Core symbols and `SHA256SUMS`. The publish job
+verifies the Linux checksums and pushes those same bytes, Reader first, then Core,
+then mdpkg. Core's adjacent snupkg is pushed by `dotnet nuget push` automatically.
+Reviews remains an inspected artifact only. Only the publish job has OIDC permission.
+
+`--skip-duplicate` supports recovery from partial publication. If Reader succeeded
+and Core failed, correct policy/ownership and rerun the same commit/version. Never
+change source and use a successful duplicate skip as evidence that those new bytes
+were released. Any change intended for consumers requires a new shared version.
+
+The **`prove-nuget-org` matrix** is the release-complete signal:
+
+- `tool`: installs the exact props version globally in a temporary CLI home; checks
+  registration/version/help, packs UTF-8 Markdown, checks content and deep-validates.
+- `libraries`: creates external Core-only and Reader-only PackageReference projects
+  outside the checkout. Each retry has new projects, CLI home, package/HTTP caches,
+  an explicit nuget.org-only config and no fallback folders. It verifies package
+  provenance, exact resolved versions and the Core/Reader dependency. The dependency
+  graph must contain only Core (for that consumer), Reader, Markdig and SharpZipLib.
+  It builds only these consumers, creates and fully validates a default snapshot without Git,
+  checks Reader identity/content and runs standalone Reader without Git on PATH.
+
+Neither public entry downloads build artifacts or receives publishing credentials.
+Each retries install/restore up to 20 times, 180 seconds apart, with a 120-second
+command timeout. Smoke/assertion failures after restore fail immediately. Check
+flat-container indexes, not search, for indexing progress. A successful push alone
+is insufficient. Policy failures need the owner; indexing failures need a retry;
+installed behavior failures need a fix and new shared version.
 
 ## Desktop app release (CARD-0075)
 
@@ -213,39 +246,6 @@ off and users update by installing the newer release.
 **Owner settings.** The job requests `contents: write` itself, which a repository
 whose default workflow permissions are read-only still allows. No secret beyond
 the built-in `GITHUB_TOKEN` is used.
-
-Windows and Linux build/test, pack all four products, inspect manifests, and run
-all local consumer gates plus global tool installation. `inspect-release.py` checks
-shared versions, IDs, license/README, source commit, dependency boundaries, the
-exact Core-to-Reader pin, Core XML documentation/symbols and Unicode notices. Each
-platform uploads its packages, Core symbols and `SHA256SUMS`. The publish job
-verifies the Linux checksums and pushes those same bytes, Reader first, then Core,
-then mdpkg. Core's adjacent snupkg is pushed by `dotnet nuget push` automatically.
-Reviews remains an inspected artifact only. Only the publish job has OIDC permission.
-
-`--skip-duplicate` supports recovery from partial publication. If Reader succeeded
-and Core failed, correct policy/ownership and rerun the same commit/version. Never
-change source and use a successful duplicate skip as evidence that those new bytes
-were released. Any change intended for consumers requires a new shared version.
-
-The **`prove-nuget-org` matrix** is the release-complete signal:
-
-- `tool`: installs the exact props version globally in a temporary CLI home; checks
-  registration/version/help, packs UTF-8 Markdown, checks content and deep-validates.
-- `libraries`: creates external Core-only and Reader-only PackageReference projects
-  outside the checkout. Each retry has new projects, CLI home, package/HTTP caches,
-  an explicit nuget.org-only config and no fallback folders. It verifies package
-  provenance, exact resolved versions and the Core/Reader dependency. The dependency
-  graph must contain only Core (for that consumer), Reader, Markdig and SharpZipLib.
-  It builds only these consumers, creates and fully validates a default snapshot without Git,
-  checks Reader identity/content and runs standalone Reader without Git on PATH.
-
-Neither public entry downloads build artifacts or receives publishing credentials.
-Each retries install/restore up to 20 times, 180 seconds apart, with a 120-second
-command timeout. Smoke/assertion failures after restore fail immediately. Check
-flat-container indexes, not search, for indexing progress. A successful push alone
-is insufficient. Policy failures need the owner; indexing failures need a retry;
-installed behavior failures need a fix and new shared version.
 
 ## Local verification
 
